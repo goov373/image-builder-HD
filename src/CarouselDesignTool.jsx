@@ -572,7 +572,7 @@ const Sidebar = ({ activePanel, onPanelChange }) => {
   ];
 
   return (
-    <div className="fixed left-0 top-[49px] h-[calc(100%-49px)] w-16 bg-gray-900 border-r border-gray-800 flex flex-col items-center py-4 z-50">
+    <div className="fixed left-0 top-[56px] h-[calc(100%-56px)] w-16 bg-gray-900 border-r border-gray-800 flex flex-col items-center py-4 z-50">
       {/* Panel Buttons */}
       <div className="flex flex-col gap-3">
         {panels.map(panel => (
@@ -604,7 +604,7 @@ const DesignSystemPanel = ({ designSystem, onUpdate, onClose }) => {
   ];
 
   return (
-    <div className="fixed left-16 top-[49px] h-[calc(100%-49px)] w-72 bg-gray-900 border-r border-gray-800 z-40 overflow-y-auto">
+    <div className="fixed left-16 top-[56px] h-[calc(100%-56px)] w-72 bg-gray-900 border-r border-gray-800 z-40 overflow-y-auto">
       <div className="p-4 border-b border-gray-800 flex items-center justify-between">
         <h2 className="text-sm font-semibold text-white">Design System</h2>
         <button onClick={onClose} className="text-gray-400 hover:text-white">
@@ -663,7 +663,7 @@ const DesignSystemPanel = ({ designSystem, onUpdate, onClose }) => {
 // File Browser Panel
 const FileBrowserPanel = ({ onClose }) => {
   return (
-    <div className="fixed left-16 top-[49px] h-[calc(100%-49px)] w-72 bg-gray-900 border-r border-gray-800 z-40 overflow-y-auto">
+    <div className="fixed left-16 top-[56px] h-[calc(100%-56px)] w-72 bg-gray-900 border-r border-gray-800 z-40 overflow-y-auto">
       <div className="p-4 border-b border-gray-800 flex items-center justify-between">
         <h2 className="text-sm font-semibold text-white">Files</h2>
         <button onClick={onClose} className="text-gray-400 hover:text-white">
@@ -701,7 +701,7 @@ const BackgroundPanel = ({ onClose }) => {
   ];
 
   return (
-    <div className="fixed left-16 top-[49px] h-[calc(100%-49px)] w-72 bg-gray-900 border-r border-gray-800 z-40 overflow-y-auto">
+    <div className="fixed left-16 top-[56px] h-[calc(100%-56px)] w-72 bg-gray-900 border-r border-gray-800 z-40 overflow-y-auto">
       <div className="p-4 border-b border-gray-800 flex items-center justify-between">
         <h2 className="text-sm font-semibold text-white">Background</h2>
         <button onClick={onClose} className="text-gray-400 hover:text-white">
@@ -739,7 +739,7 @@ const BackgroundPanel = ({ onClose }) => {
 // Export Panel
 const ExportPanel = ({ onClose }) => {
   return (
-    <div className="fixed left-16 top-[49px] h-[calc(100%-49px)] w-72 bg-gray-900 border-r border-gray-800 z-40 overflow-y-auto">
+    <div className="fixed left-16 top-[56px] h-[calc(100%-56px)] w-72 bg-gray-900 border-r border-gray-800 z-40 overflow-y-auto">
       <div className="p-4 border-b border-gray-800 flex items-center justify-between">
         <h2 className="text-sm font-semibold text-white">Export</h2>
         <button onClick={onClose} className="text-gray-400 hover:text-white">
@@ -1057,18 +1057,18 @@ export default function CarouselDesignTool() {
   return (
     <div className="min-h-screen bg-gray-950 text-white overflow-x-hidden">
       {/* Browser-style Tab Bar - Full Width */}
-      <div className="fixed top-0 left-0 right-0 z-[60] bg-gray-950 border-b border-gray-800">
-        <div className="flex items-center">
+      <div className="fixed top-0 left-0 right-0 z-[60] bg-gray-950 border-b border-gray-700" style={{ height: 56 }}>
+        <div className="flex items-end h-full">
           {/* Home Button */}
-          <div className="flex items-center px-3 py-2">
-            <button className="w-9 h-9 rounded-lg flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-800 transition-all">
+          <div className="flex items-center px-3 pb-2">
+            <button className="w-10 h-10 rounded-lg flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-800 transition-all border border-gray-700">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
               </svg>
             </button>
           </div>
           {/* Tabs */}
-          <div className="flex items-end gap-0.5 pt-2">
+          <div className="flex items-end gap-1">
             {tabs.map(tab => (
               <div
                 key={tab.id}
@@ -1101,7 +1101,7 @@ export default function CarouselDesignTool() {
             {/* Add Tab Button */}
             <button 
               onClick={handleAddTab}
-              className="w-8 h-8 mb-0.5 rounded-lg flex items-center justify-center text-gray-500 hover:text-white hover:bg-gray-800 transition-all"
+              className="w-8 h-8 mb-1 rounded-lg flex items-center justify-center text-gray-500 hover:text-white hover:bg-gray-800 transition-all"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -1129,9 +1129,9 @@ export default function CarouselDesignTool() {
       )}
 
       {/* Main Content */}
-      <div style={{ marginLeft: totalOffset, marginTop: 49, width: `calc(100vw - ${totalOffset}px)`, transition: 'margin-left 0.3s, width 0.3s' }}>
+      <div style={{ marginLeft: totalOffset, marginTop: 56, width: `calc(100vw - ${totalOffset}px)`, transition: 'margin-left 0.3s, width 0.3s' }}>
       {/* Toolbar */}
-      <div className="sticky top-[49px] z-40 bg-gray-900 border-b border-gray-800 px-6 py-2 overflow-x-auto hide-scrollbar">
+      <div className="sticky top-[56px] z-40 bg-gray-900 border-b border-gray-800 px-6 py-2 overflow-x-auto hide-scrollbar">
         <div className="flex items-center justify-between text-xs text-gray-400 min-w-max">
           <div className="flex items-center gap-4">
             {/* Format dropdown */}
