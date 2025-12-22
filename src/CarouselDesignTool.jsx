@@ -797,7 +797,7 @@ const CarouselRow = ({ carousel, designSystem, isSelected, hasAnySelection, sele
     >
       <div className="mb-4 flex items-center justify-between px-4">
         <div className="flex items-center gap-3">
-          <button onClick={(e) => { e.stopPropagation(); onSelect(isSelected ? null : carousel.id); }} className={`w-8 h-8 rounded-lg border-2 flex items-center justify-center transition-all ${isSelected ? 'border-orange-500 bg-orange-500/10 hover:bg-orange-500/20' : 'border-gray-600 hover:border-gray-500 hover:bg-gray-800'}`}>
+          <button onClick={(e) => { e.stopPropagation(); onSelect(isSelected ? null : carousel.id); }} className={`w-8 h-8 rounded-xl border-2 flex items-center justify-center transition-all duration-150 ${isSelected ? 'border-orange-500 bg-orange-500/10 hover:bg-orange-500/20' : 'border-gray-600 hover:border-gray-500 hover:bg-gray-800'}`}>
             {isSelected ? (
               <svg className="w-4 h-4 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
             ) : (
@@ -840,7 +840,7 @@ const CarouselRow = ({ carousel, designSystem, isSelected, hasAnySelection, sele
               >
                 <button 
                   onClick={(e) => { e.stopPropagation(); onAddFrame(carousel.id, index + 1); }} 
-                  className="w-8 h-8 rounded-lg border-2 border-dashed border-gray-600 hover:border-orange-500 hover:bg-orange-500/10 flex items-center justify-center transition-all duration-200"
+                  className="w-8 h-8 rounded-xl border-2 border-dashed border-gray-600 hover:border-orange-500 hover:bg-orange-500/10 flex items-center justify-center transition-all duration-150"
                 >
                   <svg className="w-4 h-4 text-gray-500 hover:text-orange-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
                 </button>
