@@ -1056,27 +1056,8 @@ export default function CarouselDesignTool() {
 
   return (
     <div className="min-h-screen bg-gray-950 text-white overflow-x-hidden">
-      {/* Sidebar */}
-      <Sidebar activePanel={activePanel} onPanelChange={setActivePanel} />
-      
-      {/* Panels */}
-      {activePanel === 'design' && (
-        <DesignSystemPanel designSystem={designSystem} onUpdate={setDesignSystem} onClose={() => setActivePanel(null)} />
-      )}
-      {activePanel === 'files' && (
-        <FileBrowserPanel onClose={() => setActivePanel(null)} />
-      )}
-      {activePanel === 'background' && (
-        <BackgroundPanel onClose={() => setActivePanel(null)} />
-      )}
-      {activePanel === 'export' && (
-        <ExportPanel onClose={() => setActivePanel(null)} />
-      )}
-
-      {/* Main Content */}
-      <div style={{ marginLeft: totalOffset, width: `calc(100vw - ${totalOffset}px)`, transition: 'margin-left 0.3s, width 0.3s' }}>
-      {/* Browser-style Tab Bar */}
-      <div className="sticky top-0 z-50 bg-gray-950 border-b border-gray-800">
+      {/* Browser-style Tab Bar - Full Width */}
+      <div className="fixed top-0 left-0 right-0 z-[60] bg-gray-950 border-b border-gray-800">
         <div className="flex items-center">
           {/* Home Button */}
           <div className="flex items-center px-3 py-2">
@@ -1130,6 +1111,25 @@ export default function CarouselDesignTool() {
         </div>
       </div>
       
+      {/* Sidebar */}
+      <Sidebar activePanel={activePanel} onPanelChange={setActivePanel} />
+      
+      {/* Panels */}
+      {activePanel === 'design' && (
+        <DesignSystemPanel designSystem={designSystem} onUpdate={setDesignSystem} onClose={() => setActivePanel(null)} />
+      )}
+      {activePanel === 'files' && (
+        <FileBrowserPanel onClose={() => setActivePanel(null)} />
+      )}
+      {activePanel === 'background' && (
+        <BackgroundPanel onClose={() => setActivePanel(null)} />
+      )}
+      {activePanel === 'export' && (
+        <ExportPanel onClose={() => setActivePanel(null)} />
+      )}
+
+      {/* Main Content */}
+      <div style={{ marginLeft: totalOffset, marginTop: 49, width: `calc(100vw - ${totalOffset}px)`, transition: 'margin-left 0.3s, width 0.3s' }}>
       {/* Toolbar */}
       <div className="sticky top-[49px] z-40 bg-gray-900 border-b border-gray-800 px-6 py-2 overflow-x-auto hide-scrollbar">
         <div className="flex items-center justify-between text-xs text-gray-400 min-w-max">
