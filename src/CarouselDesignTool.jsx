@@ -324,6 +324,35 @@ const EditableTextField = ({ children, field, isFrameSelected, isActive, onActiv
     };
   };
 
+  // Format text with list prefixes
+  const formatWithList = (text) => {
+    if (!formatting.listType || !text) return text;
+    
+    const lines = String(text).split('\n');
+    return lines.map((line, index) => {
+      if (!line.trim()) return line;
+      
+      let prefix = '';
+      switch (formatting.listType) {
+        case 'bullet':
+          prefix = '• ';
+          break;
+        case 'numbered':
+          prefix = `${index + 1}. `;
+          break;
+        case 'abc':
+          prefix = `${String.fromCharCode(65 + (index % 26))}. `;
+          break;
+        default:
+          prefix = '';
+      }
+      
+      // Don't add prefix if line already starts with it
+      if (line.startsWith(prefix)) return line;
+      return prefix + line;
+    }).join('\n');
+  };
+
   const displayStyle = {
     ...style,
     fontWeight: formatting.bold ? 'bold' : style.fontWeight,
@@ -335,6 +364,7 @@ const EditableTextField = ({ children, field, isFrameSelected, isActive, onActiv
     letterSpacing: formatting.letterSpacing !== undefined ? `${formatting.letterSpacing}px` : style.letterSpacing,
     transform: formatting.fontSize ? `scale(${formatting.fontSize})` : undefined,
     transformOrigin: 'left center',
+    whiteSpace: formatting.listType ? 'pre-wrap' : style.whiteSpace,
     ...getUnderlineStyles(),
   };
   
@@ -353,6 +383,9 @@ const EditableTextField = ({ children, field, isFrameSelected, isActive, onActiv
     WebkitBoxDecorationBreak: 'clone',
   } : {};
   
+  // Apply list formatting to displayed content
+  const displayContent = isActive ? children : formatWithList(children);
+  
   return (
     <span
       className={`${className} ${isFrameSelected && !isActive ? 'cursor-pointer' : ''}`}
@@ -362,7 +395,7 @@ const EditableTextField = ({ children, field, isFrameSelected, isActive, onActiv
       onClick={(e) => { if (isFrameSelected) { e.stopPropagation(); onActivate?.(field); } }}
       onBlur={(e) => { if (isActive) onUpdateText?.(field, e.target.innerText); }}
     >
-      {isHighlight ? <span style={highlightStyle}>{children}</span> : children}
+      {isHighlight ? <span style={highlightStyle}>{displayContent}</span> : displayContent}
     </span>
   );
 };
