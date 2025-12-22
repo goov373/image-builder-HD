@@ -718,7 +718,7 @@ const NewProjectView = ({ onCreateProject }) => {
 };
 
 // Sidebar Component
-const Sidebar = ({ activePanel, onPanelChange }) => {
+const Sidebar = ({ activePanel, onPanelChange, zoom, onZoomChange }) => {
   const panels = [
     { id: 'design', icon: 'M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01', label: 'Design System' },
     { id: 'files', icon: 'M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z', label: 'Files' },
@@ -742,6 +742,35 @@ const Sidebar = ({ activePanel, onPanelChange }) => {
             </svg>
           </button>
         ))}
+      </div>
+      
+      {/* Zoom Controls - Vertical at bottom */}
+      <div className="mt-auto flex flex-col items-center gap-2">
+        <button 
+          onClick={() => onZoomChange(Math.min(150, zoom + 10))} 
+          className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-700 transition-colors"
+          title="Zoom in"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+          </svg>
+        </button>
+        <button 
+          onClick={() => onZoomChange(100)}
+          className="text-[10px] font-mono font-medium text-gray-400 hover:text-white transition-colors"
+          title="Reset zoom"
+        >
+          {zoom}%
+        </button>
+        <button 
+          onClick={() => onZoomChange(Math.max(50, zoom - 10))} 
+          className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-700 transition-colors"
+          title="Zoom out"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+          </svg>
+        </button>
       </div>
     </div>
   );
@@ -1302,7 +1331,7 @@ export default function CarouselDesignTool() {
       </div>
       
       {/* Sidebar */}
-      <Sidebar activePanel={activePanel} onPanelChange={setActivePanel} />
+      <Sidebar activePanel={activePanel} onPanelChange={setActivePanel} zoom={zoom} onZoomChange={setZoom} />
       
       {/* Panels */}
       {activePanel === 'design' && (
@@ -1594,23 +1623,6 @@ export default function CarouselDesignTool() {
       )}
       </div>
       
-      {/* Footer with zoom */}
-      <div className="fixed bottom-0 bg-gray-900/95 backdrop-blur border-t border-gray-800 px-6 py-3 z-30" style={{ left: totalOffset, right: 0, transition: 'left 0.3s' }}>
-        <div className="flex items-center justify-center">
-          <div className="flex items-center gap-3 bg-gray-800 rounded-lg px-3 py-1.5">
-            <button onClick={() => setZoom(z => Math.max(50, z - 10))} className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-700 transition-colors text-gray-400 hover:text-white" title="Zoom out">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" /></svg>
-            </button>
-            <input type="range" min="50" max="150" value={zoom} onChange={(e) => setZoom(Number(e.target.value))} className="w-24 h-1.5 bg-gray-600 rounded-lg appearance-none cursor-pointer accent-orange-500" />
-            <span className="text-xs font-mono font-medium text-gray-300 w-10 text-center">{zoom}%</span>
-            <button onClick={() => setZoom(z => Math.min(150, z + 10))} className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-700 transition-colors text-gray-400 hover:text-white" title="Zoom in">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
-            </button>
-            <div className="w-px h-5 bg-gray-600 mx-1" />
-            <button onClick={() => setZoom(100)} className="px-2 py-1 text-[10px] bg-gray-700 hover:bg-gray-600 rounded transition-colors font-medium text-gray-300">Reset</button>
-          </div>
-        </div>
-      </div>
     </div>
   );
 }
