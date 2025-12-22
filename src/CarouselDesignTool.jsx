@@ -1068,36 +1068,43 @@ export default function CarouselDesignTool() {
             </button>
           </div>
           {/* Tabs */}
-          <div className="flex items-end gap-1">
-            {tabs.map(tab => (
-              <div
-                key={tab.id}
-                onClick={() => handleTabClick(tab.id)}
-                className={`group flex items-center gap-2 px-4 py-2 rounded-t-lg cursor-pointer transition-all duration-150 border-t border-l border-r ${
-                  tab.active 
-                    ? 'bg-gray-900 text-white border-gray-700' 
-                    : 'bg-gray-800/50 text-gray-400 hover:bg-gray-800 hover:text-gray-300 border-transparent'
-                }`}
-                style={{ minWidth: 140, maxWidth: 200 }}
-              >
-                <svg className="w-4 h-4 flex-shrink-0 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-                <span className="text-sm font-medium truncate flex-1">{tab.name}</span>
-                <button 
-                  onClick={(e) => handleCloseTab(tab.id, e)}
-                  className={`w-5 h-5 rounded flex items-center justify-center transition-all ${
+          <div className="flex items-end">
+            {tabs.map((tab, index) => (
+              <div key={tab.id} className="flex items-end">
+                {/* Vertical separator - show before inactive tabs (except first) */}
+                {index > 0 && !tab.active && !tabs[index - 1]?.active && (
+                  <div className="w-px h-5 bg-gray-700 mb-2 self-center" />
+                )}
+                <div 
+                  onClick={() => handleTabClick(tab.id)}
+                  className={`group flex items-center gap-2 px-4 py-2 cursor-pointer transition-all duration-150 ${
                     tab.active 
-                      ? 'hover:bg-gray-700 text-gray-400 hover:text-white' 
-                      : 'opacity-0 group-hover:opacity-100 hover:bg-gray-700 text-gray-500 hover:text-white'
+                      ? 'bg-gray-900 text-white rounded-t-lg' 
+                      : 'text-gray-500 hover:text-gray-300'
                   }`}
+                  style={{ minWidth: 140, maxWidth: 220 }}
                 >
-                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  <svg className={`w-4 h-4 flex-shrink-0 ${tab.active ? 'text-gray-400' : 'text-gray-600'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                   </svg>
-                </button>
+                  <span className="text-sm font-medium truncate flex-1">{tab.name}</span>
+                  <button 
+                    onClick={(e) => handleCloseTab(tab.id, e)}
+                    className={`w-5 h-5 rounded flex items-center justify-center transition-all ${
+                      tab.active 
+                        ? 'hover:bg-gray-700 text-gray-400 hover:text-white' 
+                        : 'opacity-0 group-hover:opacity-100 hover:bg-gray-700 text-gray-500 hover:text-white'
+                    }`}
+                  >
+                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
               </div>
             ))}
+            {/* Separator before add button */}
+            <div className="w-px h-5 bg-gray-700 mb-2 self-center mx-1" />
             {/* Add Tab Button */}
             <button 
               onClick={handleAddTab}
