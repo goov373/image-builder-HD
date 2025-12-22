@@ -747,7 +747,7 @@ const Sidebar = ({ activePanel, onPanelChange, zoom, onZoomChange }) => {
       {/* Zoom Controls - Vertical at bottom */}
       <div className="mt-auto flex flex-col items-center gap-1.5 pb-2">
         <button 
-          onClick={() => onZoomChange(Math.min(150, zoom + 10))} 
+          onClick={() => onZoomChange(Math.min(250, zoom + 10))} 
           className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-700 transition-colors"
           title="Zoom in"
         >
