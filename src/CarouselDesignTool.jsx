@@ -572,22 +572,24 @@ const Sidebar = ({ activePanel, onPanelChange }) => {
   ];
 
   return (
-    <div className="fixed left-0 top-0 h-full w-12 bg-gray-900 border-r border-gray-800 flex flex-col items-center py-4 z-50">
-      <div className="mb-6">
-        <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center">
-          <span className="text-white font-bold text-sm">H</span>
+    <div className="fixed left-0 top-0 h-full w-16 bg-gray-900 border-r border-gray-800 flex flex-col items-center py-5 z-50">
+      {/* Home/Logo Button - Always Orange */}
+      <div className="mb-8">
+        <div className="w-11 h-11 bg-orange-500 rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/30">
+          <span className="text-white font-bold text-lg">H</span>
         </div>
       </div>
-      <div className="flex flex-col gap-2">
+      {/* Panel Buttons */}
+      <div className="flex flex-col gap-3">
         {panels.map(panel => (
           <button
             key={panel.id}
             onClick={() => onPanelChange(activePanel === panel.id ? null : panel.id)}
-            className={`w-9 h-9 rounded-lg flex items-center justify-center transition-colors ${activePanel === panel.id ? 'bg-orange-500 text-white' : 'text-gray-400 hover:text-white hover:bg-gray-800'}`}
+            className={`w-11 h-11 rounded-xl flex items-center justify-center transition-all ${activePanel === panel.id ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/30' : 'text-gray-400 hover:text-white hover:bg-gray-700'}`}
             title={panel.label}
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d={panel.icon} />
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d={panel.icon} />
             </svg>
           </button>
         ))}
@@ -608,7 +610,7 @@ const DesignSystemPanel = ({ designSystem, onUpdate, onClose }) => {
   ];
 
   return (
-    <div className="fixed left-12 top-0 h-full w-72 bg-gray-900 border-r border-gray-800 z-40 overflow-y-auto">
+    <div className="fixed left-16 top-0 h-full w-72 bg-gray-900 border-r border-gray-800 z-40 overflow-y-auto">
       <div className="p-4 border-b border-gray-800 flex items-center justify-between">
         <h2 className="text-sm font-semibold text-white">Design System</h2>
         <button onClick={onClose} className="text-gray-400 hover:text-white">
@@ -667,7 +669,7 @@ const DesignSystemPanel = ({ designSystem, onUpdate, onClose }) => {
 // File Browser Panel
 const FileBrowserPanel = ({ onClose }) => {
   return (
-    <div className="fixed left-12 top-0 h-full w-72 bg-gray-900 border-r border-gray-800 z-40 overflow-y-auto">
+    <div className="fixed left-16 top-0 h-full w-72 bg-gray-900 border-r border-gray-800 z-40 overflow-y-auto">
       <div className="p-4 border-b border-gray-800 flex items-center justify-between">
         <h2 className="text-sm font-semibold text-white">Files</h2>
         <button onClick={onClose} className="text-gray-400 hover:text-white">
@@ -705,7 +707,7 @@ const BackgroundPanel = ({ onClose }) => {
   ];
 
   return (
-    <div className="fixed left-12 top-0 h-full w-72 bg-gray-900 border-r border-gray-800 z-40 overflow-y-auto">
+    <div className="fixed left-16 top-0 h-full w-72 bg-gray-900 border-r border-gray-800 z-40 overflow-y-auto">
       <div className="p-4 border-b border-gray-800 flex items-center justify-between">
         <h2 className="text-sm font-semibold text-white">Background</h2>
         <button onClick={onClose} className="text-gray-400 hover:text-white">
@@ -743,7 +745,7 @@ const BackgroundPanel = ({ onClose }) => {
 // Export Panel
 const ExportPanel = ({ onClose }) => {
   return (
-    <div className="fixed left-12 top-0 h-full w-72 bg-gray-900 border-r border-gray-800 z-40 overflow-y-auto">
+    <div className="fixed left-16 top-0 h-full w-72 bg-gray-900 border-r border-gray-800 z-40 overflow-y-auto">
       <div className="p-4 border-b border-gray-800 flex items-center justify-between">
         <h2 className="text-sm font-semibold text-white">Export</h2>
         <button onClick={onClose} className="text-gray-400 hover:text-white">
@@ -1013,8 +1015,8 @@ export default function CarouselDesignTool() {
     }));
   };
   
-  const panelWidth = activePanel ? 288 : 0; // 72 = w-72 in pixels
-  const sidebarWidth = 48; // w-12 in pixels
+  const panelWidth = activePanel ? 288 : 0; // w-72 = 288px
+  const sidebarWidth = 64; // w-16 = 64px
   const totalOffset = sidebarWidth + panelWidth;
 
   return (
