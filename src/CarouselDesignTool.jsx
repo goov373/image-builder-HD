@@ -791,7 +791,7 @@ const CarouselRow = ({ carousel, designSystem, isSelected, hasAnySelection, sele
   
   return (
     <div 
-      className={`mb-10 rounded-xl transition-all duration-300 cursor-pointer overflow-x-auto hide-scrollbar ${isSelected ? 'bg-orange-500/5 border border-orange-500/20 py-4' : 'hover:bg-gray-800/30 border border-transparent py-4'} ${isFaded ? 'opacity-20 hover:opacity-50' : 'opacity-100'}`}
+      className={`mb-10 rounded-xl transition-all duration-150 cursor-pointer overflow-x-auto hide-scrollbar ${isSelected ? 'bg-orange-500/5 border border-orange-500/20 py-4' : 'hover:bg-gray-800/30 border border-transparent py-4'} ${isFaded ? 'opacity-20 hover:opacity-50' : 'opacity-100'}`}
       style={{ marginLeft: '10px', marginRight: '10px', width: 'calc(100% - 20px)', maxWidth: 'calc(100% - 20px)' }}
       onClick={() => onSelect(carousel.id)}
     >
@@ -815,7 +815,7 @@ const CarouselRow = ({ carousel, designSystem, isSelected, hasAnySelection, sele
       </div>
       
       <div className="px-4" style={{ minHeight: 300 }}>
-        <div className={`flex items-start transition-all duration-300 ease-out`} style={{ width: 'auto', minWidth: 'fit-content', gap: isSelected ? '12px' : '10px' }}>
+        <div className={`flex items-start transition-all duration-150 ease-out`} style={{ width: 'auto', minWidth: 'fit-content', gap: isSelected ? '12px' : '10px' }}>
           {carousel.frames.map((frame, index) => (
             <React.Fragment key={frame.id}>
               <CarouselFrame
@@ -835,7 +835,7 @@ const CarouselRow = ({ carousel, designSystem, isSelected, hasAnySelection, sele
               
               {/* Add Button After Each Frame */}
               <div 
-                className={`flex items-center justify-center self-stretch transition-all duration-300 ease-out ${isSelected ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+                className={`flex items-center justify-center self-stretch transition-all duration-150 ease-out ${isSelected ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
                 style={{ width: isSelected ? 32 : 0, paddingTop: 24, overflow: 'hidden' }}
               >
                 <button 
