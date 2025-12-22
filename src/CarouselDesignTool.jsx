@@ -562,6 +562,128 @@ const CarouselFrame = ({ frame, carouselId, frameSize, designSystem, frameIndex,
   );
 };
 
+// New Project View Component
+const NewProjectView = ({ onCreateProject }) => {
+  const [projectName, setProjectName] = useState('');
+  const [selectedType, setSelectedType] = useState(null);
+  
+  const projectTypes = [
+    { 
+      id: 'carousel', 
+      name: 'Carousel', 
+      description: 'Multi-slide social media carousel',
+      icon: 'M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zm0 8a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zm12 0a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z'
+    },
+    { 
+      id: 'single', 
+      name: 'Single Post', 
+      description: 'Single image or graphic post',
+      icon: 'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z'
+    },
+    { 
+      id: 'story', 
+      name: 'Story', 
+      description: 'Vertical story format',
+      icon: 'M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z'
+    },
+    { 
+      id: 'video', 
+      name: 'Video Cover', 
+      description: 'Thumbnail for video content',
+      icon: 'M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z'
+    }
+  ];
+
+  const handleCreate = () => {
+    if (selectedType) {
+      onCreateProject(selectedType, projectName || 'Untitled Project');
+    }
+  };
+
+  return (
+    <div className="flex flex-col items-center justify-center min-h-[calc(100vh-200px)] p-8">
+      <div className="max-w-2xl w-full">
+        {/* Header */}
+        <div className="text-center mb-12">
+          <h1 className="text-3xl font-bold text-white mb-3">Create New Project</h1>
+          <p className="text-gray-400 text-lg">Choose a format to get started</p>
+        </div>
+        
+        {/* Project Name Input */}
+        <div className="mb-8">
+          <label className="block text-sm font-medium text-gray-400 mb-2">Project Name</label>
+          <input
+            type="text"
+            value={projectName}
+            onChange={(e) => setProjectName(e.target.value)}
+            placeholder="Enter project name..."
+            className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all"
+          />
+        </div>
+        
+        {/* Project Type Grid */}
+        <div className="grid grid-cols-2 gap-4 mb-8">
+          {projectTypes.map(type => (
+            <button
+              key={type.id}
+              onClick={() => setSelectedType(type.id)}
+              className={`p-6 rounded-2xl border-2 text-left transition-all duration-200 ${
+                selectedType === type.id
+                  ? 'border-orange-500 bg-orange-500/10'
+                  : 'border-gray-700 bg-gray-800/50 hover:border-gray-600 hover:bg-gray-800'
+              }`}
+            >
+              <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 ${
+                selectedType === type.id ? 'bg-orange-500' : 'bg-gray-700'
+              }`}>
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d={type.icon} />
+                </svg>
+              </div>
+              <h3 className={`text-lg font-semibold mb-1 ${selectedType === type.id ? 'text-orange-400' : 'text-white'}`}>
+                {type.name}
+              </h3>
+              <p className="text-sm text-gray-500">{type.description}</p>
+            </button>
+          ))}
+        </div>
+        
+        {/* Create Button */}
+        <button
+          onClick={handleCreate}
+          disabled={!selectedType}
+          className={`w-full py-4 rounded-xl font-semibold text-lg transition-all duration-200 ${
+            selectedType
+              ? 'bg-orange-500 hover:bg-orange-600 text-white shadow-lg shadow-orange-500/25'
+              : 'bg-gray-800 text-gray-500 cursor-not-allowed'
+          }`}
+        >
+          {selectedType ? 'Create Project' : 'Select a format to continue'}
+        </button>
+        
+        {/* Quick Start Templates */}
+        <div className="mt-12 pt-8 border-t border-gray-800">
+          <h2 className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-4">Or start from a template</h2>
+          <div className="flex gap-3">
+            {['Product Launch', 'Brand Story', 'Tutorial Series', 'Announcement'].map(template => (
+              <button
+                key={template}
+                onClick={() => {
+                  setSelectedType('carousel');
+                  setProjectName(template);
+                }}
+                className="px-4 py-2 bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-lg text-sm text-gray-300 hover:text-white transition-all"
+              >
+                {template}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 // Sidebar Component
 const Sidebar = ({ activePanel, onPanelChange }) => {
   const panels = [
@@ -855,10 +977,12 @@ export default function CarouselDesignTool() {
   
   // Browser-style tabs for projects
   const [tabs, setTabs] = useState([
-    { id: 1, name: 'HelloData Campaign', active: true },
-    { id: 2, name: 'Untitled Project', active: false }
+    { id: 1, name: 'HelloData Campaign', active: true, hasContent: true },
+    { id: 2, name: 'Untitled Project', active: false, hasContent: false }
   ]);
   const [activeTabId, setActiveTabId] = useState(1);
+  
+  const activeTab = tabs.find(t => t.id === activeTabId);
   
   const handleTabClick = (tabId) => {
     setActiveTabId(tabId);
@@ -878,8 +1002,16 @@ export default function CarouselDesignTool() {
   
   const handleAddTab = () => {
     const newId = Math.max(...tabs.map(t => t.id)) + 1;
-    setTabs(prev => [...prev.map(t => ({ ...t, active: false })), { id: newId, name: 'Untitled Project', active: true }]);
+    setTabs(prev => [...prev.map(t => ({ ...t, active: false })), { id: newId, name: 'Untitled Project', active: true, hasContent: false }]);
     setActiveTabId(newId);
+  };
+  
+  const handleCreateProject = (projectType, projectName) => {
+    setTabs(prev => prev.map(t => 
+      t.id === activeTabId 
+        ? { ...t, name: projectName || 'New Project', hasContent: true }
+        : t
+    ));
   };
   const [selectedFrameId, setSelectedFrameId] = useState(null);
   const [activeTextField, setActiveTextField] = useState(null);
@@ -1137,7 +1269,8 @@ export default function CarouselDesignTool() {
 
       {/* Main Content */}
       <div style={{ marginLeft: totalOffset, marginTop: 56, width: `calc(100vw - ${totalOffset}px)`, transition: 'margin-left 0.3s, width 0.3s' }}>
-      {/* Toolbar */}
+      {/* Toolbar - Only show for projects with content */}
+      {activeTab?.hasContent && (
       <div className="sticky top-[56px] z-40 bg-gray-900 border-b border-gray-800 px-6 py-2 overflow-x-auto hide-scrollbar">
         <div className="flex items-center justify-between text-xs text-gray-400 min-w-max">
           <div className="flex items-center gap-4">
@@ -1377,29 +1510,37 @@ export default function CarouselDesignTool() {
           </div>
         </div>
       </div>
+      )}
       
-      {/* Canvas workspace */}
-      <div className="p-6 pb-24" onClick={() => { closeAllDropdowns(); setSelectedFrameId(null); setActiveTextField(null); }}>
-        <div style={{ transform: `scale(${zoom / 100})`, transformOrigin: 'top left', width: `${100 / (zoom / 100)}%` }}>
-          {carousels.map((carousel) => (
-            <CarouselRow
-              key={carousel.id}
-              carousel={carousel}
-              designSystem={designSystem}
-              isSelected={selectedCarouselId === carousel.id}
-              hasAnySelection={selectedCarouselId !== null}
-              selectedFrameId={selectedCarouselId === carousel.id ? selectedFrameId : null}
-              onSelect={handleSelectCarousel}
-              onSelectFrame={handleSelectFrame}
-              onAddFrame={handleAddFrame}
-              onRemoveFrame={handleRemoveFrame}
-              onUpdateText={handleUpdateText}
-              activeTextField={activeTextField}
-              onActivateTextField={setActiveTextField}
-            />
-          ))}
-        </div>
-      </div>
+      {/* Content Area - Either New Project View or Canvas */}
+      {activeTab && !activeTab.hasContent ? (
+        <NewProjectView onCreateProject={handleCreateProject} />
+      ) : (
+        <>
+          {/* Canvas workspace */}
+          <div className="p-6 pb-24" onClick={() => { closeAllDropdowns(); setSelectedFrameId(null); setActiveTextField(null); }}>
+            <div style={{ transform: `scale(${zoom / 100})`, transformOrigin: 'top left', width: `${100 / (zoom / 100)}%` }}>
+              {carousels.map((carousel) => (
+                <CarouselRow
+                  key={carousel.id}
+                  carousel={carousel}
+                  designSystem={designSystem}
+                  isSelected={selectedCarouselId === carousel.id}
+                  hasAnySelection={selectedCarouselId !== null}
+                  selectedFrameId={selectedCarouselId === carousel.id ? selectedFrameId : null}
+                  onSelect={handleSelectCarousel}
+                  onSelectFrame={handleSelectFrame}
+                  onAddFrame={handleAddFrame}
+                  onRemoveFrame={handleRemoveFrame}
+                  onUpdateText={handleUpdateText}
+                  activeTextField={activeTextField}
+                  onActivateTextField={setActiveTextField}
+                />
+              ))}
+            </div>
+          </div>
+        </>
+      )}
       </div>
       
       {/* Footer with zoom */}
