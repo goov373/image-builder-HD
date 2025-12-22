@@ -1,4 +1,20 @@
 import React, { useState, useRef, useEffect } from 'react';
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  horizontalListSortingStrategy,
+  useSortable,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 // Available fonts
 const fontOptions = {
@@ -290,10 +306,10 @@ const FormatButton = ({ formatKey, size, isSelected, onClick }) => {
         style={{ width: formatKey === 'landscape' ? 56 : 46 }}
       >
         {formatKey === 'portrait' && <svg className="w-3 h-4" viewBox="0 0 12 16" fill="currentColor"><rect x="1" y="1" width="10" height="14" rx="1" stroke="currentColor" strokeWidth="1.5" fill="none"/></svg>}
-        {formatKey === 'square' && <svg className="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor"><rect x="1" y="1" width="12" height="12" rx="1" stroke="currentColor" strokeWidth="1.5" fill="none"/></svg>}
+          {formatKey === 'square' && <svg className="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor"><rect x="1" y="1" width="12" height="12" rx="1" stroke="currentColor" strokeWidth="1.5" fill="none"/></svg>}
         {formatKey === 'landscape' && <svg className="w-4 h-3" viewBox="0 0 16 12" fill="currentColor"><rect x="1" y="1" width="14" height="10" rx="1" stroke="currentColor" strokeWidth="1.5" fill="none"/></svg>}
-        {formatKey === 'story' && <svg className="w-2.5 h-4" viewBox="0 0 9 16" fill="currentColor"><rect x="1" y="1" width="7" height="14" rx="1" stroke="currentColor" strokeWidth="1.5" fill="none"/></svg>}
-        {formatKey === 'pin' && <svg className="w-3 h-4" viewBox="0 0 10 16" fill="currentColor"><rect x="1" y="1" width="8" height="14" rx="1" stroke="currentColor" strokeWidth="1.5" fill="none"/></svg>}
+          {formatKey === 'story' && <svg className="w-2.5 h-4" viewBox="0 0 9 16" fill="currentColor"><rect x="1" y="1" width="7" height="14" rx="1" stroke="currentColor" strokeWidth="1.5" fill="none"/></svg>}
+          {formatKey === 'pin' && <svg className="w-3 h-4" viewBox="0 0 10 16" fill="currentColor"><rect x="1" y="1" width="8" height="14" rx="1" stroke="currentColor" strokeWidth="1.5" fill="none"/></svg>}
         {formatKey === 'slides' && <svg className="w-4 h-2.5" viewBox="0 0 16 9" fill="currentColor"><rect x="1" y="1" width="14" height="7" rx="1" stroke="currentColor" strokeWidth="1.5" fill="none"/></svg>}
         <span>{size.ratio}</span>
       </button>
@@ -505,6 +521,8 @@ const LayoutEditorialLeft = ({ headline, body, accent, isLandscape, headingFont,
 // Single Frame Component
 const CarouselFrame = ({ frame, carouselId, frameSize, designSystem, frameIndex, totalFrames, isFrameSelected, onSelectFrame, onRemove, onUpdateText, activeTextField, onActivateTextField }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const [isProgressHovered, setIsProgressHovered] = useState(false);
+  const [isProgressHidden, setIsProgressHidden] = useState(false);
   const style = getFrameStyle(carouselId, frame.style, designSystem);
   const content = frame.variants[frame.currentVariant];
   const layoutIndex = frame.currentLayout || 0;
@@ -532,13 +550,6 @@ const CarouselFrame = ({ frame, carouselId, frameSize, designSystem, frameIndex,
   
   return (
     <div className="flex flex-col" style={{ width: size.width }}>
-      <div className="flex items-center justify-between mb-1">
-        <span className={`text-xs font-medium transition-colors ${isFrameSelected ? 'text-orange-400' : 'text-gray-500'}`}>Page {frame.id}</span>
-        <span className={`text-[10px] px-1.5 py-0.5 rounded transition-colors ${isFrameSelected ? 'text-orange-300 bg-orange-500/20' : 'text-gray-600 bg-gray-800'}`}>
-          {layoutVariantNames[layoutIndex]?.[layoutVariant] || layoutNames[layoutIndex]}
-        </span>
-      </div>
-      
       <div 
         className={`relative overflow-hidden shadow-lg cursor-pointer transition-all border border-gray-600 ${isFrameSelected ? 'ring-2 ring-orange-500/70' : 'hover:border-gray-500'}`}
         onMouseEnter={() => setIsHovered(true)}
@@ -548,9 +559,26 @@ const CarouselFrame = ({ frame, carouselId, frameSize, designSystem, frameIndex,
       >
         {renderLayout()}
         
-        <div className="absolute top-2 right-2 flex gap-1 z-10">
-          {[1,2,3,4,5].map(i => <div key={i} className={`w-1.5 h-1.5 rounded-full ${i === frame.id ? 'bg-white' : 'bg-white/30'}`} />)}
-        </div>
+          <div 
+          className="absolute top-2 right-2 z-10 flex items-center gap-1 cursor-pointer min-w-[40px] min-h-[20px] justify-end"
+            onMouseEnter={() => setIsProgressHovered(true)}
+            onMouseLeave={() => setIsProgressHovered(false)}
+          onClick={(e) => { if (isFrameSelected) { e.stopPropagation(); setIsProgressHidden(!isProgressHidden); } }}
+        >
+          {isFrameSelected && (isProgressHovered || (isProgressHidden && isHovered)) ? (
+            <div className="flex items-center justify-center w-5 h-5 bg-black/50 rounded-full hover:bg-black/70 transition-colors">
+              <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                {isProgressHidden ? (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                ) : (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                )}
+                  </svg>
+              </div>
+          ) : !isProgressHidden ? (
+            [1,2,3,4,5].map(i => <div key={i} className={`w-1.5 h-1.5 rounded-full ${i === frame.id ? 'bg-white' : 'bg-white/30'}`} />)
+          ) : null}
+          </div>
         
         {totalFrames > 1 && (
           <button onClick={(e) => { e.stopPropagation(); onRemove(frame.id); }} className={`absolute top-2 left-2 z-20 w-6 h-6 bg-black/70 hover:bg-red-500 rounded-full flex items-center justify-center transition-opacity duration-150 ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
@@ -558,6 +586,66 @@ const CarouselFrame = ({ frame, carouselId, frameSize, designSystem, frameIndex,
           </button>
         )}
       </div>
+    </div>
+  );
+};
+
+// Sortable Frame Wrapper
+const SortableFrame = ({ id, frame, carouselId, frameSize, designSystem, frameIndex, totalFrames, isFrameSelected, onSelectFrame, onRemove, onUpdateText, activeTextField, onActivateTextField, isRowSelected, cardWidth }) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ 
+    id,
+    disabled: !isRowSelected,
+  });
+
+  // Calculate transform - non-dragged items move by exactly one card slot
+  const getTransform = () => {
+    if (!transform) return undefined;
+    if (isDragging) {
+      return `translate3d(${Math.round(transform.x)}px, 0, 0)`;
+    } else {
+      // Non-dragged: move by card width + gap (12px) + add button container (32px)
+      const moveDistance = cardWidth + 12 + 32; // card + gap + add button
+      if (Math.abs(transform.x) > 10) {
+        const direction = transform.x > 0 ? 1 : -1;
+        return `translate3d(${direction * moveDistance}px, 0, 0)`;
+      }
+      return undefined;
+    }
+  };
+
+  // Only apply transition while actively being pushed aside (transform exists and is significant)
+  const isBeingPushed = transform && Math.abs(transform.x) > 10 && !isDragging;
+  
+  const style = {
+    transform: getTransform(),
+    transition: isBeingPushed ? 'transform 120ms ease-out' : 'none',
+    zIndex: isDragging ? 100 : 1,
+    cursor: isRowSelected ? (isDragging ? 'grabbing' : 'grab') : 'pointer',
+  };
+
+  return (
+    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
+                <CarouselFrame
+                  frame={frame}
+        carouselId={carouselId}
+        frameSize={frameSize}
+                  designSystem={designSystem}
+        frameIndex={frameIndex}
+                  totalFrames={totalFrames}
+        isFrameSelected={isFrameSelected}
+        onSelectFrame={onSelectFrame}
+        onRemove={onRemove}
+                  onUpdateText={onUpdateText}
+        activeTextField={activeTextField}
+                  onActivateTextField={onActivateTextField}
+      />
     </div>
   );
 };
@@ -599,7 +687,7 @@ const NewProjectView = ({ onCreateProject }) => {
       onCreateProject(selectedType, projectName || 'Untitled Project');
     }
   };
-
+  
   return (
     <div className="flex flex-col items-center justify-center min-h-[calc(100vh-200px)] p-8">
       <div className="max-w-2xl w-full">
@@ -607,8 +695,8 @@ const NewProjectView = ({ onCreateProject }) => {
         <div className="text-center mb-12">
           <h1 className="text-3xl font-bold text-white mb-3">Create New Project</h1>
           <p className="text-gray-400 text-lg">Choose a format to get started</p>
-        </div>
-        
+      </div>
+      
         {/* Project Name Input */}
         <div className="mb-8">
           <label className="block text-sm font-medium text-gray-400 mb-2">Project Name</label>
@@ -624,12 +712,12 @@ const NewProjectView = ({ onCreateProject }) => {
         {/* Project Type Grid */}
         <div className="grid grid-cols-2 gap-4 mb-8">
           {projectTypes.map(type => (
-            <button
+              <button
               key={type.id}
               onClick={() => setSelectedType(type.id)}
               className={`p-6 rounded-2xl border-2 text-left transition-all duration-200 ${
                 selectedType === type.id
-                  ? 'border-orange-500 bg-orange-500/10'
+                    ? 'border-orange-500 bg-orange-500/10'
                   : 'border-gray-700 bg-gray-800/50 hover:border-gray-600 hover:bg-gray-800'
               }`}
             >
@@ -639,17 +727,17 @@ const NewProjectView = ({ onCreateProject }) => {
                 <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d={type.icon} />
                 </svg>
-              </div>
+                </div>
               <h3 className={`text-lg font-semibold mb-1 ${selectedType === type.id ? 'text-orange-400' : 'text-white'}`}>
                 {type.name}
               </h3>
               <p className="text-sm text-gray-500">{type.description}</p>
-            </button>
-          ))}
+              </button>
+            ))}
         </div>
         
         {/* Create Button */}
-        <button
+                  <button
           onClick={handleCreate}
           disabled={!selectedType}
           className={`w-full py-4 rounded-xl font-semibold text-lg transition-all duration-200 ${
@@ -659,14 +747,14 @@ const NewProjectView = ({ onCreateProject }) => {
           }`}
         >
           {selectedType ? 'Create Project' : 'Select a format to continue'}
-        </button>
+                  </button>
         
         {/* Quick Start Templates */}
         <div className="mt-12 pt-8 border-t border-gray-800">
           <h2 className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-4">Or start from a template</h2>
           <div className="flex gap-3">
             {['Product Launch', 'Brand Story', 'Tutorial Series', 'Announcement'].map(template => (
-              <button
+                    <button
                 key={template}
                 onClick={() => {
                   setSelectedType('carousel');
@@ -675,10 +763,10 @@ const NewProjectView = ({ onCreateProject }) => {
                 className="px-4 py-2 bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-lg text-sm text-gray-300 hover:text-white transition-all"
               >
                 {template}
-              </button>
-            ))}
-          </div>
-        </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
       </div>
     </div>
   );
@@ -690,13 +778,13 @@ const Sidebar = ({ activePanel, onPanelChange, zoom, onZoomChange }) => {
     { id: 'design', icon: 'M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01', label: 'Design & Assets' },
     { id: 'export', icon: 'M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12', label: 'Export' },
   ];
-
+  
   return (
     <div className="fixed left-0 top-[56px] h-[calc(100%-56px)] w-16 bg-gray-900 border-r border-gray-800 flex flex-col items-center py-4 z-50">
       {/* Panel Buttons */}
       <div className="flex flex-col gap-3">
         {panels.map(panel => (
-          <button
+            <button
             key={panel.id}
             onClick={() => onPanelChange(activePanel === panel.id ? null : panel.id)}
             className={`w-11 h-11 rounded-xl flex items-center justify-center transition-all ${activePanel === panel.id ? 'bg-orange-500 text-white' : 'text-gray-400 hover:text-white hover:bg-gray-700'}`}
@@ -704,43 +792,43 @@ const Sidebar = ({ activePanel, onPanelChange, zoom, onZoomChange }) => {
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d={panel.icon} />
-            </svg>
-          </button>
+              </svg>
+            </button>
         ))}
-      </div>
-      
+          </div>
+          
       {/* Zoom Controls - Vertical at bottom */}
       <div className="mt-auto flex flex-col items-center gap-1.5 pb-2">
-        <button 
+            <button 
           onClick={() => onZoomChange(Math.min(250, zoom + 10))} 
           className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-700 transition-colors"
-          title="Zoom in"
-        >
+              title="Zoom in"
+            >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
           </svg>
-        </button>
+            </button>
         <span className="text-[10px] font-mono font-medium text-gray-400">
           {zoom}%
         </span>
-        <button 
+            <button 
           onClick={() => onZoomChange(Math.max(50, zoom - 10))} 
           className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-700 transition-colors"
-          title="Zoom out"
-        >
+              title="Zoom out"
+            >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
           </svg>
-        </button>
-        <button 
+            </button>
+            <button 
           onClick={() => onZoomChange(100)}
           className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-700 transition-colors"
           title="Reset to 100%"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-          </svg>
-        </button>
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+            </button>
       </div>
     </div>
   );
@@ -767,7 +855,7 @@ const DesignSystemPanel = ({ designSystem, onUpdate, onClose, isOpen }) => {
   ];
 
   const solidColors = ['#0f172a', '#1e293b', '#334155', '#475569', '#64748b', '#94a3b8'];
-
+  
   return (
     <div 
       className={`fixed top-[56px] h-[calc(100%-56px)] w-72 bg-gray-900 border-r border-gray-800 z-40 overflow-y-auto ${isOpen ? 'pointer-events-auto' : 'pointer-events-none'}`}
@@ -804,8 +892,8 @@ const DesignSystemPanel = ({ designSystem, onUpdate, onClose, isOpen }) => {
           <div className="grid grid-cols-3 gap-3">
             {colorFields.map(field => (
               <div key={field.key} className="flex flex-col items-center gap-1.5">
-                <input
-                  type="color"
+                  <input
+                    type="color"
                   value={designSystem[field.key]}
                   onChange={(e) => onUpdate({ ...designSystem, [field.key]: e.target.value })}
                   className="w-12 h-12 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-orange-500 transition-colors"
@@ -814,39 +902,39 @@ const DesignSystemPanel = ({ designSystem, onUpdate, onClose, isOpen }) => {
               </div>
             ))}
           </div>
+          </div>
         </div>
-      </div>
-      
+        
       {/* Fonts Section */}
       <div className="p-4 border-b border-gray-800">
         <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-3">Fonts</h3>
         <div className="bg-gray-800/60 rounded-xl p-3 space-y-3">
-          <div>
+        <div>
             <label className="text-[10px] text-gray-400 font-medium block mb-1.5">Heading Font</label>
-            <select
+              <select
               value={designSystem.headingFont}
               onChange={(e) => onUpdate({ ...designSystem, headingFont: e.target.value })}
               className="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-3 py-2 text-xs text-white hover:border-orange-500 focus:border-orange-500 focus:outline-none transition-colors cursor-pointer"
-            >
-              {allFonts.map(font => (
-                <option key={font.value} value={font.value}>{font.name}</option>
-              ))}
-            </select>
-          </div>
-          <div>
+              >
+                {allFonts.map(font => (
+                  <option key={font.value} value={font.value}>{font.name}</option>
+                ))}
+              </select>
+            </div>
+            <div>
             <label className="text-[10px] text-gray-400 font-medium block mb-1.5">Body Font</label>
-            <select
+              <select
               value={designSystem.bodyFont}
               onChange={(e) => onUpdate({ ...designSystem, bodyFont: e.target.value })}
               className="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-3 py-2 text-xs text-white hover:border-orange-500 focus:border-orange-500 focus:outline-none transition-colors cursor-pointer"
-            >
-              {allFonts.map(font => (
-                <option key={font.value} value={font.value}>{font.name}</option>
-              ))}
-            </select>
+              >
+                {allFonts.map(font => (
+                  <option key={font.value} value={font.value}>{font.name}</option>
+                ))}
+              </select>
+            </div>
           </div>
         </div>
-      </div>
       
       {/* Backgrounds Section */}
       <div className="p-4">
@@ -884,11 +972,11 @@ const ExportPanel = ({ onClose, isOpen }) => {
       <div className="px-4 border-b border-gray-800 flex items-center justify-between" style={{ height: 64 }}>
         <h2 className="text-sm font-semibold text-white">Export</h2>
         <button onClick={onClose} className="text-gray-400 hover:text-white">
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-      </div>
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
       <div className="p-4 space-y-4">
         <div>
           <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-2">Format</h3>
@@ -896,8 +984,8 @@ const ExportPanel = ({ onClose, isOpen }) => {
             <button className="flex-1 px-3 py-2 bg-orange-500 text-white rounded text-xs font-medium">PNG</button>
             <button className="flex-1 px-3 py-2 bg-gray-800 text-gray-300 rounded text-xs font-medium hover:bg-gray-700">JPG</button>
             <button className="flex-1 px-3 py-2 bg-gray-800 text-gray-300 rounded text-xs font-medium hover:bg-gray-700">PDF</button>
+            </div>
           </div>
-        </div>
         <div>
           <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-2">Quality</h3>
           <select className="w-full bg-gray-800 border border-gray-700 rounded px-2 py-1.5 text-xs text-white">
@@ -918,9 +1006,33 @@ const ExportPanel = ({ onClose, isOpen }) => {
 };
 
 // Carousel Row Component
-const CarouselRow = ({ carousel, designSystem, isSelected, hasAnySelection, selectedFrameId, onSelect, onSelectFrame, onAddFrame, onRemoveFrame, onUpdateText, activeTextField, onActivateTextField }) => {
+const CarouselRow = ({ carousel, designSystem, isSelected, hasAnySelection, selectedFrameId, onSelect, onSelectFrame, onAddFrame, onRemoveFrame, onUpdateText, activeTextField, onActivateTextField, onReorderFrames }) => {
   const totalFrames = carousel.frames.length;
   const isFaded = hasAnySelection && !isSelected;
+  
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 3,
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  const handleDragEnd = (event) => {
+    const { active, over } = event;
+    if (active.id !== over?.id && over) {
+      const oldIndex = carousel.frames.findIndex(f => `frame-${f.id}` === active.id);
+      const newIndex = carousel.frames.findIndex(f => `frame-${f.id}` === over.id);
+      if (oldIndex !== -1 && newIndex !== -1) {
+        onReorderFrames(carousel.id, oldIndex, newIndex);
+      }
+    }
+  };
+
+  const frameIds = carousel.frames.map(f => `frame-${f.id}`);
   
   return (
     <div 
@@ -937,51 +1049,58 @@ const CarouselRow = ({ carousel, designSystem, isSelected, hasAnySelection, sele
             ) : (
               <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" /></svg>
             )}
-          </button>
-          <div>
+        </button>
+        <div>
             <div className="flex items-center gap-2">
               <h2 className={`text-lg font-bold transition-colors ${isSelected ? 'text-orange-400' : 'text-white'}`}>{carousel.name}</h2>
               {isSelected && <span className="text-[9px] bg-orange-500/20 text-orange-400 px-1.5 py-0.5 rounded font-medium">EDITING</span>}
-            </div>
+                </div>
             <p className="text-sm text-gray-400">{carousel.subtitle}</p>
           </div>
+          </div>
         </div>
-      </div>
-      
+        
       <div className="px-4" style={{ minHeight: 300 }}>
-        <div className={`flex items-start transition-all duration-150 ease-out`} style={{ width: 'auto', minWidth: 'fit-content', gap: isSelected ? '12px' : '10px' }}>
-          {carousel.frames.map((frame, index) => (
-            <React.Fragment key={frame.id}>
-              <CarouselFrame
-                frame={frame}
-                carouselId={carousel.id}
-                frameSize={carousel.frameSize}
-                designSystem={designSystem}
-                frameIndex={index}
-                totalFrames={totalFrames}
-                isFrameSelected={isSelected && selectedFrameId === frame.id}
-                onSelectFrame={(frameId) => onSelectFrame(carousel.id, frameId)}
-                onRemove={(frameId) => onRemoveFrame(carousel.id, frameId)}
-                onUpdateText={onUpdateText}
-                activeTextField={isSelected && selectedFrameId === frame.id ? activeTextField : null}
-                onActivateTextField={onActivateTextField}
-              />
+        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+          <SortableContext items={frameIds} strategy={horizontalListSortingStrategy}>
+            <div className={`flex items-start transition-all duration-150 ease-out`} style={{ width: 'auto', minWidth: 'fit-content', gap: isSelected ? '12px' : '10px' }}>
+              {carousel.frames.map((frame, index) => (
+                <React.Fragment key={frame.id}>
+                  <SortableFrame
+                    id={`frame-${frame.id}`}
+                    frame={frame}
+                    carouselId={carousel.id}
+                    frameSize={carousel.frameSize}
+                    designSystem={designSystem}
+                    frameIndex={index}
+                    totalFrames={totalFrames}
+                    isFrameSelected={isSelected && selectedFrameId === frame.id}
+                    onSelectFrame={(frameId) => onSelectFrame(carousel.id, frameId)}
+                    onRemove={(frameId) => onRemoveFrame(carousel.id, frameId)}
+                    onUpdateText={onUpdateText}
+                    activeTextField={isSelected && selectedFrameId === frame.id ? activeTextField : null}
+                    onActivateTextField={onActivateTextField}
+                    isRowSelected={isSelected}
+                    cardWidth={frameSizes[carousel.frameSize]?.width || 192}
+                  />
               
               {/* Add Button After Each Frame */}
               <div 
                 className={`flex items-center justify-center self-stretch transition-all duration-150 ease-out ${isSelected ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
                 style={{ width: isSelected ? 32 : 0, paddingTop: 24, overflow: 'hidden' }}
               >
-                <button 
+              <button
                   onClick={(e) => { e.stopPropagation(); onAddFrame(carousel.id, index + 1); }} 
                   className="w-7 h-7 rounded-full border border-dashed border-gray-700 opacity-30 hover:opacity-100 hover:border-orange-500 hover:bg-orange-500/10 flex items-center justify-center transition-all duration-150"
                 >
                   <svg className="w-3.5 h-3.5 text-gray-500 hover:text-orange-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
-                </button>
+              </button>
               </div>
             </React.Fragment>
-          ))}
-        </div>
+            ))}
+          </div>
+          </SortableContext>
+        </DndContext>
       </div>
     </div>
   );
@@ -1063,9 +1182,9 @@ export default function CarouselDesignTool() {
   
   // Helper to close all dropdowns
   const closeAllDropdowns = () => {
-    setShowColorPicker(false);
-    setShowFontSize(false);
-    setShowUnderlinePicker(false);
+        setShowColorPicker(false);
+        setShowFontSize(false);
+        setShowUnderlinePicker(false);
     setShowFontPicker(false);
     setShowTextAlign(false);
     setShowLineSpacing(false);
@@ -1089,7 +1208,7 @@ export default function CarouselDesignTool() {
       if (layoutPickerRef.current && !layoutPickerRef.current.contains(event.target)) setShowLayoutPicker(false);
       if (snippetsPickerRef.current && !snippetsPickerRef.current.contains(event.target)) setShowSnippetsPicker(false);
     };
-    document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
   
@@ -1207,8 +1326,8 @@ export default function CarouselDesignTool() {
         currentVariant: 0, currentLayout: 0, layoutVariant: 0,
         style: adjacentFrame?.style || "dark-single-pin"
       };
-      const newFrames = [...carousel.frames];
-      newFrames.splice(insertIndex, 0, newFrame);
+        const newFrames = [...carousel.frames];
+        newFrames.splice(insertIndex, 0, newFrame);
       // Re-number the frames
       const renumberedFrames = newFrames.map((f, idx) => ({ ...f, id: idx + 1 }));
       return { ...carousel, frames: renumberedFrames };
@@ -1229,10 +1348,18 @@ export default function CarouselDesignTool() {
     }));
   };
   
+  const handleReorderFrames = (carouselId, oldIndex, newIndex) => {
+      setCarousels(prev => prev.map(carousel => {
+      if (carousel.id !== carouselId) return carousel;
+      const newFrames = arrayMove(carousel.frames, oldIndex, newIndex).map((f, idx) => ({ ...f, id: idx + 1 }));
+      return { ...carousel, frames: newFrames };
+    }));
+  };
+  
   const panelWidth = activePanel ? 288 : 0; // w-72 = 288px
   const sidebarWidth = 64; // w-16 = 64px
   const totalOffset = sidebarWidth + panelWidth;
-
+  
   return (
     <div className="h-screen bg-gray-950 text-white overflow-hidden">
       {/* Browser-style Tab Bar - Full Width */}
@@ -1243,8 +1370,8 @@ export default function CarouselDesignTool() {
             <button className="w-10 h-10 rounded-lg flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-800 transition-all">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-              </svg>
-            </button>
+            </svg>
+          </button>
           </div>
           {/* Tabs */}
           <div className="flex items-end">
@@ -1299,7 +1426,7 @@ export default function CarouselDesignTool() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
               </svg>
             </button>
-          </div>
+            </div>
           
           {/* Tab Counter */}
           <div className="flex items-center px-4 pb-2 ml-auto">
@@ -1338,15 +1465,15 @@ export default function CarouselDesignTool() {
                 </button>
                 {showFormatPicker && (
                   <div className="absolute top-full left-0 mt-2 p-1.5 bg-gray-800 border border-gray-700 rounded-lg shadow-xl z-[200] min-w-[160px]">
-                    {Object.entries(frameSizes).filter(([key]) => key !== 'landscape').map(([key, size]) => (
+                {Object.entries(frameSizes).filter(([key]) => key !== 'landscape').map(([key, size]) => (
                       <button key={key} onClick={() => { handleChangeFrameSize(selectedCarouselId, key); setShowFormatPicker(false); }} className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-left text-xs transition-colors ${selectedCarousel?.frameSize === key ? 'bg-orange-500 text-white' : 'text-gray-300 hover:bg-gray-700'}`}>
                         <span className="font-medium">{size.name}</span>
                         <span className="text-gray-500 ml-auto">{size.ratio}</span>
                       </button>
-                    ))}
-                  </div>
-                )}
+                ))}
               </div>
+                    )}
+                  </div>
             </div>
 
             {/* Layout Group */}
@@ -1368,12 +1495,12 @@ export default function CarouselDesignTool() {
                       </button>
                     ))}
                   </div>
-                )}
-              </div>
+                    )}
+                  </div>
               <button onClick={() => { closeAllDropdowns(); selectedFrame && handleShuffleLayoutVariant(selectedCarouselId, selectedFrameId); }} className="p-2 rounded-lg hover:bg-gray-700 text-gray-400 hover:text-gray-200 transition-all" title="Shuffle variant">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" /></svg>
-              </button>
-            </div>
+                </button>
+                  </div>
 
             {/* Snippets Group */}
             <div className={`flex items-center gap-1.5 px-2 py-1.5 bg-gray-800/60 rounded-xl transition-opacity ${activeTextField ? 'opacity-100' : 'opacity-40 pointer-events-none'}`}>
@@ -1388,16 +1515,16 @@ export default function CarouselDesignTool() {
                     {[0, 1, 2].map((idx) => (
                       <button key={idx} onClick={() => { handleSetVariant(selectedCarouselId, selectedFrameId, idx); setShowSnippetsPicker(false); }} className={`w-full flex items-center justify-center gap-1 px-3 py-2 rounded-lg text-xs font-medium transition-colors ${selectedFrame?.currentVariant === idx ? 'bg-orange-500 text-white' : 'text-gray-300 hover:bg-gray-700'}`}>
                         <span className="text-orange-400">S{idx + 1}</span>
-                      </button>
+                </button>
                     ))}
-                  </div>
+              </div>
                 )}
               </div>
               <button className="p-2 rounded-lg text-orange-400 hover:bg-orange-500/20 transition-colors" title="Rewrite with AI">
                 <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L14.09 8.26L20 9.27L15.55 13.97L16.91 20L12 16.9L7.09 20L8.45 13.97L4 9.27L9.91 8.26L12 2Z" /></svg>
               </button>
             </div>
-
+            
             {/* Typography Group */}
             <div className={`flex items-center gap-1.5 px-2 py-1.5 bg-gray-800/60 rounded-xl transition-opacity ${activeTextField ? 'opacity-100' : 'opacity-40 pointer-events-none'}`}>
               {/* Font Type dropdown */}
@@ -1411,9 +1538,9 @@ export default function CarouselDesignTool() {
                     {allFonts.map(font => (
                       <button type="button" key={font.value} onClick={(e) => { e.stopPropagation(); handleUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'fontFamily', font.value); setShowFontPicker(false); }} className={`w-full px-3 py-2 rounded-lg text-xs text-left transition-colors ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.fontFamily === font.value ? 'bg-orange-500 text-white' : 'text-gray-300 hover:bg-gray-700'}`} style={{ fontFamily: font.value }}>
                         {font.name}
-                      </button>
-                    ))}
-                  </div>
+                    </button>
+                  ))}
+                </div>
                 )}
               </div>
 
@@ -1429,66 +1556,66 @@ export default function CarouselDesignTool() {
                       {[{ name: 'S', value: 0.85 }, { name: 'M', value: 1 }, { name: 'L', value: 1.2 }].map(s => (
                         <button type="button" key={s.name} onClick={(e) => { e.stopPropagation(); handleUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'fontSize', s.value); setShowFontSize(false); }} className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.fontSize === s.value ? 'bg-orange-500 text-white' : 'text-gray-300 hover:bg-gray-700'}`}>{s.name}</button>
                       ))}
-                    </div>
+              </div>
                   </div>
                 )}
-              </div>
-
-              {/* Color picker */}
+            </div>
+            
+                {/* Color picker */}
               <div ref={colorPickerRef} className="relative">
                 <button onClick={() => { if (!activeTextField) return; const wasOpen = showColorPicker; closeAllDropdowns(); if (!wasOpen) setShowColorPicker(true); }} className="flex items-center gap-1 p-2 bg-gray-700/50 rounded-lg hover:bg-gray-700 transition-colors" title="Text color">
                   <div className="w-5 h-5 rounded border border-gray-500" style={{ backgroundColor: selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.color || '#ffffff' }} />
-                </button>
-                {showColorPicker && activeTextField && (
+                  </button>
+                  {showColorPicker && activeTextField && (
                   <div className="absolute top-full left-0 mt-2 p-2 bg-gray-800 border border-gray-700 rounded-lg shadow-xl z-[200]" onClick={(e) => e.stopPropagation()}>
                     <div className="flex gap-1.5">
-                      {[{ name: 'Primary', value: designSystem.primary }, { name: 'Secondary', value: designSystem.secondary }, { name: 'Accent', value: designSystem.accent }, { name: 'Light', value: designSystem.neutral3 }, { name: 'White', value: '#ffffff' }].map(c => (
+                        {[{ name: 'Primary', value: designSystem.primary }, { name: 'Secondary', value: designSystem.secondary }, { name: 'Accent', value: designSystem.accent }, { name: 'Light', value: designSystem.neutral3 }, { name: 'White', value: '#ffffff' }].map(c => (
                         <button type="button" key={c.value} onClick={(e) => { e.stopPropagation(); handleUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'color', c.value); setShowColorPicker(false); }} className="w-6 h-6 rounded-lg border border-gray-600 hover:scale-110 transition-transform" style={{ backgroundColor: c.value }} title={c.name} />
-                      ))}
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
               </div>
-            </div>
-
+                </div>
+                
             {/* Style Group */}
             <div className={`flex items-center gap-1 px-2 py-1.5 bg-gray-800/60 rounded-xl transition-opacity ${activeTextField ? 'opacity-100' : 'opacity-40 pointer-events-none'}`}>
-              {/* Bold */}
+                {/* Bold */}
               <button onClick={() => { if (!activeTextField) return; closeAllDropdowns(); const formatting = selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField] || {}; handleUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'bold', !formatting.bold); }} className={`w-9 h-9 rounded-lg flex items-center justify-center text-sm font-bold transition-colors ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.bold ? 'bg-orange-500 text-white' : 'text-gray-300 hover:bg-gray-700'}`} title="Bold">B</button>
-
-              {/* Italic */}
+                
+                {/* Italic */}
               <button onClick={() => { if (!activeTextField) return; closeAllDropdowns(); const formatting = selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField] || {}; handleUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'italic', !formatting.italic); }} className={`w-9 h-9 rounded-lg flex items-center justify-center text-sm italic transition-colors ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.italic ? 'bg-orange-500 text-white' : 'text-gray-300 hover:bg-gray-700'}`} title="Italic">I</button>
-
-              {/* Underline */}
+                
+                {/* Underline */}
               <div ref={underlineRef} className="relative flex">
                 <button onClick={() => { if (!activeTextField) return; const wasOpen = showUnderlinePicker; closeAllDropdowns(); if (!wasOpen) setShowUnderlinePicker(true); }} className={`flex items-center gap-1 px-2 h-9 rounded-lg text-sm transition-colors ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.underline ? 'bg-orange-500 text-white' : 'text-gray-300 hover:bg-gray-700'}`} title="Underline">
                   <span style={{ textDecoration: 'underline' }}>U</span>
                   <svg className={`w-2.5 h-2.5 transition-transform ${showUnderlinePicker ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
-                </button>
-                {showUnderlinePicker && activeTextField && (
+                  </button>
+                  {showUnderlinePicker && activeTextField && (
                   <div className="absolute top-full right-0 mt-2 p-3 bg-gray-800 border border-gray-700 rounded-lg shadow-xl z-[200] min-w-[160px]" onClick={(e) => e.stopPropagation()}>
                     <div className="text-[10px] text-gray-500 mb-2 uppercase tracking-wide font-medium">Style</div>
                     <div className="flex gap-1.5 mb-3">
-                      {[{ name: 'Solid', value: 'solid' }, { name: 'Dotted', value: 'dotted' }, { name: 'Wavy', value: 'wavy' }, { name: 'Highlight', value: 'highlight' }].map(s => (
+                        {[{ name: 'Solid', value: 'solid' }, { name: 'Dotted', value: 'dotted' }, { name: 'Wavy', value: 'wavy' }, { name: 'Highlight', value: 'highlight' }].map(s => (
                         <button type="button" key={s.value} onClick={(e) => { e.stopPropagation(); handleUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'underlineStyle', s.value); handleUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'underline', true); }} className={`px-3 py-1.5 rounded-lg text-xs transition-colors ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.underlineStyle === s.value ? 'bg-orange-500 text-white' : 'text-gray-300 hover:bg-gray-700'}`} title={s.name}>
-                          {s.value === 'solid' && <span style={{ textDecoration: 'underline', textDecorationStyle: 'solid' }}>S</span>}
-                          {s.value === 'dotted' && <span style={{ textDecoration: 'underline', textDecorationStyle: 'dotted' }}>D</span>}
-                          {s.value === 'wavy' && <span style={{ textDecoration: 'underline', textDecorationStyle: 'wavy' }}>W</span>}
-                          {s.value === 'highlight' && <span style={{ backgroundImage: 'linear-gradient(to top, rgba(251,191,36,0.5) 30%, transparent 30%)' }}>H</span>}
-                        </button>
-                      ))}
-                    </div>
+                            {s.value === 'solid' && <span style={{ textDecoration: 'underline', textDecorationStyle: 'solid' }}>S</span>}
+                            {s.value === 'dotted' && <span style={{ textDecoration: 'underline', textDecorationStyle: 'dotted' }}>D</span>}
+                            {s.value === 'wavy' && <span style={{ textDecoration: 'underline', textDecorationStyle: 'wavy' }}>W</span>}
+                            {s.value === 'highlight' && <span style={{ backgroundImage: 'linear-gradient(to top, rgba(251,191,36,0.5) 30%, transparent 30%)' }}>H</span>}
+                          </button>
+                        ))}
+                      </div>
                     <div className="text-[10px] text-gray-500 mb-2 uppercase tracking-wide font-medium">Color</div>
                     <div className="flex gap-2">
-                      {[{ name: 'Primary', value: designSystem.primary }, { name: 'Secondary', value: designSystem.secondary }, { name: 'Accent', value: designSystem.accent }, { name: 'Light', value: designSystem.neutral3 }, { name: 'White', value: '#ffffff' }].map(c => (
+                        {[{ name: 'Primary', value: designSystem.primary }, { name: 'Secondary', value: designSystem.secondary }, { name: 'Accent', value: designSystem.accent }, { name: 'Light', value: designSystem.neutral3 }, { name: 'White', value: '#ffffff' }].map(c => (
                         <button type="button" key={c.value} onClick={(e) => { e.stopPropagation(); handleUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'underlineColor', c.value); handleUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'underline', true); if (!selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.underlineStyle) handleUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'underlineStyle', 'solid'); }} className={`w-6 h-6 rounded-lg border-2 hover:scale-110 transition-transform ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.underlineColor === c.value ? 'border-orange-500' : 'border-gray-600'}`} style={{ backgroundColor: c.value }} title={c.name} />
-                      ))}
-                    </div>
+                        ))}
+                      </div>
                     <button type="button" onClick={(e) => { e.stopPropagation(); handleUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'underline', false); setShowUnderlinePicker(false); }} className="w-full mt-3 px-3 py-2 rounded-lg text-xs text-gray-400 hover:text-white hover:bg-gray-700 transition-colors border border-gray-700">Remove Underline</button>
-                  </div>
-                )}
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
 
             {/* Alignment & Spacing Group */}
             <div className={`flex items-center gap-1 px-2 py-1.5 bg-gray-800/60 rounded-xl transition-opacity ${activeTextField ? 'opacity-100' : 'opacity-40 pointer-events-none'}`}>
@@ -1509,8 +1636,8 @@ export default function CarouselDesignTool() {
                     </div>
                   </div>
                 )}
-              </div>
-
+            </div>
+            
               {/* Line Spacing */}
               <div ref={lineSpacingRef} className="relative">
                 <button onClick={() => { if (!activeTextField) return; const wasOpen = showLineSpacing; closeAllDropdowns(); if (!wasOpen) setShowLineSpacing(true); }} className={`flex items-center gap-1 px-2 h-9 rounded-lg transition-colors ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.lineHeight && selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.lineHeight !== 1.4 ? 'bg-orange-500 text-white' : 'text-gray-300 hover:bg-gray-700'}`} title="Line spacing">
@@ -1522,9 +1649,9 @@ export default function CarouselDesignTool() {
                     {[{ name: 'Tight', value: 1.1 }, { name: 'Normal', value: 1.4 }, { name: 'Relaxed', value: 1.7 }, { name: 'Loose', value: 2 }].map(s => (
                       <button type="button" key={s.name} onClick={(e) => { e.stopPropagation(); handleUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'lineHeight', s.value); setShowLineSpacing(false); }} className={`w-full px-3 py-2 rounded-lg text-xs text-left transition-colors ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.lineHeight === s.value ? 'bg-orange-500 text-white' : 'text-gray-300 hover:bg-gray-700'}`}>{s.name}</button>
                     ))}
-                  </div>
+            </div>
                 )}
-              </div>
+          </div>
 
               {/* Letter Spacing */}
               <div ref={letterSpacingRef} className="relative">
@@ -1539,10 +1666,10 @@ export default function CarouselDesignTool() {
                     ))}
                   </div>
                 )}
-              </div>
+        </div>
+      </div>
+      
             </div>
-
-          </div>
 
           {/* Right side */}
           <div className="flex items-center gap-4">
@@ -1561,27 +1688,28 @@ export default function CarouselDesignTool() {
           {/* Canvas workspace */}
           <div className="p-6 pb-64" onClick={() => { closeAllDropdowns(); setSelectedCarouselId(null); setSelectedFrameId(null); setActiveTextField(null); setZoom(120); }}>
             <div style={{ transform: `scale(${zoom / 100})`, transformOrigin: 'top left', width: `${100 / (zoom / 100)}%`, transition: 'transform 150ms ease-out' }}>
-              {carousels.map((carousel) => (
-                <CarouselRow
-                  key={carousel.id}
-                  carousel={carousel}
-                  designSystem={designSystem}
-                  isSelected={selectedCarouselId === carousel.id}
-                  hasAnySelection={selectedCarouselId !== null}
-                  selectedFrameId={selectedCarouselId === carousel.id ? selectedFrameId : null}
-                  onSelect={handleSelectCarousel}
-                  onSelectFrame={handleSelectFrame}
-                  onAddFrame={handleAddFrame}
-                  onRemoveFrame={handleRemoveFrame}
-                  onUpdateText={handleUpdateText}
-                  activeTextField={activeTextField}
-                  onActivateTextField={setActiveTextField}
-                />
-              ))}
-            </div>
+            {carousels.map((carousel) => (
+              <CarouselRow
+                key={carousel.id}
+                carousel={carousel}
+                designSystem={designSystem}
+                isSelected={selectedCarouselId === carousel.id}
+                hasAnySelection={selectedCarouselId !== null}
+                selectedFrameId={selectedCarouselId === carousel.id ? selectedFrameId : null}
+                onSelect={handleSelectCarousel}
+                onSelectFrame={handleSelectFrame}
+                onAddFrame={handleAddFrame}
+                onRemoveFrame={handleRemoveFrame}
+                  onReorderFrames={handleReorderFrames}
+                onUpdateText={handleUpdateText}
+                activeTextField={activeTextField}
+                onActivateTextField={setActiveTextField}
+              />
+            ))}
+          </div>
           </div>
         </>
-      )}
+        )}
       </div>
       
     </div>
