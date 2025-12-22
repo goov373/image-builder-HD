@@ -769,10 +769,12 @@ const Sidebar = ({ activePanel, onPanelChange, zoom, onZoomChange }) => {
         </button>
         <button 
           onClick={() => onZoomChange(100)}
-          className="mt-1 px-2 py-1 text-[9px] font-medium text-gray-400 hover:text-white hover:bg-gray-700 rounded transition-colors"
+          className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-700 transition-colors"
           title="Reset to 100%"
         >
-          Reset
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
         </button>
       </div>
     </div>
