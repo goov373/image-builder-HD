@@ -1426,9 +1426,9 @@ export default function CarouselDesignTool() {
 
               {/* Underline */}
               <div ref={underlineRef} className="relative flex flex-shrink-0">
-                <button onClick={() => { if (!activeTextField) return; closeAllDropdowns(); const currentUnderline = selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.underline; handleUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'underline', !currentUnderline); if (!currentUnderline) handleUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'underlineStyle', 'solid'); }} className={`px-1.5 py-1 rounded-l text-[9px] transition-colors ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.underline ? 'bg-orange-500 text-white' : 'text-gray-300 hover:bg-gray-700'}`} title="Underline" style={{ textDecoration: 'underline' }}>U</button>
-                <button onClick={() => { if (!activeTextField) return; const wasOpen = showUnderlinePicker; closeAllDropdowns(); if (!wasOpen) setShowUnderlinePicker(true); }} className="px-0.5 py-1 rounded-r text-gray-400 hover:text-gray-200 hover:bg-gray-700 transition-colors border-l border-gray-600">
-                  <svg className="w-2 h-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                <button onClick={() => { if (!activeTextField) return; const wasOpen = showUnderlinePicker; closeAllDropdowns(); if (!wasOpen) setShowUnderlinePicker(true); }} className={`flex items-center gap-1 px-2 py-1 rounded text-[9px] transition-colors ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.underline ? 'bg-orange-500 text-white' : 'text-gray-300 hover:bg-gray-700'}`} title="Underline">
+                  <span style={{ textDecoration: 'underline' }}>U</span>
+                  <svg className={`w-2 h-2 transition-transform ${showUnderlinePicker ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
                 </button>
                 {showUnderlinePicker && activeTextField && (
                   <div className="absolute top-full right-0 mt-1 p-2 bg-gray-800 border border-gray-700 rounded shadow-xl z-[200] min-w-[140px]">
