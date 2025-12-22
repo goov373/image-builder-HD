@@ -939,7 +939,7 @@ const CarouselRow = ({ carousel, designSystem, isSelected, hasAnySelection, sele
   return (
     <div 
       className={`mb-10 rounded-xl transition-all duration-150 cursor-pointer overflow-x-auto hide-scrollbar ${isSelected ? 'bg-orange-500/5 border border-orange-500/20 py-4' : 'hover:bg-gray-800/30 border border-transparent py-4'} ${isFaded ? 'opacity-20 hover:opacity-50' : 'opacity-100'}`}
-      style={{ marginLeft: '10px', marginRight: '10px', width: 'calc(100% - 20px)', maxWidth: 'calc(100% - 20px)' }}
+      style={{ marginLeft: '10px', marginRight: '10px', width: 'fit-content', minWidth: 'auto', maxWidth: 'calc(100% - 20px)' }}
       onClick={() => onSelect(carousel.id)}
     >
       <div className="mb-4 flex items-center justify-between px-4">
