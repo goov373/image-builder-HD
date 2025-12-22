@@ -1073,10 +1073,10 @@ export default function CarouselDesignTool() {
               <div
                 key={tab.id}
                 onClick={() => handleTabClick(tab.id)}
-                className={`group flex items-center gap-2 px-4 py-2 rounded-t-lg cursor-pointer transition-all duration-150 ${
+                className={`group flex items-center gap-2 px-4 py-2 rounded-t-lg cursor-pointer transition-all duration-150 border-t border-l border-r ${
                   tab.active 
-                    ? 'bg-gray-900 text-white border-t border-l border-r border-gray-700' 
-                    : 'bg-gray-800/50 text-gray-400 hover:bg-gray-800 hover:text-gray-300'
+                    ? 'bg-gray-900 text-white border-gray-700' 
+                    : 'bg-gray-800/50 text-gray-400 hover:bg-gray-800 hover:text-gray-300 border-transparent'
                 }`}
                 style={{ minWidth: 140, maxWidth: 200 }}
               >
