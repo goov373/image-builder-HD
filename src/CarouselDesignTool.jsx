@@ -1037,7 +1037,7 @@ const CarouselRow = ({ carousel, designSystem, isSelected, hasAnySelection, sele
 // Main App Component
 export default function CarouselDesignTool() {
   const [carousels, setCarousels] = useState(initialCarousels);
-  const [zoom, setZoom] = useState(100);
+  const [zoom, setZoom] = useState(120);
   const [designSystem, setDesignSystem] = useState(defaultDesignSystem);
   const [activePanel, setActivePanel] = useState(null);
   const [selectedCarouselId, setSelectedCarouselId] = useState(null);
