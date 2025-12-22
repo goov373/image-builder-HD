@@ -540,7 +540,7 @@ const CarouselFrame = ({ frame, carouselId, frameSize, designSystem, frameIndex,
       </div>
       
       <div 
-        className={`relative rounded-lg overflow-hidden shadow-lg cursor-pointer transition-all border ${isFrameSelected ? 'ring-2 ring-orange-500 border-orange-500' : 'border-gray-700 hover:border-gray-500'}`}
+        className={`relative rounded-lg overflow-hidden shadow-lg cursor-pointer transition-all ${isFrameSelected ? 'border border-orange-500/70' : 'border border-transparent hover:border-gray-600'}`}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         style={{ background: style.background, width: size.width, height: size.height }}
@@ -789,7 +789,7 @@ const CarouselRow = ({ carousel, designSystem, isSelected, hasAnySelection, sele
   
   return (
     <div 
-      className={`mb-10 rounded-xl transition-all duration-300 cursor-pointer overflow-x-auto hide-scrollbar ${isSelected ? 'bg-orange-500/5 ring-2 ring-orange-500/30 py-4' : 'hover:bg-gray-800/30 py-4'} ${isFaded ? 'opacity-20 hover:opacity-50' : 'opacity-100'}`}
+      className={`mb-10 rounded-xl transition-all duration-300 cursor-pointer overflow-x-auto hide-scrollbar ${isSelected ? 'bg-orange-500/5 border border-orange-500/20 py-4' : 'hover:bg-gray-800/30 border border-transparent py-4'} ${isFaded ? 'opacity-20 hover:opacity-50' : 'opacity-100'}`}
       style={{ marginLeft: '10px', marginRight: '10px', width: 'calc(100% - 20px)', maxWidth: 'calc(100% - 20px)' }}
       onClick={() => onSelect(carousel.id)}
     >
@@ -832,9 +832,16 @@ const CarouselRow = ({ carousel, designSystem, isSelected, hasAnySelection, sele
             />
           ))}
           
-          <div className="flex items-center self-stretch transition-all duration-300 ease-out" style={{ width: 50, paddingTop: 24 }}>
-            <button onClick={(e) => { e.stopPropagation(); onAddFrame(carousel.id); }} className="w-10 h-10 rounded-full border-2 border-dashed border-gray-600 hover:border-orange-500 hover:bg-orange-500/10 flex items-center justify-center transition-all">
-              <svg className="w-5 h-5 text-gray-500 hover:text-orange-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
+          {/* Add Frame Button - Slides in when row is selected */}
+          <div 
+            className={`flex items-center self-stretch transition-all duration-300 ease-out ${isSelected ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4 pointer-events-none'}`} 
+            style={{ width: isSelected ? 60 : 0, paddingTop: 24, overflow: 'hidden' }}
+          >
+            <button 
+              onClick={(e) => { e.stopPropagation(); onAddFrame(carousel.id); }} 
+              className={`w-12 h-12 rounded-xl border-2 border-dashed border-gray-600 hover:border-orange-500 hover:bg-orange-500/10 flex items-center justify-center transition-all duration-200 ${isSelected ? 'scale-100' : 'scale-75'}`}
+            >
+              <svg className="w-6 h-6 text-gray-500 hover:text-orange-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
             </button>
           </div>
         </div>
