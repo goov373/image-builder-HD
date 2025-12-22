@@ -815,37 +815,53 @@ const CarouselRow = ({ carousel, designSystem, isSelected, hasAnySelection, sele
       </div>
       
       <div className="px-4" style={{ minHeight: 300 }}>
-        <div className={`flex items-start transition-all duration-300 ease-out ${isSelected ? 'gap-2' : 'gap-2.5'}`} style={{ width: 'auto', minWidth: 'fit-content' }}>
+        <div className={`flex items-start transition-all duration-300 ease-out ${isSelected ? 'gap-0' : 'gap-2.5'}`} style={{ width: 'auto', minWidth: 'fit-content' }}>
           {carousel.frames.map((frame, index) => (
-            <CarouselFrame
-              key={frame.id}
-              frame={frame}
-              carouselId={carousel.id}
-              frameSize={carousel.frameSize}
-              designSystem={designSystem}
-              frameIndex={index}
-              totalFrames={totalFrames}
-              isFrameSelected={isSelected && selectedFrameId === frame.id}
-              onSelectFrame={(frameId) => onSelectFrame(carousel.id, frameId)}
-              onRemove={(frameId) => onRemoveFrame(carousel.id, frameId)}
-              onUpdateText={onUpdateText}
-              activeTextField={isSelected && selectedFrameId === frame.id ? activeTextField : null}
-              onActivateTextField={onActivateTextField}
-            />
+            <React.Fragment key={frame.id}>
+              {/* Add Button Before First Frame */}
+              {index === 0 && (
+                <div 
+                  className={`flex items-center self-stretch transition-all duration-300 ease-out ${isSelected ? 'opacity-100 w-10' : 'opacity-0 w-0 pointer-events-none'}`}
+                  style={{ paddingTop: 24, overflow: 'hidden' }}
+                >
+                  <button 
+                    onClick={(e) => { e.stopPropagation(); onAddFrame(carousel.id, 0); }} 
+                    className="w-8 h-8 rounded-lg border-2 border-dashed border-gray-600 hover:border-orange-500 hover:bg-orange-500/10 flex items-center justify-center transition-all duration-200"
+                  >
+                    <svg className="w-4 h-4 text-gray-500 hover:text-orange-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
+                  </button>
+                </div>
+              )}
+              
+              <CarouselFrame
+                frame={frame}
+                carouselId={carousel.id}
+                frameSize={carousel.frameSize}
+                designSystem={designSystem}
+                frameIndex={index}
+                totalFrames={totalFrames}
+                isFrameSelected={isSelected && selectedFrameId === frame.id}
+                onSelectFrame={(frameId) => onSelectFrame(carousel.id, frameId)}
+                onRemove={(frameId) => onRemoveFrame(carousel.id, frameId)}
+                onUpdateText={onUpdateText}
+                activeTextField={isSelected && selectedFrameId === frame.id ? activeTextField : null}
+                onActivateTextField={onActivateTextField}
+              />
+              
+              {/* Add Button After Each Frame */}
+              <div 
+                className={`flex items-center self-stretch transition-all duration-300 ease-out ${isSelected ? 'opacity-100 w-10' : 'opacity-0 w-0 pointer-events-none'}`}
+                style={{ paddingTop: 24, overflow: 'hidden' }}
+              >
+                <button 
+                  onClick={(e) => { e.stopPropagation(); onAddFrame(carousel.id, index + 1); }} 
+                  className="w-8 h-8 rounded-lg border-2 border-dashed border-gray-600 hover:border-orange-500 hover:bg-orange-500/10 flex items-center justify-center transition-all duration-200"
+                >
+                  <svg className="w-4 h-4 text-gray-500 hover:text-orange-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
+                </button>
+              </div>
+            </React.Fragment>
           ))}
-          
-          {/* Add Frame Button - Slides in when row is selected */}
-          <div 
-            className={`flex items-center self-stretch transition-all duration-300 ease-out ${isSelected ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4 pointer-events-none'}`} 
-            style={{ width: isSelected ? 60 : 0, paddingTop: 24, overflow: 'hidden' }}
-          >
-            <button 
-              onClick={(e) => { e.stopPropagation(); onAddFrame(carousel.id); }} 
-              className={`w-12 h-12 rounded-xl border-2 border-dashed border-gray-600 hover:border-orange-500 hover:bg-orange-500/10 flex items-center justify-center transition-all duration-200 ${isSelected ? 'scale-100' : 'scale-75'}`}
-            >
-              <svg className="w-6 h-6 text-gray-500 hover:text-orange-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
-            </button>
-          </div>
         </div>
       </div>
     </div>
@@ -991,22 +1007,26 @@ export default function CarouselDesignTool() {
     }));
   };
   
-  const handleAddFrame = (carouselId) => {
+  const handleAddFrame = (carouselId, position = null) => {
     setCarousels(prev => prev.map(carousel => {
       if (carousel.id !== carouselId) return carousel;
-      const newId = carousel.frames.length + 1;
-      const lastFrame = carousel.frames[carousel.frames.length - 1];
+      const insertIndex = position !== null ? position : carousel.frames.length;
+      const adjacentFrame = carousel.frames[Math.max(0, insertIndex - 1)] || carousel.frames[0];
       const newFrame = {
-        id: newId,
+        id: Date.now(), // Use timestamp for unique ID
         variants: [
-          { headline: `Slide ${newId}: Add your headline`, body: "Add your supporting copy here.", formatting: {} },
-          { headline: `Alternative headline ${newId}`, body: "Alternative supporting copy.", formatting: {} },
-          { headline: `Third option for slide ${newId}`, body: "Third copy variation.", formatting: {} }
+          { headline: "Add your headline", body: "Add your supporting copy here.", formatting: {} },
+          { headline: "Alternative headline", body: "Alternative supporting copy.", formatting: {} },
+          { headline: "Third option", body: "Third copy variation.", formatting: {} }
         ],
         currentVariant: 0, currentLayout: 0, layoutVariant: 0,
-        style: lastFrame?.style || "dark-single-pin"
+        style: adjacentFrame?.style || "dark-single-pin"
       };
-      return { ...carousel, frames: [...carousel.frames, newFrame] };
+      const newFrames = [...carousel.frames];
+      newFrames.splice(insertIndex, 0, newFrame);
+      // Re-number the frames
+      const renumberedFrames = newFrames.map((f, idx) => ({ ...f, id: idx + 1 }));
+      return { ...carousel, frames: renumberedFrames };
     }));
   };
   
