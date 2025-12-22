@@ -562,6 +562,224 @@ const CarouselFrame = ({ frame, carouselId, frameSize, designSystem, frameIndex,
   );
 };
 
+// Sidebar Component
+const Sidebar = ({ activePanel, onPanelChange }) => {
+  const panels = [
+    { id: 'design', icon: 'M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01', label: 'Design System' },
+    { id: 'files', icon: 'M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z', label: 'Files' },
+    { id: 'background', icon: 'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z', label: 'Background' },
+    { id: 'export', icon: 'M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12', label: 'Export' },
+  ];
+
+  return (
+    <div className="fixed left-0 top-0 h-full w-12 bg-gray-900 border-r border-gray-800 flex flex-col items-center py-4 z-50">
+      <div className="mb-6">
+        <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center">
+          <span className="text-white font-bold text-sm">H</span>
+        </div>
+      </div>
+      <div className="flex flex-col gap-2">
+        {panels.map(panel => (
+          <button
+            key={panel.id}
+            onClick={() => onPanelChange(activePanel === panel.id ? null : panel.id)}
+            className={`w-9 h-9 rounded-lg flex items-center justify-center transition-colors ${activePanel === panel.id ? 'bg-orange-500 text-white' : 'text-gray-400 hover:text-white hover:bg-gray-800'}`}
+            title={panel.label}
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d={panel.icon} />
+            </svg>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// Design System Panel
+const DesignSystemPanel = ({ designSystem, onUpdate, onClose }) => {
+  const colorFields = [
+    { key: 'primary', label: 'Primary' },
+    { key: 'secondary', label: 'Secondary' },
+    { key: 'accent', label: 'Accent' },
+    { key: 'neutral1', label: 'Dark' },
+    { key: 'neutral2', label: 'Mid' },
+    { key: 'neutral3', label: 'Light' },
+  ];
+
+  return (
+    <div className="fixed left-12 top-0 h-full w-72 bg-gray-900 border-r border-gray-800 z-40 overflow-y-auto">
+      <div className="p-4 border-b border-gray-800 flex items-center justify-between">
+        <h2 className="text-sm font-semibold text-white">Design System</h2>
+        <button onClick={onClose} className="text-gray-400 hover:text-white">
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <div className="p-4">
+        <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-3">Colors</h3>
+        <div className="grid grid-cols-3 gap-2 mb-6">
+          {colorFields.map(field => (
+            <div key={field.key} className="flex flex-col items-center gap-1">
+              <input
+                type="color"
+                value={designSystem[field.key]}
+                onChange={(e) => onUpdate({ ...designSystem, [field.key]: e.target.value })}
+                className="w-10 h-10 rounded-lg cursor-pointer border-2 border-gray-700 bg-transparent"
+              />
+              <span className="text-[10px] text-gray-500">{field.label}</span>
+            </div>
+          ))}
+        </div>
+        <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-3">Fonts</h3>
+        <div className="space-y-3">
+          <div>
+            <label className="text-[10px] text-gray-500 block mb-1">Heading Font</label>
+            <select
+              value={designSystem.headingFont}
+              onChange={(e) => onUpdate({ ...designSystem, headingFont: e.target.value })}
+              className="w-full bg-gray-800 border border-gray-700 rounded px-2 py-1.5 text-xs text-white"
+            >
+              {allFonts.map(font => (
+                <option key={font.value} value={font.value}>{font.name}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="text-[10px] text-gray-500 block mb-1">Body Font</label>
+            <select
+              value={designSystem.bodyFont}
+              onChange={(e) => onUpdate({ ...designSystem, bodyFont: e.target.value })}
+              className="w-full bg-gray-800 border border-gray-700 rounded px-2 py-1.5 text-xs text-white"
+            >
+              {allFonts.map(font => (
+                <option key={font.value} value={font.value}>{font.name}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// File Browser Panel
+const FileBrowserPanel = ({ onClose }) => {
+  return (
+    <div className="fixed left-12 top-0 h-full w-72 bg-gray-900 border-r border-gray-800 z-40 overflow-y-auto">
+      <div className="p-4 border-b border-gray-800 flex items-center justify-between">
+        <h2 className="text-sm font-semibold text-white">Files</h2>
+        <button onClick={onClose} className="text-gray-400 hover:text-white">
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <div className="p-4">
+        <div className="border-2 border-dashed border-gray-700 rounded-lg p-6 text-center">
+          <svg className="w-8 h-8 mx-auto mb-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          <p className="text-xs text-gray-500 mb-2">Drop images here</p>
+          <button className="text-xs text-orange-400 hover:text-orange-300">Browse files</button>
+        </div>
+        <div className="mt-4">
+          <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-2">Recent</h3>
+          <p className="text-xs text-gray-600">No recent files</p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Background Panel
+const BackgroundPanel = ({ onClose }) => {
+  const gradients = [
+    'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+    'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+    'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+    'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
+    'linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%)',
+  ];
+
+  return (
+    <div className="fixed left-12 top-0 h-full w-72 bg-gray-900 border-r border-gray-800 z-40 overflow-y-auto">
+      <div className="p-4 border-b border-gray-800 flex items-center justify-between">
+        <h2 className="text-sm font-semibold text-white">Background</h2>
+        <button onClick={onClose} className="text-gray-400 hover:text-white">
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <div className="p-4">
+        <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-3">Gradients</h3>
+        <div className="grid grid-cols-3 gap-2">
+          {gradients.map((gradient, idx) => (
+            <button
+              key={idx}
+              className="w-full aspect-square rounded-lg border-2 border-gray-700 hover:border-orange-500 transition-colors"
+              style={{ background: gradient }}
+            />
+          ))}
+        </div>
+        <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-3 mt-4">Solid Colors</h3>
+        <div className="grid grid-cols-6 gap-2">
+          {['#0f172a', '#1e293b', '#334155', '#475569', '#64748b', '#94a3b8'].map(color => (
+            <button
+              key={color}
+              className="w-full aspect-square rounded border-2 border-gray-700 hover:border-orange-500 transition-colors"
+              style={{ backgroundColor: color }}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Export Panel
+const ExportPanel = ({ onClose }) => {
+  return (
+    <div className="fixed left-12 top-0 h-full w-72 bg-gray-900 border-r border-gray-800 z-40 overflow-y-auto">
+      <div className="p-4 border-b border-gray-800 flex items-center justify-between">
+        <h2 className="text-sm font-semibold text-white">Export</h2>
+        <button onClick={onClose} className="text-gray-400 hover:text-white">
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <div className="p-4 space-y-4">
+        <div>
+          <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-2">Format</h3>
+          <div className="flex gap-2">
+            <button className="flex-1 px-3 py-2 bg-orange-500 text-white rounded text-xs font-medium">PNG</button>
+            <button className="flex-1 px-3 py-2 bg-gray-800 text-gray-300 rounded text-xs font-medium hover:bg-gray-700">JPG</button>
+            <button className="flex-1 px-3 py-2 bg-gray-800 text-gray-300 rounded text-xs font-medium hover:bg-gray-700">PDF</button>
+          </div>
+        </div>
+        <div>
+          <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-2">Quality</h3>
+          <select className="w-full bg-gray-800 border border-gray-700 rounded px-2 py-1.5 text-xs text-white">
+            <option>High (2x)</option>
+            <option>Medium (1x)</option>
+            <option>Low (0.5x)</option>
+          </select>
+        </div>
+        <button className="w-full py-2.5 bg-orange-500 hover:bg-orange-600 text-white rounded-lg text-sm font-medium transition-colors">
+          Export All Frames
+        </button>
+        <button className="w-full py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg text-xs font-medium transition-colors">
+          Export Selected Only
+        </button>
+      </div>
+    </div>
+  );
+};
+
 // Carousel Row Component
 const CarouselRow = ({ carousel, designSystem, isSelected, hasAnySelection, selectedFrameId, onSelect, onSelectFrame, onAddFrame, onRemoveFrame, onUpdateText, activeTextField, onActivateTextField }) => {
   const totalFrames = carousel.frames.length;
@@ -628,6 +846,7 @@ export default function CarouselDesignTool() {
   const [carousels, setCarousels] = useState(initialCarousels);
   const [zoom, setZoom] = useState(100);
   const [designSystem, setDesignSystem] = useState(defaultDesignSystem);
+  const [activePanel, setActivePanel] = useState(null);
   const [selectedCarouselId, setSelectedCarouselId] = useState(null);
   const [selectedFrameId, setSelectedFrameId] = useState(null);
   const [activeTextField, setActiveTextField] = useState(null);
@@ -794,8 +1013,31 @@ export default function CarouselDesignTool() {
     }));
   };
   
+  const panelWidth = activePanel ? 288 : 0; // 72 = w-72 in pixels
+  const sidebarWidth = 48; // w-12 in pixels
+  const totalOffset = sidebarWidth + panelWidth;
+
   return (
     <div className="min-h-screen bg-gray-950 text-white overflow-x-hidden">
+      {/* Sidebar */}
+      <Sidebar activePanel={activePanel} onPanelChange={setActivePanel} />
+      
+      {/* Panels */}
+      {activePanel === 'design' && (
+        <DesignSystemPanel designSystem={designSystem} onUpdate={setDesignSystem} onClose={() => setActivePanel(null)} />
+      )}
+      {activePanel === 'files' && (
+        <FileBrowserPanel onClose={() => setActivePanel(null)} />
+      )}
+      {activePanel === 'background' && (
+        <BackgroundPanel onClose={() => setActivePanel(null)} />
+      )}
+      {activePanel === 'export' && (
+        <ExportPanel onClose={() => setActivePanel(null)} />
+      )}
+
+      {/* Main Content */}
+      <div style={{ marginLeft: totalOffset, width: `calc(100vw - ${totalOffset}px)`, transition: 'margin-left 0.3s, width 0.3s' }}>
       {/* Header */}
       <div className="sticky top-0 z-50 bg-gray-900/95 backdrop-blur border-b border-gray-800 px-6 py-3">
         <div className="flex items-center justify-between max-w-full">
@@ -1080,9 +1322,10 @@ export default function CarouselDesignTool() {
           ))}
         </div>
       </div>
+      </div>
       
       {/* Footer with zoom */}
-      <div className="fixed bottom-0 left-0 right-0 bg-gray-900/95 backdrop-blur border-t border-gray-800 px-6 py-3 z-30">
+      <div className="fixed bottom-0 bg-gray-900/95 backdrop-blur border-t border-gray-800 px-6 py-3 z-30" style={{ left: totalOffset, right: 0, transition: 'left 0.3s' }}>
         <div className="flex items-center justify-center">
           <div className="flex items-center gap-3 bg-gray-800 rounded-lg px-3 py-1.5">
             <button onClick={() => setZoom(z => Math.max(50, z - 10))} className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-700 transition-colors text-gray-400 hover:text-white" title="Zoom out">
