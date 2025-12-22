@@ -860,6 +860,35 @@ export default function CarouselDesignTool() {
   const [designSystem, setDesignSystem] = useState(defaultDesignSystem);
   const [activePanel, setActivePanel] = useState(null);
   const [selectedCarouselId, setSelectedCarouselId] = useState(null);
+  
+  // Browser-style tabs for projects
+  const [tabs, setTabs] = useState([
+    { id: 1, name: 'HelloData Campaign', active: true },
+    { id: 2, name: 'Untitled Project', active: false }
+  ]);
+  const [activeTabId, setActiveTabId] = useState(1);
+  
+  const handleTabClick = (tabId) => {
+    setActiveTabId(tabId);
+    setTabs(prev => prev.map(tab => ({ ...tab, active: tab.id === tabId })));
+  };
+  
+  const handleCloseTab = (tabId, e) => {
+    e.stopPropagation();
+    if (tabs.length <= 1) return;
+    const newTabs = tabs.filter(t => t.id !== tabId);
+    if (activeTabId === tabId) {
+      setActiveTabId(newTabs[0].id);
+      newTabs[0].active = true;
+    }
+    setTabs(newTabs);
+  };
+  
+  const handleAddTab = () => {
+    const newId = Math.max(...tabs.map(t => t.id)) + 1;
+    setTabs(prev => [...prev.map(t => ({ ...t, active: false })), { id: newId, name: 'Untitled Project', active: true }]);
+    setActiveTabId(newId);
+  };
   const [selectedFrameId, setSelectedFrameId] = useState(null);
   const [activeTextField, setActiveTextField] = useState(null);
   const [showColorPicker, setShowColorPicker] = useState(false);
@@ -1054,23 +1083,49 @@ export default function CarouselDesignTool() {
 
       {/* Main Content */}
       <div style={{ marginLeft: totalOffset, width: `calc(100vw - ${totalOffset}px)`, transition: 'margin-left 0.3s, width 0.3s' }}>
-      {/* Header */}
-      <div className="sticky top-0 z-50 bg-gray-900/95 backdrop-blur border-b border-gray-800 px-6 py-3">
-        <div className="flex items-center justify-between max-w-full">
-          <div>
-            <h1 className="text-xl font-bold">LinkedIn Carousel Designer</h1>
-            <p className="text-sm text-gray-400">HelloData Campaign Tool</p>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-800 border border-gray-700">
-              <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" /></svg>
-              <span className="text-sm font-medium text-gray-300">Design System</span>
-              <div className="flex gap-0.5 ml-1">
-                <div className="w-2 h-2 rounded-full" style={{ backgroundColor: designSystem.primary }} />
-                <div className="w-2 h-2 rounded-full" style={{ backgroundColor: designSystem.secondary }} />
-                <div className="w-2 h-2 rounded-full" style={{ backgroundColor: designSystem.accent }} />
+      {/* Browser-style Tab Bar */}
+      <div className="sticky top-0 z-50 bg-gray-950 border-b border-gray-800">
+        <div className="flex items-end">
+          {/* Tabs */}
+          <div className="flex items-end gap-0.5 px-2 pt-2">
+            {tabs.map(tab => (
+              <div
+                key={tab.id}
+                onClick={() => handleTabClick(tab.id)}
+                className={`group flex items-center gap-2 px-4 py-2 rounded-t-lg cursor-pointer transition-all duration-150 ${
+                  tab.active 
+                    ? 'bg-gray-900 text-white border-t border-l border-r border-gray-700' 
+                    : 'bg-gray-800/50 text-gray-400 hover:bg-gray-800 hover:text-gray-300'
+                }`}
+                style={{ minWidth: 140, maxWidth: 200 }}
+              >
+                <svg className="w-4 h-4 flex-shrink-0 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <span className="text-sm font-medium truncate flex-1">{tab.name}</span>
+                <button 
+                  onClick={(e) => handleCloseTab(tab.id, e)}
+                  className={`w-5 h-5 rounded flex items-center justify-center transition-all ${
+                    tab.active 
+                      ? 'hover:bg-gray-700 text-gray-400 hover:text-white' 
+                      : 'opacity-0 group-hover:opacity-100 hover:bg-gray-700 text-gray-500 hover:text-white'
+                  }`}
+                >
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
               </div>
-            </div>
+            ))}
+            {/* Add Tab Button */}
+            <button 
+              onClick={handleAddTab}
+              className="w-8 h-8 mb-0.5 rounded-lg flex items-center justify-center text-gray-500 hover:text-white hover:bg-gray-800 transition-all"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+            </button>
           </div>
         </div>
       </div>
