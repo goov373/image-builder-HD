@@ -745,7 +745,7 @@ const Sidebar = ({ activePanel, onPanelChange, zoom, onZoomChange }) => {
       </div>
       
       {/* Zoom Controls - Vertical at bottom */}
-      <div className="mt-auto flex flex-col items-center gap-2">
+      <div className="mt-auto flex flex-col items-center gap-1.5 pb-2">
         <button 
           onClick={() => onZoomChange(Math.min(150, zoom + 10))} 
           className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-700 transition-colors"
@@ -755,13 +755,9 @@ const Sidebar = ({ activePanel, onPanelChange, zoom, onZoomChange }) => {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
           </svg>
         </button>
-        <button 
-          onClick={() => onZoomChange(100)}
-          className="text-[10px] font-mono font-medium text-gray-400 hover:text-white transition-colors"
-          title="Reset zoom"
-        >
+        <span className="text-[10px] font-mono font-medium text-gray-400">
           {zoom}%
-        </button>
+        </span>
         <button 
           onClick={() => onZoomChange(Math.max(50, zoom - 10))} 
           className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-700 transition-colors"
@@ -770,6 +766,13 @@ const Sidebar = ({ activePanel, onPanelChange, zoom, onZoomChange }) => {
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
           </svg>
+        </button>
+        <button 
+          onClick={() => onZoomChange(100)}
+          className="mt-1 px-2 py-1 text-[9px] font-medium text-gray-400 hover:text-white hover:bg-gray-700 rounded transition-colors"
+          title="Reset to 100%"
+        >
+          Reset
         </button>
       </div>
     </div>
