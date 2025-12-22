@@ -1212,7 +1212,7 @@ export default function CarouselDesignTool() {
                 )}
                 <div 
                   onClick={() => handleTabClick(tab.id)}
-                  className={`group flex items-center gap-2 px-4 h-9 rounded-t-lg cursor-pointer transition-colors duration-150 ${
+                  className={`group flex items-center gap-2 px-4 h-10 rounded-t-lg cursor-pointer transition-colors duration-150 ${
                     tab.active 
                       ? 'bg-gray-900 text-white' 
                       : 'bg-transparent text-gray-500 hover:text-gray-300'
