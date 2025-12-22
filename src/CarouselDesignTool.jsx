@@ -1510,9 +1510,9 @@ export default function CarouselDesignTool() {
                   <svg className="w-2 h-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
                 </button>
                 {showListPicker && activeTextField && (
-                  <div className="absolute top-full left-0 mt-1 p-1 bg-gray-800 border border-gray-700 rounded shadow-xl z-[200] min-w-[100px]" onClick={(e) => e.stopPropagation()}>
+                  <div className="absolute top-full left-0 mt-1 p-1 bg-gray-800 border border-gray-700 rounded shadow-xl z-[200] min-w-[100px]" onClick={(e) => e.stopPropagation()} onMouseDown={(e) => e.stopPropagation()}>
                     {[{ name: 'None', value: null }, { name: 'Bullet', value: 'bullet' }, { name: 'ABC', value: 'abc' }, { name: 'Numbered', value: 'numbered' }].map(l => (
-                      <button type="button" key={l.name} onClick={(e) => { e.stopPropagation(); handleUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'listType', l.value); setShowListPicker(false); }} className={`w-full px-2 py-1 rounded text-[9px] text-left transition-colors ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.listType === l.value ? 'bg-orange-500 text-white' : 'text-gray-300 hover:bg-gray-700'}`}>{l.name}</button>
+                      <button type="button" key={l.name} onMouseDown={(e) => e.stopPropagation()} onClick={(e) => { e.stopPropagation(); handleUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'listType', l.value); setShowListPicker(false); }} className={`w-full px-2 py-1 rounded text-[9px] text-left transition-colors ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.listType === l.value ? 'bg-orange-500 text-white' : 'text-gray-300 hover:bg-gray-700'}`}>{l.name}</button>
                     ))}
                   </div>
                 )}
