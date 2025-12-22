@@ -1021,9 +1021,9 @@ const CarouselRow = ({ carousel, designSystem, isSelected, hasAnySelection, sele
               >
                 <button 
                   onClick={(e) => { e.stopPropagation(); onAddFrame(carousel.id, index + 1); }} 
-                  className="w-6 h-6 rounded-full border border-dashed border-gray-700 opacity-30 hover:opacity-100 hover:border-orange-500 hover:bg-orange-500/10 flex items-center justify-center transition-all duration-150"
+                  className="w-7 h-7 rounded-full border border-dashed border-gray-700 opacity-30 hover:opacity-100 hover:border-orange-500 hover:bg-orange-500/10 flex items-center justify-center transition-all duration-150"
                 >
-                  <svg className="w-3 h-3 text-gray-500 hover:text-orange-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
+                  <svg className="w-3.5 h-3.5 text-gray-500 hover:text-orange-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
                 </button>
               </div>
             </React.Fragment>
