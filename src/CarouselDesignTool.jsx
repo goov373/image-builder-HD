@@ -803,8 +803,8 @@ export default function CarouselDesignTool() {
       </div>
       
       {/* Toolbar */}
-      <div className="sticky top-[72px] z-40 bg-gray-900 border-b border-gray-800 px-6 py-1.5">
-        <div className="flex items-center justify-between text-xs text-gray-400">
+      <div className="sticky top-[72px] z-40 bg-gray-900 border-b border-gray-800 px-6 py-1.5 overflow-x-auto hide-scrollbar">
+        <div className="flex items-center justify-between text-xs text-gray-400 min-w-max">
           <div className="flex items-center gap-4">
             {/* Format dropdown */}
             <div ref={formatPickerRef} className={`relative transition-opacity ${selectedCarouselId ? 'opacity-100' : 'opacity-40 pointer-events-none'}`}>
@@ -878,11 +878,12 @@ export default function CarouselDesignTool() {
 
             {/* Text section */}
             <div className={`flex items-center gap-2 transition-opacity ${activeTextField ? 'opacity-100' : 'opacity-40 pointer-events-none'}`}>
-              <span className="text-[9px] font-medium text-gray-500">Text</span>
-              <div className="w-px h-6 bg-gray-700" />
+              <span className="text-[9px] font-medium text-gray-500 flex-shrink-0">Text</span>
+              <div className="w-px h-6 bg-gray-700 flex-shrink-0" />
+              <div className="flex items-center gap-1 overflow-x-auto hide-scrollbar flex-shrink-0">
               
               {/* Font Type dropdown */}
-              <div ref={fontPickerRef} className="relative">
+              <div ref={fontPickerRef} className="relative flex-shrink-0">
                 <button onClick={() => activeTextField && setShowFontPicker(!showFontPicker)} className="flex items-center gap-1 px-2 py-1 rounded text-[9px] font-medium text-gray-300 hover:bg-gray-700 transition-colors">
                   <span>Font Type</span>
                   <svg className={`w-2 h-2 transition-transform ${showFontPicker ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
@@ -899,7 +900,7 @@ export default function CarouselDesignTool() {
               </div>
 
               {/* Font Size dropdown */}
-              <div ref={fontSizeRef} className="relative">
+              <div ref={fontSizeRef} className="relative flex-shrink-0">
                 <button onClick={() => activeTextField && setShowFontSize(!showFontSize)} className="flex items-center gap-1 px-2 py-1 rounded text-[9px] font-medium text-gray-300 hover:bg-gray-700 transition-colors">
                   <span>Font Size</span>
                   <svg className={`w-2 h-2 transition-transform ${showFontSize ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
@@ -916,7 +917,7 @@ export default function CarouselDesignTool() {
               </div>
 
               {/* Color picker */}
-              <div ref={colorPickerRef} className="relative">
+              <div ref={colorPickerRef} className="relative flex-shrink-0">
                 <button onClick={() => activeTextField && setShowColorPicker(!showColorPicker)} className="flex items-center gap-1 px-1.5 py-1 rounded text-[9px] font-medium text-gray-300 hover:bg-gray-700 transition-colors" title="Text color">
                   <div className="w-3 h-3 rounded-sm border border-gray-600" style={{ backgroundColor: selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.color || '#ffffff' }} />
                 </button>
@@ -938,7 +939,7 @@ export default function CarouselDesignTool() {
               <button onClick={() => { if (!activeTextField) return; const formatting = selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField] || {}; handleUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'italic', !formatting.italic); }} className={`px-1.5 py-1 rounded text-[9px] italic transition-colors ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.italic ? 'bg-orange-500 text-white' : 'text-gray-300 hover:bg-gray-700'}`} title="Italic">I</button>
 
               {/* Underline */}
-              <div ref={underlineRef} className="relative flex">
+              <div ref={underlineRef} className="relative flex flex-shrink-0">
                 <button onClick={() => { if (!activeTextField) return; const currentUnderline = selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.underline; handleUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'underline', !currentUnderline); if (!currentUnderline) handleUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'underlineStyle', 'solid'); }} className={`px-1.5 py-1 rounded-l text-[9px] transition-colors ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.underline ? 'bg-orange-500 text-white' : 'text-gray-300 hover:bg-gray-700'}`} title="Underline" style={{ textDecoration: 'underline' }}>U</button>
                 <button onClick={() => activeTextField && setShowUnderlinePicker(!showUnderlinePicker)} className="px-0.5 py-1 rounded-r text-gray-400 hover:text-gray-200 hover:bg-gray-700 transition-colors border-l border-gray-600">
                   <svg className="w-2 h-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
@@ -968,7 +969,7 @@ export default function CarouselDesignTool() {
               </div>
 
               {/* Text Alignment */}
-              <div ref={textAlignRef} className="relative">
+              <div ref={textAlignRef} className="relative flex-shrink-0">
                 <button onClick={() => activeTextField && setShowTextAlign(!showTextAlign)} className="flex items-center gap-1 px-1.5 py-1 rounded text-[9px] font-medium text-gray-300 hover:bg-gray-700 transition-colors" title="Text alignment">
                   <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h10M4 18h16" /></svg>
                   <svg className="w-2 h-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
@@ -987,7 +988,7 @@ export default function CarouselDesignTool() {
               </div>
 
               {/* Line Spacing */}
-              <div ref={lineSpacingRef} className="relative">
+              <div ref={lineSpacingRef} className="relative flex-shrink-0">
                 <button onClick={() => activeTextField && setShowLineSpacing(!showLineSpacing)} className="flex items-center gap-1 px-1.5 py-1 rounded text-[9px] font-medium text-gray-300 hover:bg-gray-700 transition-colors" title="Line spacing">
                   <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path d="M12 3v18M12 3l-3 3M12 3l3 3M12 21l-3-3M12 21l3-3" strokeLinecap="round" strokeLinejoin="round"/></svg>
                   <svg className="w-2 h-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
@@ -1002,7 +1003,7 @@ export default function CarouselDesignTool() {
               </div>
 
               {/* Letter Spacing */}
-              <div ref={letterSpacingRef} className="relative">
+              <div ref={letterSpacingRef} className="relative flex-shrink-0">
                 <button onClick={() => activeTextField && setShowLetterSpacing(!showLetterSpacing)} className="flex items-center gap-1 px-1.5 py-1 rounded text-[9px] font-medium text-gray-300 hover:bg-gray-700 transition-colors" title="Letter spacing">
                   <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path d="M3 12h18M3 12l3-3M3 12l3 3M21 12l-3-3M21 12l-3 3" strokeLinecap="round" strokeLinejoin="round"/></svg>
                   <svg className="w-2 h-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
@@ -1017,7 +1018,7 @@ export default function CarouselDesignTool() {
               </div>
 
               {/* List Type */}
-              <div ref={listPickerRef} className="relative">
+              <div ref={listPickerRef} className="relative flex-shrink-0">
                 <button onClick={() => activeTextField && setShowListPicker(!showListPicker)} className="flex items-center gap-1 px-1.5 py-1 rounded text-[9px] font-medium text-gray-300 hover:bg-gray-700 transition-colors" title="List type">
                   <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" /><circle cx="2" cy="6" r="1" fill="currentColor" /><circle cx="2" cy="10" r="1" fill="currentColor" /><circle cx="2" cy="14" r="1" fill="currentColor" /><circle cx="2" cy="18" r="1" fill="currentColor" /></svg>
                   <svg className="w-2 h-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
@@ -1029,6 +1030,7 @@ export default function CarouselDesignTool() {
                     ))}
                   </div>
                 )}
+              </div>
               </div>
             </div>
           </div>
