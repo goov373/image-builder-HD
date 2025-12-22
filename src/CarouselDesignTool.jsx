@@ -573,7 +573,7 @@ const CarouselFrame = ({ frame, carouselId, frameSize, designSystem, frameIndex,
       </div>
       
       <div 
-        className={`relative rounded-lg overflow-hidden shadow-lg cursor-pointer transition-all ${isFrameSelected ? 'border border-orange-500/70' : 'border border-transparent hover:border-gray-600'}`}
+        className={`relative overflow-hidden shadow-lg cursor-pointer transition-all border border-gray-600 ${isFrameSelected ? 'ring-2 ring-orange-500/70' : 'hover:border-gray-500'}`}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         style={{ background: style.background, width: size.width, height: size.height }}
