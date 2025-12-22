@@ -1131,7 +1131,7 @@ export default function CarouselDesignTool() {
       </div>
       
       {/* Toolbar */}
-      <div className="sticky top-[72px] z-50 bg-gray-900 border-b border-gray-800 px-6 py-1.5 overflow-x-auto hide-scrollbar">
+      <div className="sticky top-[41px] z-40 bg-gray-900 border-b border-gray-800 px-6 py-2 overflow-x-auto hide-scrollbar">
         <div className="flex items-center justify-between text-xs text-gray-400 min-w-max">
           <div className="flex items-center gap-4">
             {/* Format dropdown */}
