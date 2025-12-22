@@ -1289,7 +1289,7 @@ export default function CarouselDesignTool() {
       <div style={{ marginLeft: totalOffset, marginTop: 56, width: `calc(100vw - ${totalOffset}px)`, transition: 'margin-left 0.3s, width 0.3s' }}>
       {/* Toolbar - Only show for projects with content */}
       {activeTab?.hasContent && (
-      <div className="sticky top-[56px] z-40 bg-gray-900 border-b border-gray-800 px-6 py-2 overflow-x-auto hide-scrollbar">
+      <div className="sticky top-[56px] z-[100] bg-gray-900 border-b border-gray-800 px-6 py-2 overflow-visible">
         <div className="flex items-center justify-between text-xs text-gray-400 min-w-max">
           <div className="flex items-center gap-4">
             {/* Format dropdown */}
@@ -1300,7 +1300,7 @@ export default function CarouselDesignTool() {
                 <svg className={`w-3 h-3 text-gray-400 transition-transform ${showFormatPicker ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
               </button>
               {showFormatPicker && (
-                <div className="absolute top-full left-0 mt-1 p-1 bg-gray-800 border border-gray-700 rounded-lg shadow-xl z-[100] min-w-[160px]">
+                <div className="absolute top-full left-0 mt-1 p-1 bg-gray-800 border border-gray-700 rounded-lg shadow-xl z-[200] min-w-[160px]">
                   {Object.entries(frameSizes).filter(([key]) => key !== 'landscape').map(([key, size]) => (
                     <button key={key} onClick={() => { handleChangeFrameSize(selectedCarouselId, key); setShowFormatPicker(false); }} className={`w-full flex items-center gap-2 px-3 py-1.5 rounded text-left text-[10px] transition-colors ${selectedCarousel?.frameSize === key ? 'bg-orange-500 text-white' : 'text-gray-300 hover:bg-gray-700'}`}>
                       <span className="font-medium">{size.name}</span>
@@ -1321,7 +1321,7 @@ export default function CarouselDesignTool() {
                 <svg className={`w-3 h-3 text-gray-400 transition-transform ${showLayoutPicker ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
               </button>
               {showLayoutPicker && (
-                <div className="absolute top-full left-0 mt-1 p-1 bg-gray-800 border border-gray-700 rounded-lg shadow-xl z-[100] min-w-[140px]">
+                <div className="absolute top-full left-0 mt-1 p-1 bg-gray-800 border border-gray-700 rounded-lg shadow-xl z-[200] min-w-[140px]">
                   {layoutNames.map((name, idx) => (
                     <button key={idx} onClick={() => { handleSetLayout(selectedCarouselId, selectedFrameId, idx); setShowLayoutPicker(false); }} className={`w-full flex items-center gap-2 px-3 py-1.5 rounded text-left text-[10px] transition-colors ${(selectedFrame?.currentLayout || 0) === idx ? 'bg-orange-500 text-white' : 'text-gray-300 hover:bg-gray-700'}`}>
                       {idx === 0 && <div className="w-3 h-3.5 bg-gray-600 rounded flex items-end p-0.5"><div className="w-full h-0.5 rounded-sm bg-orange-400" /></div>}
@@ -1347,7 +1347,7 @@ export default function CarouselDesignTool() {
                 <svg className={`w-3 h-3 text-gray-400 transition-transform ${showSnippetsPicker ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
               </button>
               {showSnippetsPicker && (
-                <div className="absolute top-full left-0 mt-1 p-1 bg-gray-800 border border-gray-700 rounded-lg shadow-xl z-[100] min-w-[80px]">
+                <div className="absolute top-full left-0 mt-1 p-1 bg-gray-800 border border-gray-700 rounded-lg shadow-xl z-[200] min-w-[80px]">
                   {[0, 1, 2].map((idx) => (
                     <button key={idx} onClick={() => { handleSetVariant(selectedCarouselId, selectedFrameId, idx); setShowSnippetsPicker(false); }} className={`w-full flex items-center justify-center gap-1 px-3 py-1.5 rounded text-[10px] font-medium transition-colors ${selectedFrame?.currentVariant === idx ? 'bg-orange-500 text-white' : 'text-gray-300 hover:bg-gray-700'}`}>
                       <span className="text-orange-400">S{idx + 1}</span>
@@ -1375,7 +1375,7 @@ export default function CarouselDesignTool() {
                   <svg className={`w-2 h-2 transition-transform ${showFontPicker ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
                 </button>
                 {showFontPicker && activeTextField && (
-                  <div className="absolute top-full left-0 mt-1 p-1 bg-gray-800 border border-gray-700 rounded shadow-xl z-[100] max-h-48 overflow-y-auto min-w-[140px]">
+                  <div className="absolute top-full left-0 mt-1 p-1 bg-gray-800 border border-gray-700 rounded shadow-xl z-[200] max-h-48 overflow-y-auto min-w-[140px]">
                     {allFonts.map(font => (
                       <button key={font.value} onClick={() => { handleUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'fontFamily', font.value); setShowFontPicker(false); }} className={`w-full px-2 py-1 rounded text-[9px] text-left transition-colors ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.fontFamily === font.value ? 'bg-orange-500 text-white' : 'text-gray-300 hover:bg-gray-700'}`} style={{ fontFamily: font.value }}>
                         {font.name}
@@ -1392,7 +1392,7 @@ export default function CarouselDesignTool() {
                   <svg className={`w-2 h-2 transition-transform ${showFontSize ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
                 </button>
                 {showFontSize && activeTextField && (
-                  <div className="absolute top-full left-0 mt-1 p-1 bg-gray-800 border border-gray-700 rounded shadow-xl z-[100]">
+                  <div className="absolute top-full left-0 mt-1 p-1 bg-gray-800 border border-gray-700 rounded shadow-xl z-[200]">
                     <div className="flex gap-0.5">
                       {[{ name: 'S', value: 0.85 }, { name: 'M', value: 1 }, { name: 'L', value: 1.2 }].map(s => (
                         <button key={s.name} onClick={() => { handleUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'fontSize', s.value); setShowFontSize(false); }} className={`px-2 py-0.5 rounded text-[9px] font-medium transition-colors ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.fontSize === s.value ? 'bg-orange-500 text-white' : 'text-gray-300 hover:bg-gray-700'}`}>{s.name}</button>
@@ -1408,7 +1408,7 @@ export default function CarouselDesignTool() {
                   <div className="w-3 h-3 rounded-sm border border-gray-600" style={{ backgroundColor: selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.color || '#ffffff' }} />
                 </button>
                 {showColorPicker && activeTextField && (
-                  <div className="absolute top-full left-0 mt-1 p-1.5 bg-gray-800 border border-gray-700 rounded shadow-xl z-[100]">
+                  <div className="absolute top-full left-0 mt-1 p-1.5 bg-gray-800 border border-gray-700 rounded shadow-xl z-[200]">
                     <div className="flex gap-1">
                       {[{ name: 'Primary', value: designSystem.primary }, { name: 'Secondary', value: designSystem.secondary }, { name: 'Accent', value: designSystem.accent }, { name: 'Light', value: designSystem.neutral3 }, { name: 'White', value: '#ffffff' }].map(c => (
                         <button key={c.value} onClick={() => { handleUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'color', c.value); setShowColorPicker(false); }} className="w-5 h-5 rounded border border-gray-600 hover:scale-110 transition-transform" style={{ backgroundColor: c.value }} title={c.name} />
@@ -1431,7 +1431,7 @@ export default function CarouselDesignTool() {
                   <svg className="w-2 h-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
                 </button>
                 {showUnderlinePicker && activeTextField && (
-                  <div className="absolute top-full right-0 mt-1 p-2 bg-gray-800 border border-gray-700 rounded shadow-xl z-[100] min-w-[140px]">
+                  <div className="absolute top-full right-0 mt-1 p-2 bg-gray-800 border border-gray-700 rounded shadow-xl z-[200] min-w-[140px]">
                     <div className="text-[8px] text-gray-500 mb-1.5 uppercase tracking-wide">Style</div>
                     <div className="flex gap-1 mb-3">
                       {[{ name: 'Solid', value: 'solid' }, { name: 'Dotted', value: 'dotted' }, { name: 'Wavy', value: 'wavy' }, { name: 'Highlight', value: 'highlight' }].map(s => (
@@ -1461,7 +1461,7 @@ export default function CarouselDesignTool() {
                   <svg className="w-2 h-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
                 </button>
                 {showTextAlign && activeTextField && (
-                  <div className="absolute top-full left-0 mt-1 p-1 bg-gray-800 border border-gray-700 rounded shadow-xl z-[100]">
+                  <div className="absolute top-full left-0 mt-1 p-1 bg-gray-800 border border-gray-700 rounded shadow-xl z-[200]">
                     <div className="flex gap-0.5">
                       {[{ name: 'Left', value: 'left', icon: 'M4 6h16M4 12h10M4 18h16' }, { name: 'Center', value: 'center', icon: 'M4 6h16M7 12h10M4 18h16' }, { name: 'Right', value: 'right', icon: 'M4 6h16M10 12h10M4 18h16' }, { name: 'Justify', value: 'justify', icon: 'M4 6h16M4 12h16M4 18h16' }].map(a => (
                         <button key={a.value} onClick={() => { handleUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'textAlign', a.value); setShowTextAlign(false); }} className={`p-1.5 rounded transition-colors ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.textAlign === a.value ? 'bg-orange-500 text-white' : 'text-gray-300 hover:bg-gray-700'}`} title={a.name}>
@@ -1480,7 +1480,7 @@ export default function CarouselDesignTool() {
                   <svg className="w-2 h-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
                 </button>
                 {showLineSpacing && activeTextField && (
-                  <div className="absolute top-full left-0 mt-1 p-1 bg-gray-800 border border-gray-700 rounded shadow-xl z-[100] min-w-[100px]">
+                  <div className="absolute top-full left-0 mt-1 p-1 bg-gray-800 border border-gray-700 rounded shadow-xl z-[200] min-w-[100px]">
                     {[{ name: 'Tight', value: 1.1 }, { name: 'Normal', value: 1.4 }, { name: 'Relaxed', value: 1.7 }, { name: 'Loose', value: 2 }].map(s => (
                       <button key={s.name} onClick={() => { handleUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'lineHeight', s.value); setShowLineSpacing(false); }} className={`w-full px-2 py-1 rounded text-[9px] text-left transition-colors ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.lineHeight === s.value ? 'bg-orange-500 text-white' : 'text-gray-300 hover:bg-gray-700'}`}>{s.name}</button>
                     ))}
@@ -1495,7 +1495,7 @@ export default function CarouselDesignTool() {
                   <svg className="w-2 h-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
                 </button>
                 {showLetterSpacing && activeTextField && (
-                  <div className="absolute top-full left-0 mt-1 p-1 bg-gray-800 border border-gray-700 rounded shadow-xl z-[100] min-w-[100px]">
+                  <div className="absolute top-full left-0 mt-1 p-1 bg-gray-800 border border-gray-700 rounded shadow-xl z-[200] min-w-[100px]">
                     {[{ name: 'Tight', value: -0.5 }, { name: 'Normal', value: 0 }, { name: 'Wide', value: 1 }, { name: 'Wider', value: 2 }].map(s => (
                       <button key={s.name} onClick={() => { handleUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'letterSpacing', s.value); setShowLetterSpacing(false); }} className={`w-full px-2 py-1 rounded text-[9px] text-left transition-colors ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.letterSpacing === s.value ? 'bg-orange-500 text-white' : 'text-gray-300 hover:bg-gray-700'}`}>{s.name}</button>
                     ))}
@@ -1510,7 +1510,7 @@ export default function CarouselDesignTool() {
                   <svg className="w-2 h-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
                 </button>
                 {showListPicker && activeTextField && (
-                  <div className="absolute top-full left-0 mt-1 p-1 bg-gray-800 border border-gray-700 rounded shadow-xl z-[100] min-w-[100px]">
+                  <div className="absolute top-full left-0 mt-1 p-1 bg-gray-800 border border-gray-700 rounded shadow-xl z-[200] min-w-[100px]">
                     {[{ name: 'None', value: null }, { name: 'Bullet', value: 'bullet' }, { name: 'ABC', value: 'abc' }, { name: 'Numbered', value: 'numbered' }].map(l => (
                       <button key={l.name} onClick={() => { handleUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'listType', l.value); setShowListPicker(false); }} className={`w-full px-2 py-1 rounded text-[9px] text-left transition-colors ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.listType === l.value ? 'bg-orange-500 text-white' : 'text-gray-300 hover:bg-gray-700'}`}>{l.name}</button>
                     ))}
