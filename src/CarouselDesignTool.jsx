@@ -1366,7 +1366,7 @@ export default function CarouselDesignTool() {
             <div className={`flex items-center gap-2 transition-opacity ${activeTextField ? 'opacity-100' : 'opacity-40 pointer-events-none'}`}>
               <span className="text-[9px] font-medium text-gray-500 flex-shrink-0">Text</span>
               <div className="w-px h-6 bg-gray-700 flex-shrink-0" />
-              <div className="flex items-center gap-1 overflow-x-auto hide-scrollbar flex-shrink-0">
+              <div className="flex items-center gap-1 flex-shrink-0">
               
               {/* Font Type dropdown */}
               <div ref={fontPickerRef} className="relative flex-shrink-0">
