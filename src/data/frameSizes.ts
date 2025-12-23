@@ -1,5 +1,7 @@
+import type { FrameSizeKey } from '../types';
+
 // Frame size specifications for different aspect ratios
-export const frameSizes = {
+export const frameSizes: Record<string, { name: string; ratio: string; width: number; height: number; spec: string; platforms: string }> = {
   story: { name: "Story", ratio: "9:16", width: 135, height: 240, spec: "1080 × 1920px", platforms: "TikTok · Reels · Shorts" },
   pin: { name: "Pin", ratio: "2:3", width: 160, height: 240, spec: "1000 × 1500px", platforms: "Pinterest · RedNote" },
   portrait: { name: "Portrait", ratio: "4:5", width: 192, height: 240, spec: "1080 × 1350px", platforms: "Instagram · Facebook" },
@@ -11,14 +13,20 @@ export const frameSizes = {
 // Layout variant names for display
 export const layoutNames = ["Bottom Stack", "Center Drama", "Editorial"];
 
-export const layoutVariantNames = {
+export const layoutVariantNames: Record<number, string[]> = {
   0: ["Bottom", "Top", "Center"],
   1: ["Center", "Lower", "Upper"],
   2: ["Left", "Center", "Right"]
 };
 
+interface FontSizes {
+  headline: number;
+  body: number;
+  lineHeight: number;
+}
+
 // Font size calculator based on frame dimensions
-export const getFontSizes = (frameSize) => {
+export const getFontSizes = (frameSize: FrameSizeKey | string): FontSizes => {
   const size = frameSizes[frameSize] || frameSizes.portrait;
   const isLandscape = frameSize === 'landscape' || frameSize === 'slides';
   
@@ -42,5 +50,4 @@ export const getFontSizes = (frameSize) => {
     lineHeight: 1.4
   };
 };
-
 

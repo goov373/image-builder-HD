@@ -1,5 +1,7 @@
+import type { Carousel, DesignSystem, FrameStyle } from '../types';
+
 // Initial carousel data with text variations
-export const initialCarousels = [
+export const initialCarousels: Carousel[] = [
   {
     id: 1,
     name: "The Deal That Got Away",
@@ -207,8 +209,10 @@ export const initialCarousels = [
 ];
 
 // Frame background styles
-export const getFrameStyle = (carouselId, frameStyle, ds) => {
-  const styles = {
+type FrameStyleResult = { background: string; accent: string };
+
+export const getFrameStyle = (carouselId: number, frameStyle: string, ds: DesignSystem): FrameStyleResult => {
+  const styles: Record<string, FrameStyleResult> = {
     "dark-single-pin": { background: `linear-gradient(135deg, ${ds.neutral1} 0%, ${ds.neutral2} 100%)`, accent: ds.primary },
     "dark-chaos": { background: `linear-gradient(135deg, ${ds.neutral2} 0%, ${ds.neutral1} 100%)`, accent: '#ef4444' },
     "dark-competition": { background: `linear-gradient(135deg, ${ds.neutral1} 0%, ${ds.neutral2} 100%)`, accent: ds.accent },
@@ -227,5 +231,4 @@ export const getFrameStyle = (carouselId, frameStyle, ds) => {
   };
   return styles[frameStyle] || styles["dark-single-pin"];
 };
-
 

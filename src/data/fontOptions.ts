@@ -1,3 +1,5 @@
+import type { FontOption, DesignSystem } from '../types';
+
 // Available fonts configuration
 export const fontOptions = {
   sansSerif: [
@@ -12,18 +14,17 @@ export const fontOptions = {
   ]
 };
 
-export const allFonts = [...fontOptions.sansSerif, ...fontOptions.serif];
+export const allFonts: FontOption[] = [...fontOptions.sansSerif, ...fontOptions.serif];
 
 // Default design system colors and fonts
-export const defaultDesignSystem = {
+export const defaultDesignSystem: DesignSystem = {
   primary: '#f97316',
   secondary: '#0f766e',
   accent: '#fbbf24',
   neutral1: '#0f172a',
   neutral2: '#334155',
   neutral3: '#f8fafc',
-  headingFont: '"Nunito Sans", sans-serif',
-  bodyFont: '"Inter", sans-serif'
+  fontHeadline: '"Nunito Sans", sans-serif',
+  fontBody: '"Inter", sans-serif'
 };
-
 
