@@ -3,7 +3,7 @@
  * Defines settings, sizes, layouts, and features per project type
  */
 
-export type ProjectType = 'carousel' | 'eblast' | 'videoCover';
+export type ProjectType = 'carousel' | 'eblast' | 'videoCover' | 'singleImage';
 
 export interface ProjectConfig {
   name: string;
@@ -81,6 +81,25 @@ export const PROJECT_CONFIGS: Record<ProjectType, ProjectConfig> = {
       episodeNumber: true,
       htmlExport: false,
       gifExport: true,
+    },
+  },
+  singleImage: {
+    name: 'Single Image',
+    description: 'Product mockups and SaaS landing page graphics',
+    frameSizes: ['hero', 'square', 'wide', 'tall', 'og', 'twitter'],
+    defaultSize: 'hero',
+    layouts: ['dashboard-full', 'dashboard-cropped-tl', 'dashboard-cropped-tr', 'modal-centered', 'card-stack', 'browser-window'],
+    features: {
+      multiFrame: false,
+      verticalStack: false,
+      singleFrame: true,
+      dragReorder: true, // Layer reordering
+      progressDots: false,
+      ctaButtons: false,
+      playOverlay: false,
+      episodeNumber: false,
+      htmlExport: false,
+      gifExport: false,
     },
   },
 };

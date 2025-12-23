@@ -22,3 +22,8 @@ export { default as EblastEditor } from './EblastEditor';
 export { default as VideoCoverFrame } from './VideoCoverFrame';
 export { default as VideoCoverEditor } from './VideoCoverEditor';
 export { PlayButtonOverlay, EpisodeNumber } from './overlays';
+// Single Image / Product Mockup components
+export { default as MockupFrame } from './MockupFrame';
+export { default as StyleEditor } from './StyleEditor';
+export { default as SingleImageEditor } from './SingleImageEditor';
+export { DataChip, StatCard, Tooltip, Sparkline, AvatarGroup, ProgressRing } from './decorators';

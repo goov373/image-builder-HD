@@ -5,11 +5,12 @@ import {
   defaultDesignSystem,
   initialCarousels,
   initialEblasts,
-  initialVideoCovers
+  initialVideoCovers,
+  initialSingleImages
 } from './data';
 
 // Import custom hooks
-import { useDropdowns, useTabs, useCarousels, useEblasts, useVideoCovers, useDesignSystem } from './hooks';
+import { useDropdowns, useTabs, useCarousels, useEblasts, useVideoCovers, useSingleImages, useDesignSystem } from './hooks';
 
 // Import context providers
 import { AppProvider } from './context';
@@ -45,6 +46,7 @@ export default function CarouselDesignTool() {
   const carousels = useCarousels(initialCarousels);
   const eblasts = useEblasts(initialEblasts);
   const videoCovers = useVideoCovers(initialVideoCovers);
+  const singleImages = useSingleImages(initialSingleImages);
   const dropdowns = useDropdowns();
 
   // Get current project type from active tab
@@ -56,6 +58,7 @@ export default function CarouselDesignTool() {
       carousels.clearSelection();
       eblasts.clearSelection();
       videoCovers.clearSelection();
+      singleImages.clearSelection();
     });
   };
 
@@ -91,6 +94,10 @@ export default function CarouselDesignTool() {
     videoCovers.handleSelectVideoCover(videoCoverId, dropdowns.closeAllDropdowns);
   };
 
+  const handleSelectSingleImage = (imageId) => {
+    singleImages.handleSelectImage(imageId, dropdowns.closeAllDropdowns);
+  };
+
   const handleDeselect = () => {
     dropdowns.closeAllDropdowns();
     if (currentProjectType === 'carousel') {
@@ -99,6 +106,8 @@ export default function CarouselDesignTool() {
       eblasts.clearSelection();
     } else if (currentProjectType === 'videoCover') {
       videoCovers.clearSelection();
+    } else if (currentProjectType === 'singleImage') {
+      singleImages.clearSelection();
     }
   };
 
@@ -124,6 +133,11 @@ export default function CarouselDesignTool() {
     // Video Cover selection
     selectedVideoCoverId: videoCovers.selectedVideoCoverId,
     selectedVideoCover: videoCovers.selectedVideoCover,
+    // Single Image selection
+    selectedImageId: singleImages.selectedImageId,
+    selectedLayerId: singleImages.selectedLayerId,
+    selectedImage: singleImages.selectedImage,
+    selectedLayer: singleImages.selectedLayer,
     // Shared
     activeTextField: currentProjectType === 'carousel' 
       ? carousels.activeTextField 
@@ -140,6 +154,7 @@ export default function CarouselDesignTool() {
     handleSelectSection,
     handleSelectEblast,
     handleSelectVideoCover,
+    handleSelectSingleImage,
     handleDeselect,
     currentProjectType,
   };
@@ -181,6 +196,16 @@ export default function CarouselDesignTool() {
     handleUpdateEpisodeNumber: videoCovers.handleUpdateEpisodeNumber,
     handleAddVideoCover: videoCovers.handleAddVideoCover,
     handleRemoveVideoCover: videoCovers.handleRemoveVideoCover,
+    // Single Image methods
+    singleImages: singleImages.singleImages,
+    handleUpdateLayer: singleImages.handleUpdateLayer,
+    handleAddLayer: singleImages.handleAddLayer,
+    handleRemoveLayer: singleImages.handleRemoveLayer,
+    handleReorderLayers: singleImages.handleReorderLayers,
+    handleUpdateBackground: singleImages.handleUpdateBackground,
+    handleUpdateCanvasSize: singleImages.handleUpdateCanvasSize,
+    handleAddImage: singleImages.handleAddImage,
+    handleRemoveImage: singleImages.handleRemoveImage,
   };
 
   return (
@@ -232,6 +257,7 @@ export default function CarouselDesignTool() {
           carousels={carousels.carousels}
           eblasts={eblasts.eblasts}
           videoCovers={videoCovers.videoCovers}
+          singleImages={singleImages.singleImages}
           projectType={currentProjectType}
         />
         <AccountPanel 

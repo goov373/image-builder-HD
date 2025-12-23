@@ -11,6 +11,7 @@ import ProjectHeader from './ProjectHeader';
 import CarouselRow from './CarouselRow';
 import EblastEditor from './EblastEditor';
 import VideoCoverEditor from './VideoCoverEditor';
+import SingleImageEditor from './SingleImageEditor';
 
 export default function EditorView({
   // Layout props
@@ -42,6 +43,11 @@ export default function EditorView({
     // Video Cover selection
     selectedVideoCoverId,
     selectedVideoCover,
+    // Single Image selection
+    selectedImageId,
+    selectedLayerId,
+    selectedImage,
+    selectedLayer,
     // Shared
     activeTextField,
     setActiveTextField,
@@ -50,6 +56,7 @@ export default function EditorView({
     handleSelectEblast,
     handleSelectSection,
     handleSelectVideoCover,
+    handleSelectSingleImage,
     handleDeselect,
   } = selection;
 
@@ -79,12 +86,19 @@ export default function EditorView({
     handleVideoCoverChangeFrameSize,
     handleTogglePlayButton,
     handleUpdateEpisodeNumber,
+    // Single Image methods
+    singleImages,
+    handleUpdateLayer,
+    handleAddLayer,
+    handleRemoveLayer,
+    handleReorderLayers,
   } = carouselsCtx;
 
   // Determine which content to show based on project type
   const isCarousel = projectType === 'carousel' || !projectType;
   const isEblast = projectType === 'eblast';
   const isVideoCover = projectType === 'videoCover';
+  const isSingleImage = projectType === 'singleImage';
 
   return (
     <>
@@ -118,9 +132,9 @@ export default function EditorView({
             >
               <div 
                 style={{ 
-                  transform: `scale(${zoom / 100})`, 
+                  transform: isSingleImage ? 'none' : `scale(${zoom / 100})`, 
                   transformOrigin: 'top left', 
-                  width: `${100 / (zoom / 100)}%`, 
+                  width: isSingleImage ? '100%' : `${100 / (zoom / 100)}%`, 
                   transition: 'transform 150ms ease-out' 
                 }}
               >
@@ -205,6 +219,22 @@ export default function EditorView({
                       onChangeFrameSize={handleVideoCoverChangeFrameSize}
                       activeTextField={activeTextField}
                       onActivateTextField={setActiveTextField}
+                    />
+                  </React.Fragment>
+                ))}
+
+                {/* Single Image Content */}
+                {isSingleImage && singleImages && singleImages.map((singleImage, index) => (
+                  <React.Fragment key={singleImage.id}>
+                    <SingleImageEditor
+                      singleImage={singleImage}
+                      designSystem={designSystem}
+                      isSelected={selectedImageId === singleImage.id}
+                      onSelect={handleSelectSingleImage}
+                      onUpdateLayer={handleUpdateLayer}
+                      onAddLayer={handleAddLayer}
+                      onRemoveLayer={handleRemoveLayer}
+                      onReorderLayers={handleReorderLayers}
                     />
                   </React.Fragment>
                 ))}
