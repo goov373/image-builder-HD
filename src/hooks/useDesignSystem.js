@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 
 // Version bump forces refresh of brand colors when defaults change
-const STORAGE_KEY = 'carousel-tool-design-system-v2';
+// v3: HelloData palette - Purple #6466e9, Orange #F97316, Shadow #18191A
+const STORAGE_KEY = 'carousel-tool-design-system-v3';
 
 // Load from localStorage or use initial data
 function loadFromStorage(initialData) {
