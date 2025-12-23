@@ -49,8 +49,8 @@ const DesignSystemPanel = ({ designSystem, onUpdate, onClose, isOpen }) => {
   // ===== BLACK/DARK GRADIENTS (3) =====
   const blackGradients = [
     'linear-gradient(135deg, #18191A 0%, #2d2e30 100%)',   // Shadow to Charcoal
-    'radial-gradient(ellipse at 50% 50%, #3d3e42 0%, #18191A 70%, #000000 100%)', // Dark radial vignette
-    'linear-gradient(135deg, #18191A 0%, #2d2e30 50%, #4a4dcf 150%)', // Dark with subtle purple hint
+    'linear-gradient(180deg, #1f2022 0%, #18191A 100%)',   // Vertical dark fade
+    'linear-gradient(135deg, #0f0f10 0%, #18191A 50%, #27282a 100%)', // Deep black to charcoal
   ];
 
   // ===== LIGHT GREY GRADIENTS (3) =====
