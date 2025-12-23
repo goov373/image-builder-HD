@@ -22,15 +22,18 @@ const DesignSystemPanel = ({ designSystem, onUpdate, onClose, isOpen }) => {
   ];
 
   // HelloData brand-aligned gradients
-  // HelloData gradients - Purple to Light direction (slightly darker tones)
+  // HelloData gradients - Purple to Light direction with variety
   // Mesh/wave gradient for organic feel
   const meshGradient = 'radial-gradient(at 40% 20%, #6466e9 0px, transparent 50%), radial-gradient(at 80% 0%, #818cf8 0px, transparent 50%), radial-gradient(at 0% 50%, #5558d9 0px, transparent 50%), radial-gradient(at 80% 50%, #a8aed4 0px, transparent 50%), radial-gradient(at 0% 100%, #6466e9 0px, transparent 50%), radial-gradient(at 80% 100%, #c4c8e8 0px, transparent 50%), linear-gradient(135deg, #4a4dcf 0%, #b8bdd6 100%)';
   
+  // Conical gradient for first option
+  const conicalGradient = 'conic-gradient(from 180deg at 50% 50%, #6466e9 0deg, #818cf8 120deg, #b8bdd6 240deg, #6466e9 360deg)';
+  
   const gradients = [
-    'linear-gradient(135deg, #5558d9 0%, #b8bdd6 100%)',   // Deep Purple to Muted Grey
+    conicalGradient,                                        // Conical purple sweep
     meshGradient,                                           // Mesh/Wave organic gradient
-    'linear-gradient(135deg, #4a4dcf 0%, #9ca3c7 100%)',   // Darker Purple to Steel Grey
-    'linear-gradient(135deg, #5558d9 0%, #a8aed4 100%)',   // Deep Purple to Medium Grey-Purple
+    'linear-gradient(135deg, #3d3fa8 0%, #6466e9 100%)',   // Dark Purple to Purple
+    'linear-gradient(135deg, #5558d9 0%, #b8bdd6 100%)',   // Deep Purple to Muted Grey
     'linear-gradient(135deg, #F97316 0%, #fbbf24 100%)',   // Orange to Gold (CTA)
     'linear-gradient(135deg, #18191A 0%, #2d2e30 100%)',   // Shadow (dark backgrounds)
   ];
