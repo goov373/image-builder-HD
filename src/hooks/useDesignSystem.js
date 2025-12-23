@@ -1,19 +1,32 @@
 import { useState, useEffect } from 'react';
 
-// Version bump forces refresh of brand colors when defaults change
-// v4: HelloData palette - Purple #6466e9, Orange #F97316, Shadow #18191A
-const STORAGE_KEY = 'carousel-tool-design-system-v4';
+// HelloData brand colors - these are the required defaults
+const HELLODATA_PRIMARY = '#6466e9';
+const STORAGE_KEY = 'carousel-tool-design-system-v5';
 
 // Load from localStorage or use initial data
+// Forces reset if stored colors don't match HelloData brand
 function loadFromStorage(initialData) {
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
-      return JSON.parse(saved);
+      const parsed = JSON.parse(saved);
+      // Validate that it has HelloData colors - if not, reset to defaults
+      if (parsed.primary === HELLODATA_PRIMARY) {
+        return parsed;
+      }
     }
   } catch (e) {
     console.warn('Failed to load design system from localStorage:', e);
   }
+  // Clear any old storage keys
+  try {
+    Object.keys(localStorage).forEach(key => {
+      if (key.startsWith('carousel-tool-design-system')) {
+        localStorage.removeItem(key);
+      }
+    });
+  } catch (e) {}
   return initialData;
 }
 
