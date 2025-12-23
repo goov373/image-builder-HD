@@ -6,7 +6,7 @@ const AvatarGroup = ({
   count = 5,
   maxDisplay = 4,
   size = "md",
-  colors = ['#0d9488', '#f97316', '#3b82f6', '#8b5cf6', '#ec4899'],
+  colors = ['#6466e9', '#F97316', '#818cf8', '#8b5cf6', '#ec4899'],
   style = {},
   isSelected = false,
   onClick,

@@ -27,32 +27,31 @@ HelloData is the **confident expert** who makes you feel like you have an unfair
 #### Primary Colors
 | Color | Hex | Usage |
 |-------|-----|-------|
-| **Teal** | `#0d9488` | Primary brand color. Trust, innovation, stability. Used for key UI elements, headers, primary buttons. |
-| **Orange** | `#f97316` | Secondary/accent. Energy, action, urgency. CTAs, highlights, important callouts. |
-| **Blue** | `#3b82f6` | Data accent. Technology, insights, links. Charts, data visualizations, interactive elements. |
+| **Purple** | `#6466e9` | Primary brand color. Main identity, headers, key UI elements, primary buttons. |
+| **Orange** | `#F97316` | Secondary/accent. Energy, action, urgency. CTAs, highlights, important callouts. |
 
 #### Neutral Colors
 | Color | Hex | Usage |
 |-------|-----|-------|
-| **Slate 900** | `#0f172a` | Deep backgrounds, primary text on light |
-| **Slate 700** | `#334155` | Secondary backgrounds, subheadings |
-| **Slate 500** | `#64748b` | Body text, borders |
-| **Slate 100** | `#f1f5f9` | Light backgrounds, cards |
+| **Shadow** | `#18191A` | Deep backgrounds, primary text on light |
+| **Medium Grey** | `#6B7280` | Secondary text, borders, subtle elements |
+| **Light Grey** | `#eef1f9` | Body text backgrounds, subtle fills |
+| **Purple Light** | `#EEF2FF` | Light backgrounds, cards, hover states |
 | **White** | `#ffffff` | Primary text on dark, clean spaces |
 
 #### Gradient Styles
 ```css
-/* Signature Gradient - Navy to Teal */
-background: linear-gradient(135deg, #0f172a 0%, #0d9488 100%);
+/* Signature Gradient - Shadow to Purple */
+background: linear-gradient(135deg, #18191A 0%, #6466e9 100%);
 
-/* Data Gradient - Navy to Blue */
-background: linear-gradient(135deg, #1e3a5f 0%, #3b82f6 100%);
+/* Energy Gradient - Purple to Orange */
+background: linear-gradient(135deg, #6466e9 0%, #F97316 100%);
 
-/* Energy Gradient - Orange to Gold */
-background: linear-gradient(135deg, #f97316 0%, #fbbf24 100%);
+/* Soft Gradient - Purple Light to White */
+background: linear-gradient(135deg, #EEF2FF 0%, #ffffff 100%);
 
-/* Dynamic Gradient - Teal to Orange */
-background: linear-gradient(135deg, #0d9488 0%, #f97316 100%);
+/* Dark Gradient - Shadow to Medium Grey */
+background: linear-gradient(135deg, #18191A 0%, #6B7280 100%);
 ```
 
 ### Typography
@@ -159,14 +158,14 @@ Numbers and specifics build trust. Abstract claims don't.
 
 ### UI Patterns
 - **Cards:** Subtle shadows, rounded corners (8-12px), clean white or dark backgrounds
-- **Buttons:** Teal primary, Orange for emphasis/CTAs, rounded (6-8px)
-- **Data:** Blue accents for charts, teal for positive indicators, orange for alerts
+- **Buttons:** Purple primary, Orange for emphasis/CTAs, rounded (6-8px)
+- **Data:** Purple accents for charts, orange for positive indicators and alerts
 
 ---
 
 ## Brand Don'ts
 
-❌ Don't use gradients that feel "tech startup generic" (purple-to-pink, etc.)  
+❌ Don't use gradients that feel "tech startup generic" (teal-to-pink, etc.)  
 ❌ Don't use casual or overly friendly language ("Hey there!")  
 ❌ Don't make vague claims without specifics  
 ❌ Don't use stock photos of people pointing at screens  
@@ -178,12 +177,12 @@ Numbers and specifics build trust. Abstract claims don't.
 ## Quick Reference
 
 ```
-Primary:    #0d9488 (Teal)
-Secondary:  #f97316 (Orange)
-Accent:     #3b82f6 (Blue)
-Dark:       #0f172a (Slate 900)
-Mid:        #334155 (Slate 700)
-Light:      #f1f5f9 (Slate 100)
+Primary:    #6466e9 (Purple)
+Secondary:  #F97316 (Orange)
+Accent:     #6466e9 (Purple)
+Shadow:     #18191A (Dark)
+Mid Grey:   #6B7280 (Medium Grey)
+Light:      #EEF2FF (Purple Light)
 
 Headline:   DM Sans
 Body:       Inter
@@ -194,4 +193,3 @@ Voice:      Confident • Clear • Urgent • Specific
 ---
 
 *Last updated: December 2024*
-

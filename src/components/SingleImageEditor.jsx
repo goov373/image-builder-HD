@@ -105,7 +105,7 @@ const SingleImageEditor = ({
     if (bg.type === 'solid') {
       return { backgroundColor: bg.color };
     }
-    return { backgroundColor: '#0f172a' };
+    return { backgroundColor: '#18191A' };
   };
   
   const handleUpdateLayerStyle = (newStyle) => {
@@ -223,7 +223,7 @@ const SingleImageEditor = ({
                       template={layer.template}
                       style={layer.style}
                       placeholderType={layer.placeholderType}
-                      accentColor={designSystem?.primary || '#0d9488'}
+                      accentColor={designSystem?.primary || '#6466e9'}
                       isSelected={selectedLayerId === layer.id}
                     />
                   ) : layer.type === 'decorator' ? (

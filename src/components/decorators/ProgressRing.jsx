@@ -5,7 +5,7 @@
 const ProgressRing = ({
   value = 75,
   size = "md",
-  color = "#0d9488",
+  color = "#6466e9",
   trackColor = "rgba(255,255,255,0.1)",
   showValue = true,
   style = {},

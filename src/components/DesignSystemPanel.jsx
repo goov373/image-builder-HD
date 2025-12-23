@@ -23,16 +23,16 @@ const DesignSystemPanel = ({ designSystem, onUpdate, onClose, isOpen }) => {
 
   // HelloData brand-aligned gradients
   const gradients = [
-    'linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%)',   // Deep Navy (primary bg)
-    'linear-gradient(135deg, #0d9488 0%, #14b8a6 100%)',   // Teal gradient (brand primary)
-    'linear-gradient(135deg, #0f172a 0%, #0d9488 100%)',   // Navy to Teal (signature)
-    'linear-gradient(135deg, #1e3a5f 0%, #3b82f6 100%)',   // Navy to Blue (data feel)
-    'linear-gradient(135deg, #f97316 0%, #fbbf24 100%)',   // Orange to Gold (CTA/energy)
-    'linear-gradient(135deg, #0d9488 0%, #f97316 100%)',   // Teal to Orange (dynamic)
+    'linear-gradient(135deg, #18191A 0%, #2d2e30 100%)',   // Shadow gradient (primary bg)
+    'linear-gradient(135deg, #6466e9 0%, #818cf8 100%)',   // Purple gradient (brand primary)
+    'linear-gradient(135deg, #18191A 0%, #6466e9 100%)',   // Shadow to Purple (signature)
+    'linear-gradient(135deg, #6466e9 0%, #F97316 100%)',   // Purple to Orange (dynamic)
+    'linear-gradient(135deg, #F97316 0%, #fbbf24 100%)',   // Orange to Gold (CTA/energy)
+    'linear-gradient(135deg, #EEF2FF 0%, #ffffff 100%)',   // Purple Light to White (soft)
   ];
 
   // HelloData neutral palette
-  const solidColors = ['#0f172a', '#1e293b', '#334155', '#475569', '#64748b', '#94a3b8'];
+  const solidColors = ['#18191A', '#2d2e30', '#6B7280', '#9CA3AF', '#eef1f9', '#EEF2FF'];
   
   return (
     <div 

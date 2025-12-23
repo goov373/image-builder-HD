@@ -15,7 +15,7 @@ const Tooltip = ({
   const variants = {
     dark: { bg: '#1e293b', text: '#ffffff', border: 'rgba(255,255,255,0.1)' },
     light: { bg: '#ffffff', text: '#0f172a', border: 'rgba(0,0,0,0.1)' },
-    primary: { bg: '#0d9488', text: '#ffffff', border: 'transparent' },
+    primary: { bg: '#6466e9', text: '#ffffff', border: 'transparent' },
     warning: { bg: '#f59e0b', text: '#000000', border: 'transparent' },
   };
   

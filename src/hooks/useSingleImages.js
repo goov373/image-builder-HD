@@ -150,7 +150,7 @@ function singleImageReducer(state, action) {
         canvasHeight: 630,
         background: {
           type: 'gradient',
-          gradient: { type: 'linear', from: '#0f172a', to: '#1e293b', angle: 135 },
+          gradient: { type: 'linear', from: '#18191A', to: '#2d2e30', angle: 135 },
         },
         layers: [],
         createdAt: new Date().toISOString().split('T')[0],

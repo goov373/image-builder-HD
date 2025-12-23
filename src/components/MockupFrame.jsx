@@ -4,10 +4,10 @@ import { useState } from 'react';
  * Dashboard Placeholder Content
  * Renders a realistic-looking dashboard preview
  */
-const DashboardPlaceholder = ({ type = 'analytics', accentColor = '#0d9488' }) => {
+const DashboardPlaceholder = ({ type = 'analytics', accentColor = '#6466e9' }) => {
   const placeholders = {
     analytics: (
-      <div className="w-full h-full bg-[#0f172a] p-4 flex flex-col">
+      <div className="w-full h-full bg-[#18191A] p-4 flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
@@ -63,7 +63,7 @@ const DashboardPlaceholder = ({ type = 'analytics', accentColor = '#0d9488' }) =
       </div>
     ),
     settings: (
-      <div className="w-full h-full bg-[#0f172a] p-4 flex">
+      <div className="w-full h-full bg-[#18191A] p-4 flex">
         {/* Sidebar */}
         <div className="w-48 bg-gray-800/50 rounded-lg p-3 mr-4">
           {['General', 'Security', 'Billing', 'Team', 'API'].map((item, i) => (
@@ -96,7 +96,7 @@ const DashboardPlaceholder = ({ type = 'analytics', accentColor = '#0d9488' }) =
       </div>
     ),
     table: (
-      <div className="w-full h-full bg-[#0f172a] p-4">
+      <div className="w-full h-full bg-[#18191A] p-4">
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
           <div className="w-32 h-4 bg-gray-700 rounded" />
@@ -129,7 +129,7 @@ const DashboardPlaceholder = ({ type = 'analytics', accentColor = '#0d9488' }) =
       </div>
     ),
     chart: (
-      <div className="w-full h-full bg-[#0f172a] p-4 flex flex-col">
+      <div className="w-full h-full bg-[#18191A] p-4 flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
           <div>
@@ -186,7 +186,7 @@ const MockupFrame = ({
   template = 'dashboard-full',
   style = {},
   placeholderType = 'analytics',
-  accentColor = '#0d9488',
+  accentColor = '#6466e9',
   imageUrl,
   isSelected = false,
   onClick,

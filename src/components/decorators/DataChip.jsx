@@ -15,7 +15,7 @@ const DataChip = ({
     success: { bg: '#059669', text: '#ffffff', glow: '#10b981' },
     danger: { bg: '#dc2626', text: '#ffffff', glow: '#ef4444' },
     warning: { bg: '#d97706', text: '#ffffff', glow: '#f59e0b' },
-    primary: { bg: '#0d9488', text: '#ffffff', glow: '#14b8a6' },
+    primary: { bg: '#6466e9', text: '#ffffff', glow: '#818cf8' },
     secondary: { bg: '#6366f1', text: '#ffffff', glow: '#818cf8' },
     neutral: { bg: '#374151', text: '#ffffff', glow: '#6b7280' },
   };

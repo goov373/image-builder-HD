@@ -197,7 +197,7 @@ export const DEFAULT_MOCKUP_STYLE: MockupStyle = {
   innerShadowBlur: 0,
   innerShadowColor: 'rgba(0,0,0,0.1)',
   glowEnabled: false,
-  glowColor: '#3b82f6',
+  glowColor: '#6466e9',
   glowBlur: 24,
 };
 

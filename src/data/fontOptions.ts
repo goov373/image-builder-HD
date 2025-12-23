@@ -17,17 +17,17 @@ export const fontOptions = {
 export const allFonts: FontOption[] = [...fontOptions.sansSerif, ...fontOptions.serif];
 
 // HelloData.ai Brand Colors
-// Primary: Deep Teal - Trust, innovation, real estate stability
-// Secondary: Vibrant Orange - Energy, action, CTA emphasis  
-// Accent: Electric Blue - Data, technology, insights
-// The palette balances professional trust with energetic action
+// Primary: Purple - Main brand identity, headers, key elements
+// Secondary: Orange - Energy, CTAs, action states
+// Accent: Purple - Consistent with primary for brand cohesion
+// Neutrals: Shadow dark → Medium grey → Light purple tint
 export const defaultDesignSystem: DesignSystem = {
-  primary: '#0d9488',      // Teal 600 - Primary brand, trust & innovation
-  secondary: '#f97316',    // Orange 500 - Energy, CTAs, highlights
-  accent: '#3b82f6',       // Blue 500 - Data accents, links, tech feel
-  neutral1: '#0f172a',     // Slate 900 - Deep backgrounds, text
-  neutral2: '#334155',     // Slate 700 - Secondary backgrounds
-  neutral3: '#f1f5f9',     // Slate 100 - Light backgrounds, cards
+  primary: '#6466e9',      // Purple - Main brand color
+  secondary: '#F97316',    // Orange - CTAs, highlights, energy
+  accent: '#6466e9',       // Purple - Brand accent (matches primary)
+  neutral1: '#18191A',     // Shadow - Deep backgrounds, text
+  neutral2: '#6B7280',     // Medium Grey - Secondary text, borders
+  neutral3: '#EEF2FF',     // Purple Light - Light backgrounds, cards
   fontHeadline: '"DM Sans", sans-serif',
   fontBody: '"Inter", sans-serif'
 };
