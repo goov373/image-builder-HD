@@ -26,8 +26,8 @@ const DesignSystemPanel = ({ designSystem, onUpdate, onClose, isOpen }) => {
   // Mesh/wave gradient for organic feel
   const meshGradient = 'radial-gradient(at 40% 20%, #6466e9 0px, transparent 50%), radial-gradient(at 80% 0%, #818cf8 0px, transparent 50%), radial-gradient(at 0% 50%, #5558d9 0px, transparent 50%), radial-gradient(at 80% 50%, #a8aed4 0px, transparent 50%), radial-gradient(at 0% 100%, #6466e9 0px, transparent 50%), radial-gradient(at 80% 100%, #c4c8e8 0px, transparent 50%), linear-gradient(135deg, #4a4dcf 0%, #b8bdd6 100%)';
   
-  // Conical gradient for first option
-  const conicalGradient = 'conic-gradient(from 180deg at 50% 50%, #6466e9 0deg, #818cf8 120deg, #b8bdd6 240deg, #6466e9 360deg)';
+  // Conical gradient for first option - focal point on left
+  const conicalGradient = 'conic-gradient(from 180deg at 20% 50%, #6466e9 0deg, #818cf8 120deg, #b8bdd6 240deg, #6466e9 360deg)';
   
   const gradients = [
     conicalGradient,                                        // Conical purple sweep
