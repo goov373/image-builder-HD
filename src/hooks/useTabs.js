@@ -79,7 +79,8 @@ export default function useTabs(initialTabs = []) {
       hasContent: false, 
       createdAt: new Date().toISOString().split('T')[0],
       updatedAt: new Date().toISOString().split('T')[0],
-      frameCount: 0
+      frameCount: 0,
+      projectType: 'carousel'
     };
     setTabs(prev => [...prev.map(t => ({ ...t, active: false })), newTab]);
     setActiveTabId(newId);
@@ -119,7 +120,7 @@ export default function useTabs(initialTabs = []) {
   const handleCreateProject = (projectType, projectName) => {
     setTabs(prev => prev.map(t => 
       t.id === activeTabId 
-        ? { ...t, name: projectName || 'New Project', hasContent: true }
+        ? { ...t, name: projectName || 'New Project', hasContent: true, projectType: projectType || 'carousel' }
         : t
     ));
   };

@@ -14,3 +14,8 @@ export { default as CarouselRow } from './CarouselRow';
 export { default as Toolbar } from './Toolbar';
 export { default as TabBar } from './TabBar';
 export { default as EditorView } from './EditorView';
+// New components for multi-project support
+export { default as ContentFrame } from './ContentFrame';
+export { default as CTAButton } from './CTAButton';
+export { default as EblastSection } from './EblastSection';
+export { default as EblastEditor } from './EblastEditor';

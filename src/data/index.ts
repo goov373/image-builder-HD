@@ -1,6 +1,7 @@
 export { frameSizes, layoutNames, layoutVariantNames, getFontSizes, getFrameSizesByCategory } from './frameSizes';
 export { fontOptions, allFonts, defaultDesignSystem } from './fontOptions';
 export { initialCarousels, getFrameStyle } from './initialCarousels';
+export { initialEblasts, createEmptyEblast, getEblastSectionStyle } from './initialEblasts';
 export { 
   PROJECT_CONFIGS, 
   getProjectConfig, 

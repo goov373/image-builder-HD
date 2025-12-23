@@ -71,22 +71,28 @@ const NewProjectView = ({ onCreateProject }) => {
             </div>
           </button>
 
-          {/* Eblast Images - Coming Soon */}
+          {/* Eblast Images */}
           <button
             type="button"
-            disabled
-            className="p-3 rounded-xl border text-left flex items-center gap-3 border-gray-700/30 bg-gray-800/20 opacity-40 cursor-not-allowed"
+            onClick={() => setSelectedType('eblast')}
+            className={`p-3 rounded-xl border text-left transition-all duration-200 flex items-center gap-3 ${
+              selectedType === 'eblast'
+                ? 'border-gray-500 bg-gray-800'
+                : 'border-gray-700/50 bg-gray-800/30 hover:border-gray-600 hover:bg-gray-800/50'
+            }`}
           >
             <div className="w-[104px] flex-shrink-0 flex justify-center">
-              <div className="w-16 h-12 rounded-lg bg-gray-700 border border-gray-600 p-2 flex flex-col gap-1">
-                <div className="h-1.5 rounded-full bg-gray-500 w-1/2" />
-                <div className="flex-1 rounded bg-gray-600" />
-                <div className="h-1 rounded-full bg-gray-600 w-2/3" />
+              <div className={`w-16 h-12 rounded-lg border p-2 flex flex-col gap-1 ${
+                selectedType === 'eblast' ? 'bg-teal-900/30 border-teal-600' : 'bg-gray-700 border-gray-600'
+              }`}>
+                <div className={`h-1.5 rounded-full w-1/2 ${selectedType === 'eblast' ? 'bg-teal-400' : 'bg-gray-500'}`} />
+                <div className={`flex-1 rounded ${selectedType === 'eblast' ? 'bg-teal-700/50' : 'bg-gray-600'}`} />
+                <div className={`h-1 rounded-full w-2/3 ${selectedType === 'eblast' ? 'bg-teal-500' : 'bg-gray-600'}`} />
               </div>
             </div>
             <div className="flex-1 min-w-0">
-              <h3 className="text-xs font-semibold text-gray-500">Eblast Images</h3>
-              <p className="text-[10px] text-gray-600 leading-relaxed">Coming soon</p>
+              <h3 className={`text-xs font-semibold ${selectedType === 'eblast' ? 'text-white' : 'text-gray-300'}`}>Eblast Images</h3>
+              <p className="text-[10px] text-gray-500 leading-relaxed">Email marketing graphics and hero banners.</p>
             </div>
           </button>
 

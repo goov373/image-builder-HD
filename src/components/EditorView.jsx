@@ -9,15 +9,17 @@ import Toolbar from './Toolbar';
 import NewProjectView from './NewProjectView';
 import ProjectHeader from './ProjectHeader';
 import CarouselRow from './CarouselRow';
+import EblastEditor from './EblastEditor';
 
 export default function EditorView({
-  // Layout props (still needed)
+  // Layout props
   totalOffset,
   zoom,
-  // Tab/Project props (still needed - not in context)
+  // Tab/Project props
   activeTab,
   onUpdateProjectName,
   onCreateProject,
+  projectType = 'carousel',
 }) {
   // Get state from context
   const { designSystem } = useDesignSystemContext();
@@ -25,18 +27,28 @@ export default function EditorView({
   const carouselsCtx = useCarouselsContext();
   const dropdowns = useDropdownsContext();
 
+  // Carousel selection
   const {
     selectedCarouselId,
     selectedFrameId,
     selectedCarousel,
     selectedFrame,
+    // Eblast selection
+    selectedEblastId,
+    selectedSectionId,
+    selectedEblast,
+    selectedSection,
+    // Shared
     activeTextField,
     setActiveTextField,
     handleSelectCarousel,
     handleSelectFrame,
+    handleSelectEblast,
+    handleSelectSection,
     handleDeselect,
   } = selection;
 
+  // Carousel methods
   const {
     carousels,
     handleSetVariant,
@@ -50,7 +62,17 @@ export default function EditorView({
     handleReorderFrames,
     handleAddRow,
     handleRemoveRow,
+    // Eblast methods
+    eblasts,
+    handleEblastUpdateText,
+    handleAddSection,
+    handleRemoveSection,
+    handleReorderSections,
   } = carouselsCtx;
+
+  // Determine which content to show based on project type
+  const isCarousel = projectType === 'carousel' || !projectType;
+  const isEblast = projectType === 'eblast';
 
   return (
     <>
@@ -58,6 +80,7 @@ export default function EditorView({
       <Toolbar
         totalOffset={totalOffset}
         activeTab={activeTab}
+        projectType={projectType}
       />
       
       {/* Main Content - Scrollable Canvas Area */}
@@ -95,7 +118,8 @@ export default function EditorView({
                   onUpdateName={onUpdateProjectName}
                 />
                 
-                {carousels.map((carousel, index) => (
+                {/* Carousel Content */}
+                {isCarousel && carousels.map((carousel, index) => (
                   <React.Fragment key={carousel.id}>
                     <CarouselRow
                       carousel={carousel}
@@ -132,6 +156,26 @@ export default function EditorView({
                         </button>
                       </div>
                     )}
+                  </React.Fragment>
+                ))}
+
+                {/* Eblast Content */}
+                {isEblast && eblasts && eblasts.map((eblast, index) => (
+                  <React.Fragment key={eblast.id}>
+                    <EblastEditor
+                      eblast={eblast}
+                      designSystem={designSystem}
+                      isSelected={selectedEblastId === eblast.id}
+                      selectedSectionId={selectedEblastId === eblast.id ? selectedSectionId : null}
+                      onSelect={handleSelectEblast}
+                      onSelectSection={handleSelectSection}
+                      onAddSection={(position) => handleAddSection(eblast.id, position)}
+                      onRemoveSection={handleRemoveSection}
+                      onReorderSections={handleReorderSections}
+                      onUpdateText={handleEblastUpdateText}
+                      activeTextField={activeTextField}
+                      onActivateTextField={setActiveTextField}
+                    />
                   </React.Fragment>
                 ))}
               </div>

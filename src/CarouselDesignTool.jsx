@@ -3,11 +3,12 @@ import React, { useState } from 'react';
 // Import data from centralized location
 import {
   defaultDesignSystem,
-  initialCarousels
+  initialCarousels,
+  initialEblasts
 } from './data';
 
 // Import custom hooks
-import { useDropdowns, useTabs, useCarousels, useDesignSystem } from './hooks';
+import { useDropdowns, useTabs, useCarousels, useEblasts, useDesignSystem } from './hooks';
 
 // Import context providers
 import { AppProvider } from './context';
@@ -25,7 +26,7 @@ import {
 
 // Initial project tabs
 const INITIAL_TABS = [
-  { id: 1, name: 'HelloData Campaign', active: false, hasContent: true, createdAt: '2024-12-20', updatedAt: '2024-12-22', frameCount: 5 }
+  { id: 1, name: 'HelloData Campaign', active: false, hasContent: true, createdAt: '2024-12-20', updatedAt: '2024-12-22', frameCount: 5, projectType: 'carousel' }
 ];
 
 // Main App Component
@@ -41,11 +42,18 @@ export default function CarouselDesignTool() {
   // Use custom hooks for complex state management
   const tabs = useTabs(INITIAL_TABS);
   const carousels = useCarousels(initialCarousels);
+  const eblasts = useEblasts(initialEblasts);
   const dropdowns = useDropdowns();
+
+  // Get current project type from active tab
+  const currentProjectType = tabs.activeTab?.projectType || 'carousel';
 
   // Handlers that need to coordinate between hooks
   const handleGoHome = () => {
-    tabs.handleGoHome(carousels.clearSelection);
+    tabs.handleGoHome(() => {
+      carousels.clearSelection();
+      eblasts.clearSelection();
+    });
   };
 
   const handleOpenProject = (projectId) => {
@@ -68,9 +76,21 @@ export default function CarouselDesignTool() {
     carousels.handleSelectCarousel(carouselId, dropdowns.closeAllDropdowns);
   };
 
+  const handleSelectSection = (eblastId, sectionId) => {
+    eblasts.handleSelectSection(eblastId, sectionId, dropdowns.closeAllDropdowns);
+  };
+
+  const handleSelectEblast = (eblastId) => {
+    eblasts.handleSelectEblast(eblastId, dropdowns.closeAllDropdowns);
+  };
+
   const handleDeselect = () => {
     dropdowns.closeAllDropdowns();
-    carousels.clearSelection();
+    if (currentProjectType === 'carousel') {
+      carousels.clearSelection();
+    } else if (currentProjectType === 'eblast') {
+      eblasts.clearSelection();
+    }
   };
 
   // Layout calculations
@@ -82,15 +102,25 @@ export default function CarouselDesignTool() {
   const designSystemContextValue = { designSystem, setDesignSystem };
   
   const selectionContextValue = {
+    // Carousel selection
     selectedCarouselId: carousels.selectedCarouselId,
     selectedFrameId: carousels.selectedFrameId,
     selectedCarousel: carousels.selectedCarousel,
     selectedFrame: carousels.selectedFrame,
-    activeTextField: carousels.activeTextField,
-    setActiveTextField: carousels.setActiveTextField,
+    // Eblast selection
+    selectedEblastId: eblasts.selectedEblastId,
+    selectedSectionId: eblasts.selectedSectionId,
+    selectedEblast: eblasts.selectedEblast,
+    selectedSection: eblasts.selectedSection,
+    // Shared
+    activeTextField: currentProjectType === 'carousel' ? carousels.activeTextField : eblasts.activeTextField,
+    setActiveTextField: currentProjectType === 'carousel' ? carousels.setActiveTextField : eblasts.setActiveTextField,
     handleSelectFrame,
     handleSelectCarousel,
+    handleSelectSection,
+    handleSelectEblast,
     handleDeselect,
+    currentProjectType,
   };
 
   const carouselsContextValue = {
@@ -106,6 +136,18 @@ export default function CarouselDesignTool() {
     handleReorderFrames: carousels.handleReorderFrames,
     handleAddRow: carousels.handleAddRow,
     handleRemoveRow: carousels.handleRemoveRow,
+    // Eblast methods
+    eblasts: eblasts.eblasts,
+    handleEblastSetVariant: eblasts.handleSetVariant,
+    handleEblastSetLayout: eblasts.handleSetLayout,
+    handleEblastShuffleLayoutVariant: eblasts.handleShuffleLayoutVariant,
+    handleEblastUpdateText: eblasts.handleUpdateText,
+    handleEblastUpdateFormatting: eblasts.handleUpdateFormatting,
+    handleAddSection: eblasts.handleAddSection,
+    handleRemoveSection: eblasts.handleRemoveSection,
+    handleReorderSections: eblasts.handleReorderSections,
+    handleAddEblast: eblasts.handleAddEblast,
+    handleRemoveEblast: eblasts.handleRemoveEblast,
   };
 
   return (
@@ -154,7 +196,9 @@ export default function CarouselDesignTool() {
         <ExportPanel 
           onClose={() => setActivePanel(null)} 
           isOpen={activePanel === 'export'} 
-          carousels={carousels.carousels} 
+          carousels={carousels.carousels}
+          eblasts={eblasts.eblasts}
+          projectType={currentProjectType}
         />
         <AccountPanel 
           onClose={() => setIsAccountOpen(false)} 
@@ -180,6 +224,7 @@ export default function CarouselDesignTool() {
             activeTab={tabs.activeTab}
             onUpdateProjectName={tabs.handleUpdateProjectName}
             onCreateProject={tabs.handleCreateProject}
+            projectType={currentProjectType}
           />
         )}
       </div>
