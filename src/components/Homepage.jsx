@@ -106,3 +106,4 @@ const Homepage = ({ projects, onOpenProject, onCreateNew }) => {
 
 export default Homepage;
 
+

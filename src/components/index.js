@@ -11,4 +11,4 @@ export { default as ProjectHeader } from './ProjectHeader';
 export { default as NewProjectView } from './NewProjectView';
 export { CarouselFrame, SortableFrame } from './CarouselFrame';
 export { default as CarouselRow } from './CarouselRow';
-
+export { default as Toolbar } from './Toolbar';

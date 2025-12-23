@@ -228,3 +228,4 @@ export const getFrameStyle = (carouselId, frameStyle, ds) => {
   return styles[frameStyle] || styles["dark-single-pin"];
 };
 
+

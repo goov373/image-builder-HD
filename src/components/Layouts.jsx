@@ -194,3 +194,4 @@ export const LayoutEditorialLeft = ({ headline, body, accent, isLandscape, headi
   );
 };
 
+

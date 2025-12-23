@@ -149,3 +149,4 @@ export const SortableFrame = ({ id, frame, carouselId, frameSize, designSystem, 
 
 export default CarouselFrame;
 
+

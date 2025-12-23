@@ -91,3 +91,4 @@ const Sidebar = ({ activePanel, onPanelChange, zoom, onZoomChange, isHomePage, o
 
 export default Sidebar;
 
+
