@@ -25,7 +25,7 @@ const DesignSystemPanel = ({ designSystem, onUpdate, onClose, isOpen }) => {
   // ===== PURPLE CONICAL GRADIENTS (3) =====
   const purpleConicals = [
     'linear-gradient(135deg, rgba(100, 102, 233, 0.3) 0%, rgba(129, 140, 248, 0.15) 100%), conic-gradient(from 180deg at 20% 50%, #6466e9 0deg, #818cf8 120deg, #b8bdd6 240deg, #6466e9 360deg)',   // Focal left + overlay
-    'linear-gradient(135deg, rgba(74, 77, 207, 0.3) 0%, rgba(100, 102, 233, 0.15) 100%), conic-gradient(from 45deg at 80% 20%, #4a4dcf 0deg, #6466e9 90deg, #818cf8 180deg, #b8bdd6 270deg, #4a4dcf 360deg)', // Focal top-right + overlay
+    'radial-gradient(ellipse at 30% 70%, rgba(129, 140, 248, 0.25) 0%, transparent 50%), linear-gradient(135deg, rgba(74, 77, 207, 0.25) 0%, rgba(100, 102, 233, 0.1) 100%), conic-gradient(from 225deg at 15% 85%, #4a4dcf 0deg, #5558d9 45deg, #6466e9 90deg, #818cf8 135deg, #6466e9 180deg, #5558d9 225deg, #4a4dcf 270deg, #3d3fa8 315deg, #4a4dcf 360deg)', // Focal bottom-left, 8-stop sweep
     'linear-gradient(135deg, rgba(61, 63, 168, 0.35) 0%, rgba(85, 88, 217, 0.15) 100%), conic-gradient(from 135deg at 85% 85%, #3d3fa8 0deg, #4a4dcf 60deg, #5558d9 120deg, #6466e9 180deg, #5558d9 240deg, #4a4dcf 300deg, #3d3fa8 360deg)', // Focal bottom-right, darker sweep
   ];
 
