@@ -9,4 +9,5 @@ export { default as ExportPanel } from './ExportPanel';
 export { default as Homepage } from './Homepage';
 export { default as ProjectHeader } from './ProjectHeader';
 export { default as NewProjectView } from './NewProjectView';
+export { CarouselFrame, SortableFrame } from './CarouselFrame';
 
