@@ -16,7 +16,9 @@ const ExportPanel = ({ onClose, isOpen, carousels = [] }) => {
     { id: 'png', name: 'PNG', supportsTransparent: true },
     { id: 'jpg', name: 'JPG', supportsTransparent: false },
     { id: 'webp', name: 'WebP', supportsTransparent: true },
+    { id: 'svg', name: 'SVG', supportsTransparent: true },
     { id: 'pdf', name: 'PDF', supportsTransparent: false },
+    { id: 'pptx', name: 'PPTX', supportsTransparent: false },
   ];
 
   const resolutions = [
@@ -191,7 +193,7 @@ const ExportPanel = ({ onClose, isOpen, carousels = [] }) => {
           {/* Format Section */}
           <div>
             <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-2">Format</h3>
-            <div className="grid grid-cols-4 gap-1.5">
+            <div className="grid grid-cols-3 gap-1.5">
               {formats.map(f => (
                 <button
                   type="button"
