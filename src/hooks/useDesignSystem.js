@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 // HelloData brand colors - these are the required defaults
 const HELLODATA_PRIMARY = '#6466e9';
 const HELLODATA_ACCENT = '#eef1f9';
-const STORAGE_KEY = 'carousel-tool-design-system-v7';
+const STORAGE_KEY = 'carousel-tool-design-system-v8';
 
 // Load from localStorage or use initial data
 // Forces reset if stored colors don't match HelloData brand

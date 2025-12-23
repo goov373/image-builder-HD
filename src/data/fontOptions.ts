@@ -23,8 +23,8 @@ export const allFonts: FontOption[] = [...fontOptions.sansSerif, ...fontOptions.
 // Neutrals: Shadow dark → Medium grey → Light purple tint
 export const defaultDesignSystem: DesignSystem = {
   primary: '#6466e9',      // Purple - Main brand color
-  secondary: '#F97316',    // Orange - CTAs, highlights, energy
-  accent: '#eef1f9',       // Light Grey - Accent color
+  secondary: '#eef1f9',    // Light Grey - Secondary color
+  accent: '#F97316',       // Orange - CTAs, highlights, energy
   neutral1: '#18191A',     // Shadow - Deep backgrounds, text
   neutral2: '#6B7280',     // Medium Grey - Secondary text, borders
   neutral3: '#EEF2FF',     // Purple Light - Light backgrounds, cards
