@@ -40,18 +40,23 @@ HelloData is the **confident expert** who makes you feel like you have an unfair
 | **White** | `#ffffff` | Primary text on dark, clean spaces |
 
 #### Gradient Styles
+HelloData gradients flow from **Purple to Light** — never dark to purple.
+
 ```css
-/* Signature Gradient - Shadow to Purple */
-background: linear-gradient(135deg, #18191A 0%, #6466e9 100%);
+/* Signature Gradient - Purple to Light Purple */
+background: linear-gradient(135deg, #6466e9 0%, #818cf8 100%);
+
+/* Brand Gradient - Purple to Purple Light */
+background: linear-gradient(135deg, #6466e9 0%, #EEF2FF 100%);
 
 /* Energy Gradient - Purple to Orange */
 background: linear-gradient(135deg, #6466e9 0%, #F97316 100%);
 
-/* Soft Gradient - Purple Light to White */
-background: linear-gradient(135deg, #EEF2FF 0%, #ffffff 100%);
+/* Soft Gradient - Light Purple to Very Light */
+background: linear-gradient(135deg, #818cf8 0%, #EEF2FF 100%);
 
-/* Dark Gradient - Shadow to Medium Grey */
-background: linear-gradient(135deg, #18191A 0%, #6B7280 100%);
+/* Dark Neutral - For dark backgrounds only */
+background: linear-gradient(135deg, #18191A 0%, #2d2e30 100%);
 ```
 
 ### Typography

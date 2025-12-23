@@ -64,9 +64,9 @@ export function getVideoCoverStyle(frameStyle: string, ds: DesignSystem) {
   
   const styles: Record<string, { background: string; text: string; accent: string }> = {
     "video-bold": { 
-      background: `linear-gradient(135deg, ${ds.neutral1} 0%, ${ds.primary} 100%)`, 
+      background: `linear-gradient(135deg, ${ds.primary} 0%, #818cf8 100%)`, 
       text: textWhite,
-      accent: ds.primary 
+      accent: textWhite 
     },
     "video-dark": { 
       background: `linear-gradient(135deg, ${ds.neutral1} 0%, ${ds.neutral2} 100%)`, 
@@ -74,19 +74,19 @@ export function getVideoCoverStyle(frameStyle: string, ds: DesignSystem) {
       accent: ds.primary 
     },
     "video-energy": { 
-      background: `linear-gradient(135deg, ${ds.secondary} 0%, ${ds.primary} 100%)`, 
+      background: `linear-gradient(135deg, ${ds.primary} 0%, ${ds.secondary} 100%)`, 
       text: textWhite,
       accent: textWhite 
     },
     "video-clean": { 
-      background: `linear-gradient(135deg, ${ds.neutral3} 0%, ${ds.neutral3} 100%)`, 
+      background: `linear-gradient(135deg, ${ds.neutral3} 0%, #ffffff 100%)`, 
       text: textDark,
       accent: ds.primary 
     },
     "video-dramatic": { 
-      background: `linear-gradient(135deg, #000000 0%, ${ds.neutral1} 100%)`, 
+      background: `linear-gradient(135deg, ${ds.primary} 0%, ${ds.neutral3} 100%)`, 
       text: textWhite,
-      accent: ds.primary 
+      accent: ds.secondary 
     },
   };
   return styles[frameStyle] || styles["video-bold"];

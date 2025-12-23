@@ -22,13 +22,14 @@ const DesignSystemPanel = ({ designSystem, onUpdate, onClose, isOpen }) => {
   ];
 
   // HelloData brand-aligned gradients
+  // HelloData gradients - Purple to Light direction
   const gradients = [
-    'linear-gradient(135deg, #18191A 0%, #2d2e30 100%)',   // Shadow gradient (primary bg)
-    'linear-gradient(135deg, #6466e9 0%, #818cf8 100%)',   // Purple gradient (brand primary)
-    'linear-gradient(135deg, #18191A 0%, #6466e9 100%)',   // Shadow to Purple (signature)
-    'linear-gradient(135deg, #6466e9 0%, #F97316 100%)',   // Purple to Orange (dynamic)
-    'linear-gradient(135deg, #F97316 0%, #fbbf24 100%)',   // Orange to Gold (CTA/energy)
-    'linear-gradient(135deg, #EEF2FF 0%, #ffffff 100%)',   // Purple Light to White (soft)
+    'linear-gradient(135deg, #6466e9 0%, #818cf8 100%)',   // Purple to Light Purple
+    'linear-gradient(135deg, #6466e9 0%, #EEF2FF 100%)',   // Purple to Purple Light (signature)
+    'linear-gradient(135deg, #818cf8 0%, #EEF2FF 100%)',   // Light Purple to Very Light
+    'linear-gradient(135deg, #6466e9 0%, #F97316 100%)',   // Purple to Orange (energy)
+    'linear-gradient(135deg, #F97316 0%, #fbbf24 100%)',   // Orange to Gold (CTA)
+    'linear-gradient(135deg, #18191A 0%, #2d2e30 100%)',   // Shadow (dark backgrounds)
   ];
 
   // HelloData neutral palette

@@ -116,17 +116,17 @@ export function getEblastSectionStyle(sectionStyle: string, ds: DesignSystem) {
   
   const styles: Record<string, { background: string; text: string; accent: string }> = {
     "header-brand": { 
-      background: `linear-gradient(135deg, ${ds.neutral1} 0%, ${ds.neutral1} 100%)`, 
+      background: `linear-gradient(135deg, ${ds.primary} 0%, #818cf8 100%)`, 
       text: textWhite,
-      accent: ds.primary 
+      accent: textWhite 
     },
     "hero-gradient": { 
-      background: `linear-gradient(135deg, ${ds.neutral1} 0%, ${ds.primary} 100%)`, 
+      background: `linear-gradient(135deg, ${ds.primary} 0%, ${ds.neutral3} 100%)`, 
       text: textWhite,
-      accent: ds.primary 
+      accent: ds.secondary 
     },
     "feature-light": { 
-      background: `linear-gradient(135deg, ${ds.neutral3} 0%, ${ds.neutral3} 100%)`, 
+      background: `linear-gradient(135deg, ${ds.neutral3} 0%, #ffffff 100%)`, 
       text: textDark,
       accent: ds.primary 
     },
@@ -141,9 +141,9 @@ export function getEblastSectionStyle(sectionStyle: string, ds: DesignSystem) {
       accent: textWhite 
     },
     "cta-subtle": { 
-      background: `linear-gradient(135deg, ${ds.neutral2} 0%, ${ds.neutral1} 100%)`, 
+      background: `linear-gradient(135deg, ${ds.primary} 0%, #818cf8 100%)`, 
       text: textWhite,
-      accent: ds.primary 
+      accent: textWhite 
     },
   };
   return styles[sectionStyle] || styles["hero-gradient"];
