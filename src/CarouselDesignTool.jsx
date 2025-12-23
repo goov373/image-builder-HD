@@ -62,6 +62,32 @@ const layoutVariantNames = {
   2: ["Left", "Center", "Right"]
 };
 
+// Font size calculator based on frame dimensions
+const getFontSizes = (frameSize) => {
+  const size = frameSizes[frameSize] || frameSizes.portrait;
+  const isLandscape = frameSize === 'landscape' || frameSize === 'slides';
+  
+  // Base sizes for portrait (192px wide) - scaled proportionally to width
+  const baseWidth = 192;
+  const scale = size.width / baseWidth;
+  
+  if (isLandscape) {
+    // Landscape: shorter height, so use smaller fonts
+    return {
+      headline: Math.round(11 * scale * 0.7), // ~11px for landscape
+      body: Math.round(9 * scale * 0.7),      // ~9px for landscape
+      lineHeight: 1.3
+    };
+  }
+  
+  // Portrait/Square/Story/Pin - scale based on width
+  return {
+    headline: Math.max(12, Math.round(14 * (size.width / baseWidth))), // 12-16px
+    body: Math.max(10, Math.round(12 * (size.width / baseWidth))),     // 10-14px
+    lineHeight: 1.4
+  };
+};
+
 // Initial carousel data with text variations
 const initialCarousels = [
   {
@@ -342,8 +368,8 @@ const EditableTextField = ({ children, field, isFrameSelected, isActive, onActiv
 
   const displayStyle = {
     ...style,
-    fontWeight: formatting.bold ? 'bold' : style.fontWeight,
-    fontStyle: formatting.italic ? 'italic' : style.fontStyle,
+    fontWeight: formatting.bold === true ? 'bold' : formatting.bold === false ? 'normal' : style.fontWeight,
+    fontStyle: formatting.italic === true ? 'italic' : formatting.italic === false ? 'normal' : style.fontStyle,
     color: formatting.color || style.color,
     fontFamily: formatting.fontFamily || style.fontFamily,
     textAlign: formatting.textAlign || style.textAlign,
@@ -384,7 +410,7 @@ const EditableTextField = ({ children, field, isFrameSelected, isActive, onActiv
 };
 
 // Layout Component - Bottom Stack
-const LayoutBottomStack = ({ headline, body, accent, isLandscape, headingFont, bodyFont, variant = 0, isFrameSelected, onUpdateText, activeField, onActivateField, formatting = {} }) => {
+const LayoutBottomStack = ({ headline, body, accent, isLandscape, headingFont, bodyFont, variant = 0, isFrameSelected, onUpdateText, activeField, onActivateField, formatting = {}, fontSizes = {} }) => {
   const getAlignment = () => {
     switch (variant) {
       case 1: return 'justify-start pt-6';
@@ -403,12 +429,31 @@ const LayoutBottomStack = ({ headline, body, accent, isLandscape, headingFont, b
   
   const commonProps = { isFrameSelected, onActivate: onActivateField, onUpdateText };
   
+  const getLandscapeAlignment = () => {
+    switch (variant) {
+      case 1: return 'items-start pt-8'; // Top - extra padding for progress indicator
+      case 2: return 'items-center'; // Center
+      default: return 'items-end'; // Bottom
+    }
+  };
+  
+  const getLandscapeGradient = () => {
+    switch (variant) {
+      case 1: return 'bg-gradient-to-b from-black/80 via-black/40 to-transparent';
+      case 2: return 'bg-black/50';
+      default: return 'bg-gradient-to-t from-black/80 via-black/40 to-transparent';
+    }
+  };
+
+  const headlineStyle = { color: accent, fontFamily: headingFont, fontSize: fontSizes.headline || 14, lineHeight: fontSizes.lineHeight || 1.3 };
+  const bodyStyle = { fontFamily: bodyFont, fontSize: fontSizes.body || 12, lineHeight: fontSizes.lineHeight || 1.4 };
+
   if (isLandscape) {
     return (
-      <div className={`absolute inset-0 flex items-end p-3 bg-gradient-to-t from-black/80 via-black/40 to-transparent`}>
-        <div className="flex items-end justify-between w-full gap-4">
-          <EditableTextField {...commonProps} field="headline" isActive={activeField === 'headline'} formatting={formatting.headline || {}} className="text-xs font-bold leading-tight block flex-1" style={{ color: accent, fontFamily: headingFont }}>{headline}</EditableTextField>
-          <EditableTextField {...commonProps} field="body" isActive={activeField === 'body'} formatting={formatting.body || {}} className="text-[10px] text-gray-200 leading-snug text-right block max-w-[40%]" style={{ fontFamily: bodyFont }}>{body}</EditableTextField>
+      <div className={`absolute inset-0 flex ${getLandscapeAlignment()} px-3 py-3 ${getLandscapeGradient()}`}>
+        <div className="flex items-center justify-between w-full gap-4">
+          <EditableTextField {...commonProps} field="headline" isActive={activeField === 'headline'} formatting={formatting.headline || {}} className="font-bold leading-tight block flex-1" style={headlineStyle}>{headline}</EditableTextField>
+          <EditableTextField {...commonProps} field="body" isActive={activeField === 'body'} formatting={formatting.body || {}} className="text-gray-200 leading-snug text-right block max-w-[40%]" style={bodyStyle}>{body}</EditableTextField>
         </div>
       </div>
     );
@@ -417,17 +462,17 @@ const LayoutBottomStack = ({ headline, body, accent, isLandscape, headingFont, b
   return (
     <div className={`absolute inset-0 flex flex-col ${getAlignment()} p-4 ${getGradient()}`}>
       <div className="relative mb-1.5">
-        <EditableTextField {...commonProps} field="headline" isActive={activeField === 'headline'} formatting={formatting.headline || {}} className="text-sm font-bold leading-tight block" style={{ color: accent, fontFamily: headingFont }}>{headline}</EditableTextField>
+        <EditableTextField {...commonProps} field="headline" isActive={activeField === 'headline'} formatting={formatting.headline || {}} className="font-bold leading-tight block" style={headlineStyle}>{headline}</EditableTextField>
       </div>
       <div className="relative">
-        <EditableTextField {...commonProps} field="body" isActive={activeField === 'body'} formatting={formatting.body || {}} className="text-xs text-gray-200 leading-snug block" style={{ fontFamily: bodyFont }}>{body}</EditableTextField>
+        <EditableTextField {...commonProps} field="body" isActive={activeField === 'body'} formatting={formatting.body || {}} className="text-gray-200 leading-snug block" style={bodyStyle}>{body}</EditableTextField>
       </div>
     </div>
   );
 };
 
 // Layout Component - Center Drama
-const LayoutCenterDrama = ({ headline, body, accent, isLandscape, headingFont, bodyFont, variant = 0, isFrameSelected, onUpdateText, activeField, onActivateField, formatting = {} }) => {
+const LayoutCenterDrama = ({ headline, body, accent, isLandscape, headingFont, bodyFont, variant = 0, isFrameSelected, onUpdateText, activeField, onActivateField, formatting = {}, fontSizes = {} }) => {
   const getAlignment = () => {
     switch (variant) {
       case 1: return 'justify-end pb-6';
@@ -438,13 +483,32 @@ const LayoutCenterDrama = ({ headline, body, accent, isLandscape, headingFont, b
   
   const commonProps = { isFrameSelected, onActivate: onActivateField, onUpdateText };
   
+  const getLandscapeAlignment = () => {
+    switch (variant) {
+      case 1: return 'items-end'; // Bottom
+      case 2: return 'items-start pt-8'; // Top - extra padding for progress indicator
+      default: return 'items-center'; // Center
+    }
+  };
+  
+  const getLandscapeGradient = () => {
+    switch (variant) {
+      case 1: return 'bg-gradient-to-t from-black/80 via-black/40 to-transparent';
+      case 2: return 'bg-gradient-to-b from-black/80 via-black/40 to-transparent';
+      default: return 'bg-black/50';
+    }
+  };
+
+  const headlineStyle = { color: accent, fontFamily: headingFont, fontSize: (fontSizes.headline || 14) + 2, lineHeight: fontSizes.lineHeight || 1.3 };
+  const bodyStyle = { fontFamily: bodyFont, fontSize: fontSizes.body || 12, lineHeight: (fontSizes.lineHeight || 1.4) + 0.1 };
+
   if (isLandscape) {
     return (
-      <div className="absolute inset-0 flex items-center justify-center p-3 bg-black/50">
+      <div className={`absolute inset-0 flex ${getLandscapeAlignment()} justify-center px-3 py-3 ${getLandscapeGradient()}`}>
         <div className="flex items-center gap-4 max-w-[95%]">
-          <EditableTextField {...commonProps} field="headline" isActive={activeField === 'headline'} formatting={formatting.headline || {}} className="text-xs font-black leading-tight tracking-tight block flex-1" style={{ color: accent, fontFamily: headingFont }}>{headline}</EditableTextField>
+          <EditableTextField {...commonProps} field="headline" isActive={activeField === 'headline'} formatting={formatting.headline || {}} className="font-black leading-tight tracking-tight block flex-1" style={headlineStyle}>{headline}</EditableTextField>
           <div className="w-0.5 h-8 rounded-full flex-shrink-0" style={{ background: accent, opacity: 0.6 }} />
-          <EditableTextField {...commonProps} field="body" isActive={activeField === 'body'} formatting={formatting.body || {}} className="text-[10px] text-gray-300 leading-snug font-medium block max-w-[35%]" style={{ fontFamily: bodyFont }}>{body}</EditableTextField>
+          <EditableTextField {...commonProps} field="body" isActive={activeField === 'body'} formatting={formatting.body || {}} className="text-gray-300 leading-snug font-medium block max-w-[35%]" style={bodyStyle}>{body}</EditableTextField>
         </div>
       </div>
     );
@@ -454,11 +518,11 @@ const LayoutCenterDrama = ({ headline, body, accent, isLandscape, headingFont, b
     <div className={`absolute inset-0 flex flex-col items-center ${getAlignment()} p-4 text-center bg-black/40`}>
       <div className="max-w-[90%]">
         <div className="relative inline-block mb-3">
-          <EditableTextField {...commonProps} field="headline" isActive={activeField === 'headline'} formatting={formatting.headline || {}} className="text-base font-black leading-tight tracking-tight block" style={{ color: accent, fontFamily: headingFont }}>{headline}</EditableTextField>
+          <EditableTextField {...commonProps} field="headline" isActive={activeField === 'headline'} formatting={formatting.headline || {}} className="font-black leading-tight tracking-tight block" style={headlineStyle}>{headline}</EditableTextField>
         </div>
         <div className="w-12 h-0.5 mx-auto mb-3 rounded-full" style={{ background: accent, opacity: 0.6 }} />
         <div className="relative inline-block">
-          <EditableTextField {...commonProps} field="body" isActive={activeField === 'body'} formatting={formatting.body || {}} className="text-xs text-gray-300 leading-relaxed font-medium block" style={{ fontFamily: bodyFont }}>{body}</EditableTextField>
+          <EditableTextField {...commonProps} field="body" isActive={activeField === 'body'} formatting={formatting.body || {}} className="text-gray-300 leading-relaxed font-medium block" style={bodyStyle}>{body}</EditableTextField>
         </div>
       </div>
     </div>
@@ -466,7 +530,7 @@ const LayoutCenterDrama = ({ headline, body, accent, isLandscape, headingFont, b
 };
 
 // Layout Component - Editorial
-const LayoutEditorialLeft = ({ headline, body, accent, isLandscape, headingFont, bodyFont, variant = 0, isFrameSelected, onUpdateText, activeField, onActivateField, formatting = {} }) => {
+const LayoutEditorialLeft = ({ headline, body, accent, isLandscape, headingFont, bodyFont, variant = 0, isFrameSelected, onUpdateText, activeField, onActivateField, formatting = {}, fontSizes = {} }) => {
   const getHeadlineAlign = () => {
     switch (variant) {
       case 1: return 'items-center text-center';
@@ -493,14 +557,26 @@ const LayoutEditorialLeft = ({ headline, body, accent, isLandscape, headingFont,
   
   const commonProps = { isFrameSelected, onActivate: onActivateField, onUpdateText };
   
+  const getLandscapeContentAlign = () => {
+    switch (variant) {
+      case 1: return 'justify-center'; // Center
+      case 2: return 'justify-end'; // Right
+      default: return 'justify-start'; // Left
+    }
+  };
+
+  const headlineStyle = { color: accent, fontFamily: headingFont, fontSize: fontSizes.headline || 14, lineHeight: fontSizes.lineHeight || 1.3 };
+  const bodyStyle = { fontFamily: bodyFont, fontSize: fontSizes.body || 12, lineHeight: fontSizes.lineHeight || 1.4 };
+
   if (isLandscape) {
     return (
-      <div className="absolute inset-0 flex items-center p-3 pt-6 gap-3">
+      <div className={`absolute inset-0 flex items-center ${getLandscapeContentAlign()} p-3 gap-3`}>
         <div className="w-1 h-10 rounded-full flex-shrink-0" style={{ background: accent }} />
-        <EditableTextField {...commonProps} field="headline" isActive={activeField === 'headline'} formatting={formatting.headline || {}} className="text-xs font-bold leading-tight block flex-1" style={{ color: accent, fontFamily: headingFont }}>{headline}</EditableTextField>
+        <EditableTextField {...commonProps} field="headline" isActive={activeField === 'headline'} formatting={formatting.headline || {}} className={`font-bold leading-tight block ${variant === 1 ? 'text-center' : variant === 2 ? 'text-right' : 'text-left'}`} style={headlineStyle}>{headline}</EditableTextField>
         <div className="relative bg-black/40 backdrop-blur-sm rounded px-2 py-1 max-w-[35%]">
-          <EditableTextField {...commonProps} field="body" isActive={activeField === 'body'} formatting={formatting.body || {}} className="text-[10px] text-gray-200 leading-snug italic block" style={{ fontFamily: bodyFont }}>{body}</EditableTextField>
+          <EditableTextField {...commonProps} field="body" isActive={activeField === 'body'} formatting={formatting.body || {}} className={`text-gray-200 leading-snug italic block ${variant === 1 ? 'text-center' : variant === 2 ? 'text-left' : 'text-right'}`} style={bodyStyle}>{body}</EditableTextField>
         </div>
+        {variant === 2 && <div className="w-1 h-10 rounded-full flex-shrink-0" style={{ background: accent }} />}
       </div>
     );
   }
@@ -509,10 +585,10 @@ const LayoutEditorialLeft = ({ headline, body, accent, isLandscape, headingFont,
     <div className={`absolute inset-0 flex flex-col ${getHeadlineAlign()} p-4 pt-8`}>
       <div className={`w-8 h-1 rounded-full mb-3 ${getAccentAlign()}`} style={{ background: accent }} />
       <div className="relative max-w-[85%] mb-auto">
-        <EditableTextField {...commonProps} field="headline" isActive={activeField === 'headline'} formatting={formatting.headline || {}} className="text-sm font-bold leading-tight block" style={{ color: accent, fontFamily: headingFont }}>{headline}</EditableTextField>
+        <EditableTextField {...commonProps} field="headline" isActive={activeField === 'headline'} formatting={formatting.headline || {}} className="font-bold leading-tight block" style={headlineStyle}>{headline}</EditableTextField>
       </div>
       <div className={`relative ${getBodyAlign()} max-w-[75%] bg-black/30 backdrop-blur-sm rounded-lg p-2`}>
-        <EditableTextField {...commonProps} field="body" isActive={activeField === 'body'} formatting={formatting.body || {}} className="text-xs text-gray-200 leading-snug italic block" style={{ fontFamily: bodyFont }}>{body}</EditableTextField>
+        <EditableTextField {...commonProps} field="body" isActive={activeField === 'body'} formatting={formatting.body || {}} className="text-gray-200 leading-snug italic block" style={bodyStyle}>{body}</EditableTextField>
       </div>
     </div>
   );
@@ -535,11 +611,12 @@ const CarouselFrame = ({ frame, carouselId, frameSize, designSystem, frameIndex,
   const handleActivateField = (field) => onActivateTextField?.(field);
   
   const renderLayout = () => {
+    const fontSizes = getFontSizes(frameSize);
     const props = { 
       headline: content.headline, body: content.body, accent: style.accent, isLandscape,
       headingFont: designSystem.headingFont, bodyFont: designSystem.bodyFont, variant: layoutVariant,
       isFrameSelected, onUpdateText: handleUpdateText, activeField: activeTextField,
-      onActivateField: handleActivateField, formatting,
+      onActivateField: handleActivateField, formatting, fontSizes,
     };
     switch (layoutIndex) {
       case 1: return <LayoutCenterDrama {...props} />;
@@ -650,6 +727,171 @@ const SortableFrame = ({ id, frame, carouselId, frameSize, designSystem, frameIn
   );
 };
 
+// Homepage Component - Project Browser
+const Homepage = ({ projects, onOpenProject, onCreateNew }) => {
+  return (
+    <div className="w-full h-full p-8 overflow-y-auto">
+      {/* Header */}
+      <div className="max-w-6xl mx-auto mb-12">
+        <div className="flex items-center gap-4 mb-2">
+          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center">
+            <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zm0 8a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zm12 0a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
+            </svg>
+          </div>
+          <div>
+            <h1 className="text-3xl font-bold text-white">Carousel Studio</h1>
+            <p className="text-gray-500 text-sm">Design beautiful social media carousels</p>
+          </div>
+        </div>
+      </div>
+      
+      {/* Projects Section */}
+      <div className="max-w-6xl mx-auto">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-xl font-semibold text-white">Your Projects</h2>
+          <button 
+            onClick={onCreateNew}
+            className="flex items-center gap-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-medium transition-colors border border-gray-600"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            New Project
+          </button>
+        </div>
+        
+        {/* Project Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {projects.map(project => (
+            <div 
+              key={project.id}
+              onClick={() => onOpenProject(project.id)}
+              className="group bg-gray-900 border border-gray-800 rounded-xl overflow-hidden hover:border-gray-600 hover:bg-gray-800/50 transition-all cursor-pointer"
+            >
+              {/* Thumbnail */}
+              <div className="h-40 bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center relative overflow-hidden">
+                {project.hasContent ? (
+                  <div className="flex gap-2 transform group-hover:scale-105 transition-transform">
+                    {[1, 2, 3].map(i => (
+                      <div key={i} className="w-16 h-20 bg-gray-700/50 rounded-lg border border-gray-600 flex items-center justify-center">
+                        <div className="w-8 h-1 bg-gray-500 rounded" />
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-gray-600">
+                    <svg className="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                  </div>
+                )}
+                
+                {/* Hover overlay */}
+                <div className="absolute inset-0 bg-gray-700/0 group-hover:bg-gray-700/20 transition-colors flex items-center justify-center">
+                  <div className="opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="px-4 py-2 bg-gray-700 border border-gray-500 rounded-lg text-white text-sm font-medium">
+                      Open Project
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Info */}
+              <div className="p-4">
+                <h3 className="text-white font-semibold mb-1 group-hover:text-gray-300 transition-colors">
+                  {project.name}
+                </h3>
+                <div className="flex items-center gap-3 text-xs text-gray-500">
+                  <span>{project.hasContent ? `${project.frameCount || 5} frames` : 'Empty'}</span>
+                  <span>•</span>
+                  <span>Updated {project.updatedAt}</span>
+                </div>
+              </div>
+            </div>
+          ))}
+          
+          {/* Create New Project Card */}
+          <div 
+            onClick={onCreateNew}
+            className="group bg-gray-900/50 border-2 border-dashed border-gray-700 rounded-xl overflow-hidden hover:border-gray-500 hover:bg-gray-800/30 transition-all cursor-pointer flex flex-col items-center justify-center min-h-[240px]"
+          >
+            <div className="w-16 h-16 rounded-full bg-gray-800 group-hover:bg-gray-700 flex items-center justify-center transition-colors mb-3">
+              <svg className="w-8 h-8 text-gray-600 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+            </div>
+            <span className="text-gray-500 group-hover:text-orange-400 font-medium transition-colors">Create New Project</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Project Header Component - Editable project name at top of canvas
+const ProjectHeader = ({ projectName, onUpdateName }) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editValue, setEditValue] = useState(projectName);
+  const inputRef = useRef(null);
+  
+  useEffect(() => {
+    setEditValue(projectName);
+  }, [projectName]);
+  
+  useEffect(() => {
+    if (isEditing && inputRef.current) {
+      inputRef.current.focus();
+      inputRef.current.select();
+    }
+  }, [isEditing]);
+  
+  const handleSave = () => {
+    if (editValue.trim()) {
+      onUpdateName(editValue.trim());
+    } else {
+      setEditValue(projectName);
+    }
+    setIsEditing(false);
+  };
+  
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      handleSave();
+    } else if (e.key === 'Escape') {
+      setEditValue(projectName);
+      setIsEditing(false);
+    }
+  };
+  
+  return (
+    <div className="mb-6 flex items-center gap-3" onClick={(e) => e.stopPropagation()}>
+      {isEditing ? (
+        <input
+          ref={inputRef}
+          type="text"
+          value={editValue}
+          onChange={(e) => setEditValue(e.target.value)}
+          onBlur={handleSave}
+          onKeyDown={handleKeyDown}
+          className="text-2xl font-bold text-white bg-transparent border-b-2 border-orange-500 outline-none px-1 py-0.5 min-w-[200px]"
+          style={{ fontFamily: 'inherit' }}
+        />
+      ) : (
+        <h1 
+          className="text-2xl font-bold text-white hover:text-orange-400 cursor-pointer transition-colors group flex items-center gap-2"
+          onClick={() => setIsEditing(true)}
+        >
+          {projectName}
+          <svg className="w-4 h-4 text-gray-600 group-hover:text-orange-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+          </svg>
+        </h1>
+      )}
+    </div>
+  );
+};
+
 // New Project View Component
 const NewProjectView = ({ onCreateProject }) => {
   const [projectName, setProjectName] = useState('');
@@ -669,10 +911,10 @@ const NewProjectView = ({ onCreateProject }) => {
       icon: 'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z'
     },
     { 
-      id: 'story', 
-      name: 'Story', 
-      description: 'Vertical story format',
-      icon: 'M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z'
+      id: 'eblast', 
+      name: 'Eblast Images', 
+      description: 'Email blast graphics',
+      icon: 'M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z'
     },
     { 
       id: 'video', 
@@ -689,95 +931,187 @@ const NewProjectView = ({ onCreateProject }) => {
   };
   
   return (
-    <div className="flex flex-col items-center justify-center min-h-[calc(100vh-200px)] p-8">
-      <div className="max-w-2xl w-full">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-3xl font-bold text-white mb-3">Create New Project</h1>
-          <p className="text-gray-400 text-lg">Choose a format to get started</p>
-      </div>
-      
+    <div className="flex flex-col items-center justify-center min-h-[calc(100vh-140px)] p-6">
+      <div className="max-w-xl w-full">
         {/* Project Name Input */}
-        <div className="mb-8">
-          <label className="block text-sm font-medium text-gray-400 mb-2">Project Name</label>
+        <div className="mb-5">
+          <label className="block text-xs font-medium text-gray-400 mb-1.5">Project Name</label>
           <input
             type="text"
             value={projectName}
             onChange={(e) => setProjectName(e.target.value)}
             placeholder="Enter project name..."
-            className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all"
+            className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm placeholder-gray-500 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all"
           />
         </div>
         
-        {/* Project Type Grid */}
-        <div className="grid grid-cols-2 gap-4 mb-8">
-          {projectTypes.map(type => (
-              <button
-              key={type.id}
-              onClick={() => setSelectedType(type.id)}
-              className={`p-6 rounded-2xl border-2 text-left transition-all duration-200 ${
-                selectedType === type.id
-                    ? 'border-orange-500 bg-orange-500/10'
-                  : 'border-gray-700 bg-gray-800/50 hover:border-gray-600 hover:bg-gray-800'
-              }`}
-            >
-              <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 ${
-                selectedType === type.id ? 'bg-orange-500' : 'bg-gray-700'
-              }`}>
-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d={type.icon} />
+        {/* Project Type Grid - 2 columns */}
+        <div className="grid grid-cols-2 gap-3 mb-5">
+          {/* Carousel */}
+          <button
+            onClick={() => setSelectedType('carousel')}
+            className={`p-3 rounded-xl border text-left transition-all duration-200 flex items-center gap-3 ${
+              selectedType === 'carousel'
+                ? 'border-gray-500 bg-gray-800'
+                : 'border-gray-700/50 bg-gray-800/30 hover:border-gray-600 hover:bg-gray-800/50'
+            }`}
+          >
+            <div className="w-[104px] flex-shrink-0 flex gap-1 justify-center">
+              {[0, 1, 2].map(i => (
+                <div key={i} className={`w-8 h-11 rounded bg-gray-700 border border-gray-600 ${i > 0 ? 'opacity-50' : ''}`} />
+              ))}
+            </div>
+            <div className="flex-1 min-w-0">
+              <h3 className={`text-xs font-semibold ${selectedType === 'carousel' ? 'text-white' : 'text-gray-300'}`}>Carousel</h3>
+              <p className="text-[10px] text-gray-500 leading-relaxed">Multi-slide posts for LinkedIn & Instagram. Ideal for storytelling.</p>
+            </div>
+          </button>
+
+          {/* Single Post */}
+          <button
+            onClick={() => setSelectedType('single')}
+            className={`p-3 rounded-xl border text-left transition-all duration-200 flex items-center gap-3 ${
+              selectedType === 'single'
+                ? 'border-gray-500 bg-gray-800'
+                : 'border-gray-700/50 bg-gray-800/30 hover:border-gray-600 hover:bg-gray-800/50'
+            }`}
+          >
+            <div className="w-[104px] flex-shrink-0 flex justify-center">
+              <div className="w-14 h-14 rounded-lg bg-gray-700 border border-gray-600 flex items-center justify-center">
+                <svg className="w-7 h-7 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14" />
                 </svg>
+              </div>
+            </div>
+            <div className="flex-1 min-w-0">
+              <h3 className={`text-xs font-semibold ${selectedType === 'single' ? 'text-white' : 'text-gray-300'}`}>Single Post</h3>
+              <p className="text-[10px] text-gray-500 leading-relaxed">Single graphics for announcements, quotes, or promos.</p>
+            </div>
+          </button>
+
+          {/* Eblast Images */}
+          <button
+            onClick={() => setSelectedType('eblast')}
+            className={`p-3 rounded-xl border text-left transition-all duration-200 flex items-center gap-3 ${
+              selectedType === 'eblast'
+                ? 'border-gray-500 bg-gray-800'
+                : 'border-gray-700/50 bg-gray-800/30 hover:border-gray-600 hover:bg-gray-800/50'
+            }`}
+          >
+            <div className="w-[104px] flex-shrink-0 flex justify-center">
+              <div className="w-16 h-12 rounded-lg bg-gray-700 border border-gray-600 p-2 flex flex-col gap-1">
+                <div className="h-1.5 rounded-full bg-gray-500 w-1/2" />
+                <div className="flex-1 rounded bg-gray-600" />
+                <div className="h-1 rounded-full bg-gray-600 w-2/3" />
+              </div>
+            </div>
+            <div className="flex-1 min-w-0">
+              <h3 className={`text-xs font-semibold ${selectedType === 'eblast' ? 'text-white' : 'text-gray-300'}`}>Eblast Images</h3>
+              <p className="text-[10px] text-gray-500 leading-relaxed">Graphics for email campaigns. Optimized for all clients.</p>
+            </div>
+          </button>
+
+          {/* Video Cover */}
+          <button
+            onClick={() => setSelectedType('video')}
+            className={`p-3 rounded-xl border text-left transition-all duration-200 flex items-center gap-3 ${
+              selectedType === 'video'
+                ? 'border-gray-500 bg-gray-800'
+                : 'border-gray-700/50 bg-gray-800/30 hover:border-gray-600 hover:bg-gray-800/50'
+            }`}
+          >
+            <div className="w-[104px] flex-shrink-0 flex justify-center">
+              <div className="w-16 h-11 rounded-lg bg-gray-700 border border-gray-600 flex items-center justify-center">
+                <div className="w-6 h-6 rounded-full bg-gray-500 flex items-center justify-center">
+                  <svg className="w-3 h-3 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M8 5v14l11-7z" />
+                  </svg>
                 </div>
-              <h3 className={`text-lg font-semibold mb-1 ${selectedType === type.id ? 'text-orange-400' : 'text-white'}`}>
-                {type.name}
-              </h3>
-              <p className="text-sm text-gray-500">{type.description}</p>
-              </button>
-            ))}
+              </div>
+            </div>
+            <div className="flex-1 min-w-0">
+              <h3 className={`text-xs font-semibold ${selectedType === 'video' ? 'text-white' : 'text-gray-300'}`}>Video Cover</h3>
+              <p className="text-[10px] text-gray-500 leading-relaxed">Thumbnails for YouTube, Vimeo, and social video.</p>
+            </div>
+          </button>
+          
+          {/* Website Sections - Spans 2 columns */}
+          <button
+            onClick={() => setSelectedType('website')}
+            className={`col-span-2 p-4 rounded-xl border text-left transition-all duration-200 flex items-center gap-4 ${
+              selectedType === 'website'
+                ? 'border-gray-500 bg-gray-800'
+                : 'border-gray-700/50 bg-gray-800/30 hover:border-gray-600 hover:bg-gray-800/50'
+            }`}
+          >
+            {/* Multiple wireframe illustrations - Much bigger */}
+            <div className="flex gap-2.5 flex-shrink-0">
+              {/* Hero layout */}
+              <div className="w-[85px] h-[74px] rounded-lg border border-gray-600 bg-gray-900/50 p-1.5 flex flex-col gap-1">
+                <div className="h-6 rounded bg-gray-700" />
+                <div className="flex-1 rounded bg-gray-800" />
+              </div>
+              {/* 3-column layout */}
+              <div className="w-[85px] h-[74px] rounded-lg border border-gray-600 bg-gray-900/50 p-1.5 flex flex-col gap-1">
+                <div className="h-2.5 rounded bg-gray-700" />
+                <div className="flex gap-1 flex-1">
+                  <div className="flex-1 rounded bg-gray-800" />
+                  <div className="flex-1 rounded bg-gray-800" />
+                  <div className="flex-1 rounded bg-gray-800" />
+                </div>
+              </div>
+              {/* CTA layout */}
+              <div className="w-[85px] h-[74px] rounded-lg border border-gray-600 bg-gray-900/50 p-1.5 flex flex-col justify-center items-center gap-1">
+                <div className="w-10 h-2 rounded bg-gray-700" />
+                <div className="w-12 h-4 rounded bg-gray-600" />
+              </div>
+              {/* Split layout */}
+              <div className="w-[85px] h-[74px] rounded-lg border border-gray-600 bg-gray-900/50 p-1.5 flex gap-1">
+                <div className="flex-1 rounded bg-gray-800" />
+                <div className="flex-1 flex flex-col gap-1">
+                  <div className="h-2 rounded bg-gray-700" />
+                  <div className="h-1.5 rounded bg-gray-700/50" />
+                  <div className="flex-1" />
+                  <div className="h-3 w-10 rounded bg-gray-600" />
+                </div>
+              </div>
+            </div>
+            <div className="flex-1 min-w-0">
+              <h3 className={`text-xs font-semibold ${selectedType === 'website' ? 'text-white' : 'text-gray-300'}`}>Website Sections</h3>
+              <p className="text-[10px] text-gray-500 leading-relaxed">Banners, CTAs, and graphics for websites and landing pages.</p>
+            </div>
+          </button>
         </div>
         
         {/* Create Button */}
-                  <button
+        <button
           onClick={handleCreate}
           disabled={!selectedType}
-          className={`w-full py-4 rounded-xl font-semibold text-lg transition-all duration-200 ${
+          className={`w-full py-3 rounded-lg font-medium text-sm transition-all duration-200 ${
             selectedType
-              ? 'bg-orange-500 hover:bg-orange-600 text-white shadow-lg shadow-orange-500/25'
-              : 'bg-gray-800 text-gray-500 cursor-not-allowed'
+              ? 'bg-gray-700 hover:bg-gray-600 text-white border border-gray-600'
+              : 'bg-gray-800/50 text-gray-600 cursor-not-allowed border border-gray-700/50'
           }`}
         >
-          {selectedType ? 'Create Project' : 'Select a format to continue'}
-                  </button>
+          {selectedType ? 'Create Project' : 'Select a format'}
+        </button>
         
-        {/* Quick Start Templates */}
-        <div className="mt-12 pt-8 border-t border-gray-800">
-          <h2 className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-4">Or start from a template</h2>
-          <div className="flex gap-3">
-            {['Product Launch', 'Brand Story', 'Tutorial Series', 'Announcement'].map(template => (
-                    <button
-                key={template}
-                onClick={() => {
-                  setSelectedType('carousel');
-                  setProjectName(template);
-                }}
-                className="px-4 py-2 bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-lg text-sm text-gray-300 hover:text-white transition-all"
-              >
-                {template}
-                    </button>
-                  ))}
-                </div>
-              </div>
       </div>
     </div>
   );
 };
 
 // Sidebar Component
-const Sidebar = ({ activePanel, onPanelChange, zoom, onZoomChange }) => {
+const Sidebar = ({ activePanel, onPanelChange, zoom, onZoomChange, isHomePage, onAccountClick, isAccountOpen, onCloseAccount }) => {
   const panels = [
     { id: 'design', icon: 'M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01', label: 'Design & Assets' },
     { id: 'export', icon: 'M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12', label: 'Export' },
   ];
+  
+  const handlePanelClick = (panelId) => {
+    if (onCloseAccount) onCloseAccount();
+    onPanelChange(activePanel === panelId ? null : panelId);
+  };
   
   return (
     <div className="fixed left-0 top-[56px] h-[calc(100%-56px)] w-16 bg-gray-900 border-r border-gray-800 flex flex-col items-center py-4 z-50">
@@ -786,7 +1120,7 @@ const Sidebar = ({ activePanel, onPanelChange, zoom, onZoomChange }) => {
         {panels.map(panel => (
             <button
             key={panel.id}
-            onClick={() => onPanelChange(activePanel === panel.id ? null : panel.id)}
+            onClick={() => handlePanelClick(panel.id)}
             className={`w-11 h-11 rounded-xl flex items-center justify-center transition-all ${activePanel === panel.id ? 'bg-orange-500 text-white' : 'text-gray-400 hover:text-white hover:bg-gray-700'}`}
             title={panel.label}
           >
@@ -797,38 +1131,54 @@ const Sidebar = ({ activePanel, onPanelChange, zoom, onZoomChange }) => {
         ))}
           </div>
           
-      {/* Zoom Controls - Vertical at bottom */}
+      {/* Bottom Section - Zoom Controls or Profile Icon */}
       <div className="mt-auto flex flex-col items-center gap-1.5 pb-2">
+        {isHomePage ? (
+          /* Profile Icon on Homepage */
+          <button 
+            onClick={onAccountClick}
+            className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors border ${isAccountOpen ? 'text-white bg-gray-700 border-gray-600' : 'text-gray-400 hover:text-white hover:bg-gray-700 border-gray-700'}`}
+            title="Profile & Settings"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+          </button>
+        ) : (
+          /* Zoom Controls in Editor */
+          <>
             <button 
-          onClick={() => onZoomChange(Math.min(250, zoom + 10))} 
-          className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-700 transition-colors"
+              onClick={() => onZoomChange(Math.min(250, zoom + 10))} 
+              className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-700 transition-colors"
               title="Zoom in"
             >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-          </svg>
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
             </button>
-        <span className="text-[10px] font-mono font-medium text-gray-400">
-          {zoom}%
-        </span>
+            <span className="text-[10px] font-mono font-medium text-gray-400">
+              {zoom}%
+            </span>
             <button 
-          onClick={() => onZoomChange(Math.max(50, zoom - 10))} 
-          className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-700 transition-colors"
+              onClick={() => onZoomChange(Math.max(50, zoom - 10))} 
+              className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-700 transition-colors"
               title="Zoom out"
             >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
-          </svg>
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+              </svg>
             </button>
             <button 
-          onClick={() => onZoomChange(100)}
-          className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-700 transition-colors"
-          title="Reset to 100%"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              onClick={() => onZoomChange(100)}
+              className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-700 transition-colors"
+              title="Reset to 100%"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
               </svg>
             </button>
+          </>
+        )}
       </div>
     </div>
   );
@@ -836,6 +1186,10 @@ const Sidebar = ({ activePanel, onPanelChange, zoom, onZoomChange }) => {
 
 // Design & Assets Panel (Combined Design System + Files + Backgrounds)
 const DesignSystemPanel = ({ designSystem, onUpdate, onClose, isOpen }) => {
+  const [activeTab, setActiveTab] = useState('design'); // 'design' or 'assets'
+  const [uploadedFiles, setUploadedFiles] = useState([]); // Mock uploaded files
+  const MAX_FILES = 50;
+  
   const colorFields = [
     { key: 'primary', label: 'Primary' },
     { key: 'secondary', label: 'Secondary' },
@@ -858,10 +1212,11 @@ const DesignSystemPanel = ({ designSystem, onUpdate, onClose, isOpen }) => {
   
   return (
     <div 
-      className={`fixed top-[56px] h-[calc(100%-56px)] w-72 bg-gray-900 border-r border-gray-800 z-40 overflow-y-auto ${isOpen ? 'pointer-events-auto' : 'pointer-events-none'}`}
+      className={`fixed top-[56px] h-[calc(100%-56px)] w-72 bg-gray-900 border-r border-gray-800 z-40 flex flex-col ${isOpen ? 'pointer-events-auto' : 'pointer-events-none'}`}
       style={{ left: isOpen ? 64 : -224, transition: 'left 0.3s ease-out' }}
     >
-      <div className="px-4 border-b border-gray-800 flex items-center justify-between" style={{ height: 64 }}>
+      {/* Fixed Header */}
+      <div className="flex-shrink-0 px-4 border-b border-gray-800 flex items-center justify-between" style={{ height: 64 }}>
         <h2 className="text-sm font-semibold text-white">Design & Assets</h2>
         <button onClick={onClose} className="text-gray-400 hover:text-white">
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -870,20 +1225,82 @@ const DesignSystemPanel = ({ designSystem, onUpdate, onClose, isOpen }) => {
         </button>
       </div>
       
-      {/* Assets Section */}
-      <div className="p-4 border-b border-gray-800">
-        <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-3">Assets</h3>
-        <div className="border-2 border-dashed border-gray-700 rounded-lg p-4 text-center">
-          <svg className="w-6 h-6 mx-auto mb-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-          </svg>
-          <p className="text-[10px] text-gray-500 mb-1">Drop images here</p>
-          <button className="text-[10px] text-orange-400 hover:text-orange-300">Browse files</button>
-        </div>
-        <div className="mt-3">
-          <p className="text-[10px] text-gray-600">No recent files</p>
-        </div>
+      {/* Fixed Tab Navigation */}
+      <div className="flex-shrink-0 flex border-b border-gray-800">
+        <button 
+          onClick={() => setActiveTab('design')}
+          className={`flex-1 py-3 text-xs font-medium transition-colors ${activeTab === 'design' ? 'text-orange-400 border-b-2 border-orange-400' : 'text-gray-500 hover:text-gray-300'}`}
+        >
+          Design
+        </button>
+        <button 
+          onClick={() => setActiveTab('assets')}
+          className={`flex-1 py-3 text-xs font-medium transition-colors ${activeTab === 'assets' ? 'text-orange-400 border-b-2 border-orange-400' : 'text-gray-500 hover:text-gray-300'}`}
+        >
+          Assets
+          {uploadedFiles.length > 0 && (
+            <span className="ml-1.5 px-1.5 py-0.5 bg-gray-700 rounded text-[10px]">{uploadedFiles.length}</span>
+          )}
+        </button>
       </div>
+      
+      {/* Scrollable Content Area */}
+      <div className="flex-1 overflow-y-auto overflow-x-hidden">
+      {activeTab === 'assets' ? (
+        <>
+          {/* Upload Section */}
+          <div className="p-4 border-b border-gray-800">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Upload Images</h3>
+              <span className="text-[10px] text-gray-500">{uploadedFiles.length}/{MAX_FILES}</span>
+            </div>
+            <div className="border-2 border-dashed border-gray-700 rounded-lg p-4 text-center hover:border-gray-600 transition-colors cursor-pointer">
+              <svg className="w-8 h-8 mx-auto mb-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              <p className="text-xs text-gray-400 mb-1">Drop images here</p>
+              <p className="text-[10px] text-gray-600 mb-2">or</p>
+              <button className="px-3 py-1.5 bg-gray-700 hover:bg-gray-600 text-xs text-white rounded-lg transition-colors">
+                Browse files
+              </button>
+              <p className="text-[10px] text-gray-600 mt-2">PNG, JPG up to 10MB each</p>
+            </div>
+          </div>
+          
+          {/* File Browser */}
+          <div className="p-4">
+            <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-3">Your Images</h3>
+            {uploadedFiles.length === 0 ? (
+              <div className="text-center py-8">
+                <svg className="w-12 h-12 mx-auto mb-3 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <p className="text-xs text-gray-500">No images uploaded yet</p>
+                <p className="text-[10px] text-gray-600 mt-1">Upload images to use in your designs</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-3 gap-2">
+                {uploadedFiles.map((file, idx) => (
+                  <div key={idx} className="relative aspect-square bg-gray-800 rounded-lg overflow-hidden group cursor-pointer hover:ring-2 hover:ring-orange-500 transition-all">
+                    <img src={file.url} alt={file.name} className="w-full h-full object-cover" />
+                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <button className="p-1.5 bg-red-500 rounded-full hover:bg-red-600 transition-colors">
+                        <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      </button>
+                    </div>
+                    <div className="absolute bottom-0 left-0 right-0 p-1.5 bg-gradient-to-t from-black/70 to-transparent">
+                      <p className="text-[9px] text-white truncate">{file.name}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </>
+      ) : (
+        <>
       
 {/* Colors Section */}
       <div className="p-4 border-b border-gray-800">
@@ -958,55 +1375,617 @@ const DesignSystemPanel = ({ designSystem, onUpdate, onClose, isOpen }) => {
           ))}
         </div>
       </div>
+      </>
+      )}
+      </div>
     </div>
   );
 };
 
 // Export Panel
-const ExportPanel = ({ onClose, isOpen }) => {
+const ExportPanel = ({ onClose, isOpen, carousels = [] }) => {
+  const [format, setFormat] = useState('png');
+  const [resolution, setResolution] = useState('2x');
+  const [background, setBackground] = useState('original');
+  const [customBgColor, setCustomBgColor] = useState('#000000');
+  const [selectedItems, setSelectedItems] = useState({});
+  const [expandedRows, setExpandedRows] = useState({});
+
+  const formats = [
+    { id: 'png', name: 'PNG', supportsTransparent: true },
+    { id: 'jpg', name: 'JPG', supportsTransparent: false },
+    { id: 'webp', name: 'WebP', supportsTransparent: true },
+    { id: 'pdf', name: 'PDF', supportsTransparent: false },
+  ];
+
+  const resolutions = [
+    { id: '1x', name: '1x', desc: 'Standard' },
+    { id: '2x', name: '2x', desc: 'High DPI' },
+    { id: '3x', name: '3x', desc: 'Ultra' },
+  ];
+
+  const backgroundOptions = [
+    { id: 'original', name: 'Original', desc: 'Keep background' },
+    { id: 'transparent', name: 'Transparent', desc: 'PNG/WebP only' },
+    { id: 'custom', name: 'Custom Color', desc: 'Solid fill' },
+  ];
+
+  // Count total selected frames
+  const getSelectedCount = () => {
+    let count = 0;
+    Object.values(selectedItems).forEach(row => {
+      if (typeof row === 'object') {
+        count += Object.values(row).filter(Boolean).length;
+      }
+    });
+    return count;
+  };
+
+  // Toggle entire row selection
+  const toggleRow = (carouselId, frameCount) => {
+    const currentRow = selectedItems[carouselId] || {};
+    const allSelected = Object.keys(currentRow).length === frameCount && Object.values(currentRow).every(Boolean);
+    
+    if (allSelected) {
+      setSelectedItems(prev => ({ ...prev, [carouselId]: {} }));
+    } else {
+      const newSelection = {};
+      for (let i = 1; i <= frameCount; i++) {
+        newSelection[i] = true;
+      }
+      setSelectedItems(prev => ({ ...prev, [carouselId]: newSelection }));
+    }
+  };
+
+  // Toggle individual frame
+  const toggleFrame = (carouselId, frameId) => {
+    setSelectedItems(prev => ({
+      ...prev,
+      [carouselId]: {
+        ...(prev[carouselId] || {}),
+        [frameId]: !(prev[carouselId]?.[frameId])
+      }
+    }));
+  };
+
+  // Check if row is fully selected
+  const isRowFullySelected = (carouselId, frameCount) => {
+    const row = selectedItems[carouselId] || {};
+    return Object.keys(row).length === frameCount && Object.values(row).every(Boolean);
+  };
+
+  // Check if row is partially selected
+  const isRowPartiallySelected = (carouselId) => {
+    const row = selectedItems[carouselId] || {};
+    const selectedCount = Object.values(row).filter(Boolean).length;
+    return selectedCount > 0;
+  };
+
+  // Select all frames
+  const selectAll = () => {
+    const newSelection = {};
+    carousels.forEach(carousel => {
+      newSelection[carousel.id] = {};
+      carousel.frames.forEach(frame => {
+        newSelection[carousel.id][frame.id] = true;
+      });
+    });
+    setSelectedItems(newSelection);
+  };
+
+  // Deselect all
+  const deselectAll = () => {
+    setSelectedItems({});
+  };
+
+  const selectedCount = getSelectedCount();
+  const totalFrames = carousels.reduce((acc, c) => acc + c.frames.length, 0);
+  const supportsTransparent = formats.find(f => f.id === format)?.supportsTransparent;
+
   return (
     <div 
-      className={`fixed top-[56px] h-[calc(100%-56px)] w-72 bg-gray-900 border-r border-gray-800 z-40 overflow-y-auto ${isOpen ? 'pointer-events-auto' : 'pointer-events-none'}`}
+      className={`fixed top-[56px] h-[calc(100%-56px)] w-72 bg-gray-900 border-r border-gray-800 z-40 flex flex-col ${isOpen ? 'pointer-events-auto' : 'pointer-events-none'}`}
       style={{ left: isOpen ? 64 : -224, transition: 'left 0.3s ease-out' }}
     >
-      <div className="px-4 border-b border-gray-800 flex items-center justify-between" style={{ height: 64 }}>
+      {/* Fixed Header */}
+      <div className="flex-shrink-0 px-4 border-b border-gray-800 flex items-center justify-between" style={{ height: 64 }}>
         <h2 className="text-sm font-semibold text-white">Export</h2>
-        <button onClick={onClose} className="text-gray-400 hover:text-white">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+        <button type="button" onClick={onClose} className="text-gray-400 hover:text-white">
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      
+      {/* Scrollable Content Area */}
+      <div className="flex-1 overflow-y-auto overflow-x-hidden">
+        <div className="p-4 space-y-5">
+          
+          {/* Selection Section */}
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Select Frames</h3>
+              <div className="flex gap-2">
+                <button type="button" onClick={selectAll} className="text-[10px] text-orange-400 hover:text-orange-300">All</button>
+                <span className="text-gray-600">|</span>
+                <button type="button" onClick={deselectAll} className="text-[10px] text-gray-500 hover:text-gray-400">None</button>
+              </div>
+            </div>
+            <div className="bg-gray-800/50 rounded-lg border border-gray-700/50 max-h-48 overflow-y-auto">
+              {carousels.map((carousel) => (
+                <div key={carousel.id} className="border-b border-gray-700/50 last:border-b-0">
+                  <div 
+                    className="flex items-center gap-2 px-3 py-2 hover:bg-gray-700/30 cursor-pointer"
+                    onClick={() => setExpandedRows(prev => ({ ...prev, [carousel.id]: !prev[carousel.id] }))}
+                  >
+                    <button
+                      type="button"
+                      onClick={(e) => { e.stopPropagation(); toggleRow(carousel.id, carousel.frames.length); }}
+                      className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${
+                        isRowFullySelected(carousel.id, carousel.frames.length)
+                          ? 'bg-orange-500 border-orange-500'
+                          : isRowPartiallySelected(carousel.id)
+                          ? 'bg-orange-500/50 border-orange-500'
+                          : 'border-gray-600 hover:border-gray-500'
+                      }`}
+                    >
+                      {(isRowFullySelected(carousel.id, carousel.frames.length) || isRowPartiallySelected(carousel.id)) && (
+                        <svg className="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                        </svg>
+                      )}
+                    </button>
+                    <span className="text-xs text-white flex-1 truncate">{carousel.name}</span>
+                    <span className="text-[10px] text-gray-500">{carousel.frames.length} frames</span>
+                    <svg className={`w-3 h-3 text-gray-500 transition-transform ${expandedRows[carousel.id] ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                     </svg>
-                  </button>
+                  </div>
+                  {expandedRows[carousel.id] && (
+                    <div className="bg-gray-800/30 px-3 py-1.5">
+                      <div className="flex flex-wrap gap-1.5">
+                        {carousel.frames.map((frame) => (
+                          <button
+                            type="button"
+                            key={frame.id}
+                            onClick={() => toggleFrame(carousel.id, frame.id)}
+                            className={`px-2 py-1 rounded text-[10px] font-medium transition-colors ${
+                              selectedItems[carousel.id]?.[frame.id]
+                                ? 'bg-orange-500 text-white'
+                                : 'bg-gray-700 text-gray-400 hover:bg-gray-600'
+                            }`}
+                          >
+                            Frame {frame.id}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
-      <div className="p-4 space-y-4">
-        <div>
-          <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-2">Format</h3>
-          <div className="flex gap-2">
-            <button className="flex-1 px-3 py-2 bg-orange-500 text-white rounded text-xs font-medium">PNG</button>
-            <button className="flex-1 px-3 py-2 bg-gray-800 text-gray-300 rounded text-xs font-medium hover:bg-gray-700">JPG</button>
-            <button className="flex-1 px-3 py-2 bg-gray-800 text-gray-300 rounded text-xs font-medium hover:bg-gray-700">PDF</button>
+              ))}
+            </div>
+            <p className="text-[10px] text-gray-500 mt-1.5">{selectedCount} of {totalFrames} frames selected</p>
+          </div>
+
+          {/* Format Section */}
+          <div>
+            <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-2">Format</h3>
+            <div className="grid grid-cols-4 gap-1.5">
+              {formats.map(f => (
+                <button
+                  type="button"
+                  key={f.id}
+                  onClick={() => {
+                    setFormat(f.id);
+                    if (!f.supportsTransparent && background === 'transparent') {
+                      setBackground('original');
+                    }
+                  }}
+                  className={`px-2 py-2 rounded text-xs font-medium transition-colors ${
+                    format === f.id
+                      ? 'bg-orange-500 text-white'
+                      : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                  }`}
+                >
+                  {f.name}
+                </button>
+              ))}
             </div>
           </div>
-        <div>
-          <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-2">Quality</h3>
-          <select className="w-full bg-gray-800 border border-gray-700 rounded px-2 py-1.5 text-xs text-white">
-            <option>High (2x)</option>
-            <option>Medium (1x)</option>
-            <option>Low (0.5x)</option>
-          </select>
+
+          {/* Resolution Section */}
+          <div>
+            <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-2">Resolution</h3>
+            <div className="grid grid-cols-3 gap-1.5">
+              {resolutions.map(r => (
+                <button
+                  type="button"
+                  key={r.id}
+                  onClick={() => setResolution(r.id)}
+                  className={`px-2 py-2 rounded text-center transition-colors ${
+                    resolution === r.id
+                      ? 'bg-orange-500 text-white'
+                      : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                  }`}
+                >
+                  <div className="text-xs font-medium">{r.name}</div>
+                  <div className="text-[9px] opacity-70">{r.desc}</div>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Background Section */}
+          <div>
+            <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-2">Background</h3>
+            <div className="space-y-1.5">
+              {backgroundOptions.map(bg => (
+                <button
+                  type="button"
+                  key={bg.id}
+                  onClick={() => bg.id !== 'transparent' || supportsTransparent ? setBackground(bg.id) : null}
+                  disabled={bg.id === 'transparent' && !supportsTransparent}
+                  className={`w-full flex items-center gap-3 px-3 py-2 rounded text-left transition-colors ${
+                    background === bg.id
+                      ? 'bg-orange-500/20 border border-orange-500/50'
+                      : bg.id === 'transparent' && !supportsTransparent
+                      ? 'bg-gray-800/50 border border-gray-700/50 opacity-40 cursor-not-allowed'
+                      : 'bg-gray-800 border border-gray-700/50 hover:bg-gray-700'
+                  }`}
+                >
+                  <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
+                    background === bg.id ? 'border-orange-500' : 'border-gray-600'
+                  }`}>
+                    {background === bg.id && <div className="w-2 h-2 rounded-full bg-orange-500" />}
+                  </div>
+                  <div className="flex-1">
+                    <div className="text-xs text-white">{bg.name}</div>
+                    <div className="text-[10px] text-gray-500">{bg.desc}</div>
+                  </div>
+                  {bg.id === 'custom' && background === 'custom' && (
+                    <input
+                      type="color"
+                      value={customBgColor}
+                      onChange={(e) => setCustomBgColor(e.target.value)}
+                      onClick={(e) => e.stopPropagation()}
+                      className="w-6 h-6 rounded cursor-pointer"
+                    />
+                  )}
+                </button>
+              ))}
+            </div>
+          </div>
+
         </div>
-        <button className="w-full py-2.5 bg-orange-500 hover:bg-orange-600 text-white rounded-lg text-sm font-medium transition-colors">
-          Export All Frames
-        </button>
-        <button className="w-full py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg text-xs font-medium transition-colors">
-          Export Selected Only
+      </div>
+
+      {/* Fixed Footer - Export Button */}
+      <div className="flex-shrink-0 p-4 border-t border-gray-800 bg-gray-900">
+        <button
+          type="button"
+          disabled={selectedCount === 0}
+          className={`w-full py-3 rounded-lg text-sm font-medium transition-colors ${
+            selectedCount > 0
+              ? 'bg-orange-500 hover:bg-orange-600 text-white'
+              : 'bg-gray-800 text-gray-600 cursor-not-allowed'
+          }`}
+        >
+          {selectedCount > 0 ? `Export ${selectedCount} Frame${selectedCount > 1 ? 's' : ''}` : 'Select frames to export'}
         </button>
       </div>
     </div>
   );
 };
 
+// Account Management Panel
+const AccountPanel = ({ onClose, isOpen }) => {
+  const [activeTab, setActiveTab] = useState('team'); // 'team', 'invites', 'settings'
+  const [showInviteForm, setShowInviteForm] = useState(false);
+  const [inviteEmail, setInviteEmail] = useState('');
+  const [inviteRole, setInviteRole] = useState('editor');
+  
+  // Mock team members data
+  const [teamMembers, setTeamMembers] = useState([
+    { id: 1, name: 'You', email: 'gavin@company.com', role: 'owner', status: 'active', avatar: null },
+    { id: 2, name: 'Sarah Chen', email: 'sarah@company.com', role: 'admin', status: 'active', avatar: null },
+    { id: 3, name: 'Mike Johnson', email: 'mike@company.com', role: 'editor', status: 'active', avatar: null },
+  ]);
+  
+  // Mock pending invites
+  const [pendingInvites, setPendingInvites] = useState([
+    { id: 1, email: 'alex@company.com', role: 'editor', sentAt: '2024-12-20', expiresAt: '2024-12-27' },
+    { id: 2, email: 'jordan@company.com', role: 'viewer', sentAt: '2024-12-21', expiresAt: '2024-12-28' },
+  ]);
+
+  const roles = [
+    { id: 'owner', name: 'Owner', desc: 'Full access, billing, team management' },
+    { id: 'admin', name: 'Admin', desc: 'Full access, team management' },
+    { id: 'editor', name: 'Editor', desc: 'Create and edit projects' },
+    { id: 'viewer', name: 'Viewer', desc: 'View only access' },
+  ];
+
+  const handleInvite = () => {
+    if (!inviteEmail.trim()) return;
+    const newInvite = {
+      id: Date.now(),
+      email: inviteEmail.trim(),
+      role: inviteRole,
+      sentAt: new Date().toISOString().split('T')[0],
+      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    };
+    setPendingInvites(prev => [...prev, newInvite]);
+    setInviteEmail('');
+    setShowInviteForm(false);
+  };
+
+  const handleResendInvite = (inviteId) => {
+    setPendingInvites(prev => prev.map(inv => 
+      inv.id === inviteId 
+        ? { ...inv, sentAt: new Date().toISOString().split('T')[0], expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0] }
+        : inv
+    ));
+  };
+
+  const handleCancelInvite = (inviteId) => {
+    setPendingInvites(prev => prev.filter(inv => inv.id !== inviteId));
+  };
+
+  const handleRemoveMember = (memberId) => {
+    if (teamMembers.find(m => m.id === memberId)?.role === 'owner') return;
+    setTeamMembers(prev => prev.filter(m => m.id !== memberId));
+  };
+
+  const handleChangeRole = (memberId, newRole) => {
+    if (teamMembers.find(m => m.id === memberId)?.role === 'owner') return;
+    setTeamMembers(prev => prev.map(m => m.id === memberId ? { ...m, role: newRole } : m));
+  };
+
+  return (
+    <div 
+      className={`fixed top-[56px] h-[calc(100%-56px)] w-80 bg-gray-900 border-r border-gray-800 z-40 flex flex-col ${isOpen ? 'pointer-events-auto' : 'pointer-events-none'}`}
+      style={{ left: isOpen ? 64 : -256, transition: 'left 0.3s ease-out' }}
+    >
+      {/* Fixed Header */}
+      <div className="flex-shrink-0 p-4 border-b border-gray-800 flex items-center justify-between" style={{ height: 64 }}>
+        <h2 className="text-base font-semibold text-white">Account</h2>
+        <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-gray-800 text-gray-400 hover:text-white transition-colors">
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      
+      {/* Tab Navigation */}
+      <div className="flex-shrink-0 flex border-b border-gray-800">
+        <button 
+          onClick={() => setActiveTab('team')}
+          className={`flex-1 py-3 text-xs font-medium transition-colors ${activeTab === 'team' ? 'text-white border-b-2 border-gray-500' : 'text-gray-500 hover:text-gray-300'}`}
+        >
+          Team
+        </button>
+        <button 
+          onClick={() => setActiveTab('invites')}
+          className={`flex-1 py-3 text-xs font-medium transition-colors relative ${activeTab === 'invites' ? 'text-white border-b-2 border-gray-500' : 'text-gray-500 hover:text-gray-300'}`}
+        >
+          Invites
+          {pendingInvites.length > 0 && (
+            <span className="absolute top-2 right-4 w-4 h-4 bg-gray-600 rounded-full text-[10px] flex items-center justify-center text-white">
+              {pendingInvites.length}
+            </span>
+          )}
+        </button>
+        <button 
+          onClick={() => setActiveTab('settings')}
+          className={`flex-1 py-3 text-xs font-medium transition-colors ${activeTab === 'settings' ? 'text-white border-b-2 border-gray-500' : 'text-gray-500 hover:text-gray-300'}`}
+        >
+          Settings
+        </button>
+      </div>
+      
+      {/* Scrollable Content */}
+      <div className="flex-1 overflow-y-auto overflow-x-hidden p-4">
+        
+        {/* Team Tab */}
+        {activeTab === 'team' && (
+          <div className="space-y-4">
+            {/* Invite Button */}
+            <button
+              onClick={() => setShowInviteForm(true)}
+              className="w-full py-2.5 rounded-lg border border-dashed border-gray-600 text-gray-400 hover:border-gray-500 hover:text-white hover:bg-gray-800/50 transition-all text-sm font-medium flex items-center justify-center gap-2"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+              Invite Team Member
+            </button>
+            
+            {/* Invite Form */}
+            {showInviteForm && (
+              <div className="p-3 rounded-lg bg-gray-800/50 border border-gray-700 space-y-3">
+                <input
+                  type="email"
+                  value={inviteEmail}
+                  onChange={(e) => setInviteEmail(e.target.value)}
+                  placeholder="Email address"
+                  className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-sm text-white placeholder-gray-500 focus:outline-none focus:border-gray-500"
+                />
+                <select
+                  value={inviteRole}
+                  onChange={(e) => setInviteRole(e.target.value)}
+                  className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-sm text-white focus:outline-none focus:border-gray-500"
+                >
+                  {roles.filter(r => r.id !== 'owner').map(role => (
+                    <option key={role.id} value={role.id}>{role.name}</option>
+                  ))}
+                </select>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setShowInviteForm(false)}
+                    className="flex-1 py-2 rounded-lg bg-gray-700 text-gray-300 hover:bg-gray-600 text-sm font-medium transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleInvite}
+                    disabled={!inviteEmail.trim()}
+                    className="flex-1 py-2 rounded-lg bg-white text-gray-900 hover:bg-gray-200 text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Send Invite
+                  </button>
+                </div>
+              </div>
+            )}
+            
+            {/* Team Members List */}
+            <div className="space-y-2">
+              <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wide">Team Members ({teamMembers.length})</h3>
+              {teamMembers.map(member => (
+                <div key={member.id} className="p-3 rounded-lg bg-gray-800/30 border border-gray-700/50 flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center text-xs font-medium text-white">
+                    {member.name.split(' ').map(n => n[0]).join('').toUpperCase()}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-white truncate">{member.name}</p>
+                    <p className="text-xs text-gray-500 truncate">{member.email}</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {member.role === 'owner' ? (
+                      <span className="text-[10px] px-2 py-0.5 rounded bg-gray-700 text-gray-400">Owner</span>
+                    ) : (
+                      <>
+                        <select
+                          value={member.role}
+                          onChange={(e) => handleChangeRole(member.id, e.target.value)}
+                          className="text-[10px] px-2 py-1 rounded bg-gray-700 border-0 text-gray-300 focus:outline-none cursor-pointer"
+                        >
+                          {roles.filter(r => r.id !== 'owner').map(role => (
+                            <option key={role.id} value={role.id}>{role.name}</option>
+                          ))}
+                        </select>
+                        <button
+                          onClick={() => handleRemoveMember(member.id)}
+                          className="p-1 rounded hover:bg-red-500/20 text-gray-500 hover:text-red-400 transition-colors"
+                          title="Remove member"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                        </button>
+                      </>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+        
+        {/* Invites Tab */}
+        {activeTab === 'invites' && (
+          <div className="space-y-4">
+            {pendingInvites.length === 0 ? (
+              <div className="text-center py-8">
+                <svg className="w-12 h-12 mx-auto text-gray-600 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+                <p className="text-sm text-gray-500">No pending invites</p>
+                <button
+                  onClick={() => { setActiveTab('team'); setShowInviteForm(true); }}
+                  className="mt-3 text-xs text-gray-400 hover:text-white transition-colors"
+                >
+                  Invite someone →
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wide">Pending Invites ({pendingInvites.length})</h3>
+                {pendingInvites.map(invite => (
+                  <div key={invite.id} className="p-3 rounded-lg bg-gray-800/30 border border-gray-700/50">
+                    <div className="flex items-start justify-between mb-2">
+                      <div>
+                        <p className="text-sm font-medium text-white">{invite.email}</p>
+                        <p className="text-xs text-gray-500 capitalize">{invite.role}</p>
+                      </div>
+                      <span className="text-[10px] px-2 py-0.5 rounded bg-gray-700 text-gray-400">Pending</span>
+                    </div>
+                    <div className="text-xs text-gray-500 mb-2">
+                      Sent {invite.sentAt} · Expires {invite.expiresAt}
+                    </div>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => handleResendInvite(invite.id)}
+                        className="flex-1 py-1.5 rounded bg-gray-700 text-gray-300 hover:bg-gray-600 text-xs font-medium transition-colors"
+                      >
+                        Resend
+                      </button>
+                      <button
+                        onClick={() => handleCancelInvite(invite.id)}
+                        className="flex-1 py-1.5 rounded bg-gray-700 text-gray-300 hover:bg-red-500/20 hover:text-red-400 text-xs font-medium transition-colors"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+        
+        {/* Settings Tab */}
+        {activeTab === 'settings' && (
+          <div className="space-y-5">
+            {/* Profile Section */}
+            <div className="space-y-3">
+              <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wide">Profile</h3>
+              <div className="flex items-center gap-3 p-3 rounded-lg bg-gray-800/30 border border-gray-700/50">
+                <div className="w-12 h-12 rounded-full bg-gray-700 flex items-center justify-center text-lg font-medium text-white">
+                  G
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-white">Gavin</p>
+                  <p className="text-xs text-gray-500">gavin@company.com</p>
+                </div>
+                <button className="text-xs text-gray-400 hover:text-white transition-colors">
+                  Edit
+                </button>
+              </div>
+            </div>
+            
+            {/* Workspace Section */}
+            <div className="space-y-3">
+              <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wide">Workspace</h3>
+              <div className="p-3 rounded-lg bg-gray-800/30 border border-gray-700/50 space-y-3">
+                <div>
+                  <label className="text-xs text-gray-400 block mb-1">Workspace Name</label>
+                  <input
+                    type="text"
+                    defaultValue="My Team"
+                    className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-sm text-white focus:outline-none focus:border-gray-500"
+                  />
+                </div>
+              </div>
+            </div>
+            
+            {/* Danger Zone */}
+            <div className="space-y-3">
+              <h3 className="text-xs font-medium text-red-400/70 uppercase tracking-wide">Danger Zone</h3>
+              <div className="p-3 rounded-lg bg-red-500/5 border border-red-500/20 space-y-2">
+                <p className="text-xs text-gray-400">Permanently delete your account and all associated data.</p>
+                <button className="w-full py-2 rounded-lg border border-red-500/30 text-red-400 hover:bg-red-500/10 text-xs font-medium transition-colors">
+                  Delete Account
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
 // Carousel Row Component
-const CarouselRow = ({ carousel, designSystem, isSelected, hasAnySelection, selectedFrameId, onSelect, onSelectFrame, onAddFrame, onRemoveFrame, onUpdateText, activeTextField, onActivateTextField, onReorderFrames }) => {
+const CarouselRow = ({ carousel, designSystem, isSelected, hasAnySelection, selectedFrameId, onSelect, onSelectFrame, onAddFrame, onRemoveFrame, onRemoveRow, onUpdateText, activeTextField, onActivateTextField, onReorderFrames }) => {
   const totalFrames = carousel.frames.length;
   const isFaded = hasAnySelection && !isSelected;
   
@@ -1041,7 +2020,7 @@ const CarouselRow = ({ carousel, designSystem, isSelected, hasAnySelection, sele
       style={{ marginLeft: '10px', marginRight: '10px', width: 'fit-content', minWidth: 'auto', maxWidth: 'calc(100% - 20px)' }}
       onClick={(e) => { e.stopPropagation(); onSelect(carousel.id); }}
     >
-      <div className="mb-4 flex items-center justify-between px-4">
+      <div className="mb-4 flex items-center px-4">
         <div className="flex items-center gap-3">
           <button onClick={(e) => { e.stopPropagation(); onSelect(isSelected ? null : carousel.id); }} className={`w-11 h-11 rounded-xl border-2 flex items-center justify-center transition-all duration-150 ${isSelected ? 'border-orange-500 bg-orange-500/10 hover:bg-orange-500/20' : 'border-gray-600 hover:border-gray-500 hover:bg-gray-800'}`}>
             {isSelected ? (
@@ -1054,6 +2033,19 @@ const CarouselRow = ({ carousel, designSystem, isSelected, hasAnySelection, sele
             <div className="flex items-center gap-2">
               <h2 className={`text-lg font-bold transition-colors ${isSelected ? 'text-orange-400' : 'text-white'}`}>{carousel.name}</h2>
               {isSelected && <span className="text-[9px] bg-orange-500/20 text-orange-400 px-1.5 py-0.5 rounded font-medium">EDITING</span>}
+              {/* Remove Row Button - next to EDITING tag */}
+              {isSelected && (
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); onRemoveRow(carousel.id); }}
+                  className="flex items-center gap-1 px-2 py-0.5 rounded text-[9px] font-medium bg-red-500/20 text-red-400 hover:bg-red-500/30 transition-all duration-150"
+                >
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                  REMOVE
+                </button>
+              )}
                 </div>
             <p className="text-sm text-gray-400">{carousel.subtitle}</p>
           </div>
@@ -1063,7 +2055,7 @@ const CarouselRow = ({ carousel, designSystem, isSelected, hasAnySelection, sele
       <div className="px-4" style={{ minHeight: 300 }}>
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
           <SortableContext items={frameIds} strategy={horizontalListSortingStrategy}>
-            <div className={`flex items-start transition-all duration-150 ease-out`} style={{ width: 'auto', minWidth: 'fit-content', gap: isSelected ? '12px' : '10px' }}>
+            <div className={`flex items-center transition-all duration-150 ease-out`} style={{ width: 'auto', minWidth: 'fit-content', gap: isSelected ? '12px' : '10px' }}>
               {carousel.frames.map((frame, index) => (
                 <React.Fragment key={frame.id}>
                   <SortableFrame
@@ -1091,7 +2083,7 @@ const CarouselRow = ({ carousel, designSystem, isSelected, hasAnySelection, sele
               >
               <button
                   onClick={(e) => { e.stopPropagation(); onAddFrame(carousel.id, index + 1); }} 
-                  className="w-7 h-7 rounded-full border border-dashed border-gray-700 opacity-30 hover:opacity-100 hover:border-orange-500 hover:bg-orange-500/10 flex items-center justify-center transition-all duration-150"
+                  className="w-7 h-7 rounded-full border-2 border-dashed border-gray-600 opacity-50 hover:opacity-100 hover:border-orange-500 hover:bg-orange-500/10 flex items-center justify-center transition-all duration-150"
                 >
                   <svg className="w-3.5 h-3.5 text-gray-500 hover:text-orange-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
               </button>
@@ -1112,12 +2104,15 @@ export default function CarouselDesignTool() {
   const [zoom, setZoom] = useState(120);
   const [designSystem, setDesignSystem] = useState(defaultDesignSystem);
   const [activePanel, setActivePanel] = useState(null);
+  const [isAccountOpen, setIsAccountOpen] = useState(false);
   const [selectedCarouselId, setSelectedCarouselId] = useState(null);
+  
+  // View state - 'home' or 'editor'
+  const [currentView, setCurrentView] = useState('home');
   
   // Browser-style tabs for projects
   const [tabs, setTabs] = useState([
-    { id: 1, name: 'HelloData Campaign', active: true, hasContent: true },
-    { id: 2, name: 'Untitled Project', active: false, hasContent: false }
+    { id: 1, name: 'HelloData Campaign', active: false, hasContent: true, createdAt: '2024-12-20', updatedAt: '2024-12-22', frameCount: 5 }
   ]);
   const [activeTabId, setActiveTabId] = useState(1);
   
@@ -1126,6 +2121,42 @@ export default function CarouselDesignTool() {
   const handleTabClick = (tabId) => {
     setActiveTabId(tabId);
     setTabs(prev => prev.map(tab => ({ ...tab, active: tab.id === tabId })));
+  };
+  
+  const handleUpdateProjectName = (newName) => {
+    if (!newName.trim()) return;
+    setTabs(prev => prev.map(tab => tab.id === activeTabId ? { ...tab, name: newName.trim() } : tab));
+  };
+  
+  const handleGoHome = () => {
+    setCurrentView('home');
+    setSelectedCarouselId(null);
+    setSelectedFrameId(null);
+    setActiveTextField(null);
+  };
+  
+  const handleOpenProject = (projectId) => {
+    setActiveTabId(projectId);
+    setTabs(prev => prev.map(tab => ({ ...tab, active: tab.id === projectId })));
+    setIsAccountOpen(false);
+    setCurrentView('editor');
+  };
+  
+  const handleCreateNewFromHome = () => {
+    const newId = Math.max(...tabs.map(t => t.id)) + 1;
+    const newTab = { 
+      id: newId, 
+      name: 'Untitled Project', 
+      active: true, 
+      hasContent: false, 
+      createdAt: new Date().toISOString().split('T')[0],
+      updatedAt: new Date().toISOString().split('T')[0],
+      frameCount: 0
+    };
+    setTabs(prev => [...prev.map(t => ({ ...t, active: false })), newTab]);
+    setActiveTabId(newId);
+    setIsAccountOpen(false);
+    setCurrentView('editor');
   };
   
   const handleCloseTab = (tabId, e) => {
@@ -1144,8 +2175,10 @@ export default function CarouselDesignTool() {
   const handleAddTab = () => {
     if (tabs.length >= MAX_TABS) return;
     const newId = Math.max(...tabs.map(t => t.id)) + 1;
-    setTabs(prev => [...prev.map(t => ({ ...t, active: false })), { id: newId, name: 'Untitled Project', active: true, hasContent: false }]);
+    setTabs(prev => [...prev.map(t => ({ ...t, active: false })), { id: newId, name: 'Untitled Project', active: true, hasContent: false, createdAt: new Date().toISOString().split('T')[0], updatedAt: new Date().toISOString().split('T')[0], frameCount: 0 }]);
     setActiveTabId(newId);
+    setIsAccountOpen(false);
+    setCurrentView('editor');
   };
   
   const handleCreateProject = (projectType, projectName) => {
@@ -1166,6 +2199,8 @@ export default function CarouselDesignTool() {
   const [showLetterSpacing, setShowLetterSpacing] = useState(false);
   const [showFormatPicker, setShowFormatPicker] = useState(false);
   const [showLayoutPicker, setShowLayoutPicker] = useState(false);
+  const [showNewTabMenu, setShowNewTabMenu] = useState(false);
+  const newTabMenuRef = useRef(null);
   const [showSnippetsPicker, setShowSnippetsPicker] = useState(false);
   
   // Refs for click outside handling
@@ -1192,6 +2227,7 @@ export default function CarouselDesignTool() {
     setShowFormatPicker(false);
     setShowLayoutPicker(false);
     setShowSnippetsPicker(false);
+    setShowNewTabMenu(false);
   };
   
   // Click outside handler
@@ -1207,6 +2243,7 @@ export default function CarouselDesignTool() {
       if (formatPickerRef.current && !formatPickerRef.current.contains(event.target)) setShowFormatPicker(false);
       if (layoutPickerRef.current && !layoutPickerRef.current.contains(event.target)) setShowLayoutPicker(false);
       if (snippetsPickerRef.current && !snippetsPickerRef.current.contains(event.target)) setShowSnippetsPicker(false);
+      if (newTabMenuRef.current && !newTabMenuRef.current.contains(event.target)) setShowNewTabMenu(false);
     };
       document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
@@ -1218,10 +2255,9 @@ export default function CarouselDesignTool() {
   const handleSelectFrame = (carouselId, frameId) => {
     closeAllDropdowns();
     setActiveTextField(null);
-    // If opening a new carousel, zoom to 150%
+    // If opening a new carousel
     if (carouselId !== selectedCarouselId) {
       setSelectedCarouselId(carouselId);
-      setZoom(150);
     }
     setSelectedFrameId(prev => (prev === frameId && carouselId === selectedCarouselId) ? null : frameId);
   };
@@ -1235,25 +2271,21 @@ export default function CarouselDesignTool() {
     const isClosing = carouselId === null || (carouselId === selectedCarouselId && selectedCarouselId !== null);
     
     if (isOpening) {
-      // Opening a row - zoom to 150%
+      // Opening a row
       setSelectedFrameId(null);
       setSelectedCarouselId(carouselId);
-      setZoom(150);
     } else if (isClosing && carouselId === selectedCarouselId) {
-      // Clicking the same row's close button - close it and zoom to 120%
+      // Clicking the same row's close button - close it
       setSelectedCarouselId(null);
       setSelectedFrameId(null);
-      setZoom(120);
     } else if (carouselId === null) {
-      // Explicitly closing - zoom to 120%
+      // Explicitly closing
       setSelectedCarouselId(null);
       setSelectedFrameId(null);
-      setZoom(120);
     } else {
       // Switching to a different row
       setSelectedFrameId(null);
       setSelectedCarouselId(carouselId);
-      setZoom(150);
     }
   };
   
@@ -1355,19 +2387,69 @@ export default function CarouselDesignTool() {
       return { ...carousel, frames: newFrames };
     }));
   };
+
+  const handleAddRow = (afterIndex) => {
+    const newId = Date.now();
+    const newCarousel = {
+      id: newId,
+      name: "New Row",
+      subtitle: "Click to edit",
+      frameSize: "portrait",
+      frames: [
+        {
+          id: 1,
+          variants: [
+            { headline: "Your headline here", body: "Your body text here.", formatting: {} },
+            { headline: "Alternative headline", body: "Alternative body text.", formatting: {} },
+            { headline: "Third variation", body: "Third body option.", formatting: {} }
+          ],
+          currentVariant: 0,
+          currentLayout: 0,
+          layoutVariant: 0,
+          style: "dark-single-pin"
+        }
+      ]
+    };
+    
+    setCarousels(prev => {
+      const newCarousels = [...prev];
+      newCarousels.splice(afterIndex + 1, 0, newCarousel);
+      return newCarousels;
+    });
+    
+    // Select the new row
+    setSelectedCarouselId(newId);
+  };
+
+  const handleRemoveRow = (carouselId) => {
+    // Don't allow removing the last row
+    if (carousels.length <= 1) return;
+    
+    // Clear selection if removing the selected row
+    if (selectedCarouselId === carouselId) {
+      setSelectedCarouselId(null);
+      setSelectedFrameId(null);
+      setActiveTextField(null);
+    }
+    
+    setCarousels(prev => prev.filter(c => c.id !== carouselId));
+  };
   
   const panelWidth = activePanel ? 288 : 0; // w-72 = 288px
   const sidebarWidth = 64; // w-16 = 64px
   const totalOffset = sidebarWidth + panelWidth;
   
   return (
-    <div className="h-screen bg-gray-950 text-white overflow-hidden">
+    <div className="h-screen text-white overflow-hidden" style={{ backgroundColor: '#0d1321' }}>
       {/* Browser-style Tab Bar - Full Width */}
-      <div className="fixed top-0 left-0 right-0 z-[60] border-b border-gray-700" style={{ height: 56, backgroundColor: '#0d1321' }}>
+      <div className="fixed top-0 left-0 right-0 z-[110] border-b border-gray-700" style={{ height: 56, backgroundColor: '#0d1321' }}>
         <div className="flex items-end h-full">
           {/* Home Button */}
           <div className="flex items-center px-3 pb-2">
-            <button className="w-10 h-10 rounded-lg flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-800 transition-all">
+            <button 
+              onClick={handleGoHome}
+              className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all ${currentView === 'home' ? 'text-white bg-gray-800' : 'text-gray-400 hover:text-white hover:bg-gray-800'}`}
+            >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
             </svg>
@@ -1375,29 +2457,31 @@ export default function CarouselDesignTool() {
           </div>
           {/* Tabs */}
           <div className="flex items-end">
-            {tabs.map((tab, index) => (
+            {tabs.map((tab, index) => {
+                const isTabActive = tab.active && currentView !== 'home';
+                return (
               <div key={tab.id} className="flex items-end">
                 {/* Vertical separator - show before inactive tabs (except first) */}
-                {index > 0 && !tab.active && !tabs[index - 1]?.active && (
+                {index > 0 && !isTabActive && !(tabs[index - 1]?.active && currentView !== 'home') && (
                   <div className="w-px h-5 bg-gray-700 self-center" />
                 )}
                 <div 
-                  onClick={() => handleTabClick(tab.id)}
+                  onClick={() => handleOpenProject(tab.id)}
                   className={`group flex items-center gap-2 px-4 h-10 rounded-t-lg cursor-pointer transition-colors duration-150 ${
-                    tab.active 
+                    isTabActive 
                       ? 'bg-gray-800 text-white' 
                       : 'bg-transparent text-gray-500 hover:text-gray-300'
                   }`}
                   style={{ minWidth: 140, maxWidth: 220 }}
                 >
-                  <svg className={`w-4 h-4 flex-shrink-0 transition-colors ${tab.active ? 'text-gray-400' : 'text-gray-600'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className={`w-4 h-4 flex-shrink-0 transition-colors ${isTabActive ? 'text-gray-400' : 'text-gray-600'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                   </svg>
                   <span className="text-sm font-medium truncate flex-1">{tab.name}</span>
                   <button 
                     onClick={(e) => handleCloseTab(tab.id, e)}
                     className={`w-5 h-5 rounded flex items-center justify-center transition-opacity ${
-                      tab.active 
+                      isTabActive 
                         ? 'hover:bg-gray-700 text-gray-400 hover:text-white opacity-100' 
                         : 'opacity-0 group-hover:opacity-100 hover:bg-gray-700 text-gray-500 hover:text-white'
                     }`}
@@ -1408,24 +2492,84 @@ export default function CarouselDesignTool() {
                   </button>
                 </div>
               </div>
-            ))}
+            );
+              })}
             {/* Separator before add button */}
             <div className="w-px h-5 bg-gray-700 self-center mx-1" />
-            {/* Add Tab Button */}
-            <button 
-              onClick={handleAddTab}
-              disabled={tabs.length >= MAX_TABS}
-              className={`w-8 h-8 mb-1 rounded-lg flex items-center justify-center transition-all ${
-                tabs.length >= MAX_TABS 
-                  ? 'text-gray-600 cursor-not-allowed' 
-                  : 'text-gray-500 hover:text-white hover:bg-gray-800'
-              }`}
-              title={tabs.length >= MAX_TABS ? 'Maximum tabs reached' : 'New tab'}
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-              </svg>
-            </button>
+            {/* Add Tab Button with Dropdown */}
+            <div ref={newTabMenuRef} className="relative mb-1">
+              <button 
+                onClick={() => { const wasOpen = showNewTabMenu; closeAllDropdowns(); if (!wasOpen && tabs.length < MAX_TABS) setShowNewTabMenu(true); }}
+                disabled={tabs.length >= MAX_TABS}
+                className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all ${
+                  tabs.length >= MAX_TABS 
+                    ? 'text-gray-600 cursor-not-allowed' 
+                    : showNewTabMenu ? 'text-white bg-gray-800' : 'text-gray-500 hover:text-white hover:bg-gray-800'
+                }`}
+                title={tabs.length >= MAX_TABS ? 'Maximum tabs reached' : 'New tab'}
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                </svg>
+              </button>
+              
+              {/* New Tab Dropdown Menu */}
+              {showNewTabMenu && (
+                <div className="absolute top-full left-0 mt-2 py-1.5 bg-gray-800 border border-gray-700 rounded-lg shadow-xl z-[200] min-w-[200px]">
+                  {/* New Project Option */}
+                  <button
+                    onClick={() => { handleAddTab(); setShowNewTabMenu(false); }}
+                    className="w-full flex items-center gap-3 px-3 py-2.5 text-left text-sm text-gray-300 hover:bg-gray-700 transition-colors"
+                  >
+                    <div className="w-8 h-8 rounded-lg bg-orange-500/20 flex items-center justify-center">
+                      <svg className="w-4 h-4 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                      </svg>
+                    </div>
+                    <div>
+                      <div className="font-medium text-white">New Project</div>
+                      <div className="text-xs text-gray-500">Start from scratch</div>
+                    </div>
+                  </button>
+                  
+                  {/* Divider */}
+                  <div className="my-1.5 border-t border-gray-700" />
+                  
+                  {/* Existing Projects Header */}
+                  <div className="px-3 py-1.5 text-xs font-medium text-gray-500 uppercase tracking-wide">
+                    Open Existing
+                  </div>
+                  
+                  {/* List of existing projects */}
+                  {tabs.map(project => (
+                    <button
+                      key={project.id}
+                      onClick={() => { handleOpenProject(project.id); setShowNewTabMenu(false); }}
+                      className={`w-full flex items-center gap-3 px-3 py-2 text-left text-sm transition-colors ${
+                        project.id === activeTabId && currentView !== 'home'
+                          ? 'bg-gray-700/50 text-white' 
+                          : 'text-gray-300 hover:bg-gray-700'
+                      }`}
+                    >
+                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${project.hasContent ? 'bg-gray-700' : 'bg-gray-800 border border-gray-700'}`}>
+                        <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="font-medium truncate">{project.name}</div>
+                        <div className="text-xs text-gray-500">
+                          {project.hasContent ? `${project.frameCount || 5} frames` : 'Empty'}
+                        </div>
+                      </div>
+                      {project.id === activeTabId && currentView !== 'home' && (
+                        <div className="w-1.5 h-1.5 rounded-full bg-orange-500" />
+                      )}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
             </div>
           
           {/* Tab Counter */}
@@ -1439,18 +2583,38 @@ export default function CarouselDesignTool() {
         </div>
       </div>
       
-      {/* Sidebar */}
-      <Sidebar activePanel={activePanel} onPanelChange={setActivePanel} zoom={zoom} onZoomChange={setZoom} />
+      {/* Sidebar - Always visible */}
+      <Sidebar 
+        activePanel={activePanel} 
+        onPanelChange={setActivePanel} 
+        zoom={zoom} 
+        onZoomChange={setZoom} 
+        isHomePage={currentView === 'home'}
+        onAccountClick={() => { setActivePanel(null); setIsAccountOpen(!isAccountOpen); }}
+        isAccountOpen={isAccountOpen}
+        onCloseAccount={() => setIsAccountOpen(false)}
+      />
       
-      {/* Panels */}
+      {/* Panels - Always visible */}
       <DesignSystemPanel designSystem={designSystem} onUpdate={setDesignSystem} onClose={() => setActivePanel(null)} isOpen={activePanel === 'design'} />
-      <ExportPanel onClose={() => setActivePanel(null)} isOpen={activePanel === 'export'} />
+      <ExportPanel onClose={() => setActivePanel(null)} isOpen={activePanel === 'export'} carousels={carousels} />
+      <AccountPanel onClose={() => setIsAccountOpen(false)} isOpen={isAccountOpen && currentView === 'home'} />
 
-      {/* Main Content */}
-      <div className="overflow-y-auto overflow-x-hidden" style={{ marginLeft: totalOffset, marginTop: 56, height: 'calc(100vh - 56px)', width: `calc(100vw - ${totalOffset}px)`, transition: 'margin-left 0.3s ease-out, width 0.3s ease-out' }}>
+      {/* Homepage or Editor View */}
+      {currentView === 'home' ? (
+        <div className="absolute inset-0 top-[56px]" style={{ left: totalOffset, transition: 'left 0.3s ease-out' }}>
+          <Homepage 
+            projects={tabs} 
+            onOpenProject={handleOpenProject}
+            onCreateNew={handleCreateNewFromHome}
+          />
+        </div>
+      ) : (
+        <>
+
       {/* Toolbar - Only show for projects with content */}
       {activeTab?.hasContent && (
-      <div className="sticky top-0 z-[100] bg-gray-900 border-b border-gray-800 px-5 overflow-visible flex items-center" style={{ height: 64 }}>
+      <div className="fixed z-[100] bg-gray-900 border-b border-gray-800 px-5 overflow-visible flex items-center" style={{ top: 56, left: totalOffset, right: 0, height: 64, transition: 'left 0.3s ease-out' }}>
         <div className="flex items-center justify-between text-sm text-gray-400 w-full">
           <div className="flex items-center gap-3">
             
@@ -1514,7 +2678,7 @@ export default function CarouselDesignTool() {
                   <div className="absolute top-full left-0 mt-2 p-1.5 bg-gray-800 border border-gray-700 rounded-lg shadow-xl z-[200] min-w-[90px]">
                     {[0, 1, 2].map((idx) => (
                       <button key={idx} onClick={() => { handleSetVariant(selectedCarouselId, selectedFrameId, idx); setShowSnippetsPicker(false); }} className={`w-full flex items-center justify-center gap-1 px-3 py-2 rounded-lg text-xs font-medium transition-colors ${selectedFrame?.currentVariant === idx ? 'bg-orange-500 text-white' : 'text-gray-300 hover:bg-gray-700'}`}>
-                        <span className="text-orange-400">S{idx + 1}</span>
+                        <span className={selectedFrame?.currentVariant === idx ? 'text-white' : 'text-orange-400'}>S{idx + 1}</span>
                 </button>
                     ))}
               </div>
@@ -1564,7 +2728,16 @@ export default function CarouselDesignTool() {
                 {/* Color picker */}
               <div ref={colorPickerRef} className="relative">
                 <button onClick={() => { if (!activeTextField) return; const wasOpen = showColorPicker; closeAllDropdowns(); if (!wasOpen) setShowColorPicker(true); }} className="flex items-center gap-1 p-2 bg-gray-700/50 rounded-lg hover:bg-gray-700 transition-colors" title="Text color">
-                  <div className="w-5 h-5 rounded border border-gray-500" style={{ backgroundColor: selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.color || '#ffffff' }} />
+                  <div className="w-5 h-5 rounded border border-gray-500" style={{ backgroundColor: (() => {
+                    const explicitColor = selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.color;
+                    if (explicitColor) return explicitColor;
+                    // Get frame's style-based accent color for headlines
+                    if (activeTextField === 'headline' && selectedFrame) {
+                      const frameStyle = getFrameStyle(selectedCarouselId, selectedFrame.style, designSystem);
+                      return frameStyle.accent;
+                    }
+                    return '#e5e7eb'; // gray-200 for body text
+                  })() }} />
                   </button>
                   {showColorPicker && activeTextField && (
                   <div className="absolute top-full left-0 mt-2 p-2 bg-gray-800 border border-gray-700 rounded-lg shadow-xl z-[200]" onClick={(e) => e.stopPropagation()}>
@@ -1580,8 +2753,22 @@ export default function CarouselDesignTool() {
                 
             {/* Style Group */}
             <div className={`flex items-center gap-1 px-2 py-1.5 bg-gray-800/60 rounded-xl transition-opacity ${activeTextField ? 'opacity-100' : 'opacity-40 pointer-events-none'}`}>
-                {/* Bold */}
-              <button onClick={() => { if (!activeTextField) return; closeAllDropdowns(); const formatting = selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField] || {}; handleUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'bold', !formatting.bold); }} className={`w-9 h-9 rounded-lg flex items-center justify-center text-sm font-bold transition-colors ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.bold ? 'bg-orange-500 text-white' : 'text-gray-300 hover:bg-gray-700'}`} title="Bold">B</button>
+                {/* Bold - headlines are bold by default */}
+              <button onClick={() => { 
+                if (!activeTextField) return; 
+                closeAllDropdowns(); 
+                const formatting = selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField] || {}; 
+                const isDefaultBold = activeTextField === 'headline';
+                const currentBold = formatting.bold !== undefined ? formatting.bold : isDefaultBold;
+                handleUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'bold', !currentBold); 
+              }} className={`w-9 h-9 rounded-lg flex items-center justify-center text-sm font-bold transition-colors ${
+                (() => {
+                  const formatting = selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField] || {};
+                  const isDefaultBold = activeTextField === 'headline';
+                  const isBold = formatting.bold !== undefined ? formatting.bold : isDefaultBold;
+                  return isBold ? 'bg-orange-500 text-white' : 'text-gray-300 hover:bg-gray-700';
+                })()
+              }`} title="Bold">B</button>
                 
                 {/* Italic */}
               <button onClick={() => { if (!activeTextField) return; closeAllDropdowns(); const formatting = selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField] || {}; handleUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'italic', !formatting.italic); }} className={`w-9 h-9 rounded-lg flex items-center justify-center text-sm italic transition-colors ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.italic ? 'bg-orange-500 text-white' : 'text-gray-300 hover:bg-gray-700'}`} title="Italic">I</button>
@@ -1674,43 +2861,75 @@ export default function CarouselDesignTool() {
           {/* Right side */}
           <div className="flex items-center gap-4">
             <span className="text-gray-400">Row <span className="text-white font-medium">{selectedCarouselId ? carousels.findIndex(c => c.id === selectedCarouselId) + 1 : '-'}</span> / {carousels.length}</span>
-            <button onClick={() => { closeAllDropdowns(); setSelectedCarouselId(null); setSelectedFrameId(null); setActiveTextField(null); setZoom(120); }} disabled={!selectedCarouselId && !selectedFrameId} className={`px-4 py-2 text-xs font-medium rounded-lg transition-colors ${selectedCarouselId || selectedFrameId ? 'bg-gray-700 hover:bg-gray-600 text-gray-300' : 'bg-gray-800 text-gray-600 cursor-not-allowed'}`}>Deselect Row</button>
+            <button onClick={() => { closeAllDropdowns(); setSelectedCarouselId(null); setSelectedFrameId(null); setActiveTextField(null); }} disabled={!selectedCarouselId && !selectedFrameId} className={`px-4 py-2 text-xs font-medium rounded-lg transition-colors ${selectedCarouselId || selectedFrameId ? 'bg-gray-700 hover:bg-gray-600 text-gray-300' : 'bg-gray-800 text-gray-600 cursor-not-allowed'}`}>Deselect Row</button>
           </div>
         </div>
       </div>
       )}
       
+      {/* Main Content - Scrollable Canvas Area */}
+      <div className="overflow-y-auto overflow-x-hidden" style={{ marginLeft: totalOffset, marginTop: activeTab?.hasContent ? 120 : 56, height: activeTab?.hasContent ? 'calc(100vh - 120px)' : 'calc(100vh - 56px)', width: `calc(100vw - ${totalOffset}px)`, transition: 'margin-left 0.3s ease-out, width 0.3s ease-out' }}>
       {/* Content Area - Either New Project View or Canvas */}
       {activeTab && !activeTab.hasContent ? (
         <NewProjectView onCreateProject={handleCreateProject} />
       ) : (
         <>
           {/* Canvas workspace */}
-          <div className="p-6 pb-64" onClick={() => { closeAllDropdowns(); setSelectedCarouselId(null); setSelectedFrameId(null); setActiveTextField(null); setZoom(120); }}>
+          <div className="p-6 pb-96" onClick={() => { closeAllDropdowns(); setSelectedCarouselId(null); setSelectedFrameId(null); setActiveTextField(null); }}>
             <div style={{ transform: `scale(${zoom / 100})`, transformOrigin: 'top left', width: `${100 / (zoom / 100)}%`, transition: 'transform 150ms ease-out' }}>
-            {carousels.map((carousel) => (
-              <CarouselRow
-                key={carousel.id}
-                carousel={carousel}
-                designSystem={designSystem}
-                isSelected={selectedCarouselId === carousel.id}
-                hasAnySelection={selectedCarouselId !== null}
-                selectedFrameId={selectedCarouselId === carousel.id ? selectedFrameId : null}
-                onSelect={handleSelectCarousel}
-                onSelectFrame={handleSelectFrame}
-                onAddFrame={handleAddFrame}
-                onRemoveFrame={handleRemoveFrame}
+            
+            {/* Project Header */}
+            <ProjectHeader 
+              projectName={activeTab?.name || 'Untitled Project'} 
+              onUpdateName={handleUpdateProjectName}
+            />
+            
+            {carousels.map((carousel, index) => (
+              <React.Fragment key={carousel.id}>
+                <CarouselRow
+                  carousel={carousel}
+                  designSystem={designSystem}
+                  isSelected={selectedCarouselId === carousel.id}
+                  hasAnySelection={selectedCarouselId !== null}
+                  selectedFrameId={selectedCarouselId === carousel.id ? selectedFrameId : null}
+                  onSelect={handleSelectCarousel}
+                  onSelectFrame={handleSelectFrame}
+                  onAddFrame={handleAddFrame}
+                  onRemoveFrame={handleRemoveFrame}
+                  onRemoveRow={handleRemoveRow}
                   onReorderFrames={handleReorderFrames}
-                onUpdateText={handleUpdateText}
-                activeTextField={activeTextField}
-                onActivateTextField={setActiveTextField}
-              />
+                  onUpdateText={handleUpdateText}
+                  activeTextField={activeTextField}
+                  onActivateTextField={setActiveTextField}
+                />
+                {/* Add Row Button - only after last row */}
+                {index === carousels.length - 1 && (
+                  <div 
+                    className="flex items-center px-4 -mt-4"
+                    style={{ marginLeft: '10px' }}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <button
+                      type="button"
+                      onClick={(e) => { e.stopPropagation(); handleAddRow(index); }}
+                      className="flex items-center gap-2 px-4 py-1.5 rounded-full border-2 border-dashed border-gray-600 text-gray-500 hover:border-orange-500 hover:text-orange-400 hover:bg-orange-500/10 transition-all duration-200"
+                    >
+                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                      </svg>
+                      <span className="text-xs font-medium">Add row</span>
+                    </button>
+                  </div>
+                )}
+              </React.Fragment>
             ))}
           </div>
           </div>
         </>
         )}
       </div>
+        </>
+      )}
       
     </div>
   );
