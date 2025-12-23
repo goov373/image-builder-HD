@@ -4,13 +4,57 @@ import { frameSizes, getFontSizes, getFrameStyle } from '../data';
 import { LayoutBottomStack, LayoutCenterDrama, LayoutEditorialLeft } from './Layouts';
 
 /**
+ * Progress Dots Overlay
+ * Shows current frame position in carousel
+ */
+const ProgressDotsOverlay = ({ frameId, isFrameSelected, isHovered, isProgressHidden, onToggleHidden }) => {
+  const [isProgressHovered, setIsProgressHovered] = useState(false);
+  
+  return (
+    <div 
+      className="flex items-center gap-1 cursor-pointer min-w-[40px] min-h-[20px] justify-end"
+      onMouseEnter={() => setIsProgressHovered(true)}
+      onMouseLeave={() => setIsProgressHovered(false)}
+      onClick={(e) => { if (isFrameSelected) { e.stopPropagation(); onToggleHidden(); } }}
+    >
+      {isFrameSelected && (isProgressHovered || (isProgressHidden && isHovered)) ? (
+        <div className="flex items-center justify-center w-5 h-5 bg-black/50 rounded-full hover:bg-black/70 transition-colors">
+          <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            {isProgressHidden ? (
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+            ) : (
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+            )}
+          </svg>
+        </div>
+      ) : !isProgressHidden ? (
+        [1,2,3,4,5].map(i => <div key={i} className={`w-1.5 h-1.5 rounded-full ${i === frameId ? 'bg-white' : 'bg-white/30'}`} />)
+      ) : null}
+    </div>
+  );
+};
+
+/**
  * Single Frame Component
  * Displays a single carousel frame with layout and content
  */
-export const CarouselFrame = ({ frame, carouselId, frameSize, designSystem, frameIndex, totalFrames, isFrameSelected, onSelectFrame, onRemove, onUpdateText, activeTextField, onActivateTextField }) => {
+export const CarouselFrame = ({ 
+  frame, 
+  carouselId, 
+  frameSize, 
+  designSystem, 
+  frameIndex, 
+  totalFrames, 
+  isFrameSelected, 
+  onSelectFrame, 
+  onRemove, 
+  onUpdateText, 
+  activeTextField, 
+  onActivateTextField 
+}) => {
   const [isHovered, setIsHovered] = useState(false);
-  const [isProgressHovered, setIsProgressHovered] = useState(false);
   const [isProgressHidden, setIsProgressHidden] = useState(false);
+  
   const style = getFrameStyle(carouselId, frame.style, designSystem);
   const content = frame.variants[frame.currentVariant];
   const layoutIndex = frame.currentLayout || 0;
@@ -25,10 +69,19 @@ export const CarouselFrame = ({ frame, carouselId, frameSize, designSystem, fram
   const renderLayout = () => {
     const fontSizes = getFontSizes(frameSize);
     const props = { 
-      headline: content.headline, body: content.body, accent: style.accent, isLandscape,
-      headingFont: designSystem.headingFont, bodyFont: designSystem.bodyFont, variant: layoutVariant,
-      isFrameSelected, onUpdateText: handleUpdateText, activeField: activeTextField,
-      onActivateField: handleActivateField, formatting, fontSizes,
+      headline: content.headline, 
+      body: content.body, 
+      accent: style.accent, 
+      isLandscape,
+      headingFont: designSystem.fontHeadline || designSystem.headingFont, 
+      bodyFont: designSystem.fontBody || designSystem.bodyFont, 
+      variant: layoutVariant,
+      isFrameSelected, 
+      onUpdateText: handleUpdateText, 
+      activeField: activeTextField,
+      onActivateField: handleActivateField, 
+      formatting, 
+      fontSizes,
     };
     switch (layoutIndex) {
       case 1: return <LayoutCenterDrama {...props} />;
@@ -48,27 +101,18 @@ export const CarouselFrame = ({ frame, carouselId, frameSize, designSystem, fram
       >
         {renderLayout()}
         
-        <div 
-          className="absolute top-2 right-2 z-10 flex items-center gap-1 cursor-pointer min-w-[40px] min-h-[20px] justify-end"
-          onMouseEnter={() => setIsProgressHovered(true)}
-          onMouseLeave={() => setIsProgressHovered(false)}
-          onClick={(e) => { if (isFrameSelected) { e.stopPropagation(); setIsProgressHidden(!isProgressHidden); } }}
-        >
-          {isFrameSelected && (isProgressHovered || (isProgressHidden && isHovered)) ? (
-            <div className="flex items-center justify-center w-5 h-5 bg-black/50 rounded-full hover:bg-black/70 transition-colors">
-              <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                {isProgressHidden ? (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                ) : (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
-                )}
-              </svg>
-            </div>
-          ) : !isProgressHidden ? (
-            [1,2,3,4,5].map(i => <div key={i} className={`w-1.5 h-1.5 rounded-full ${i === frame.id ? 'bg-white' : 'bg-white/30'}`} />)
-          ) : null}
+        {/* Progress Dots Overlay */}
+        <div className="absolute top-2 right-2 z-10">
+          <ProgressDotsOverlay 
+            frameId={frame.id}
+            isFrameSelected={isFrameSelected}
+            isHovered={isHovered}
+            isProgressHidden={isProgressHidden}
+            onToggleHidden={() => setIsProgressHidden(!isProgressHidden)}
+          />
         </div>
         
+        {/* Remove Button */}
         {totalFrames > 1 && (
           <button 
             type="button"
@@ -89,7 +133,23 @@ export const CarouselFrame = ({ frame, carouselId, frameSize, designSystem, fram
  * Sortable Frame Wrapper
  * Adds drag-and-drop functionality to CarouselFrame
  */
-export const SortableFrame = ({ id, frame, carouselId, frameSize, designSystem, frameIndex, totalFrames, isFrameSelected, onSelectFrame, onRemove, onUpdateText, activeTextField, onActivateTextField, isRowSelected, cardWidth }) => {
+export const SortableFrame = ({ 
+  id, 
+  frame, 
+  carouselId, 
+  frameSize, 
+  designSystem, 
+  frameIndex, 
+  totalFrames, 
+  isFrameSelected, 
+  onSelectFrame, 
+  onRemove, 
+  onUpdateText, 
+  activeTextField, 
+  onActivateTextField, 
+  isRowSelected, 
+  cardWidth 
+}) => {
   const {
     attributes,
     listeners,
@@ -108,7 +168,7 @@ export const SortableFrame = ({ id, frame, carouselId, frameSize, designSystem, 
       return `translate3d(${Math.round(transform.x)}px, 0, 0)`;
     } else {
       // Non-dragged: move by card width + gap (12px) + add button container (32px)
-      const moveDistance = cardWidth + 12 + 32; // card + gap + add button
+      const moveDistance = cardWidth + 12 + 32;
       if (Math.abs(transform.x) > 10) {
         const direction = transform.x > 0 ? 1 : -1;
         return `translate3d(${direction * moveDistance}px, 0, 0)`;
@@ -117,7 +177,6 @@ export const SortableFrame = ({ id, frame, carouselId, frameSize, designSystem, 
     }
   };
 
-  // Only apply transition while actively being pushed aside (transform exists and is significant)
   const isBeingPushed = transform && Math.abs(transform.x) > 10 && !isDragging;
   
   const style = {
@@ -148,5 +207,3 @@ export const SortableFrame = ({ id, frame, carouselId, frameSize, designSystem, 
 };
 
 export default CarouselFrame;
-
-

@@ -1,3 +1,6 @@
+// ===== Project Types =====
+export type ProjectType = 'carousel' | 'eblast' | 'videoCover';
+
 // ===== Design System Types =====
 export interface DesignSystem {
   primary: string;
@@ -72,6 +75,41 @@ export interface ProjectTab {
   createdAt: string;
   updatedAt: string;
   frameCount: number;
+  projectType: ProjectType;
+}
+
+// ===== Eblast Types =====
+export interface EblastSection {
+  id: number;
+  sectionType: 'header' | 'hero' | 'feature' | 'cta' | 'footer';
+  variants: Variant[];
+  currentVariant: number;
+  currentLayout: number;
+  layoutVariant: number;
+  style: string;
+  size: string;
+  ctaText?: string;
+  ctaUrl?: string;
+}
+
+export interface Eblast {
+  id: number;
+  name: string;
+  subtitle: string;
+  previewText: string;
+  sections: EblastSection[];
+}
+
+// ===== Video Cover Types =====
+export interface VideoCover {
+  id: number;
+  name: string;
+  subtitle: string;
+  frame: Frame;
+  frameSize: string;
+  showPlayButton: boolean;
+  episodeNumber?: string;
+  seriesName?: string;
 }
 
 // ===== Font Types =====
