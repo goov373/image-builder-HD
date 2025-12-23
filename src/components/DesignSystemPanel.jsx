@@ -24,9 +24,9 @@ const DesignSystemPanel = ({ designSystem, onUpdate, onClose, isOpen }) => {
   // HelloData brand-aligned gradients
   // ===== PURPLE CONICAL GRADIENTS (3) =====
   const purpleConicals = [
-    'conic-gradient(from 180deg at 20% 50%, #6466e9 0deg, #818cf8 120deg, #b8bdd6 240deg, #6466e9 360deg)',   // Focal left
-    'conic-gradient(from 45deg at 80% 20%, #4a4dcf 0deg, #6466e9 90deg, #818cf8 180deg, #b8bdd6 270deg, #4a4dcf 360deg)', // Focal top-right
-    'conic-gradient(from 270deg at 50% 80%, #5558d9 0deg, #818cf8 90deg, #c4c8e8 180deg, #818cf8 270deg, #5558d9 360deg)', // Focal bottom-center
+    'linear-gradient(135deg, rgba(100, 102, 233, 0.3) 0%, rgba(129, 140, 248, 0.15) 100%), conic-gradient(from 180deg at 20% 50%, #6466e9 0deg, #818cf8 120deg, #b8bdd6 240deg, #6466e9 360deg)',   // Focal left + overlay
+    'linear-gradient(135deg, rgba(74, 77, 207, 0.3) 0%, rgba(100, 102, 233, 0.15) 100%), conic-gradient(from 45deg at 80% 20%, #4a4dcf 0deg, #6466e9 90deg, #818cf8 180deg, #b8bdd6 270deg, #4a4dcf 360deg)', // Focal top-right + overlay
+    'linear-gradient(135deg, rgba(85, 88, 217, 0.3) 0%, rgba(129, 140, 248, 0.15) 100%), conic-gradient(from 270deg at 50% 80%, #5558d9 0deg, #818cf8 90deg, #c4c8e8 180deg, #818cf8 270deg, #5558d9 360deg)', // Focal bottom-center + overlay
   ];
 
   // ===== PURPLE MESH GRADIENTS (6) =====
