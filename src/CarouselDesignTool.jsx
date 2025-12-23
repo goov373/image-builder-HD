@@ -7,7 +7,7 @@ import {
 } from './data';
 
 // Import custom hooks
-import { useDropdowns, useTabs, useCarousels } from './hooks';
+import { useDropdowns, useTabs, useCarousels, useDesignSystem } from './hooks';
 
 // Import components
 import { 
@@ -27,11 +27,13 @@ const INITIAL_TABS = [
 
 // Main App Component
 export default function CarouselDesignTool() {
-  // Design system state
+  // UI state
   const [zoom, setZoom] = useState(120);
-  const [designSystem, setDesignSystem] = useState(defaultDesignSystem);
   const [activePanel, setActivePanel] = useState(null);
   const [isAccountOpen, setIsAccountOpen] = useState(false);
+  
+  // Design system with persistence
+  const [designSystem, setDesignSystem] = useDesignSystem(defaultDesignSystem);
 
   // Use custom hooks for complex state management
   const tabs = useTabs(INITIAL_TABS);

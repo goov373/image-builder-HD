@@ -1,11 +1,43 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { arrayMove } from '@dnd-kit/sortable';
 
+const STORAGE_KEY = 'carousel-tool-carousels';
+
+// Load from localStorage or use initial data
+function loadFromStorage(initialData) {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed;
+      }
+    }
+  } catch (e) {
+    console.warn('Failed to load carousels from localStorage:', e);
+  }
+  return initialData;
+}
+
 export default function useCarousels(initialData) {
-  const [carousels, setCarousels] = useState(initialData);
+  const [initialized, setInitialized] = useState(false);
+  const [carousels, setCarousels] = useState(() => loadFromStorage(initialData));
   const [selectedCarouselId, setSelectedCarouselId] = useState(null);
   const [selectedFrameId, setSelectedFrameId] = useState(null);
   const [activeTextField, setActiveTextField] = useState(null);
+
+  // Save to localStorage whenever carousels change
+  useEffect(() => {
+    if (!initialized) {
+      setInitialized(true);
+      return;
+    }
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(carousels));
+    } catch (e) {
+      console.warn('Failed to save carousels to localStorage:', e);
+    }
+  }, [carousels, initialized]);
 
   const selectedCarousel = carousels.find(c => c.id === selectedCarouselId) || carousels[0];
   const selectedFrame = selectedCarousel?.frames?.find(f => f.id === selectedFrameId);

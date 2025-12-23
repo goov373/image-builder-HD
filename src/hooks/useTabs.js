@@ -1,11 +1,48 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const MAX_TABS = 10;
+const STORAGE_KEY = 'carousel-tool-tabs';
+
+// Load from localStorage or use initial data
+function loadFromStorage(initialTabs) {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      return {
+        tabs: parsed.tabs || initialTabs,
+        activeTabId: parsed.activeTabId || initialTabs[0]?.id || null,
+      };
+    }
+  } catch (e) {
+    console.warn('Failed to load tabs from localStorage:', e);
+  }
+  return {
+    tabs: initialTabs,
+    activeTabId: initialTabs[0]?.id || null,
+  };
+}
 
 export default function useTabs(initialTabs = []) {
-  const [tabs, setTabs] = useState(initialTabs);
-  const [activeTabId, setActiveTabId] = useState(initialTabs[0]?.id || null);
+  const [initialized, setInitialized] = useState(false);
+  const stored = loadFromStorage(initialTabs);
+  
+  const [tabs, setTabs] = useState(stored.tabs);
+  const [activeTabId, setActiveTabId] = useState(stored.activeTabId);
   const [currentView, setCurrentView] = useState('home');
+
+  // Save to localStorage whenever tabs or activeTabId changes
+  useEffect(() => {
+    if (!initialized) {
+      setInitialized(true);
+      return;
+    }
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ tabs, activeTabId }));
+    } catch (e) {
+      console.warn('Failed to save tabs to localStorage:', e);
+    }
+  }, [tabs, activeTabId, initialized]);
 
   const activeTab = tabs.find(t => t.id === activeTabId);
 
