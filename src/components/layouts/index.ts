@@ -4,6 +4,8 @@
  */
 
 import { LayoutBottomStack, LayoutCenterDrama, LayoutEditorialLeft } from '../Layouts';
+import { EblastHeroOverlay, EblastSplit5050, EblastCTABanner, EblastTextBlock } from './EblastLayouts';
+import { VideoFaceText, VideoBoldStatement, VideoEpisodeCard, VideoPlayOverlay } from './VideoCoverLayouts';
 
 // Layout component registry
 export const LAYOUT_COMPONENTS: Record<string, React.ComponentType<any>> = {
@@ -12,17 +14,17 @@ export const LAYOUT_COMPONENTS: Record<string, React.ComponentType<any>> = {
   CenterDrama: LayoutCenterDrama,
   Editorial: LayoutEditorialLeft,
   
-  // Eblast layouts (placeholders - will be created)
-  HeroOverlay: LayoutBottomStack,    // Fallback until created
-  Split5050: LayoutCenterDrama,      // Fallback until created
-  CTABanner: LayoutBottomStack,      // Fallback until created
-  TextBlock: LayoutBottomStack,      // Fallback until created
+  // Eblast layouts
+  HeroOverlay: EblastHeroOverlay,
+  Split5050: EblastSplit5050,
+  CTABanner: EblastCTABanner,
+  TextBlock: EblastTextBlock,
   
-  // Video cover layouts (placeholders - will be created)
-  FaceText: LayoutEditorialLeft,     // Fallback until created
-  BoldStatement: LayoutCenterDrama,  // Fallback until created
-  EpisodeCard: LayoutBottomStack,    // Fallback until created
-  PlayOverlay: LayoutCenterDrama,    // Fallback until created
+  // Video cover layouts
+  FaceText: VideoFaceText,
+  BoldStatement: VideoBoldStatement,
+  EpisodeCard: VideoEpisodeCard,
+  PlayOverlay: VideoPlayOverlay,
 };
 
 // Layout metadata for UI display
@@ -86,6 +88,8 @@ export function getLayoutDisplayName(layoutKey: string): string {
   return LAYOUT_META[layoutKey]?.name || layoutKey;
 }
 
-// Re-export existing layouts
+// Re-export all layouts
 export { LayoutBottomStack, LayoutCenterDrama, LayoutEditorialLeft } from '../Layouts';
+export { EblastHeroOverlay, EblastSplit5050, EblastCTABanner, EblastTextBlock } from './EblastLayouts';
+export { VideoFaceText, VideoBoldStatement, VideoEpisodeCard, VideoPlayOverlay } from './VideoCoverLayouts';
 
