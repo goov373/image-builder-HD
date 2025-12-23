@@ -41,7 +41,7 @@ const DesignSystemPanel = ({ designSystem, onUpdate, onClose, isOpen }) => {
 
   // ===== ORANGE GRADIENTS (3) =====
   const orangeGradients = [
-    'linear-gradient(135deg, #fbbf24 0%, #F97316 10%, #ea580c 30%, #c2410c 60%, #9a3412 100%)',   // Gold to Deep Orange (darker stretch)
+    'linear-gradient(135deg, #fbbf24 0%, #f59e0b 25%, #F97316 50%, #ea580c 100%)',   // Gold to Deep Orange (smooth)
     'linear-gradient(135deg, #fb923c 0%, #F97316 50%, #ea580c 100%)',   // Light Orange to Deep Orange
     'linear-gradient(180deg, #fbbf24 0%, #f59e0b 30%, #F97316 60%, #ea580c 100%)',   // Vertical Gold to Deep Orange (smooth)
   ];
