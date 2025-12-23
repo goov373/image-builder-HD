@@ -69,8 +69,21 @@ const DesignSystemPanel = ({ designSystem, onUpdate, onClose, isOpen }) => {
     ...lightGreyGradients,
   ];
 
-  // HelloData neutral palette
-  const solidColors = ['#18191A', '#2d2e30', '#6B7280', '#9CA3AF', '#eef1f9', '#EEF2FF'];
+  // HelloData brand palette - solid colors
+  const solidColors = [
+    '#6466e9',  // Purple (Primary)
+    '#818cf8',  // Light Purple
+    '#F97316',  // Orange (Accent)
+    '#fbbf24',  // Gold
+    '#18191A',  // Shadow (Dark)
+    '#2d2e30',  // Charcoal
+    '#6B7280',  // Medium Grey
+    '#9CA3AF',  // Light Medium Grey
+    '#eef1f9',  // Light Grey (Secondary)
+    '#EEF2FF',  // Purple Light
+    '#ffffff',  // White
+    '#000000',  // Black
+  ];
   
   return (
     <div 
