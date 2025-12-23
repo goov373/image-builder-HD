@@ -16,15 +16,19 @@ export const fontOptions = {
 
 export const allFonts: FontOption[] = [...fontOptions.sansSerif, ...fontOptions.serif];
 
-// Default design system colors and fonts
+// HelloData.ai Brand Colors
+// Primary: Deep Teal - Trust, innovation, real estate stability
+// Secondary: Vibrant Orange - Energy, action, CTA emphasis  
+// Accent: Electric Blue - Data, technology, insights
+// The palette balances professional trust with energetic action
 export const defaultDesignSystem: DesignSystem = {
-  primary: '#f97316',
-  secondary: '#0f766e',
-  accent: '#fbbf24',
-  neutral1: '#0f172a',
-  neutral2: '#334155',
-  neutral3: '#f8fafc',
-  fontHeadline: '"Nunito Sans", sans-serif',
+  primary: '#0d9488',      // Teal 600 - Primary brand, trust & innovation
+  secondary: '#f97316',    // Orange 500 - Energy, CTAs, highlights
+  accent: '#3b82f6',       // Blue 500 - Data accents, links, tech feel
+  neutral1: '#0f172a',     // Slate 900 - Deep backgrounds, text
+  neutral2: '#334155',     // Slate 700 - Secondary backgrounds
+  neutral3: '#f1f5f9',     // Slate 100 - Light backgrounds, cards
+  fontHeadline: '"DM Sans", sans-serif',
   fontBody: '"Inter", sans-serif'
 };
 

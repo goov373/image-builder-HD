@@ -21,15 +21,17 @@ const DesignSystemPanel = ({ designSystem, onUpdate, onClose, isOpen }) => {
     { key: 'neutral3', label: 'Light' },
   ];
 
+  // HelloData brand-aligned gradients
   const gradients = [
-    'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-    'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-    'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
-    'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
-    'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
-    'linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%)',
+    'linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%)',   // Deep Navy (primary bg)
+    'linear-gradient(135deg, #0d9488 0%, #14b8a6 100%)',   // Teal gradient (brand primary)
+    'linear-gradient(135deg, #0f172a 0%, #0d9488 100%)',   // Navy to Teal (signature)
+    'linear-gradient(135deg, #1e3a5f 0%, #3b82f6 100%)',   // Navy to Blue (data feel)
+    'linear-gradient(135deg, #f97316 0%, #fbbf24 100%)',   // Orange to Gold (CTA/energy)
+    'linear-gradient(135deg, #0d9488 0%, #f97316 100%)',   // Teal to Orange (dynamic)
   ];
 
+  // HelloData neutral palette
   const solidColors = ['#0f172a', '#1e293b', '#334155', '#475569', '#64748b', '#94a3b8'];
   
   return (
