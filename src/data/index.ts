@@ -2,6 +2,7 @@ export { frameSizes, layoutNames, layoutVariantNames, getFontSizes, getFrameSize
 export { fontOptions, allFonts, defaultDesignSystem } from './fontOptions';
 export { initialCarousels, getFrameStyle } from './initialCarousels';
 export { initialEblasts, createEmptyEblast, getEblastSectionStyle } from './initialEblasts';
+export { initialVideoCovers, createEmptyVideoCover, getVideoCoverStyle } from './initialVideoCovers';
 export { 
   PROJECT_CONFIGS, 
   getProjectConfig, 

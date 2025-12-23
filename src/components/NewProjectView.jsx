@@ -96,15 +96,23 @@ const NewProjectView = ({ onCreateProject }) => {
             </div>
           </button>
 
-          {/* Video Cover - Coming Soon */}
+          {/* Video Cover */}
           <button
             type="button"
-            disabled
-            className="p-3 rounded-xl border text-left flex items-center gap-3 border-gray-700/30 bg-gray-800/20 opacity-40 cursor-not-allowed"
+            onClick={() => setSelectedType('videoCover')}
+            className={`p-3 rounded-xl border text-left transition-all duration-200 flex items-center gap-3 ${
+              selectedType === 'videoCover'
+                ? 'border-gray-500 bg-gray-800'
+                : 'border-gray-700/50 bg-gray-800/30 hover:border-gray-600 hover:bg-gray-800/50'
+            }`}
           >
             <div className="w-[104px] flex-shrink-0 flex justify-center">
-              <div className="w-16 h-11 rounded-lg bg-gray-700 border border-gray-600 flex items-center justify-center">
-                <div className="w-6 h-6 rounded-full bg-gray-500 flex items-center justify-center">
+              <div className={`w-16 h-11 rounded-lg border flex items-center justify-center ${
+                selectedType === 'videoCover' ? 'bg-orange-900/30 border-orange-600' : 'bg-gray-700 border-gray-600'
+              }`}>
+                <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
+                  selectedType === 'videoCover' ? 'bg-orange-500' : 'bg-gray-500'
+                }`}>
                   <svg className="w-3 h-3 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M8 5v14l11-7z" />
                   </svg>
@@ -112,8 +120,8 @@ const NewProjectView = ({ onCreateProject }) => {
               </div>
             </div>
             <div className="flex-1 min-w-0">
-              <h3 className="text-xs font-semibold text-gray-500">Video Cover</h3>
-              <p className="text-[10px] text-gray-600 leading-relaxed">Coming soon</p>
+              <h3 className={`text-xs font-semibold ${selectedType === 'videoCover' ? 'text-white' : 'text-gray-300'}`}>Video Cover</h3>
+              <p className="text-[10px] text-gray-500 leading-relaxed">YouTube thumbnails and social video covers.</p>
             </div>
           </button>
           

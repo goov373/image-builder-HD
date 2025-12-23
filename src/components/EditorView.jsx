@@ -10,6 +10,7 @@ import NewProjectView from './NewProjectView';
 import ProjectHeader from './ProjectHeader';
 import CarouselRow from './CarouselRow';
 import EblastEditor from './EblastEditor';
+import VideoCoverEditor from './VideoCoverEditor';
 
 export default function EditorView({
   // Layout props
@@ -38,6 +39,9 @@ export default function EditorView({
     selectedSectionId,
     selectedEblast,
     selectedSection,
+    // Video Cover selection
+    selectedVideoCoverId,
+    selectedVideoCover,
     // Shared
     activeTextField,
     setActiveTextField,
@@ -45,6 +49,7 @@ export default function EditorView({
     handleSelectFrame,
     handleSelectEblast,
     handleSelectSection,
+    handleSelectVideoCover,
     handleDeselect,
   } = selection;
 
@@ -68,11 +73,18 @@ export default function EditorView({
     handleAddSection,
     handleRemoveSection,
     handleReorderSections,
+    // Video Cover methods
+    videoCovers,
+    handleVideoCoverUpdateText,
+    handleVideoCoverChangeFrameSize,
+    handleTogglePlayButton,
+    handleUpdateEpisodeNumber,
   } = carouselsCtx;
 
   // Determine which content to show based on project type
   const isCarousel = projectType === 'carousel' || !projectType;
   const isEblast = projectType === 'eblast';
+  const isVideoCover = projectType === 'videoCover';
 
   return (
     <>
@@ -173,6 +185,24 @@ export default function EditorView({
                       onRemoveSection={handleRemoveSection}
                       onReorderSections={handleReorderSections}
                       onUpdateText={handleEblastUpdateText}
+                      activeTextField={activeTextField}
+                      onActivateTextField={setActiveTextField}
+                    />
+                  </React.Fragment>
+                ))}
+
+                {/* Video Cover Content */}
+                {isVideoCover && videoCovers && videoCovers.map((videoCover, index) => (
+                  <React.Fragment key={videoCover.id}>
+                    <VideoCoverEditor
+                      videoCover={videoCover}
+                      designSystem={designSystem}
+                      isSelected={selectedVideoCoverId === videoCover.id}
+                      onSelect={handleSelectVideoCover}
+                      onUpdateText={handleVideoCoverUpdateText}
+                      onTogglePlayButton={handleTogglePlayButton}
+                      onUpdateEpisodeNumber={handleUpdateEpisodeNumber}
+                      onChangeFrameSize={handleVideoCoverChangeFrameSize}
                       activeTextField={activeTextField}
                       onActivateTextField={setActiveTextField}
                     />

@@ -19,3 +19,6 @@ export { default as ContentFrame } from './ContentFrame';
 export { default as CTAButton } from './CTAButton';
 export { default as EblastSection } from './EblastSection';
 export { default as EblastEditor } from './EblastEditor';
+export { default as VideoCoverFrame } from './VideoCoverFrame';
+export { default as VideoCoverEditor } from './VideoCoverEditor';
+export { PlayButtonOverlay, EpisodeNumber } from './overlays';

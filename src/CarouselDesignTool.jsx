@@ -4,11 +4,12 @@ import React, { useState } from 'react';
 import {
   defaultDesignSystem,
   initialCarousels,
-  initialEblasts
+  initialEblasts,
+  initialVideoCovers
 } from './data';
 
 // Import custom hooks
-import { useDropdowns, useTabs, useCarousels, useEblasts, useDesignSystem } from './hooks';
+import { useDropdowns, useTabs, useCarousels, useEblasts, useVideoCovers, useDesignSystem } from './hooks';
 
 // Import context providers
 import { AppProvider } from './context';
@@ -43,6 +44,7 @@ export default function CarouselDesignTool() {
   const tabs = useTabs(INITIAL_TABS);
   const carousels = useCarousels(initialCarousels);
   const eblasts = useEblasts(initialEblasts);
+  const videoCovers = useVideoCovers(initialVideoCovers);
   const dropdowns = useDropdowns();
 
   // Get current project type from active tab
@@ -53,6 +55,7 @@ export default function CarouselDesignTool() {
     tabs.handleGoHome(() => {
       carousels.clearSelection();
       eblasts.clearSelection();
+      videoCovers.clearSelection();
     });
   };
 
@@ -84,12 +87,18 @@ export default function CarouselDesignTool() {
     eblasts.handleSelectEblast(eblastId, dropdowns.closeAllDropdowns);
   };
 
+  const handleSelectVideoCover = (videoCoverId) => {
+    videoCovers.handleSelectVideoCover(videoCoverId, dropdowns.closeAllDropdowns);
+  };
+
   const handleDeselect = () => {
     dropdowns.closeAllDropdowns();
     if (currentProjectType === 'carousel') {
       carousels.clearSelection();
     } else if (currentProjectType === 'eblast') {
       eblasts.clearSelection();
+    } else if (currentProjectType === 'videoCover') {
+      videoCovers.clearSelection();
     }
   };
 
@@ -112,13 +121,25 @@ export default function CarouselDesignTool() {
     selectedSectionId: eblasts.selectedSectionId,
     selectedEblast: eblasts.selectedEblast,
     selectedSection: eblasts.selectedSection,
+    // Video Cover selection
+    selectedVideoCoverId: videoCovers.selectedVideoCoverId,
+    selectedVideoCover: videoCovers.selectedVideoCover,
     // Shared
-    activeTextField: currentProjectType === 'carousel' ? carousels.activeTextField : eblasts.activeTextField,
-    setActiveTextField: currentProjectType === 'carousel' ? carousels.setActiveTextField : eblasts.setActiveTextField,
+    activeTextField: currentProjectType === 'carousel' 
+      ? carousels.activeTextField 
+      : currentProjectType === 'eblast'
+        ? eblasts.activeTextField
+        : videoCovers.activeTextField,
+    setActiveTextField: currentProjectType === 'carousel' 
+      ? carousels.setActiveTextField 
+      : currentProjectType === 'eblast'
+        ? eblasts.setActiveTextField
+        : videoCovers.setActiveTextField,
     handleSelectFrame,
     handleSelectCarousel,
     handleSelectSection,
     handleSelectEblast,
+    handleSelectVideoCover,
     handleDeselect,
     currentProjectType,
   };
@@ -148,6 +169,18 @@ export default function CarouselDesignTool() {
     handleReorderSections: eblasts.handleReorderSections,
     handleAddEblast: eblasts.handleAddEblast,
     handleRemoveEblast: eblasts.handleRemoveEblast,
+    // Video Cover methods
+    videoCovers: videoCovers.videoCovers,
+    handleVideoCoverSetVariant: videoCovers.handleSetVariant,
+    handleVideoCoverSetLayout: videoCovers.handleSetLayout,
+    handleVideoCoverShuffleLayoutVariant: videoCovers.handleShuffleLayoutVariant,
+    handleVideoCoverUpdateText: videoCovers.handleUpdateText,
+    handleVideoCoverUpdateFormatting: videoCovers.handleUpdateFormatting,
+    handleVideoCoverChangeFrameSize: videoCovers.handleChangeFrameSize,
+    handleTogglePlayButton: videoCovers.handleTogglePlayButton,
+    handleUpdateEpisodeNumber: videoCovers.handleUpdateEpisodeNumber,
+    handleAddVideoCover: videoCovers.handleAddVideoCover,
+    handleRemoveVideoCover: videoCovers.handleRemoveVideoCover,
   };
 
   return (
@@ -198,6 +231,7 @@ export default function CarouselDesignTool() {
           isOpen={activePanel === 'export'} 
           carousels={carousels.carousels}
           eblasts={eblasts.eblasts}
+          videoCovers={videoCovers.videoCovers}
           projectType={currentProjectType}
         />
         <AccountPanel 
