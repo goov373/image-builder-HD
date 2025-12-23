@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 
-const STORAGE_KEY = 'carousel-tool-design-system';
+// Version bump forces refresh of brand colors when defaults change
+const STORAGE_KEY = 'carousel-tool-design-system-v2';
 
 // Load from localStorage or use initial data
 function loadFromStorage(initialData) {
