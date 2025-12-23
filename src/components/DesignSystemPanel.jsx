@@ -389,7 +389,6 @@ const DesignSystemPanel = ({ designSystem, onUpdate, onClose, isOpen }) => {
             </a>
           </div>
           <p className="text-[9px] text-gray-600 mt-2 text-center">All free for commercial use</p>
-          </div>
         </div>
         
         {/* Brand Patterns Section */}
