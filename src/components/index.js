@@ -13,3 +13,4 @@ export { CarouselFrame, SortableFrame } from './CarouselFrame';
 export { default as CarouselRow } from './CarouselRow';
 export { default as Toolbar } from './Toolbar';
 export { default as TabBar } from './TabBar';
+export { default as EditorView } from './EditorView';
