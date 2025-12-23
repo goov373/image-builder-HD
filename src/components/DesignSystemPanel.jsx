@@ -22,20 +22,51 @@ const DesignSystemPanel = ({ designSystem, onUpdate, onClose, isOpen }) => {
   ];
 
   // HelloData brand-aligned gradients
-  // HelloData gradients - Purple to Light direction with variety
-  // Mesh/wave gradient for organic feel
-  const meshGradient = 'radial-gradient(at 40% 20%, #6466e9 0px, transparent 50%), radial-gradient(at 80% 0%, #818cf8 0px, transparent 50%), radial-gradient(at 0% 50%, #5558d9 0px, transparent 50%), radial-gradient(at 80% 50%, #a8aed4 0px, transparent 50%), radial-gradient(at 0% 100%, #6466e9 0px, transparent 50%), radial-gradient(at 80% 100%, #c4c8e8 0px, transparent 50%), linear-gradient(135deg, #4a4dcf 0%, #b8bdd6 100%)';
-  
-  // Conical gradient for first option - focal point on left
-  const conicalGradient = 'conic-gradient(from 180deg at 20% 50%, #6466e9 0deg, #818cf8 120deg, #b8bdd6 240deg, #6466e9 360deg)';
-  
+  // ===== PURPLE CONICAL GRADIENTS (3) =====
+  const purpleConicals = [
+    'conic-gradient(from 180deg at 20% 50%, #6466e9 0deg, #818cf8 120deg, #b8bdd6 240deg, #6466e9 360deg)',   // Focal left
+    'conic-gradient(from 45deg at 80% 20%, #4a4dcf 0deg, #6466e9 90deg, #818cf8 180deg, #b8bdd6 270deg, #4a4dcf 360deg)', // Focal top-right
+    'conic-gradient(from 270deg at 50% 80%, #5558d9 0deg, #818cf8 90deg, #c4c8e8 180deg, #818cf8 270deg, #5558d9 360deg)', // Focal bottom-center
+  ];
+
+  // ===== PURPLE MESH GRADIENTS (6) =====
+  const purpleMeshes = [
+    'radial-gradient(at 40% 20%, #6466e9 0px, transparent 50%), radial-gradient(at 80% 0%, #818cf8 0px, transparent 50%), radial-gradient(at 0% 50%, #5558d9 0px, transparent 50%), radial-gradient(at 80% 50%, #a8aed4 0px, transparent 50%), radial-gradient(at 0% 100%, #6466e9 0px, transparent 50%), radial-gradient(at 80% 100%, #c4c8e8 0px, transparent 50%), linear-gradient(135deg, #4a4dcf 0%, #b8bdd6 100%)',
+    'radial-gradient(at 0% 0%, #818cf8 0px, transparent 50%), radial-gradient(at 100% 0%, #6466e9 0px, transparent 50%), radial-gradient(at 100% 100%, #5558d9 0px, transparent 50%), radial-gradient(at 0% 100%, #a8aed4 0px, transparent 50%), linear-gradient(180deg, #6466e9 0%, #4a4dcf 100%)',
+    'radial-gradient(at 50% 0%, #b8bdd6 0px, transparent 60%), radial-gradient(at 0% 100%, #6466e9 0px, transparent 50%), radial-gradient(at 100% 100%, #818cf8 0px, transparent 50%), linear-gradient(0deg, #5558d9 0%, #6466e9 100%)',
+    'radial-gradient(at 30% 70%, #818cf8 0px, transparent 40%), radial-gradient(at 70% 30%, #6466e9 0px, transparent 40%), radial-gradient(at 50% 50%, #5558d9 0px, transparent 60%), linear-gradient(45deg, #4a4dcf 0%, #818cf8 100%)',
+    'linear-gradient(135deg, rgba(100, 102, 233, 0.4) 0%, rgba(100, 102, 233, 0.1) 100%), radial-gradient(ellipse 150% 120% at 100% 100%, #d1d5eb 0%, #a8aed4 15%, #818cf8 35%, #6466e9 55%, #5558d9 75%, #4a4dcf 100%)',
+    'radial-gradient(ellipse at 0% 50%, #818cf8 0%, transparent 50%), radial-gradient(ellipse at 100% 50%, #6466e9 0%, transparent 50%), radial-gradient(ellipse at 50% 100%, #5558d9 0%, transparent 40%), linear-gradient(135deg, #4a4dcf 0%, #a8aed4 100%)',
+  ];
+
+  // ===== ORANGE GRADIENTS (3) =====
+  const orangeGradients = [
+    'linear-gradient(135deg, #F97316 0%, #fbbf24 100%)',   // Orange to Gold
+    'linear-gradient(135deg, #F97316 0%, #ef4444 100%)',   // Orange to Red
+    'radial-gradient(ellipse at 30% 30%, #fbbf24 0%, #F97316 50%, #ea580c 100%)', // Orange radial glow
+  ];
+
+  // ===== BLACK/DARK GRADIENTS (3) =====
+  const blackGradients = [
+    'linear-gradient(135deg, #18191A 0%, #2d2e30 100%)',   // Shadow to Charcoal
+    'radial-gradient(ellipse at 50% 50%, #3d3e42 0%, #18191A 70%, #000000 100%)', // Dark radial vignette
+    'linear-gradient(135deg, #18191A 0%, #2d2e30 50%, #4a4dcf 150%)', // Dark with subtle purple hint
+  ];
+
+  // ===== LIGHT GREY GRADIENTS (3) =====
+  const lightGreyGradients = [
+    'linear-gradient(135deg, #eef1f9 0%, #ffffff 100%)',   // Light Grey to White
+    'radial-gradient(ellipse at 50% 0%, #ffffff 0%, #eef1f9 50%, #d1d5eb 100%)', // Light radial
+    'linear-gradient(135deg, #eef1f9 0%, #EEF2FF 50%, #d1d5eb 100%)', // Light Grey to Purple tint
+  ];
+
+  // Combined gradients array
   const gradients = [
-    conicalGradient,                                        // Conical purple sweep
-    meshGradient,                                           // Mesh/Wave organic gradient
-    'linear-gradient(135deg, rgba(100, 102, 233, 0.4) 0%, rgba(100, 102, 233, 0.1) 100%), radial-gradient(ellipse 150% 120% at 100% 100%, #d1d5eb 0%, #a8aed4 15%, #818cf8 35%, #6466e9 55%, #5558d9 75%, #4a4dcf 100%)', // Smooth blend with purple overlay
-    'linear-gradient(135deg, #5558d9 0%, #b8bdd6 100%)',   // Deep Purple to Muted Grey
-    'linear-gradient(135deg, #F97316 0%, #fbbf24 100%)',   // Orange to Gold (CTA)
-    'linear-gradient(135deg, #18191A 0%, #2d2e30 100%)',   // Shadow (dark backgrounds)
+    ...purpleConicals,
+    ...purpleMeshes,
+    ...orangeGradients,
+    ...blackGradients,
+    ...lightGreyGradients,
   ];
 
   // HelloData neutral palette
