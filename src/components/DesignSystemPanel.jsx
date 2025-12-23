@@ -339,8 +339,9 @@ const DesignSystemPanel = ({ designSystem, onUpdate, onClose, isOpen }) => {
           <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-3">Brand Patterns</h3>
           <p className="text-[10px] text-gray-500 mb-3">Data-driven visuals that tell the HelloData story</p>
           
-          {/* Pattern Grid */}
-          <div className="grid grid-cols-2 gap-2 mb-3">
+          {/* Pattern Grid - Data Visualizations */}
+          <p className="text-[9px] text-gray-500 mb-2 uppercase tracking-wide">Data Visualizations</p>
+          <div className="grid grid-cols-3 gap-2 mb-4">
             {[
               { name: 'Market Map', file: 'street-grid.svg', desc: 'Submarket overview' },
               { name: 'Comp Radius', file: 'comp-radius-new.svg', desc: 'Property analysis' },
@@ -348,6 +349,35 @@ const DesignSystemPanel = ({ designSystem, onUpdate, onClose, isOpen }) => {
               { name: 'Unit Grid', file: 'apartment-units.svg', desc: 'Multifamily units' },
               { name: 'Market Heat', file: 'market-heat.svg', desc: 'Submarket intensity' },
               { name: 'Data Network', file: 'property-network.svg', desc: 'Property connections' },
+            ].map((pattern, i) => (
+              <button
+                key={pattern.file}
+                type="button"
+                className="group relative aspect-square rounded-lg overflow-hidden border border-gray-700 hover:border-purple-500 transition-all"
+                style={{
+                  backgroundImage: `url(/patterns/${pattern.file})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                }}
+                title={pattern.desc}
+              >
+                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                  <span className="text-[10px] text-white font-medium">{pattern.name}</span>
+                </div>
+              </button>
+            ))}
+          </div>
+          
+          {/* City Map Patterns */}
+          <p className="text-[9px] text-gray-500 mb-2 uppercase tracking-wide">City Maps</p>
+          <div className="grid grid-cols-3 gap-2 mb-4">
+            {[
+              { name: 'Grid City', file: 'city-blocks-1.svg', desc: 'Standard grid layout' },
+              { name: 'Diagonal Ave', file: 'city-blocks-2.svg', desc: 'With diagonal road' },
+              { name: 'Dense Urban', file: 'city-blocks-3.svg', desc: 'Tight city blocks' },
+              { name: 'Curved Road', file: 'city-blocks-4.svg', desc: 'Boulevard layout' },
+              { name: 'Highway', file: 'city-blocks-5.svg', desc: 'Diagonal highway' },
+              { name: 'Roundabout', file: 'city-blocks-6.svg', desc: 'Circle intersection' },
             ].map((pattern, i) => (
               <button
                 key={pattern.file}
