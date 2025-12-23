@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <defs>
+    <radialGradient id="radiusGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#6466e9" stop-opacity="0.3"/>
+      <stop offset="70%" stop-color="#6466e9" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="#6466e9" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="200" height="200" fill="#18191A"/>
+  
+  <!-- Radius glow background -->
+  <circle cx="100" cy="100" r="90" fill="url(#radiusGlow)"/>
+  
+  <!-- Comp radius rings -->
+  <circle cx="100" cy="100" r="30" fill="none" stroke="#6466e9" stroke-width="1" opacity="0.6"/>
+  <circle cx="100" cy="100" r="55" fill="none" stroke="#6466e9" stroke-width="1" opacity="0.4"/>
+  <circle cx="100" cy="100" r="80" fill="none" stroke="#6466e9" stroke-width="1" opacity="0.25"/>
+  
+  <!-- Distance labels -->
+  <text x="100" y="68" fill="#818cf8" font-size="7" text-anchor="middle" opacity="0.7">0.5 mi</text>
+  <text x="100" y="43" fill="#818cf8" font-size="7" text-anchor="middle" opacity="0.5">1 mi</text>
+  <text x="100" y="18" fill="#818cf8" font-size="7" text-anchor="middle" opacity="0.35">2 mi</text>
+  
+  <!-- Subject property - center -->
+  <circle cx="100" cy="100" r="6" fill="#F97316"/>
+  <circle cx="100" cy="100" r="10" fill="none" stroke="#F97316" stroke-width="1.5" opacity="0.5"/>
+  
+  <!-- Comp properties -->
+  <circle cx="75" cy="85" r="3" fill="#6466e9"/>
+  <circle cx="125" cy="80" r="3" fill="#6466e9"/>
+  <circle cx="85" cy="130" r="3" fill="#6466e9"/>
+  <circle cx="140" cy="115" r="3" fill="#6466e9"/>
+  <circle cx="60" cy="110" r="3" fill="#818cf8" opacity="0.7"/>
+  <circle cx="150" cy="70" r="3" fill="#818cf8" opacity="0.7"/>
+  <circle cx="55" cy="145" r="3" fill="#818cf8" opacity="0.5"/>
+  <circle cx="160" cy="140" r="3" fill="#818cf8" opacity="0.5"/>
+  
+  <!-- Connection lines to subject -->
+  <line x1="100" y1="100" x2="75" y2="85" stroke="#6466e9" stroke-width="0.5" opacity="0.4"/>
+  <line x1="100" y1="100" x2="125" y2="80" stroke="#6466e9" stroke-width="0.5" opacity="0.4"/>
+  <line x1="100" y1="100" x2="85" y2="130" stroke="#6466e9" stroke-width="0.5" opacity="0.4"/>
+  <line x1="100" y1="100" x2="140" y2="115" stroke="#6466e9" stroke-width="0.5" opacity="0.4"/>
+</svg>
+

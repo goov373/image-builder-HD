@@ -337,17 +337,17 @@ const DesignSystemPanel = ({ designSystem, onUpdate, onClose, isOpen }) => {
         {/* Brand Patterns Section */}
         <div className="p-4">
           <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-3">Brand Patterns</h3>
-          <p className="text-[10px] text-gray-500 mb-3">GPS & map-inspired patterns for real estate visuals</p>
+          <p className="text-[10px] text-gray-500 mb-3">Data-driven visuals that tell the HelloData story</p>
           
           {/* Pattern Grid */}
           <div className="grid grid-cols-2 gap-2 mb-3">
             {[
-              { name: 'Street Grid', file: 'street-grid.svg', desc: 'Urban road network' },
-              { name: 'Comp Radius', file: 'comp-radius.svg', desc: 'Property comparison map' },
-              { name: 'Urban Blocks', file: 'urban-blocks.svg', desc: 'City blocks layout' },
-              { name: 'Data Network', file: 'data-network.svg', desc: 'Connected data points' },
-              { name: 'Topo Lines', file: 'topographic-lines.svg', desc: 'Elevation contours' },
-              { name: 'Route Lines', file: 'route-lines.svg', desc: 'GPS navigation paths' },
+              { name: 'Market Map', file: 'street-grid.svg', desc: 'Submarket overview' },
+              { name: 'Comp Radius', file: 'comp-radius-new.svg', desc: 'Property analysis' },
+              { name: 'Rent Trends', file: 'rent-trends.svg', desc: 'Market movement' },
+              { name: 'Unit Grid', file: 'apartment-units.svg', desc: 'Multifamily units' },
+              { name: 'Market Heat', file: 'market-heat.svg', desc: 'Submarket intensity' },
+              { name: 'Data Network', file: 'property-network.svg', desc: 'Property connections' },
             ].map((pattern, i) => (
               <button
                 key={pattern.file}
