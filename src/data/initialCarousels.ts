@@ -213,27 +213,27 @@ type FrameStyleResult = { background: string; accent: string };
 
 export const getFrameStyle = (carouselId: number, frameStyle: string, ds: DesignSystem): FrameStyleResult => {
   const styles: Record<string, FrameStyleResult> = {
-    // Opening/Hook frames - Deep navy, teal accents
-    "dark-single-pin": { background: `linear-gradient(135deg, ${ds.neutral1} 0%, #1e3a5f 100%)`, accent: ds.primary },
+    // Opening/Hook frames - Shadow to Purple hint
+    "dark-single-pin": { background: `linear-gradient(135deg, ${ds.neutral1} 0%, #2d2e30 100%)`, accent: ds.primary },
     
-    // Problem/Pain frames - Darker, warning accents
-    "dark-chaos": { background: `linear-gradient(135deg, #1e293b 0%, ${ds.neutral1} 100%)`, accent: '#ef4444' },
-    "dark-competition": { background: `linear-gradient(135deg, ${ds.neutral1} 0%, #1e3a5f 100%)`, accent: ds.secondary },
+    // Problem/Pain frames - Darker tones, warning accents
+    "dark-chaos": { background: `linear-gradient(135deg, #2d2e30 0%, ${ds.neutral1} 100%)`, accent: '#ef4444' },
+    "dark-competition": { background: `linear-gradient(135deg, ${ds.neutral1} 0%, #3d3e42 100%)`, accent: ds.secondary },
     "static-gray": { background: `linear-gradient(135deg, ${ds.neutral2} 0%, ${ds.neutral1} 100%)`, accent: '#9ca3af' },
-    "cracking": { background: `linear-gradient(135deg, #1e293b 0%, ${ds.neutral1} 100%)`, accent: ds.secondary },
+    "cracking": { background: `linear-gradient(135deg, #2d2e30 0%, ${ds.neutral1} 100%)`, accent: ds.secondary },
     
-    // Story/Journey frames - Sequential progression
-    "monday": { background: `linear-gradient(135deg, ${ds.neutral1} 0%, #1e3a5f 100%)`, accent: ds.primary },
+    // Story/Journey frames - Sequential progression through brand
+    "monday": { background: `linear-gradient(135deg, ${ds.neutral1} 0%, #2d2e30 100%)`, accent: ds.primary },
     "tuesday": { background: `linear-gradient(135deg, ${ds.neutral1} 0%, ${ds.neutral2} 100%)`, accent: ds.accent },
     "wednesday": { background: `linear-gradient(135deg, ${ds.neutral2} 0%, ${ds.neutral1} 100%)`, accent: ds.primary },
-    "thursday-friday": { background: `linear-gradient(135deg, #1e293b 0%, ${ds.neutral1} 100%)`, accent: '#f87171' },
+    "thursday-friday": { background: `linear-gradient(135deg, #2d2e30 0%, ${ds.neutral1} 100%)`, accent: '#f87171' },
     
-    // Solution/Product reveal frames - Teal prominence
+    // Solution/Product reveal frames - Purple prominence  
     "reveal-product": { background: `linear-gradient(135deg, ${ds.neutral1} 0%, ${ds.primary} 100%)`, accent: ds.secondary },
-    "product-forecast": { background: `linear-gradient(135deg, #1e3a5f 0%, ${ds.primary} 100%)`, accent: ds.secondary },
-    "heatmap-transform": { background: `linear-gradient(135deg, ${ds.primary} 0%, ${ds.accent} 100%)`, accent: ds.secondary },
+    "product-forecast": { background: `linear-gradient(135deg, #2d2e30 0%, ${ds.primary} 100%)`, accent: ds.secondary },
+    "heatmap-transform": { background: `linear-gradient(135deg, ${ds.primary} 0%, #818cf8 100%)`, accent: ds.secondary },
     
-    // CTA frames - High energy, orange/teal combo
+    // CTA frames - High energy, purple/orange combo
     "cta-win": { background: `linear-gradient(135deg, ${ds.primary} 0%, ${ds.secondary} 100%)`, accent: ds.neutral3 },
     "cta-forecast": { background: `linear-gradient(135deg, ${ds.secondary} 0%, ${ds.primary} 100%)`, accent: ds.neutral3 },
     "cta-automated": { background: `linear-gradient(135deg, ${ds.primary} 0%, ${ds.secondary} 100%)`, accent: ds.neutral3 },

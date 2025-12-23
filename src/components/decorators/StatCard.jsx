@@ -14,9 +14,9 @@ const StatCard = ({
   onClick,
 }) => {
   const variants = {
-    dark: { bg: '#1e293b', border: 'rgba(255,255,255,0.1)', text: '#ffffff', label: '#94a3b8' },
-    light: { bg: '#ffffff', border: 'rgba(0,0,0,0.1)', text: '#0f172a', label: '#64748b' },
-    glass: { bg: 'rgba(255,255,255,0.1)', border: 'rgba(255,255,255,0.2)', text: '#ffffff', label: '#94a3b8' },
+    dark: { bg: '#2d2e30', border: 'rgba(255,255,255,0.1)', text: '#ffffff', label: '#9CA3AF' },
+    light: { bg: '#ffffff', border: 'rgba(0,0,0,0.1)', text: '#18191A', label: '#6B7280' },
+    glass: { bg: 'rgba(255,255,255,0.1)', border: 'rgba(255,255,255,0.2)', text: '#ffffff', label: '#9CA3AF' },
     gradient: { bg: 'linear-gradient(135deg, #6466e9 0%, #818cf8 100%)', border: 'transparent', text: '#ffffff', label: 'rgba(255,255,255,0.8)' },
   };
   
