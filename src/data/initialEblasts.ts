@@ -107,32 +107,43 @@ export function createEmptyEblast(id: number, name: string): Eblast {
 
 /**
  * Get eblast section styles
+ * text: Main headline color (always readable)
+ * accent: Decorative elements (brand colors)
  */
 export function getEblastSectionStyle(sectionStyle: string, ds: DesignSystem) {
-  const styles: Record<string, { background: string; accent: string }> = {
+  const textWhite = '#ffffff';
+  const textDark = '#18191A';
+  
+  const styles: Record<string, { background: string; text: string; accent: string }> = {
     "header-brand": { 
       background: `linear-gradient(135deg, ${ds.neutral1} 0%, ${ds.neutral1} 100%)`, 
+      text: textWhite,
       accent: ds.primary 
     },
     "hero-gradient": { 
       background: `linear-gradient(135deg, ${ds.neutral1} 0%, ${ds.primary} 100%)`, 
-      accent: ds.secondary 
+      text: textWhite,
+      accent: ds.primary 
     },
     "feature-light": { 
       background: `linear-gradient(135deg, ${ds.neutral3} 0%, ${ds.neutral3} 100%)`, 
+      text: textDark,
       accent: ds.primary 
     },
     "feature-dark": { 
       background: `linear-gradient(135deg, ${ds.neutral1} 0%, ${ds.neutral2} 100%)`, 
+      text: textWhite,
       accent: ds.primary 
     },
     "cta-bold": { 
       background: `linear-gradient(135deg, ${ds.primary} 0%, ${ds.secondary} 100%)`, 
-      accent: ds.neutral3 
+      text: textWhite,
+      accent: textWhite 
     },
     "cta-subtle": { 
       background: `linear-gradient(135deg, ${ds.neutral2} 0%, ${ds.neutral1} 100%)`, 
-      accent: ds.secondary 
+      text: textWhite,
+      accent: ds.primary 
     },
   };
   return styles[sectionStyle] || styles["hero-gradient"];

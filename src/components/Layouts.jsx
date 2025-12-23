@@ -4,7 +4,7 @@ import EditableTextField from './EditableTextField';
  * Layout Component - Bottom Stack
  * Text stacked at bottom with gradient overlay
  */
-export const LayoutBottomStack = ({ headline, body, accent, isLandscape, headingFont, bodyFont, variant = 0, isFrameSelected, onUpdateText, activeField, onActivateField, formatting = {}, fontSizes = {} }) => {
+export const LayoutBottomStack = ({ headline, body, text, accent, isLandscape, headingFont, bodyFont, variant = 0, isFrameSelected, onUpdateText, activeField, onActivateField, formatting = {}, fontSizes = {} }) => {
   const getAlignment = () => {
     switch (variant) {
       case 1: return 'justify-start pt-6';
@@ -39,7 +39,7 @@ export const LayoutBottomStack = ({ headline, body, accent, isLandscape, heading
     }
   };
 
-  const headlineStyle = { color: accent, fontFamily: headingFont, fontSize: fontSizes.headline || 14, lineHeight: fontSizes.lineHeight || 1.3 };
+  const headlineStyle = { color: text || '#ffffff', fontFamily: headingFont, fontSize: fontSizes.headline || 14, lineHeight: fontSizes.lineHeight || 1.3 };
   const bodyStyle = { fontFamily: bodyFont, fontSize: fontSizes.body || 12, lineHeight: fontSizes.lineHeight || 1.4 };
 
   if (isLandscape) {
@@ -69,7 +69,7 @@ export const LayoutBottomStack = ({ headline, body, accent, isLandscape, heading
  * Layout Component - Center Drama
  * Centered text with dramatic styling
  */
-export const LayoutCenterDrama = ({ headline, body, accent, isLandscape, headingFont, bodyFont, variant = 0, isFrameSelected, onUpdateText, activeField, onActivateField, formatting = {}, fontSizes = {} }) => {
+export const LayoutCenterDrama = ({ headline, body, text, accent, isLandscape, headingFont, bodyFont, variant = 0, isFrameSelected, onUpdateText, activeField, onActivateField, formatting = {}, fontSizes = {} }) => {
   const getAlignment = () => {
     switch (variant) {
       case 1: return 'justify-end pb-6';
@@ -96,7 +96,7 @@ export const LayoutCenterDrama = ({ headline, body, accent, isLandscape, heading
     }
   };
 
-  const headlineStyle = { color: accent, fontFamily: headingFont, fontSize: (fontSizes.headline || 14) + 2, lineHeight: fontSizes.lineHeight || 1.3 };
+  const headlineStyle = { color: text || '#ffffff', fontFamily: headingFont, fontSize: (fontSizes.headline || 14) + 2, lineHeight: fontSizes.lineHeight || 1.3 };
   const bodyStyle = { fontFamily: bodyFont, fontSize: fontSizes.body || 12, lineHeight: (fontSizes.lineHeight || 1.4) + 0.1 };
 
   if (isLandscape) {
@@ -130,7 +130,7 @@ export const LayoutCenterDrama = ({ headline, body, accent, isLandscape, heading
  * Layout Component - Editorial Left
  * Editorial style with accent bars
  */
-export const LayoutEditorialLeft = ({ headline, body, accent, isLandscape, headingFont, bodyFont, variant = 0, isFrameSelected, onUpdateText, activeField, onActivateField, formatting = {}, fontSizes = {} }) => {
+export const LayoutEditorialLeft = ({ headline, body, text, accent, isLandscape, headingFont, bodyFont, variant = 0, isFrameSelected, onUpdateText, activeField, onActivateField, formatting = {}, fontSizes = {} }) => {
   const getHeadlineAlign = () => {
     switch (variant) {
       case 1: return 'items-center text-center';
@@ -165,7 +165,7 @@ export const LayoutEditorialLeft = ({ headline, body, accent, isLandscape, headi
     }
   };
 
-  const headlineStyle = { color: accent, fontFamily: headingFont, fontSize: fontSizes.headline || 14, lineHeight: fontSizes.lineHeight || 1.3 };
+  const headlineStyle = { color: text || '#ffffff', fontFamily: headingFont, fontSize: fontSizes.headline || 14, lineHeight: fontSizes.lineHeight || 1.3 };
   const bodyStyle = { fontFamily: bodyFont, fontSize: fontSizes.body || 12, lineHeight: fontSizes.lineHeight || 1.4 };
 
   if (isLandscape) {

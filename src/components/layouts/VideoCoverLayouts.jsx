@@ -7,6 +7,7 @@ import EditableTextField from '../EditableTextField';
 export const VideoFaceText = ({
   headline,
   body,
+  text,
   accent,
   headingFont,
   bodyFont,
@@ -48,7 +49,7 @@ export const VideoFaceText = ({
           style={{
             fontFamily: formatting.headline?.fontFamily || headingFont,
             fontSize: `${(formatting.headline?.fontSize || 1) * (fontSizes?.headline || 20)}px`,
-            color: formatting.headline?.color || '#ffffff',
+            color: formatting.headline?.color || text || '#ffffff',
             fontWeight: 900,
             lineHeight: 1.1,
             textTransform: 'uppercase',
@@ -64,7 +65,7 @@ export const VideoFaceText = ({
           style={{
             fontFamily: formatting.body?.fontFamily || bodyFont,
             fontSize: `${(formatting.body?.fontSize || 1) * (fontSizes?.body || 12)}px`,
-            color: formatting.body?.color || accent,
+            color: formatting.body?.color || 'rgba(255,255,255,0.7)',
             lineHeight: 1.3,
           }}
         />
@@ -80,6 +81,7 @@ export const VideoFaceText = ({
 export const VideoBoldStatement = ({
   headline,
   body,
+  text,
   accent,
   headingFont,
   bodyFont,
@@ -111,7 +113,7 @@ export const VideoBoldStatement = ({
         style={{
           fontFamily: formatting.headline?.fontFamily || headingFont,
           fontSize: `${(formatting.headline?.fontSize || 1) * (fontSizes?.headline || 28)}px`,
-          color: formatting.headline?.color || '#ffffff',
+          color: formatting.headline?.color || text || '#ffffff',
           fontWeight: 900,
           lineHeight: 1.0,
           textTransform: 'uppercase',
@@ -128,7 +130,7 @@ export const VideoBoldStatement = ({
         style={{
           fontFamily: formatting.body?.fontFamily || bodyFont,
           fontSize: `${(formatting.body?.fontSize || 1) * (fontSizes?.body || 14)}px`,
-          color: formatting.body?.color || accent,
+          color: formatting.body?.color || 'rgba(255,255,255,0.7)',
           lineHeight: 1.3,
         }}
       />
@@ -143,6 +145,7 @@ export const VideoBoldStatement = ({
 export const VideoEpisodeCard = ({
   headline,
   body,
+  text,
   accent,
   headingFont,
   bodyFont,
@@ -180,7 +183,7 @@ export const VideoEpisodeCard = ({
       {/* Main Content */}
       <div className="absolute inset-0 flex flex-col justify-end p-4">
         {seriesName && (
-          <div className="text-xs font-medium mb-1 opacity-80" style={{ color: accent }}>
+          <div className="text-xs font-medium mb-1 opacity-80" style={{ color: 'rgba(255,255,255,0.6)' }}>
             {seriesName}
           </div>
         )}
@@ -195,7 +198,7 @@ export const VideoEpisodeCard = ({
           style={{
             fontFamily: formatting.headline?.fontFamily || headingFont,
             fontSize: `${(formatting.headline?.fontSize || 1) * (fontSizes?.headline || 18)}px`,
-            color: formatting.headline?.color || '#ffffff',
+            color: formatting.headline?.color || text || '#ffffff',
             fontWeight: 700,
             lineHeight: 1.2,
           }}
@@ -226,6 +229,7 @@ export const VideoEpisodeCard = ({
 export const VideoPlayOverlay = ({
   headline,
   body,
+  text,
   accent,
   headingFont,
   bodyFont,
@@ -275,7 +279,7 @@ export const VideoPlayOverlay = ({
             style={{
               fontFamily: formatting.headline?.fontFamily || headingFont,
               fontSize: `${(formatting.headline?.fontSize || 1) * (fontSizes?.headline || 16)}px`,
-              color: formatting.headline?.color || '#ffffff',
+              color: formatting.headline?.color || text || '#ffffff',
               fontWeight: 700,
               lineHeight: 1.2,
               textShadow: '1px 1px 3px rgba(0,0,0,0.7)',

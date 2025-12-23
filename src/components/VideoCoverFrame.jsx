@@ -36,6 +36,7 @@ const VideoCoverFrame = ({
     const props = {
       headline: content.headline,
       body: content.body,
+      text: style.text,
       accent: style.accent,
       headingFont: designSystem.fontHeadline || designSystem.headingFont,
       bodyFont: designSystem.fontBody || designSystem.bodyFont,

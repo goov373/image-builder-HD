@@ -7,6 +7,7 @@ import EditableTextField from '../EditableTextField';
 export const EblastHeroOverlay = ({
   headline,
   body,
+  text,
   accent,
   headingFont,
   bodyFont,
@@ -40,7 +41,7 @@ export const EblastHeroOverlay = ({
           style={{
             fontFamily: formatting.headline?.fontFamily || headingFont,
             fontSize: `${(formatting.headline?.fontSize || 1) * (fontSizes?.headline || 18)}px`,
-            color: formatting.headline?.color || accent,
+            color: formatting.headline?.color || text || '#ffffff',
             fontWeight: formatting.headline?.bold !== false ? 'bold' : 'normal',
             fontStyle: formatting.headline?.italic ? 'italic' : 'normal',
             lineHeight: formatting.headline?.lineHeight || 1.2,
@@ -57,14 +58,14 @@ export const EblastHeroOverlay = ({
           style={{
             fontFamily: formatting.body?.fontFamily || bodyFont,
             fontSize: `${(formatting.body?.fontSize || 1) * (fontSizes?.body || 12)}px`,
-            color: formatting.body?.color || '#e5e7eb',
+            color: formatting.body?.color || 'rgba(255,255,255,0.85)',
             lineHeight: formatting.body?.lineHeight || 1.4,
           }}
         />
         {ctaText && (
           <div 
             className="inline-block px-4 py-2 rounded-lg text-sm font-semibold"
-            style={{ backgroundColor: accent, color: '#ffffff' }}
+            style={{ backgroundColor: accent, color: text === '#18191A' ? '#ffffff' : '#18191A' }}
           >
             {ctaText}
           </div>
@@ -81,6 +82,7 @@ export const EblastHeroOverlay = ({
 export const EblastSplit5050 = ({
   headline,
   body,
+  text,
   accent,
   headingFont,
   bodyFont,
@@ -121,7 +123,7 @@ export const EblastSplit5050 = ({
           style={{
             fontFamily: formatting.headline?.fontFamily || headingFont,
             fontSize: `${(formatting.headline?.fontSize || 1) * (fontSizes?.headline || 14)}px`,
-            color: formatting.headline?.color || accent,
+            color: formatting.headline?.color || text || '#ffffff',
             fontWeight: formatting.headline?.bold !== false ? 'bold' : 'normal',
             lineHeight: 1.2,
           }}
@@ -137,14 +139,14 @@ export const EblastSplit5050 = ({
           style={{
             fontFamily: formatting.body?.fontFamily || bodyFont,
             fontSize: `${(formatting.body?.fontSize || 1) * (fontSizes?.body || 10)}px`,
-            color: formatting.body?.color || '#e5e7eb',
+            color: formatting.body?.color || 'rgba(255,255,255,0.85)',
             lineHeight: 1.4,
           }}
         />
         {ctaText && (
           <div 
             className="inline-block self-start px-3 py-1.5 rounded text-xs font-semibold"
-            style={{ backgroundColor: accent, color: '#ffffff' }}
+            style={{ backgroundColor: accent, color: text === '#18191A' ? '#ffffff' : '#18191A' }}
           >
             {ctaText}
           </div>
@@ -161,6 +163,7 @@ export const EblastSplit5050 = ({
 export const EblastCTABanner = ({
   headline,
   body,
+  text,
   accent,
   headingFont,
   bodyFont,
@@ -189,7 +192,7 @@ export const EblastCTABanner = ({
         style={{
           fontFamily: formatting.headline?.fontFamily || headingFont,
           fontSize: `${(formatting.headline?.fontSize || 1) * (fontSizes?.headline || 14)}px`,
-          color: formatting.headline?.color || '#ffffff',
+          color: formatting.headline?.color || text || '#ffffff',
           fontWeight: 'bold',
           lineHeight: 1.2,
         }}
@@ -216,7 +219,7 @@ export const EblastCTABanner = ({
           className={`inline-block px-4 py-2 rounded-lg font-semibold ${variant === 2 ? 'text-base mt-2' : 'text-sm'}`}
           style={{ 
             backgroundColor: '#ffffff', 
-            color: accent,
+            color: '#18191A',
           }}
         >
           {ctaText}
@@ -233,6 +236,7 @@ export const EblastCTABanner = ({
 export const EblastTextBlock = ({
   headline,
   body,
+  text,
   accent,
   headingFont,
   bodyFont,
@@ -260,7 +264,7 @@ export const EblastTextBlock = ({
         style={{
           fontFamily: formatting.headline?.fontFamily || headingFont,
           fontSize: `${(formatting.headline?.fontSize || 1) * (fontSizes?.headline || 16)}px`,
-          color: formatting.headline?.color || accent,
+          color: formatting.headline?.color || text || '#ffffff',
           fontWeight: 'bold',
           lineHeight: 1.2,
         }}
@@ -275,7 +279,7 @@ export const EblastTextBlock = ({
         style={{
           fontFamily: formatting.body?.fontFamily || bodyFont,
           fontSize: `${(formatting.body?.fontSize || 1) * (fontSizes?.body || 12)}px`,
-          color: formatting.body?.color || '#374151',
+          color: formatting.body?.color || (text === '#18191A' ? '#6B7280' : 'rgba(255,255,255,0.85)'),
           lineHeight: 1.5,
         }}
       />

@@ -63,6 +63,7 @@ const ContentFrame = ({
       <LayoutComponent
         headline={content.headline}
         body={content.body}
+        text={style.text}
         accent={style.accent}
         isLandscape={isLandscape}
         headingFont={designSystem.fontHeadline || designSystem.headingFont}
@@ -98,6 +99,7 @@ const ContentFrame = ({
         {renderLayout ? renderLayout({
           headline: content.headline,
           body: content.body,
+          text: style.text,
           accent: style.accent,
           isLandscape,
           headingFont: designSystem.fontHeadline || designSystem.headingFont,

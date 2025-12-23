@@ -71,6 +71,7 @@ export const CarouselFrame = ({
     const props = { 
       headline: content.headline, 
       body: content.body, 
+      text: style.text,
       accent: style.accent, 
       isLandscape,
       headingFont: designSystem.fontHeadline || designSystem.headingFont, 

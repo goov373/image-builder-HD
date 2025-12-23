@@ -209,34 +209,40 @@ export const initialCarousels: Carousel[] = [
 ];
 
 // Frame background styles - HelloData brand-aligned
-type FrameStyleResult = { background: string; accent: string };
+// text: Main headline color (always readable)
+// accent: Decorative elements like bars, dividers (brand colors)
+type FrameStyleResult = { background: string; text: string; accent: string };
 
 export const getFrameStyle = (carouselId: number, frameStyle: string, ds: DesignSystem): FrameStyleResult => {
+  // Readable text colors
+  const textWhite = '#ffffff';
+  const textLight = '#f1f5f9';
+  
   const styles: Record<string, FrameStyleResult> = {
     // Opening/Hook frames - Shadow to Purple hint
-    "dark-single-pin": { background: `linear-gradient(135deg, ${ds.neutral1} 0%, #2d2e30 100%)`, accent: ds.primary },
+    "dark-single-pin": { background: `linear-gradient(135deg, ${ds.neutral1} 0%, #2d2e30 100%)`, text: textWhite, accent: ds.primary },
     
-    // Problem/Pain frames - Darker tones, warning accents
-    "dark-chaos": { background: `linear-gradient(135deg, #2d2e30 0%, ${ds.neutral1} 100%)`, accent: '#ef4444' },
-    "dark-competition": { background: `linear-gradient(135deg, ${ds.neutral1} 0%, #3d3e42 100%)`, accent: ds.secondary },
-    "static-gray": { background: `linear-gradient(135deg, ${ds.neutral2} 0%, ${ds.neutral1} 100%)`, accent: '#9ca3af' },
-    "cracking": { background: `linear-gradient(135deg, #2d2e30 0%, ${ds.neutral1} 100%)`, accent: ds.secondary },
+    // Problem/Pain frames - Darker tones
+    "dark-chaos": { background: `linear-gradient(135deg, #2d2e30 0%, ${ds.neutral1} 100%)`, text: textWhite, accent: '#ef4444' },
+    "dark-competition": { background: `linear-gradient(135deg, ${ds.neutral1} 0%, #3d3e42 100%)`, text: textWhite, accent: ds.secondary },
+    "static-gray": { background: `linear-gradient(135deg, ${ds.neutral2} 0%, ${ds.neutral1} 100%)`, text: textLight, accent: ds.primary },
+    "cracking": { background: `linear-gradient(135deg, #2d2e30 0%, ${ds.neutral1} 100%)`, text: textWhite, accent: ds.secondary },
     
     // Story/Journey frames - Sequential progression through brand
-    "monday": { background: `linear-gradient(135deg, ${ds.neutral1} 0%, #2d2e30 100%)`, accent: ds.primary },
-    "tuesday": { background: `linear-gradient(135deg, ${ds.neutral1} 0%, ${ds.neutral2} 100%)`, accent: ds.accent },
-    "wednesday": { background: `linear-gradient(135deg, ${ds.neutral2} 0%, ${ds.neutral1} 100%)`, accent: ds.primary },
-    "thursday-friday": { background: `linear-gradient(135deg, #2d2e30 0%, ${ds.neutral1} 100%)`, accent: '#f87171' },
+    "monday": { background: `linear-gradient(135deg, ${ds.neutral1} 0%, #2d2e30 100%)`, text: textWhite, accent: ds.primary },
+    "tuesday": { background: `linear-gradient(135deg, ${ds.neutral1} 0%, ${ds.neutral2} 100%)`, text: textWhite, accent: ds.primary },
+    "wednesday": { background: `linear-gradient(135deg, ${ds.neutral2} 0%, ${ds.neutral1} 100%)`, text: textWhite, accent: ds.primary },
+    "thursday-friday": { background: `linear-gradient(135deg, #2d2e30 0%, ${ds.neutral1} 100%)`, text: textWhite, accent: ds.secondary },
     
     // Solution/Product reveal frames - Purple prominence  
-    "reveal-product": { background: `linear-gradient(135deg, ${ds.neutral1} 0%, ${ds.primary} 100%)`, accent: ds.secondary },
-    "product-forecast": { background: `linear-gradient(135deg, #2d2e30 0%, ${ds.primary} 100%)`, accent: ds.secondary },
-    "heatmap-transform": { background: `linear-gradient(135deg, ${ds.primary} 0%, #818cf8 100%)`, accent: ds.secondary },
+    "reveal-product": { background: `linear-gradient(135deg, ${ds.neutral1} 0%, ${ds.primary} 100%)`, text: textWhite, accent: ds.secondary },
+    "product-forecast": { background: `linear-gradient(135deg, #2d2e30 0%, ${ds.primary} 100%)`, text: textWhite, accent: ds.secondary },
+    "heatmap-transform": { background: `linear-gradient(135deg, ${ds.primary} 0%, #818cf8 100%)`, text: textWhite, accent: textWhite },
     
     // CTA frames - High energy, purple/orange combo
-    "cta-win": { background: `linear-gradient(135deg, ${ds.primary} 0%, ${ds.secondary} 100%)`, accent: ds.neutral3 },
-    "cta-forecast": { background: `linear-gradient(135deg, ${ds.secondary} 0%, ${ds.primary} 100%)`, accent: ds.neutral3 },
-    "cta-automated": { background: `linear-gradient(135deg, ${ds.primary} 0%, ${ds.secondary} 100%)`, accent: ds.neutral3 },
+    "cta-win": { background: `linear-gradient(135deg, ${ds.primary} 0%, ${ds.secondary} 100%)`, text: textWhite, accent: textWhite },
+    "cta-forecast": { background: `linear-gradient(135deg, ${ds.secondary} 0%, ${ds.primary} 100%)`, text: textWhite, accent: textWhite },
+    "cta-automated": { background: `linear-gradient(135deg, ${ds.primary} 0%, ${ds.secondary} 100%)`, text: textWhite, accent: textWhite },
   };
   return styles[frameStyle] || styles["dark-single-pin"];
 };

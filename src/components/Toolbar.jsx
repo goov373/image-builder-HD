@@ -178,7 +178,7 @@ export default function Toolbar({ totalOffset, activeTab }) {
                   if (explicitColor) return explicitColor;
                   if (activeTextField === 'headline' && selectedFrame) {
                     const frameStyle = getFrameStyle(selectedCarouselId, selectedFrame.style, designSystem);
-                    return frameStyle.accent;
+                    return frameStyle.text || '#ffffff';
                   }
                   return '#e5e7eb';
                 })() }} />
