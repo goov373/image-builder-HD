@@ -369,15 +369,44 @@ const DesignSystemPanel = ({ designSystem, onUpdate, onClose, isOpen }) => {
           </div>
           
           {/* City Map Patterns */}
-          <p className="text-[9px] text-gray-500 mb-2 uppercase tracking-wide">City Maps</p>
+          <p className="text-[9px] text-gray-500 mb-2 uppercase tracking-wide">Neighborhood</p>
           <div className="grid grid-cols-3 gap-2 mb-4">
             {[
               { name: 'Grid City', file: 'city-blocks-1.svg', desc: 'Standard grid layout' },
               { name: 'Diagonal Ave', file: 'city-blocks-2.svg', desc: 'With diagonal road' },
               { name: 'Dense Urban', file: 'city-blocks-3.svg', desc: 'Tight city blocks' },
-              { name: 'Curved Road', file: 'city-blocks-4.svg', desc: 'Boulevard layout' },
+              { name: 'River City', file: 'city-blocks-4.svg', desc: 'Boulevard layout' },
               { name: 'Highway', file: 'city-blocks-5.svg', desc: 'Diagonal highway' },
               { name: 'Roundabout', file: 'city-blocks-6.svg', desc: 'Circle intersection' },
+            ].map((pattern, i) => (
+              <button
+                key={pattern.file}
+                type="button"
+                className="group relative aspect-square rounded-lg overflow-hidden border border-gray-700 hover:border-purple-500 transition-all"
+                style={{
+                  backgroundImage: `url(/patterns/${pattern.file})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                }}
+                title={pattern.desc}
+              >
+                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                  <span className="text-[10px] text-white font-medium">{pattern.name}</span>
+                </div>
+              </button>
+            ))}
+          </div>
+          
+          {/* Metro/Submarket Patterns */}
+          <p className="text-[9px] text-gray-500 mb-2 uppercase tracking-wide">Metro / Submarket</p>
+          <div className="grid grid-cols-3 gap-2 mb-4">
+            {[
+              { name: 'Beltway', file: 'metro-1.svg', desc: 'Highway loop metro' },
+              { name: 'River Metro', file: 'metro-2.svg', desc: 'River through city' },
+              { name: 'Coastal', file: 'metro-3.svg', desc: 'Coastal metro area' },
+              { name: 'Lakefront', file: 'metro-4.svg', desc: 'Lake city with transit' },
+              { name: 'Airport Hub', file: 'metro-5.svg', desc: 'Metro with airport' },
+              { name: 'Multi-Core', file: 'metro-6.svg', desc: 'Poly-centric metro' },
             ].map((pattern, i) => (
               <button
                 key={pattern.file}

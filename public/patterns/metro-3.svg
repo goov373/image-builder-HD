@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="130" height="130" viewBox="0 0 130 130">
+  <defs>
+    <pattern id="metro3" patternUnits="userSpaceOnUse" width="130" height="130">
+      <!-- Light map background -->
+      <rect width="130" height="130" fill="#f0ece6"/>
+      
+      <!-- Coastline/ocean -->
+      <path d="M130 0 L130 130 L90 130 Q100 100, 95 70 T110 30 L130 0" fill="#a8d4e6" opacity="0.5"/>
+      
+      <!-- Major highways -->
+      <path d="M0 65 L95 65" stroke="#fef3c7" stroke-width="5"/>
+      <path d="M0 65 L95 65" stroke="#fcd34d" stroke-width="1" opacity="0.6"/>
+      <path d="M50 0 L50 130" stroke="#fef3c7" stroke-width="5"/>
+      <path d="M50 0 L50 130" stroke="#fcd34d" stroke-width="1" opacity="0.6"/>
+      
+      <!-- Coastal highway -->
+      <path d="M85 0 Q90 30, 88 65 T82 130" stroke="#fef3c7" stroke-width="4"/>
+      
+      <!-- Arterials -->
+      <rect x="0" y="30" width="85" height="2" fill="#ffffff"/>
+      <rect x="0" y="100" width="85" height="2" fill="#ffffff"/>
+      <rect x="20" y="0" width="2" height="130" fill="#ffffff"/>
+      <rect x="70" y="0" width="2" height="130" fill="#ffffff"/>
+      
+      <!-- Beach/waterfront development -->
+      <rect x="90" y="55" width="6" height="20" rx="1" fill="#dbd5cd" opacity="0.8"/>
+      
+      <!-- Inland districts -->
+      <rect x="8" y="10" width="10" height="12" rx="1" fill="#d8d2ca" opacity="0.7"/>
+      <rect x="28" y="8" width="14" height="10" rx="1" fill="#d2cbc2" opacity="0.7"/>
+      <rect x="58" y="10" width="8" height="12" rx="1" fill="#d8d2ca" opacity="0.7"/>
+      
+      <rect x="10" y="38" width="8" height="10" rx="1" fill="#d2cbc2" opacity="0.7"/>
+      <rect x="26" y="40" width="12" height="8" rx="1" fill="#ded8d0" opacity="0.7"/>
+      <rect x="56" y="38" width="10" height="10" rx="1" fill="#d8d2ca" opacity="0.7"/>
+      <rect x="75" y="40" width="8" height="8" rx="1" fill="#d2cbc2" opacity="0.7"/>
+      
+      <!-- Downtown core -->
+      <rect x="38" y="52" width="24" height="26" rx="2" fill="#c5c0b8" opacity="0.85"/>
+      
+      <!-- Southern districts -->
+      <rect x="8" y="75" width="10" height="10" rx="1" fill="#d8d2ca" opacity="0.7"/>
+      <rect x="26" y="78" width="8" height="8" rx="1" fill="#d2cbc2" opacity="0.7"/>
+      <rect x="75" y="75" width="8" height="10" rx="1" fill="#ded8d0" opacity="0.7"/>
+      
+      <rect x="10" y="108" width="8" height="12" rx="1" fill="#d2cbc2" opacity="0.7"/>
+      <rect x="28" y="106" width="12" height="14" rx="1" fill="#d8d2ca" opacity="0.7"/>
+      <rect x="58" y="108" width="10" height="12" rx="1" fill="#ded8d0" opacity="0.7"/>
+      <rect x="76" y="106" width="8" height="14" rx="1" fill="#d2cbc2" opacity="0.7"/>
+      
+      <!-- Large parks -->
+      <ellipse cx="15" cy="65" rx="6" ry="8" fill="#c5dab5" opacity="0.6"/>
+      <rect x="68" y="85" width="14" height="10" rx="2" fill="#c5dab5" opacity="0.6"/>
+      
+      <!-- Marina -->
+      <rect x="92" y="78" width="8" height="3" fill="#7fb3cc" opacity="0.7"/>
+      <rect x="93" y="82" width="6" height="2" fill="#7fb3cc" opacity="0.7"/>
+      
+      <!-- Location markers -->
+      <circle cx="50" cy="65" r="4" fill="#ea4335"/>
+      <circle cx="90" cy="62" r="3" fill="#4285f4"/>
+    </pattern>
+  </defs>
+  <rect width="130" height="130" fill="url(#metro3)"/>
+</svg>
+

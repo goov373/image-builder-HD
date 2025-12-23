@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="130" height="130" viewBox="0 0 130 130">
+  <defs>
+    <pattern id="metro6" patternUnits="userSpaceOnUse" width="130" height="130">
+      <!-- Light map background -->
+      <rect width="130" height="130" fill="#edeae4"/>
+      
+      <!-- Multiple water bodies (lakes/ponds) -->
+      <ellipse cx="25" cy="30" rx="15" ry="12" fill="#a8d4e6" opacity="0.5"/>
+      <ellipse cx="100" cy="95" rx="18" ry="14" fill="#a8d4e6" opacity="0.5"/>
+      <ellipse cx="110" cy="35" rx="12" ry="10" fill="#a8d4e6" opacity="0.5"/>
+      
+      <!-- Major highways - grid -->
+      <path d="M0 65 L130 65" stroke="#fef3c7" stroke-width="5"/>
+      <path d="M0 65 L130 65" stroke="#fcd34d" stroke-width="1" opacity="0.6"/>
+      <path d="M65 0 L65 130" stroke="#fef3c7" stroke-width="5"/>
+      <path d="M65 0 L65 130" stroke="#fcd34d" stroke-width="1" opacity="0.6"/>
+      
+      <!-- Diagonal connector -->
+      <path d="M0 0 L50 50" stroke="#fef3c7" stroke-width="4"/>
+      <path d="M130 130 L80 80" stroke="#fef3c7" stroke-width="4"/>
+      
+      <!-- Arterials -->
+      <rect x="0" y="32" width="130" height="2" fill="#ffffff"/>
+      <rect x="0" y="98" width="130" height="2" fill="#ffffff"/>
+      <rect x="32" y="0" width="2" height="130" fill="#ffffff"/>
+      <rect x="98" y="0" width="2" height="130" fill="#ffffff"/>
+      
+      <!-- Multiple downtown cores (poly-centric) -->
+      <rect x="55" y="55" width="20" height="20" rx="2" fill="#c2bdb5" opacity="0.9"/>
+      <rect x="15" y="72" width="14" height="16" rx="2" fill="#cac5bd" opacity="0.8"/>
+      <rect x="90" y="45" width="12" height="14" rx="2" fill="#cac5bd" opacity="0.8"/>
+      
+      <!-- Suburban clusters -->
+      <rect x="45" y="10" width="12" height="10" rx="1" fill="#d8d2ca" opacity="0.7"/>
+      <rect x="75" y="12" width="10" height="8" rx="1" fill="#d2cbc2" opacity="0.7"/>
+      
+      <rect x="8" y="48" width="10" height="10" rx="1" fill="#ded8d0" opacity="0.7"/>
+      <rect x="40" y="42" width="8" height="8" rx="1" fill="#d8d2ca" opacity="0.7"/>
+      
+      <rect x="75" y="75" width="8" height="10" rx="1" fill="#d2cbc2" opacity="0.7"/>
+      
+      <rect x="42" y="78" width="10" height="8" rx="1" fill="#d8d2ca" opacity="0.7"/>
+      <rect x="45" y="105" width="12" height="12" rx="1" fill="#ded8d0" opacity="0.7"/>
+      <rect x="8" y="105" width="10" height="10" rx="1" fill="#d2cbc2" opacity="0.7"/>
+      
+      <!-- Large regional parks -->
+      <rect x="75" y="10" width="16" height="14" rx="2" fill="#c5dab5" opacity="0.6"/>
+      <ellipse cx="55" cy="100" rx="10" ry="8" fill="#c5dab5" opacity="0.6"/>
+      
+      <!-- Golf course -->
+      <ellipse cx="115" cy="70" rx="8" ry="6" fill="#b8d4a8" opacity="0.5"/>
+      
+      <!-- Location markers - multiple submarkets -->
+      <circle cx="65" cy="65" r="4" fill="#ea4335"/>
+      <circle cx="22" cy="80" r="3" fill="#ea4335" opacity="0.8"/>
+      <circle cx="96" cy="52" r="3" fill="#ea4335" opacity="0.8"/>
+      <circle cx="25" cy="30" r="2.5" fill="#4285f4"/>
+      <circle cx="100" cy="95" r="2.5" fill="#34a853"/>
+    </pattern>
+  </defs>
+  <rect width="130" height="130" fill="url(#metro6)"/>
+</svg>
+
