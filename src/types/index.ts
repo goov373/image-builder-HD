@@ -1,5 +1,5 @@
 // ===== Project Types =====
-export type ProjectType = 'carousel' | 'eblast' | 'videoCover';
+export type ProjectType = 'carousel' | 'eblast' | 'videoCover' | 'singleImage';
 
 // ===== Design System Types =====
 export interface DesignSystem {

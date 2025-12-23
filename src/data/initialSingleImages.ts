@@ -1,4 +1,4 @@
-import type { SingleImage, MockupTemplate, DEFAULT_MOCKUP_STYLE } from '../types/singleImage';
+import type { SingleImage, MockupTemplate } from '../types/singleImage';
 
 /**
  * Mockup Template Definitions
