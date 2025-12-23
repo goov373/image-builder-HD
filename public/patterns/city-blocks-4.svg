@@ -1,67 +1,60 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 60 60">
+<svg xmlns="http://www.w3.org/2000/svg" width="90" height="90" viewBox="0 0 90 90">
   <defs>
-    <pattern id="cityBlocks4" patternUnits="userSpaceOnUse" width="60" height="60">
-      <rect width="60" height="60" fill="#18191A"/>
+    <pattern id="cityBlocks4" patternUnits="userSpaceOnUse" width="90" height="90">
+      <!-- Light map background -->
+      <rect width="90" height="90" fill="#ece8e2"/>
       
-      <!-- Curved main road -->
-      <path d="M0 30 Q15 25, 30 30 T60 30" fill="none" stroke="#2d2e30" stroke-width="3"/>
+      <!-- River/water -->
+      <path d="M0 70 Q20 65, 45 72 T90 68" fill="none" stroke="#a8d4e6" stroke-width="8" opacity="0.7"/>
       
-      <!-- Straight cross streets -->
-      <rect x="14" y="0" width="2" height="60" fill="#2d2e30"/>
-      <rect x="44" y="0" width="2" height="60" fill="#2d2e30"/>
+      <!-- Main arterial roads -->
+      <rect x="0" y="30" width="90" height="5" fill="#ffffff"/>
+      <rect x="30" y="0" width="5" height="90" fill="#ffffff"/>
+      <rect x="60" y="0" width="5" height="90" fill="#ffffff"/>
       
-      <!-- Buildings - top section -->
-      <rect x="3" y="4" width="4" height="6" rx="0.5" fill="none" stroke="#6466e9" stroke-width="0.5" opacity="0.5"/>
-      <rect x="8" y="5" width="3" height="5" rx="0.5" fill="none" stroke="#6466e9" stroke-width="0.5" opacity="0.45"/>
-      <rect x="3" y="12" width="5" height="4" rx="0.5" fill="none" stroke="#6466e9" stroke-width="0.5" opacity="0.45"/>
-      <rect x="9" y="13" width="3" height="3" rx="0.5" fill="none" stroke="#6466e9" stroke-width="0.5" opacity="0.4"/>
+      <!-- Curved boulevard -->
+      <path d="M0 55 Q25 50, 45 55 T90 50" fill="none" stroke="#ffffff" stroke-width="4"/>
       
-      <rect x="19" y="4" width="5" height="5" rx="0.5" fill="none" stroke="#6466e9" stroke-width="0.5" opacity="0.5"/>
-      <rect x="25" y="3" width="4" height="6" rx="0.5" fill="none" stroke="#6466e9" stroke-width="0.5" opacity="0.45"/>
-      <rect x="30" y="5" width="5" height="4" rx="0.5" fill="none" stroke="#6466e9" stroke-width="0.5" opacity="0.5"/>
-      <rect x="36" y="4" width="4" height="5" rx="0.5" fill="none" stroke="#6466e9" stroke-width="0.5" opacity="0.45"/>
-      <rect x="18" y="12" width="4" height="4" rx="0.5" fill="none" stroke="#6466e9" stroke-width="0.5" opacity="0.45"/>
-      <rect x="23" y="11" width="5" height="5" rx="0.5" fill="#6466e9" fill-opacity="0.2" stroke="#6466e9" stroke-width="0.5" opacity="0.55"/>
-      <rect x="29" y="13" width="4" height="3" rx="0.5" fill="none" stroke="#6466e9" stroke-width="0.5" opacity="0.4"/>
-      <rect x="34" y="12" width="5" height="4" rx="0.5" fill="none" stroke="#6466e9" stroke-width="0.5" opacity="0.5"/>
+      <!-- Side streets -->
+      <rect x="0" y="15" width="90" height="2" fill="#f5f2ef"/>
+      <rect x="0" y="45" width="90" height="2" fill="#f5f2ef"/>
+      <rect x="15" y="0" width="2" height="65" fill="#f5f2ef"/>
+      <rect x="45" y="0" width="2" height="65" fill="#f5f2ef"/>
+      <rect x="75" y="0" width="2" height="65" fill="#f5f2ef"/>
       
-      <rect x="49" y="4" width="4" height="5" rx="0.5" fill="none" stroke="#6466e9" stroke-width="0.5" opacity="0.5"/>
-      <rect x="54" y="5" width="3" height="4" rx="0.5" fill="none" stroke="#6466e9" stroke-width="0.5" opacity="0.45"/>
-      <rect x="48" y="11" width="5" height="4" rx="0.5" fill="none" stroke="#6466e9" stroke-width="0.5" opacity="0.45"/>
-      <rect x="54" y="12" width="4" height="5" rx="0.5" fill="none" stroke="#6466e9" stroke-width="0.5" opacity="0.4"/>
+      <!-- Buildings - northern blocks -->
+      <rect x="4" y="4" width="8" height="7" fill="#d5cfc7"/>
+      <rect x="20" y="5" width="7" height="8" fill="#cfc8bf"/>
+      <rect x="5" y="19" width="7" height="7" fill="#dbd5cd"/>
+      <rect x="19" y="20" width="8" height="6" fill="#d5cfc7"/>
       
-      <!-- Buildings - bottom section -->
-      <rect x="3" y="38" width="5" height="4" rx="0.5" fill="none" stroke="#6466e9" stroke-width="0.5" opacity="0.5"/>
-      <rect x="9" y="37" width="3" height="5" rx="0.5" fill="none" stroke="#6466e9" stroke-width="0.5" opacity="0.45"/>
-      <rect x="4" y="44" width="4" height="5" rx="0.5" fill="none" stroke="#6466e9" stroke-width="0.5" opacity="0.45"/>
-      <rect x="9" y="45" width="3" height="4" rx="0.5" fill="none" stroke="#6466e9" stroke-width="0.5" opacity="0.4"/>
-      <rect x="3" y="52" width="5" height="4" rx="0.5" fill="none" stroke="#6466e9" stroke-width="0.5" opacity="0.5"/>
-      <rect x="9" y="53" width="3" height="3" rx="0.5" fill="none" stroke="#6466e9" stroke-width="0.5" opacity="0.4"/>
+      <rect x="38" y="5" width="6" height="7" fill="#cfc8bf"/>
+      <rect x="50" y="4" width="7" height="8" fill="#d5cfc7"/>
+      <rect x="37" y="19" width="8" height="7" fill="#dbd5cd"/>
+      <rect x="51" y="18" width="6" height="8" fill="#cfc8bf"/>
       
-      <rect x="18" y="38" width="4" height="5" rx="0.5" fill="none" stroke="#6466e9" stroke-width="0.5" opacity="0.5"/>
-      <rect x="23" y="37" width="5" height="4" rx="0.5" fill="none" stroke="#6466e9" stroke-width="0.5" opacity="0.45"/>
-      <rect x="29" y="38" width="4" height="5" rx="0.5" fill="none" stroke="#6466e9" stroke-width="0.5" opacity="0.45"/>
-      <rect x="34" y="37" width="5" height="4" rx="0.5" fill="none" stroke="#6466e9" stroke-width="0.5" opacity="0.5"/>
-      <rect x="19" y="45" width="5" height="4" rx="0.5" fill="none" stroke="#6466e9" stroke-width="0.5" opacity="0.45"/>
-      <rect x="25" y="44" width="4" height="5" rx="0.5" fill="#6466e9" fill-opacity="0.2" stroke="#6466e9" stroke-width="0.5" opacity="0.55"/>
-      <rect x="30" y="46" width="5" height="3" rx="0.5" fill="none" stroke="#6466e9" stroke-width="0.5" opacity="0.4"/>
-      <rect x="36" y="44" width="4" height="5" rx="0.5" fill="none" stroke="#6466e9" stroke-width="0.5" opacity="0.5"/>
-      <rect x="18" y="52" width="4" height="4" rx="0.5" fill="none" stroke="#6466e9" stroke-width="0.5" opacity="0.5"/>
-      <rect x="23" y="53" width="5" height="3" rx="0.5" fill="none" stroke="#6466e9" stroke-width="0.5" opacity="0.45"/>
-      <rect x="29" y="52" width="4" height="4" rx="0.5" fill="none" stroke="#6466e9" stroke-width="0.5" opacity="0.45"/>
-      <rect x="34" y="53" width="5" height="3" rx="0.5" fill="none" stroke="#6466e9" stroke-width="0.5" opacity="0.4"/>
+      <rect x="68" y="4" width="7" height="7" fill="#d5cfc7"/>
+      <rect x="80" y="5" width="6" height="6" fill="#cfc8bf"/>
+      <rect x="69" y="18" width="6" height="8" fill="#dbd5cd"/>
+      <rect x="79" y="19" width="7" height="7" fill="#d5cfc7"/>
       
-      <rect x="48" y="38" width="5" height="4" rx="0.5" fill="none" stroke="#6466e9" stroke-width="0.5" opacity="0.5"/>
-      <rect x="54" y="37" width="4" height="5" rx="0.5" fill="none" stroke="#6466e9" stroke-width="0.5" opacity="0.45"/>
-      <rect x="49" y="44" width="4" height="5" rx="0.5" fill="none" stroke="#6466e9" stroke-width="0.5" opacity="0.45"/>
-      <rect x="54" y="45" width="3" height="4" rx="0.5" fill="none" stroke="#6466e9" stroke-width="0.5" opacity="0.4"/>
-      <rect x="48" y="52" width="5" height="4" rx="0.5" fill="none" stroke="#6466e9" stroke-width="0.5" opacity="0.5"/>
-      <rect x="54" y="53" width="4" height="3" rx="0.5" fill="none" stroke="#6466e9" stroke-width="0.5" opacity="0.4"/>
+      <!-- Buildings - middle blocks -->
+      <rect x="4" y="38" width="7" height="6" fill="#cfc8bf"/>
+      <rect x="19" y="37" width="8" height="7" fill="#d5cfc7"/>
+      <rect x="38" y="38" width="6" height="6" fill="#dbd5cd"/>
+      <rect x="50" y="37" width="7" height="7" fill="#cfc8bf"/>
+      <rect x="68" y="37" width="8" height="6" fill="#d5cfc7"/>
+      <rect x="80" y="38" width="6" height="7" fill="#cfc8bf"/>
       
-      <!-- Location marker -->
-      <circle cx="26" cy="14" r="1.2" fill="#F97316" opacity="0.8"/>
+      <!-- Buildings - south of river (fewer) -->
+      <rect x="5" y="82" width="7" height="5" fill="#d5cfc7"/>
+      <rect x="38" y="81" width="8" height="6" fill="#cfc8bf"/>
+      <rect x="68" y="82" width="7" height="5" fill="#dbd5cd"/>
+      
+      <!-- Location pins -->
+      <circle cx="25" cy="25" r="3" fill="#ea4335"/>
+      <circle cx="55" cy="42" r="2.5" fill="#34a853"/>
     </pattern>
   </defs>
-  <rect width="60" height="60" fill="url(#cityBlocks4)"/>
+  <rect width="90" height="90" fill="url(#cityBlocks4)"/>
 </svg>
-
