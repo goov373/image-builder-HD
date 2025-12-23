@@ -1,47 +1,61 @@
 import React from 'react';
 import { frameSizes, layoutNames, allFonts, getFrameStyle } from '../data';
+import { 
+  useDesignSystemContext, 
+  useSelectionContext, 
+  useCarouselsContext,
+  useDropdownsContext 
+} from '../context';
 
-export default function Toolbar({
-  totalOffset,
-  activeTab,
-  selectedCarouselId,
-  selectedCarousel,
-  selectedFrame,
-  selectedFrameId,
-  activeTextField,
-  carousels,
-  designSystem,
-  // Dropdown states
-  showFormatPicker, setShowFormatPicker,
-  showLayoutPicker, setShowLayoutPicker,
-  showSnippetsPicker, setShowSnippetsPicker,
-  showFontPicker, setShowFontPicker,
-  showFontSize, setShowFontSize,
-  showColorPicker, setShowColorPicker,
-  showUnderlinePicker, setShowUnderlinePicker,
-  showTextAlign, setShowTextAlign,
-  showLineSpacing, setShowLineSpacing,
-  showLetterSpacing, setShowLetterSpacing,
-  // Refs
-  formatPickerRef,
-  layoutPickerRef,
-  snippetsPickerRef,
-  fontPickerRef,
-  fontSizeRef,
-  colorPickerRef,
-  underlineRef,
-  textAlignRef,
-  lineSpacingRef,
-  letterSpacingRef,
-  // Handlers
-  closeAllDropdowns,
-  onChangeFrameSize,
-  onSetLayout,
-  onShuffleLayoutVariant,
-  onSetVariant,
-  onUpdateFormatting,
-  onDeselect,
-}) {
+export default function Toolbar({ totalOffset, activeTab }) {
+  // Get state from context
+  const { designSystem } = useDesignSystemContext();
+  const selection = useSelectionContext();
+  const carouselsCtx = useCarouselsContext();
+  const dropdowns = useDropdownsContext();
+
+  const {
+    selectedCarouselId,
+    selectedFrameId,
+    selectedCarousel,
+    selectedFrame,
+    activeTextField,
+    handleDeselect,
+  } = selection;
+
+  const {
+    carousels,
+    handleSetVariant,
+    handleSetLayout,
+    handleShuffleLayoutVariant,
+    handleUpdateFormatting,
+    handleChangeFrameSize,
+  } = carouselsCtx;
+
+  const {
+    showFormatPicker, setShowFormatPicker,
+    showLayoutPicker, setShowLayoutPicker,
+    showSnippetsPicker, setShowSnippetsPicker,
+    showFontPicker, setShowFontPicker,
+    showFontSize, setShowFontSize,
+    showColorPicker, setShowColorPicker,
+    showUnderlinePicker, setShowUnderlinePicker,
+    showTextAlign, setShowTextAlign,
+    showLineSpacing, setShowLineSpacing,
+    showLetterSpacing, setShowLetterSpacing,
+    formatPickerRef,
+    layoutPickerRef,
+    snippetsPickerRef,
+    fontPickerRef,
+    fontSizeRef,
+    colorPickerRef,
+    underlineRef,
+    textAlignRef,
+    lineSpacingRef,
+    letterSpacingRef,
+    closeAllDropdowns,
+  } = dropdowns;
+
   if (!activeTab?.hasContent) return null;
 
   return (
@@ -61,7 +75,7 @@ export default function Toolbar({
               {showFormatPicker && (
                 <div className="absolute top-full left-0 mt-2 p-1.5 bg-gray-800 border border-gray-700 rounded-lg shadow-xl z-[200] min-w-[160px]">
                   {Object.entries(frameSizes).filter(([key]) => key !== 'landscape').map(([key, size]) => (
-                    <button key={key} onClick={() => { onChangeFrameSize(selectedCarouselId, key); setShowFormatPicker(false); }} className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-left text-xs transition-colors ${selectedCarousel?.frameSize === key ? 'bg-orange-500 text-white' : 'text-gray-300 hover:bg-gray-700'}`}>
+                    <button key={key} onClick={() => { handleChangeFrameSize(selectedCarouselId, key); setShowFormatPicker(false); }} className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-left text-xs transition-colors ${selectedCarousel?.frameSize === key ? 'bg-orange-500 text-white' : 'text-gray-300 hover:bg-gray-700'}`}>
                       <span className="font-medium">{size.name}</span>
                       <span className="text-gray-500 ml-auto">{size.ratio}</span>
                     </button>
@@ -82,7 +96,7 @@ export default function Toolbar({
               {showLayoutPicker && (
                 <div className="absolute top-full left-0 mt-2 p-1.5 bg-gray-800 border border-gray-700 rounded-lg shadow-xl z-[200] min-w-[140px]">
                   {layoutNames.map((name, idx) => (
-                    <button key={idx} onClick={() => { onSetLayout(selectedCarouselId, selectedFrameId, idx); setShowLayoutPicker(false); }} className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-left text-xs transition-colors ${(selectedFrame?.currentLayout || 0) === idx ? 'bg-orange-500 text-white' : 'text-gray-300 hover:bg-gray-700'}`}>
+                    <button key={idx} onClick={() => { handleSetLayout(selectedCarouselId, selectedFrameId, idx); setShowLayoutPicker(false); }} className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-left text-xs transition-colors ${(selectedFrame?.currentLayout || 0) === idx ? 'bg-orange-500 text-white' : 'text-gray-300 hover:bg-gray-700'}`}>
                       {idx === 0 && <div className="w-4 h-5 bg-gray-600 rounded flex items-end p-0.5"><div className="w-full h-1 rounded-sm bg-orange-400" /></div>}
                       {idx === 1 && <div className="w-4 h-5 bg-gray-600 rounded flex items-center justify-center"><div className="w-2 h-2 rounded-sm bg-orange-400" /></div>}
                       {idx === 2 && <div className="w-4 h-5 bg-gray-600 rounded flex flex-col justify-between p-0.5"><div className="w-2 h-1 rounded-sm bg-orange-400" /><div className="w-1.5 h-1 bg-gray-500 rounded-sm self-end" /></div>}
@@ -92,7 +106,7 @@ export default function Toolbar({
                 </div>
               )}
             </div>
-            <button onClick={() => { closeAllDropdowns(); selectedFrame && onShuffleLayoutVariant(selectedCarouselId, selectedFrameId); }} className="p-2 rounded-lg hover:bg-gray-700 text-gray-400 hover:text-gray-200 transition-all" title="Shuffle variant">
+            <button onClick={() => { closeAllDropdowns(); selectedFrame && handleShuffleLayoutVariant(selectedCarouselId, selectedFrameId); }} className="p-2 rounded-lg hover:bg-gray-700 text-gray-400 hover:text-gray-200 transition-all" title="Shuffle variant">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" /></svg>
             </button>
           </div>
@@ -108,7 +122,7 @@ export default function Toolbar({
               {showSnippetsPicker && (
                 <div className="absolute top-full left-0 mt-2 p-1.5 bg-gray-800 border border-gray-700 rounded-lg shadow-xl z-[200] min-w-[90px]">
                   {[0, 1, 2].map((idx) => (
-                    <button key={idx} onClick={() => { onSetVariant(selectedCarouselId, selectedFrameId, idx); setShowSnippetsPicker(false); }} className={`w-full flex items-center justify-center gap-1 px-3 py-2 rounded-lg text-xs font-medium transition-colors ${selectedFrame?.currentVariant === idx ? 'bg-orange-500 text-white' : 'text-gray-300 hover:bg-gray-700'}`}>
+                    <button key={idx} onClick={() => { handleSetVariant(selectedCarouselId, selectedFrameId, idx); setShowSnippetsPicker(false); }} className={`w-full flex items-center justify-center gap-1 px-3 py-2 rounded-lg text-xs font-medium transition-colors ${selectedFrame?.currentVariant === idx ? 'bg-orange-500 text-white' : 'text-gray-300 hover:bg-gray-700'}`}>
                       <span className={selectedFrame?.currentVariant === idx ? 'text-white' : 'text-orange-400'}>S{idx + 1}</span>
                     </button>
                   ))}
@@ -131,7 +145,7 @@ export default function Toolbar({
               {showFontPicker && activeTextField && (
                 <div className="absolute top-full left-0 mt-2 p-1.5 bg-gray-800 border border-gray-700 rounded-lg shadow-xl z-[200] max-h-56 overflow-y-auto min-w-[160px]" onClick={(e) => e.stopPropagation()}>
                   {allFonts.map(font => (
-                    <button type="button" key={font.value} onClick={(e) => { e.stopPropagation(); onUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'fontFamily', font.value); setShowFontPicker(false); }} className={`w-full px-3 py-2 rounded-lg text-xs text-left transition-colors ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.fontFamily === font.value ? 'bg-orange-500 text-white' : 'text-gray-300 hover:bg-gray-700'}`} style={{ fontFamily: font.value }}>
+                    <button type="button" key={font.value} onClick={(e) => { e.stopPropagation(); handleUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'fontFamily', font.value); setShowFontPicker(false); }} className={`w-full px-3 py-2 rounded-lg text-xs text-left transition-colors ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.fontFamily === font.value ? 'bg-orange-500 text-white' : 'text-gray-300 hover:bg-gray-700'}`} style={{ fontFamily: font.value }}>
                       {font.name}
                     </button>
                   ))}
@@ -149,7 +163,7 @@ export default function Toolbar({
                 <div className="absolute top-full left-0 mt-2 p-1.5 bg-gray-800 border border-gray-700 rounded-lg shadow-xl z-[200]" onClick={(e) => e.stopPropagation()}>
                   <div className="flex gap-1">
                     {[{ name: 'S', value: 0.85 }, { name: 'M', value: 1 }, { name: 'L', value: 1.2 }].map(s => (
-                      <button type="button" key={s.name} onClick={(e) => { e.stopPropagation(); onUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'fontSize', s.value); setShowFontSize(false); }} className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.fontSize === s.value ? 'bg-orange-500 text-white' : 'text-gray-300 hover:bg-gray-700'}`}>{s.name}</button>
+                      <button type="button" key={s.name} onClick={(e) => { e.stopPropagation(); handleUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'fontSize', s.value); setShowFontSize(false); }} className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.fontSize === s.value ? 'bg-orange-500 text-white' : 'text-gray-300 hover:bg-gray-700'}`}>{s.name}</button>
                     ))}
                   </div>
                 </div>
@@ -162,19 +176,18 @@ export default function Toolbar({
                 <div className="w-5 h-5 rounded border border-gray-500" style={{ backgroundColor: (() => {
                   const explicitColor = selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.color;
                   if (explicitColor) return explicitColor;
-                  // Get frame's style-based accent color for headlines
                   if (activeTextField === 'headline' && selectedFrame) {
                     const frameStyle = getFrameStyle(selectedCarouselId, selectedFrame.style, designSystem);
                     return frameStyle.accent;
                   }
-                  return '#e5e7eb'; // gray-200 for body text
+                  return '#e5e7eb';
                 })() }} />
               </button>
               {showColorPicker && activeTextField && (
                 <div className="absolute top-full left-0 mt-2 p-2 bg-gray-800 border border-gray-700 rounded-lg shadow-xl z-[200]" onClick={(e) => e.stopPropagation()}>
                   <div className="flex gap-1.5">
                     {[{ name: 'Primary', value: designSystem.primary }, { name: 'Secondary', value: designSystem.secondary }, { name: 'Accent', value: designSystem.accent }, { name: 'Light', value: designSystem.neutral3 }, { name: 'White', value: '#ffffff' }].map(c => (
-                      <button type="button" key={c.value} onClick={(e) => { e.stopPropagation(); onUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'color', c.value); setShowColorPicker(false); }} className="w-6 h-6 rounded-lg border border-gray-600 hover:scale-110 transition-transform" style={{ backgroundColor: c.value }} title={c.name} />
+                      <button type="button" key={c.value} onClick={(e) => { e.stopPropagation(); handleUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'color', c.value); setShowColorPicker(false); }} className="w-6 h-6 rounded-lg border border-gray-600 hover:scale-110 transition-transform" style={{ backgroundColor: c.value }} title={c.name} />
                     ))}
                   </div>
                 </div>
@@ -184,14 +197,14 @@ export default function Toolbar({
             
           {/* Style Group */}
           <div className={`flex items-center gap-1 px-2 py-1.5 bg-gray-800/60 rounded-xl transition-opacity ${activeTextField ? 'opacity-100' : 'opacity-40 pointer-events-none'}`}>
-            {/* Bold - headlines are bold by default */}
+            {/* Bold */}
             <button onClick={() => { 
               if (!activeTextField) return; 
               closeAllDropdowns(); 
               const formatting = selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField] || {}; 
               const isDefaultBold = activeTextField === 'headline';
               const currentBold = formatting.bold !== undefined ? formatting.bold : isDefaultBold;
-              onUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'bold', !currentBold); 
+              handleUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'bold', !currentBold); 
             }} className={`w-9 h-9 rounded-lg flex items-center justify-center text-sm font-bold transition-colors ${
               (() => {
                 const formatting = selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField] || {};
@@ -202,7 +215,7 @@ export default function Toolbar({
             }`} title="Bold">B</button>
             
             {/* Italic */}
-            <button onClick={() => { if (!activeTextField) return; closeAllDropdowns(); const formatting = selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField] || {}; onUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'italic', !formatting.italic); }} className={`w-9 h-9 rounded-lg flex items-center justify-center text-sm italic transition-colors ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.italic ? 'bg-orange-500 text-white' : 'text-gray-300 hover:bg-gray-700'}`} title="Italic">I</button>
+            <button onClick={() => { if (!activeTextField) return; closeAllDropdowns(); const formatting = selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField] || {}; handleUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'italic', !formatting.italic); }} className={`w-9 h-9 rounded-lg flex items-center justify-center text-sm italic transition-colors ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.italic ? 'bg-orange-500 text-white' : 'text-gray-300 hover:bg-gray-700'}`} title="Italic">I</button>
             
             {/* Underline */}
             <div ref={underlineRef} className="relative flex">
@@ -215,7 +228,7 @@ export default function Toolbar({
                   <div className="text-[10px] text-gray-500 mb-2 uppercase tracking-wide font-medium">Style</div>
                   <div className="flex gap-1.5 mb-3">
                     {[{ name: 'Solid', value: 'solid' }, { name: 'Dotted', value: 'dotted' }, { name: 'Wavy', value: 'wavy' }, { name: 'Highlight', value: 'highlight' }].map(s => (
-                      <button type="button" key={s.value} onClick={(e) => { e.stopPropagation(); onUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'underlineStyle', s.value); onUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'underline', true); }} className={`px-3 py-1.5 rounded-lg text-xs transition-colors ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.underlineStyle === s.value ? 'bg-orange-500 text-white' : 'text-gray-300 hover:bg-gray-700'}`} title={s.name}>
+                      <button type="button" key={s.value} onClick={(e) => { e.stopPropagation(); handleUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'underlineStyle', s.value); handleUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'underline', true); }} className={`px-3 py-1.5 rounded-lg text-xs transition-colors ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.underlineStyle === s.value ? 'bg-orange-500 text-white' : 'text-gray-300 hover:bg-gray-700'}`} title={s.name}>
                         {s.value === 'solid' && <span style={{ textDecoration: 'underline', textDecorationStyle: 'solid' }}>S</span>}
                         {s.value === 'dotted' && <span style={{ textDecoration: 'underline', textDecorationStyle: 'dotted' }}>D</span>}
                         {s.value === 'wavy' && <span style={{ textDecoration: 'underline', textDecorationStyle: 'wavy' }}>W</span>}
@@ -226,10 +239,10 @@ export default function Toolbar({
                   <div className="text-[10px] text-gray-500 mb-2 uppercase tracking-wide font-medium">Color</div>
                   <div className="flex gap-2">
                     {[{ name: 'Primary', value: designSystem.primary }, { name: 'Secondary', value: designSystem.secondary }, { name: 'Accent', value: designSystem.accent }, { name: 'Light', value: designSystem.neutral3 }, { name: 'White', value: '#ffffff' }].map(c => (
-                      <button type="button" key={c.value} onClick={(e) => { e.stopPropagation(); onUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'underlineColor', c.value); onUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'underline', true); if (!selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.underlineStyle) onUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'underlineStyle', 'solid'); }} className={`w-6 h-6 rounded-lg border-2 hover:scale-110 transition-transform ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.underlineColor === c.value ? 'border-orange-500' : 'border-gray-600'}`} style={{ backgroundColor: c.value }} title={c.name} />
+                      <button type="button" key={c.value} onClick={(e) => { e.stopPropagation(); handleUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'underlineColor', c.value); handleUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'underline', true); if (!selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.underlineStyle) handleUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'underlineStyle', 'solid'); }} className={`w-6 h-6 rounded-lg border-2 hover:scale-110 transition-transform ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.underlineColor === c.value ? 'border-orange-500' : 'border-gray-600'}`} style={{ backgroundColor: c.value }} title={c.name} />
                     ))}
                   </div>
-                  <button type="button" onClick={(e) => { e.stopPropagation(); onUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'underline', false); setShowUnderlinePicker(false); }} className="w-full mt-3 px-3 py-2 rounded-lg text-xs text-gray-400 hover:text-white hover:bg-gray-700 transition-colors border border-gray-700">Remove Underline</button>
+                  <button type="button" onClick={(e) => { e.stopPropagation(); handleUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'underline', false); setShowUnderlinePicker(false); }} className="w-full mt-3 px-3 py-2 rounded-lg text-xs text-gray-400 hover:text-white hover:bg-gray-700 transition-colors border border-gray-700">Remove Underline</button>
                 </div>
               )}
             </div>
@@ -247,7 +260,7 @@ export default function Toolbar({
                 <div className="absolute top-full left-0 mt-2 p-1.5 bg-gray-800 border border-gray-700 rounded-lg shadow-xl z-[200]" onClick={(e) => e.stopPropagation()}>
                   <div className="flex gap-1">
                     {[{ name: 'Left', value: 'left', icon: 'M4 6h16M4 12h10M4 18h16' }, { name: 'Center', value: 'center', icon: 'M4 6h16M7 12h10M4 18h16' }, { name: 'Right', value: 'right', icon: 'M4 6h16M10 12h10M4 18h16' }, { name: 'Justify', value: 'justify', icon: 'M4 6h16M4 12h16M4 18h16' }].map(a => (
-                      <button type="button" key={a.value} onClick={(e) => { e.stopPropagation(); onUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'textAlign', a.value); setShowTextAlign(false); }} className={`p-2 rounded-lg transition-colors ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.textAlign === a.value ? 'bg-orange-500 text-white' : 'text-gray-300 hover:bg-gray-700'}`} title={a.name}>
+                      <button type="button" key={a.value} onClick={(e) => { e.stopPropagation(); handleUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'textAlign', a.value); setShowTextAlign(false); }} className={`p-2 rounded-lg transition-colors ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.textAlign === a.value ? 'bg-orange-500 text-white' : 'text-gray-300 hover:bg-gray-700'}`} title={a.name}>
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={a.icon} /></svg>
                       </button>
                     ))}
@@ -265,7 +278,7 @@ export default function Toolbar({
               {showLineSpacing && activeTextField && (
                 <div className="absolute top-full left-0 mt-2 p-1.5 bg-gray-800 border border-gray-700 rounded-lg shadow-xl z-[200] min-w-[110px]" onClick={(e) => e.stopPropagation()}>
                   {[{ name: 'Tight', value: 1.1 }, { name: 'Normal', value: 1.4 }, { name: 'Relaxed', value: 1.7 }, { name: 'Loose', value: 2 }].map(s => (
-                    <button type="button" key={s.name} onClick={(e) => { e.stopPropagation(); onUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'lineHeight', s.value); setShowLineSpacing(false); }} className={`w-full px-3 py-2 rounded-lg text-xs text-left transition-colors ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.lineHeight === s.value ? 'bg-orange-500 text-white' : 'text-gray-300 hover:bg-gray-700'}`}>{s.name}</button>
+                    <button type="button" key={s.name} onClick={(e) => { e.stopPropagation(); handleUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'lineHeight', s.value); setShowLineSpacing(false); }} className={`w-full px-3 py-2 rounded-lg text-xs text-left transition-colors ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.lineHeight === s.value ? 'bg-orange-500 text-white' : 'text-gray-300 hover:bg-gray-700'}`}>{s.name}</button>
                   ))}
                 </div>
               )}
@@ -280,7 +293,7 @@ export default function Toolbar({
               {showLetterSpacing && activeTextField && (
                 <div className="absolute top-full left-0 mt-2 p-1.5 bg-gray-800 border border-gray-700 rounded-lg shadow-xl z-[200] min-w-[110px]" onClick={(e) => e.stopPropagation()}>
                   {[{ name: 'Tight', value: -0.5 }, { name: 'Normal', value: 0 }, { name: 'Wide', value: 1 }, { name: 'Wider', value: 2 }].map(s => (
-                    <button type="button" key={s.name} onClick={(e) => { e.stopPropagation(); onUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'letterSpacing', s.value); setShowLetterSpacing(false); }} className={`w-full px-3 py-2 rounded-lg text-xs text-left transition-colors ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.letterSpacing === s.value ? 'bg-orange-500 text-white' : 'text-gray-300 hover:bg-gray-700'}`}>{s.name}</button>
+                    <button type="button" key={s.name} onClick={(e) => { e.stopPropagation(); handleUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'letterSpacing', s.value); setShowLetterSpacing(false); }} className={`w-full px-3 py-2 rounded-lg text-xs text-left transition-colors ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.letterSpacing === s.value ? 'bg-orange-500 text-white' : 'text-gray-300 hover:bg-gray-700'}`}>{s.name}</button>
                   ))}
                 </div>
               )}
@@ -292,7 +305,7 @@ export default function Toolbar({
         {/* Right side */}
         <div className="flex items-center gap-4">
           <span className="text-gray-400">Row <span className="text-white font-medium">{selectedCarouselId ? carousels.findIndex(c => c.id === selectedCarouselId) + 1 : '-'}</span> / {carousels.length}</span>
-          <button onClick={() => { closeAllDropdowns(); onDeselect(); }} disabled={!selectedCarouselId && !selectedFrameId} className={`px-4 py-2 text-xs font-medium rounded-lg transition-colors ${selectedCarouselId || selectedFrameId ? 'bg-gray-700 hover:bg-gray-600 text-gray-300' : 'bg-gray-800 text-gray-600 cursor-not-allowed'}`}>Deselect Row</button>
+          <button onClick={() => { closeAllDropdowns(); handleDeselect(); }} disabled={!selectedCarouselId && !selectedFrameId} className={`px-4 py-2 text-xs font-medium rounded-lg transition-colors ${selectedCarouselId || selectedFrameId ? 'bg-gray-700 hover:bg-gray-600 text-gray-300' : 'bg-gray-800 text-gray-600 cursor-not-allowed'}`}>Deselect Row</button>
         </div>
       </div>
     </div>

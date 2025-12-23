@@ -1,64 +1,63 @@
 import React from 'react';
+import { 
+  useDesignSystemContext, 
+  useSelectionContext, 
+  useCarouselsContext,
+  useDropdownsContext 
+} from '../context';
 import Toolbar from './Toolbar';
 import NewProjectView from './NewProjectView';
 import ProjectHeader from './ProjectHeader';
 import CarouselRow from './CarouselRow';
 
 export default function EditorView({
-  // Layout
+  // Layout props (still needed)
   totalOffset,
   zoom,
-  // Tab/Project
+  // Tab/Project props (still needed - not in context)
   activeTab,
   onUpdateProjectName,
   onCreateProject,
-  // Carousels
-  carousels,
-  designSystem,
-  selectedCarouselId,
-  selectedFrameId,
-  selectedCarousel,
-  selectedFrame,
-  activeTextField,
-  onSelectCarousel,
-  onSelectFrame,
-  onAddFrame,
-  onRemoveFrame,
-  onRemoveRow,
-  onReorderFrames,
-  onUpdateText,
-  onActivateTextField,
-  onAddRow,
-  onDeselect,
-  // Toolbar props
-  onChangeFrameSize,
-  onSetLayout,
-  onShuffleLayoutVariant,
-  onSetVariant,
-  onUpdateFormatting,
-  // Dropdown state (passed through to Toolbar)
-  dropdownProps,
 }) {
+  // Get state from context
+  const { designSystem } = useDesignSystemContext();
+  const selection = useSelectionContext();
+  const carouselsCtx = useCarouselsContext();
+  const dropdowns = useDropdownsContext();
+
+  const {
+    selectedCarouselId,
+    selectedFrameId,
+    selectedCarousel,
+    selectedFrame,
+    activeTextField,
+    setActiveTextField,
+    handleSelectCarousel,
+    handleSelectFrame,
+    handleDeselect,
+  } = selection;
+
+  const {
+    carousels,
+    handleSetVariant,
+    handleSetLayout,
+    handleShuffleLayoutVariant,
+    handleUpdateText,
+    handleUpdateFormatting,
+    handleAddFrame,
+    handleRemoveFrame,
+    handleChangeFrameSize,
+    handleReorderFrames,
+    handleAddRow,
+    handleRemoveRow,
+  } = carouselsCtx;
+
   return (
     <>
       {/* Toolbar */}
       <Toolbar
         totalOffset={totalOffset}
         activeTab={activeTab}
-        selectedCarouselId={selectedCarouselId}
-        selectedCarousel={selectedCarousel}
-        selectedFrame={selectedFrame}
-        selectedFrameId={selectedFrameId}
-        activeTextField={activeTextField}
-        carousels={carousels}
-        designSystem={designSystem}
-        onChangeFrameSize={onChangeFrameSize}
-        onSetLayout={onSetLayout}
-        onShuffleLayoutVariant={onShuffleLayoutVariant}
-        onSetVariant={onSetVariant}
-        onUpdateFormatting={onUpdateFormatting}
-        onDeselect={onDeselect}
-        {...dropdownProps}
       />
       
       {/* Main Content - Scrollable Canvas Area */}
@@ -80,7 +79,7 @@ export default function EditorView({
             {/* Canvas workspace */}
             <div 
               className="p-6 pb-96" 
-              onClick={onDeselect}
+              onClick={handleDeselect}
             >
               <div 
                 style={{ 
@@ -104,15 +103,15 @@ export default function EditorView({
                       isSelected={selectedCarouselId === carousel.id}
                       hasAnySelection={selectedCarouselId !== null}
                       selectedFrameId={selectedCarouselId === carousel.id ? selectedFrameId : null}
-                      onSelect={onSelectCarousel}
-                      onSelectFrame={onSelectFrame}
-                      onAddFrame={onAddFrame}
-                      onRemoveFrame={onRemoveFrame}
-                      onRemoveRow={onRemoveRow}
-                      onReorderFrames={onReorderFrames}
-                      onUpdateText={onUpdateText}
+                      onSelect={handleSelectCarousel}
+                      onSelectFrame={handleSelectFrame}
+                      onAddFrame={handleAddFrame}
+                      onRemoveFrame={handleRemoveFrame}
+                      onRemoveRow={handleRemoveRow}
+                      onReorderFrames={handleReorderFrames}
+                      onUpdateText={handleUpdateText}
                       activeTextField={activeTextField}
-                      onActivateTextField={onActivateTextField}
+                      onActivateTextField={setActiveTextField}
                     />
                     {/* Add Row Button - only after last row */}
                     {index === carousels.length - 1 && (
@@ -123,7 +122,7 @@ export default function EditorView({
                       >
                         <button
                           type="button"
-                          onClick={(e) => { e.stopPropagation(); onAddRow(index); }}
+                          onClick={(e) => { e.stopPropagation(); handleAddRow(index); }}
                           className="flex items-center gap-2 px-4 py-1.5 rounded-full border-2 border-dashed border-gray-600 text-gray-500 hover:border-orange-500 hover:text-orange-400 hover:bg-orange-500/10 transition-all duration-200"
                         >
                           <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -143,4 +142,3 @@ export default function EditorView({
     </>
   );
 }
-

@@ -9,6 +9,9 @@ import {
 // Import custom hooks
 import { useDropdowns, useTabs, useCarousels, useDesignSystem } from './hooks';
 
+// Import context providers
+import { AppProvider } from './context';
+
 // Import components
 import { 
   AccountPanel, 
@@ -75,132 +78,111 @@ export default function CarouselDesignTool() {
   const sidebarWidth = 64;
   const totalOffset = sidebarWidth + panelWidth;
 
-  // Prepare dropdown props for EditorView/Toolbar
-  const dropdownProps = {
-    showFormatPicker: dropdowns.showFormatPicker,
-    setShowFormatPicker: dropdowns.setShowFormatPicker,
-    showLayoutPicker: dropdowns.showLayoutPicker,
-    setShowLayoutPicker: dropdowns.setShowLayoutPicker,
-    showSnippetsPicker: dropdowns.showSnippetsPicker,
-    setShowSnippetsPicker: dropdowns.setShowSnippetsPicker,
-    showFontPicker: dropdowns.showFontPicker,
-    setShowFontPicker: dropdowns.setShowFontPicker,
-    showFontSize: dropdowns.showFontSize,
-    setShowFontSize: dropdowns.setShowFontSize,
-    showColorPicker: dropdowns.showColorPicker,
-    setShowColorPicker: dropdowns.setShowColorPicker,
-    showUnderlinePicker: dropdowns.showUnderlinePicker,
-    setShowUnderlinePicker: dropdowns.setShowUnderlinePicker,
-    showTextAlign: dropdowns.showTextAlign,
-    setShowTextAlign: dropdowns.setShowTextAlign,
-    showLineSpacing: dropdowns.showLineSpacing,
-    setShowLineSpacing: dropdowns.setShowLineSpacing,
-    showLetterSpacing: dropdowns.showLetterSpacing,
-    setShowLetterSpacing: dropdowns.setShowLetterSpacing,
-    formatPickerRef: dropdowns.formatPickerRef,
-    layoutPickerRef: dropdowns.layoutPickerRef,
-    snippetsPickerRef: dropdowns.snippetsPickerRef,
-    fontPickerRef: dropdowns.fontPickerRef,
-    fontSizeRef: dropdowns.fontSizeRef,
-    colorPickerRef: dropdowns.colorPickerRef,
-    underlineRef: dropdowns.underlineRef,
-    textAlignRef: dropdowns.textAlignRef,
-    lineSpacingRef: dropdowns.lineSpacingRef,
-    letterSpacingRef: dropdowns.letterSpacingRef,
-    closeAllDropdowns: dropdowns.closeAllDropdowns,
+  // Context values
+  const designSystemContextValue = { designSystem, setDesignSystem };
+  
+  const selectionContextValue = {
+    selectedCarouselId: carousels.selectedCarouselId,
+    selectedFrameId: carousels.selectedFrameId,
+    selectedCarousel: carousels.selectedCarousel,
+    selectedFrame: carousels.selectedFrame,
+    activeTextField: carousels.activeTextField,
+    setActiveTextField: carousels.setActiveTextField,
+    handleSelectFrame,
+    handleSelectCarousel,
+    handleDeselect,
+  };
+
+  const carouselsContextValue = {
+    carousels: carousels.carousels,
+    handleSetVariant: carousels.handleSetVariant,
+    handleSetLayout: carousels.handleSetLayout,
+    handleShuffleLayoutVariant: carousels.handleShuffleLayoutVariant,
+    handleUpdateText: carousels.handleUpdateText,
+    handleUpdateFormatting: carousels.handleUpdateFormatting,
+    handleAddFrame: carousels.handleAddFrame,
+    handleRemoveFrame: carousels.handleRemoveFrame,
+    handleChangeFrameSize: carousels.handleChangeFrameSize,
+    handleReorderFrames: carousels.handleReorderFrames,
+    handleAddRow: carousels.handleAddRow,
+    handleRemoveRow: carousels.handleRemoveRow,
   };
 
   return (
-    <div className="h-screen text-white overflow-hidden" style={{ backgroundColor: '#0d1321' }}>
-      {/* Browser-style Tab Bar */}
-      <TabBar
-        tabs={tabs.tabs}
-        activeTabId={tabs.activeTabId}
-        currentView={tabs.currentView}
-        showNewTabMenu={dropdowns.showNewTabMenu}
-        setShowNewTabMenu={dropdowns.setShowNewTabMenu}
-        newTabMenuRef={dropdowns.newTabMenuRef}
-        closeAllDropdowns={dropdowns.closeAllDropdowns}
-        onGoHome={handleGoHome}
-        onOpenProject={handleOpenProject}
-        onCloseTab={tabs.handleCloseTab}
-        onAddTab={handleAddTab}
-        maxTabs={tabs.maxTabs}
-      />
-      
-      {/* Sidebar */}
-      <Sidebar 
-        activePanel={activePanel} 
-        onPanelChange={setActivePanel} 
-        zoom={zoom} 
-        onZoomChange={setZoom} 
-        isHomePage={tabs.currentView === 'home'}
-        onAccountClick={() => { setActivePanel(null); setIsAccountOpen(!isAccountOpen); }}
-        isAccountOpen={isAccountOpen}
-        onCloseAccount={() => setIsAccountOpen(false)}
-      />
-      
-      {/* Panels */}
-      <DesignSystemPanel 
-        designSystem={designSystem} 
-        onUpdate={setDesignSystem} 
-        onClose={() => setActivePanel(null)} 
-        isOpen={activePanel === 'design'} 
-      />
-      <ExportPanel 
-        onClose={() => setActivePanel(null)} 
-        isOpen={activePanel === 'export'} 
-        carousels={carousels.carousels} 
-      />
-      <AccountPanel 
-        onClose={() => setIsAccountOpen(false)} 
-        isOpen={isAccountOpen && tabs.currentView === 'home'} 
-      />
-
-      {/* Homepage or Editor View */}
-      {tabs.currentView === 'home' ? (
-        <div 
-          className="absolute inset-0 top-[56px]" 
-          style={{ left: totalOffset, transition: 'left 0.3s ease-out' }}
-        >
-          <Homepage 
-            projects={tabs.tabs} 
-            onOpenProject={handleOpenProject}
-            onCreateNew={handleCreateNewFromHome}
-          />
-        </div>
-      ) : (
-        <EditorView
-          totalOffset={totalOffset}
-          zoom={zoom}
-          activeTab={tabs.activeTab}
-          onUpdateProjectName={tabs.handleUpdateProjectName}
-          onCreateProject={tabs.handleCreateProject}
-          carousels={carousels.carousels}
-          designSystem={designSystem}
-          selectedCarouselId={carousels.selectedCarouselId}
-          selectedFrameId={carousels.selectedFrameId}
-          selectedCarousel={carousels.selectedCarousel}
-          selectedFrame={carousels.selectedFrame}
-          activeTextField={carousels.activeTextField}
-          onSelectCarousel={handleSelectCarousel}
-          onSelectFrame={handleSelectFrame}
-          onAddFrame={carousels.handleAddFrame}
-          onRemoveFrame={carousels.handleRemoveFrame}
-          onRemoveRow={carousels.handleRemoveRow}
-          onReorderFrames={carousels.handleReorderFrames}
-          onUpdateText={carousels.handleUpdateText}
-          onActivateTextField={carousels.setActiveTextField}
-          onAddRow={carousels.handleAddRow}
-          onDeselect={handleDeselect}
-          onChangeFrameSize={carousels.handleChangeFrameSize}
-          onSetLayout={carousels.handleSetLayout}
-          onShuffleLayoutVariant={carousels.handleShuffleLayoutVariant}
-          onSetVariant={carousels.handleSetVariant}
-          onUpdateFormatting={carousels.handleUpdateFormatting}
-          dropdownProps={dropdownProps}
+    <AppProvider
+      designSystem={designSystemContextValue}
+      selection={selectionContextValue}
+      carousels={carouselsContextValue}
+      dropdowns={dropdowns}
+    >
+      <div className="h-screen text-white overflow-hidden" style={{ backgroundColor: '#0d1321' }}>
+        {/* Browser-style Tab Bar */}
+        <TabBar
+          tabs={tabs.tabs}
+          activeTabId={tabs.activeTabId}
+          currentView={tabs.currentView}
+          showNewTabMenu={dropdowns.showNewTabMenu}
+          setShowNewTabMenu={dropdowns.setShowNewTabMenu}
+          newTabMenuRef={dropdowns.newTabMenuRef}
+          closeAllDropdowns={dropdowns.closeAllDropdowns}
+          onGoHome={handleGoHome}
+          onOpenProject={handleOpenProject}
+          onCloseTab={tabs.handleCloseTab}
+          onAddTab={handleAddTab}
+          maxTabs={tabs.maxTabs}
         />
-      )}
-    </div>
+        
+        {/* Sidebar */}
+        <Sidebar 
+          activePanel={activePanel} 
+          onPanelChange={setActivePanel} 
+          zoom={zoom} 
+          onZoomChange={setZoom} 
+          isHomePage={tabs.currentView === 'home'}
+          onAccountClick={() => { setActivePanel(null); setIsAccountOpen(!isAccountOpen); }}
+          isAccountOpen={isAccountOpen}
+          onCloseAccount={() => setIsAccountOpen(false)}
+        />
+        
+        {/* Panels */}
+        <DesignSystemPanel 
+          designSystem={designSystem} 
+          onUpdate={setDesignSystem} 
+          onClose={() => setActivePanel(null)} 
+          isOpen={activePanel === 'design'} 
+        />
+        <ExportPanel 
+          onClose={() => setActivePanel(null)} 
+          isOpen={activePanel === 'export'} 
+          carousels={carousels.carousels} 
+        />
+        <AccountPanel 
+          onClose={() => setIsAccountOpen(false)} 
+          isOpen={isAccountOpen && tabs.currentView === 'home'} 
+        />
+
+        {/* Homepage or Editor View */}
+        {tabs.currentView === 'home' ? (
+          <div 
+            className="absolute inset-0 top-[56px]" 
+            style={{ left: totalOffset, transition: 'left 0.3s ease-out' }}
+          >
+            <Homepage 
+              projects={tabs.tabs} 
+              onOpenProject={handleOpenProject}
+              onCreateNew={handleCreateNewFromHome}
+            />
+          </div>
+        ) : (
+          <EditorView
+            totalOffset={totalOffset}
+            zoom={zoom}
+            activeTab={tabs.activeTab}
+            onUpdateProjectName={tabs.handleUpdateProjectName}
+            onCreateProject={tabs.handleCreateProject}
+          />
+        )}
+      </div>
+    </AppProvider>
   );
 }
