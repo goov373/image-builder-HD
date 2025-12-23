@@ -286,15 +286,40 @@ const DesignSystemPanel = ({ designSystem, onUpdate, onClose, isOpen }) => {
         {/* Brand Patterns Section */}
         <div className="p-4">
           <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-3">Brand Patterns</h3>
-          <div className="border-2 border-dashed border-gray-700 rounded-lg p-4 text-center hover:border-gray-600 transition-colors cursor-pointer">
-            <svg className="w-8 h-8 mx-auto mb-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zM14 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z" />
-            </svg>
-            <p className="text-xs text-gray-400 mb-1">Textures & patterns</p>
-            <button type="button" className="px-3 py-1.5 bg-gray-700 hover:bg-gray-600 text-xs text-white rounded-lg transition-colors">
-              Upload patterns
-            </button>
-            <p className="text-[10px] text-gray-600 mt-2">SVG, PNG (tileable preferred)</p>
+          <p className="text-[10px] text-gray-500 mb-3">GPS & map-inspired patterns for real estate visuals</p>
+          
+          {/* Pattern Grid */}
+          <div className="grid grid-cols-2 gap-2 mb-3">
+            {[
+              { name: 'Street Grid', file: 'street-grid.svg', desc: 'Urban road network' },
+              { name: 'Comp Radius', file: 'comp-radius.svg', desc: 'Property comparison map' },
+              { name: 'Urban Blocks', file: 'urban-blocks.svg', desc: 'City blocks layout' },
+              { name: 'Data Network', file: 'data-network.svg', desc: 'Connected data points' },
+              { name: 'Topo Lines', file: 'topographic-lines.svg', desc: 'Elevation contours' },
+              { name: 'Route Lines', file: 'route-lines.svg', desc: 'GPS navigation paths' },
+            ].map((pattern, i) => (
+              <button
+                key={pattern.file}
+                type="button"
+                className="group relative aspect-square rounded-lg overflow-hidden border border-gray-700 hover:border-purple-500 transition-all"
+                style={{
+                  backgroundImage: `url(/patterns/${pattern.file})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                }}
+                title={pattern.desc}
+              >
+                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                  <span className="text-[10px] text-white font-medium">{pattern.name}</span>
+                </div>
+              </button>
+            ))}
+          </div>
+          
+          {/* Upload custom patterns */}
+          <div className="border border-dashed border-gray-700 rounded-lg p-3 text-center hover:border-gray-600 transition-colors cursor-pointer">
+            <p className="text-[10px] text-gray-500 mb-1">Upload custom pattern</p>
+            <p className="text-[9px] text-gray-600">SVG, PNG (tileable)</p>
           </div>
         </div>
         </>

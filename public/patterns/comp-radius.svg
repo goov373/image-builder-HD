@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="280" height="280" viewBox="0 0 280 280">
+  <defs>
+    <pattern id="compRadius" patternUnits="userSpaceOnUse" width="280" height="280">
+      <!-- Background -->
+      <rect width="280" height="280" fill="#18191A"/>
+      
+      <!-- Comp radius rings from center -->
+      <circle cx="140" cy="140" r="120" fill="none" stroke="#6466e9" stroke-width="0.8" opacity="0.12" stroke-dasharray="8,4"/>
+      <circle cx="140" cy="140" r="90" fill="none" stroke="#6466e9" stroke-width="0.8" opacity="0.16" stroke-dasharray="6,3"/>
+      <circle cx="140" cy="140" r="60" fill="none" stroke="#6466e9" stroke-width="0.8" opacity="0.22" stroke-dasharray="4,2"/>
+      <circle cx="140" cy="140" r="30" fill="none" stroke="#6466e9" stroke-width="1" opacity="0.3"/>
+      
+      <!-- Subject property at center -->
+      <circle cx="140" cy="140" r="6" fill="#F97316" opacity="0.8"/>
+      <circle cx="140" cy="140" r="10" fill="none" stroke="#F97316" stroke-width="1" opacity="0.4"/>
+      
+      <!-- Comp properties scattered -->
+      <circle cx="95" cy="110" r="4" fill="#6466e9" opacity="0.5"/>
+      <circle cx="180" cy="100" r="4" fill="#6466e9" opacity="0.5"/>
+      <circle cx="170" cy="175" r="4" fill="#6466e9" opacity="0.5"/>
+      <circle cx="100" cy="180" r="4" fill="#6466e9" opacity="0.5"/>
+      <circle cx="200" cy="140" r="4" fill="#6466e9" opacity="0.5"/>
+      <circle cx="80" cy="140" r="4" fill="#6466e9" opacity="0.5"/>
+      
+      <!-- Outer ring comps -->
+      <circle cx="50" cy="80" r="3" fill="#6466e9" opacity="0.35"/>
+      <circle cx="230" cy="70" r="3" fill="#6466e9" opacity="0.35"/>
+      <circle cx="240" cy="200" r="3" fill="#6466e9" opacity="0.35"/>
+      <circle cx="40" cy="210" r="3" fill="#6466e9" opacity="0.35"/>
+      <circle cx="140" cy="30" r="3" fill="#6466e9" opacity="0.35"/>
+      <circle cx="140" cy="250" r="3" fill="#6466e9" opacity="0.35"/>
+      
+      <!-- Connection lines to subject -->
+      <line x1="140" y1="140" x2="95" y2="110" stroke="#6466e9" stroke-width="0.6" opacity="0.2"/>
+      <line x1="140" y1="140" x2="180" y2="100" stroke="#6466e9" stroke-width="0.6" opacity="0.2"/>
+      <line x1="140" y1="140" x2="170" y2="175" stroke="#6466e9" stroke-width="0.6" opacity="0.2"/>
+      <line x1="140" y1="140" x2="100" y2="180" stroke="#6466e9" stroke-width="0.6" opacity="0.2"/>
+      <line x1="140" y1="140" x2="200" y2="140" stroke="#6466e9" stroke-width="0.6" opacity="0.2"/>
+      <line x1="140" y1="140" x2="80" y2="140" stroke="#6466e9" stroke-width="0.6" opacity="0.2"/>
+      
+      <!-- Subtle road grid -->
+      <line x1="0" y1="70" x2="280" y2="70" stroke="#2d2e30" stroke-width="1" opacity="0.3"/>
+      <line x1="0" y1="140" x2="280" y2="140" stroke="#2d2e30" stroke-width="1" opacity="0.3"/>
+      <line x1="0" y1="210" x2="280" y2="210" stroke="#2d2e30" stroke-width="1" opacity="0.3"/>
+      <line x1="70" y1="0" x2="70" y2="280" stroke="#2d2e30" stroke-width="1" opacity="0.3"/>
+      <line x1="140" y1="0" x2="140" y2="280" stroke="#2d2e30" stroke-width="1" opacity="0.3"/>
+      <line x1="210" y1="0" x2="210" y2="280" stroke="#2d2e30" stroke-width="1" opacity="0.3"/>
+      
+      <!-- Distance labels (stylized) -->
+      <text x="142" y="55" font-family="Inter, sans-serif" font-size="8" fill="#6B7280" opacity="0.5">0.5mi</text>
+      <text x="142" y="85" font-family="Inter, sans-serif" font-size="8" fill="#6B7280" opacity="0.5">0.25mi</text>
+    </pattern>
+  </defs>
+  <rect width="280" height="280" fill="url(#compRadius)"/>
+</svg>
+
