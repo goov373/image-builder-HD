@@ -32,7 +32,7 @@ const DesignSystemPanel = ({ designSystem, onUpdate, onClose, isOpen }) => {
   const gradients = [
     conicalGradient,                                        // Conical purple sweep
     meshGradient,                                           // Mesh/Wave organic gradient
-    'linear-gradient(135deg, #3d3fa8 0%, #6466e9 100%)',   // Dark Purple to Purple
+    'radial-gradient(ellipse at 100% 100%, #b8bdd6 0%, #6466e9 40%, #3d3fa8 100%)', // Light fade from bottom-right
     'linear-gradient(135deg, #5558d9 0%, #b8bdd6 100%)',   // Deep Purple to Muted Grey
     'linear-gradient(135deg, #F97316 0%, #fbbf24 100%)',   // Orange to Gold (CTA)
     'linear-gradient(135deg, #18191A 0%, #2d2e30 100%)',   // Shadow (dark backgrounds)
