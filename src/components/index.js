@@ -12,3 +12,4 @@ export { default as NewProjectView } from './NewProjectView';
 export { CarouselFrame, SortableFrame } from './CarouselFrame';
 export { default as CarouselRow } from './CarouselRow';
 export { default as Toolbar } from './Toolbar';
+export { default as TabBar } from './TabBar';
