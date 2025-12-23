@@ -6,4 +6,7 @@ export { LayoutBottomStack, LayoutCenterDrama, LayoutEditorialLeft } from './Lay
 export { default as Sidebar } from './Sidebar';
 export { default as DesignSystemPanel } from './DesignSystemPanel';
 export { default as ExportPanel } from './ExportPanel';
+export { default as Homepage } from './Homepage';
+export { default as ProjectHeader } from './ProjectHeader';
+export { default as NewProjectView } from './NewProjectView';
 
