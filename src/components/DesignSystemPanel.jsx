@@ -293,12 +293,17 @@ const DesignSystemPanel = ({ designSystem, onUpdate, onClose, isOpen }) => {
           </div>
           <div className="grid grid-cols-6 gap-1.5">
             {solidColors.map(color => (
-              <button
-                type="button"
-                key={color}
-                className="w-full aspect-square rounded border-2 border-gray-700 hover:border-orange-500 transition-colors"
-                style={{ backgroundColor: color }}
-              />
+              <div key={color} className="relative group">
+                <button
+                  type="button"
+                  className="w-full aspect-square rounded border-2 border-gray-700 hover:border-orange-500 transition-colors"
+                  style={{ backgroundColor: color }}
+                />
+                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-2 py-1 bg-gray-950 text-white text-[10px] font-mono rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50">
+                  {color.toUpperCase()}
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-950" />
+                </div>
+              </div>
             ))}
           </div>
         </div>
