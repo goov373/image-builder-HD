@@ -82,6 +82,13 @@ export const CarouselFrame = ({
   };
   const backgroundStyle = getBackgroundStyle();
   
+  // Generate a key for the background div to force re-render when background type changes
+  const bgKey = frame.backgroundOverride 
+    ? (typeof frame.backgroundOverride === 'object' 
+        ? `stretched-${frame.backgroundOverride.position}` 
+        : `simple-${frame.backgroundOverride.substring(0, 20)}`)
+    : 'default';
+  
   const handleUpdateText = (field, value) => onUpdateText?.(carouselId, frame.id, field, value);
   const handleActivateField = (field) => onActivateTextField?.(field);
   
@@ -113,6 +120,7 @@ export const CarouselFrame = ({
   return (
     <div className="flex flex-col" style={{ width: size.width }}>
       <div 
+        key={bgKey}
         data-frame-id={frame.id}
         data-carousel-id={carouselId}
         data-project-key={`carousel-${carouselId}`}
