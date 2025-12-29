@@ -90,8 +90,17 @@ export default function useTabs(initialTabs = []) {
 
   const handleCloseTab = (tabId, e) => {
     e.stopPropagation();
-    if (tabs.length <= 1) return;
     const newTabs = tabs.filter(t => t.id !== tabId);
+    
+    // If closing the last tab, go to homepage
+    if (newTabs.length === 0) {
+      setTabs([]);
+      setActiveTabId(null);
+      setCurrentView('home');
+      return;
+    }
+    
+    // If closing the active tab, switch to first remaining tab
     if (activeTabId === tabId) {
       setActiveTabId(newTabs[0].id);
       newTabs[0].active = true;
