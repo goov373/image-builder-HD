@@ -192,7 +192,7 @@ const Homepage = ({
                           onBlur={(e) => handleRenameSubmit(e, project.id)}
                           onKeyDown={(e) => handleRenameKeyDown(e, project.id)}
                           className={`w-full text-white font-semibold bg-transparent border-b-2 outline-none py-0.5 ${
-                            renameError ? 'border-red-500' : 'border-orange-500'
+                            renameError ? 'border-red-500' : 'border-gray-400'
                           }`}
                         />
                         {renameError && (

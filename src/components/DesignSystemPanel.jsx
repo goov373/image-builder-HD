@@ -119,14 +119,14 @@ const DesignSystemPanel = ({
         <button 
           type="button"
           onClick={() => setActiveTab('design')}
-          className={`flex-1 py-3 text-xs font-medium transition-colors ${activeTab === 'design' ? 'text-orange-400 border-b-2 border-orange-400' : 'text-gray-500 hover:text-gray-300'}`}
+          className={`flex-1 py-3 text-xs font-medium transition-colors ${activeTab === 'design' ? 'text-white border-b-2 border-gray-400' : 'text-gray-500 hover:text-gray-300'}`}
         >
           Design
         </button>
         <button 
           type="button"
           onClick={() => setActiveTab('assets')}
-          className={`flex-1 py-3 text-xs font-medium transition-colors ${activeTab === 'assets' ? 'text-orange-400 border-b-2 border-orange-400' : 'text-gray-500 hover:text-gray-300'}`}
+          className={`flex-1 py-3 text-xs font-medium transition-colors ${activeTab === 'assets' ? 'text-white border-b-2 border-gray-400' : 'text-gray-500 hover:text-gray-300'}`}
         >
           Assets
           {uploadedFiles.length > 0 && (
@@ -172,7 +172,7 @@ const DesignSystemPanel = ({
             ) : (
               <div className="grid grid-cols-3 gap-2">
                 {uploadedFiles.map((file, idx) => (
-                  <div key={idx} className="relative aspect-square bg-gray-800 rounded-lg overflow-hidden group cursor-pointer hover:ring-2 hover:ring-orange-500 transition-all">
+                  <div key={idx} className="relative aspect-square bg-gray-800 rounded-lg overflow-hidden group cursor-pointer hover:ring-2 hover:ring-gray-400 transition-all">
                     <img src={file.url} alt={file.name} className="w-full h-full object-cover" />
                     <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                       <button type="button" className="p-1.5 bg-red-500 rounded-full hover:bg-red-600 transition-colors">
@@ -255,7 +255,7 @@ const DesignSystemPanel = ({
             {colorFields.map(field => (
               <div key={field.key} className="flex flex-col items-center gap-1.5">
                 <div className="relative group">
-                  <div className="w-12 h-12 rounded-lg border border-gray-500/50 hover:border-orange-500 transition-colors overflow-hidden">
+                  <div className="w-12 h-12 rounded-lg border border-gray-500/50 hover:border-gray-400 transition-colors overflow-hidden">
                     <input
                       type="color"
                       value={designSystem[field.key]}
@@ -283,7 +283,7 @@ const DesignSystemPanel = ({
               <select
                 value={designSystem.headingWeight || '700'}
                 onChange={(e) => onUpdate({ ...designSystem, headingWeight: e.target.value })}
-                className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-xs text-white hover:border-orange-500 focus:border-orange-500 focus:outline-none transition-colors cursor-pointer"
+                className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-xs text-white hover:border-gray-400 focus:border-gray-400 focus:outline-none transition-colors cursor-pointer"
               >
                 <option value="200" style={{ fontFamily: 'Nunito Sans', fontWeight: 200 }}>ExtraLight (200)</option>
                 <option value="300" style={{ fontFamily: 'Nunito Sans', fontWeight: 300 }}>Light (300)</option>
@@ -300,7 +300,7 @@ const DesignSystemPanel = ({
               <select
                 value={designSystem.bodyWeight || '400'}
                 onChange={(e) => onUpdate({ ...designSystem, bodyWeight: e.target.value })}
-                className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-xs text-white hover:border-orange-500 focus:border-orange-500 focus:outline-none transition-colors cursor-pointer"
+                className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-xs text-white hover:border-gray-400 focus:border-gray-400 focus:outline-none transition-colors cursor-pointer"
               >
                 <option value="200" style={{ fontFamily: 'Nunito Sans', fontWeight: 200 }}>ExtraLight (200)</option>
                 <option value="300" style={{ fontFamily: 'Nunito Sans', fontWeight: 300 }}>Light (300)</option>
@@ -337,7 +337,7 @@ const DesignSystemPanel = ({
                 disabled={!hasFrameSelected}
                 className={`w-full aspect-square rounded-lg border-2 transition-colors ${
                   hasFrameSelected 
-                    ? 'border-gray-700 hover:border-orange-500 hover:scale-105 cursor-pointer' 
+                    ? 'border-gray-700 hover:border-gray-400 hover:scale-105 cursor-pointer' 
                     : 'border-gray-700/50 opacity-60 cursor-not-allowed'
                 }`}
                 style={{ background: gradient }}
@@ -354,7 +354,7 @@ const DesignSystemPanel = ({
                   disabled={!hasFrameSelected}
                   className={`w-full aspect-square rounded border-2 transition-colors ${
                     hasFrameSelected 
-                      ? 'border-gray-700 hover:border-orange-500 hover:scale-110 cursor-pointer' 
+                      ? 'border-gray-700 hover:border-gray-400 hover:scale-110 cursor-pointer' 
                       : 'border-gray-700/50 opacity-60 cursor-not-allowed'
                   }`}
                   style={{ backgroundColor: color }}

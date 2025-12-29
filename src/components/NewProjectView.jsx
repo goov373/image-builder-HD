@@ -25,7 +25,7 @@ const NewProjectView = ({ onCreateProject }) => {
             value={projectName}
             onChange={(e) => setProjectName(e.target.value)}
             placeholder="Enter project name..."
-            className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm placeholder-gray-500 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all"
+            className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm placeholder-gray-500 focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500 transition-all"
           />
         </div>
         

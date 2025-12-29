@@ -61,7 +61,7 @@ const DataChip = ({
       className={`
         inline-flex items-center justify-center font-semibold rounded-full
         ${s.px} ${s.py} ${s.text} ${s.height}
-        ${isSelected ? 'ring-2 ring-orange-500 ring-offset-2 ring-offset-gray-900' : ''}
+        ${isSelected ? 'ring-2 ring-gray-400 ring-offset-2 ring-offset-gray-900' : ''}
         cursor-pointer transition-all duration-150 hover:scale-105
       `}
       style={{

@@ -13,7 +13,7 @@ const LayerItem = ({ layer, isSelected, onSelect, onToggleVisible, onToggleLocke
     onClick={() => onSelect(layer.id)}
     className={`
       flex items-center gap-2 px-2 py-1.5 rounded-lg cursor-pointer transition-colors
-      ${isSelected ? 'bg-orange-500/20 border border-orange-500/50' : 'hover:bg-gray-800'}
+      ${isSelected ? 'bg-gray-700/50 border border-gray-500' : 'hover:bg-gray-800'}
     `}
   >
     {/* Layer icon */}

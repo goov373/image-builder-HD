@@ -28,7 +28,7 @@ const ProgressRing = ({
       onClick={onClick}
       className={`
         relative inline-flex items-center justify-center
-        ${isSelected ? 'ring-2 ring-orange-500 rounded-full' : ''}
+        ${isSelected ? 'ring-2 ring-gray-400 rounded-full' : ''}
         cursor-pointer transition-all duration-150 hover:scale-105
       `}
       style={{ width: s.diameter, height: s.diameter, ...style }}

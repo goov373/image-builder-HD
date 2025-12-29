@@ -36,7 +36,7 @@ const StatCard = ({
       onClick={onClick}
       className={`
         ${s.width} ${s.padding} rounded-xl
-        ${isSelected ? 'ring-2 ring-orange-500' : ''}
+        ${isSelected ? 'ring-2 ring-gray-400' : ''}
         cursor-pointer transition-all duration-150 hover:scale-105
       `}
       style={{

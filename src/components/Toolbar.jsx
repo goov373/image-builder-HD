@@ -410,16 +410,16 @@ export default function Toolbar({ totalOffset, activeTab }) {
                           handleUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'fontWeight', weight.value); 
                           setShowFontPicker(false); 
                         }} 
-                        className={`w-full px-3 py-2 rounded-lg text-xs text-left transition-colors duration-200 flex items-center justify-between ${isSelected ? 'bg-orange-500 text-white' : 'text-gray-300 hover:bg-gray-700'}`} 
+                        className={`w-full px-3 py-2 rounded-lg text-xs text-left transition-colors duration-200 flex items-center justify-between ${isSelected ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-700'}`} 
                         style={{ fontFamily: '"Nunito Sans", sans-serif', fontWeight: weight.weight }}
                       >
                         <span>{weight.name}</span>
                         <span className="flex items-center gap-1">
                           {isHeadingDefault && (
-                            <span className={`text-[10px] ${isSelected ? 'text-orange-200' : 'text-orange-400'}`} title="Default for Headings">★H</span>
+                            <span className={`text-[10px] ${isSelected ? 'text-gray-400' : 'text-gray-500'}`} title="Default for Headings">★H</span>
                           )}
                           {isBodyDefault && (
-                            <span className={`text-[10px] ${isSelected ? 'text-orange-200' : 'text-orange-400'}`} title="Default for Body">★B</span>
+                            <span className={`text-[10px] ${isSelected ? 'text-gray-400' : 'text-gray-500'}`} title="Default for Body">★B</span>
                           )}
                         </span>
                       </button>

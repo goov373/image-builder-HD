@@ -33,7 +33,7 @@ const Sparkline = ({
     <div
       onClick={onClick}
       className={`
-        ${isSelected ? 'ring-2 ring-orange-500 rounded' : ''}
+        ${isSelected ? 'ring-2 ring-gray-400 rounded' : ''}
         cursor-pointer transition-all duration-150 hover:scale-105
       `}
       style={style}

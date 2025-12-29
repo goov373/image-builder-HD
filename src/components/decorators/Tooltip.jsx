@@ -41,7 +41,7 @@ const Tooltip = ({
       className={`
         relative inline-block rounded-lg font-medium
         ${s.padding} ${s.text}
-        ${isSelected ? 'ring-2 ring-orange-500' : ''}
+        ${isSelected ? 'ring-2 ring-gray-400' : ''}
         cursor-pointer transition-all duration-150 hover:scale-105
       `}
       style={{

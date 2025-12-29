@@ -86,7 +86,7 @@ export default function TabBar({
                   onClick={() => { onAddTab(); setShowNewTabMenu(false); }}
                   className="group w-full flex items-center gap-3 px-3 py-2.5 text-left text-sm text-gray-300 hover:bg-gray-700 transition-colors"
                 >
-                  <div className="w-8 h-8 rounded-lg bg-gray-700 border border-dashed border-gray-500 group-hover:bg-orange-500 group-hover:border-solid group-hover:border-orange-500 flex items-center justify-center transition-all">
+                  <div className="w-8 h-8 rounded-lg bg-gray-700 border border-dashed border-gray-500 group-hover:bg-gray-600 group-hover:border-solid group-hover:border-gray-400 flex items-center justify-center transition-all">
                     <svg className="w-4 h-4 text-gray-400 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                     </svg>
@@ -137,7 +137,7 @@ export default function TabBar({
         {/* Tab Counter */}
         <div className="flex items-center px-4 pb-2 ml-auto">
           <span className="text-xs text-gray-500">
-            <span className={tabs.length >= maxTabs ? 'text-orange-400' : 'text-gray-400'}>{tabs.length}</span>
+            <span className={tabs.length >= maxTabs ? 'text-red-400' : 'text-gray-400'}>{tabs.length}</span>
             <span className="mx-0.5">/</span>
             <span>{maxTabs}</span>
           </span>

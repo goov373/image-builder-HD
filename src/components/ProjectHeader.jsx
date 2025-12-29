@@ -74,18 +74,18 @@ const ProjectHeader = ({ projectName, onUpdateName }) => {
               onBlur={handleSave}
               onKeyDown={handleKeyDown}
               className={`text-2xl font-bold text-white bg-transparent border-b-2 outline-none px-1 py-0.5 min-w-[200px] ${
-                error ? 'border-red-500' : 'border-orange-500'
+                error ? 'border-red-500' : 'border-gray-400'
               }`}
               style={{ fontFamily: 'inherit' }}
             />
           </div>
         ) : (
           <h1 
-            className="text-2xl font-bold text-white hover:text-orange-400 cursor-pointer transition-colors group flex items-center gap-2"
+            className="text-2xl font-bold text-white hover:text-gray-300 cursor-pointer transition-colors group flex items-center gap-2"
             onClick={() => setIsEditing(true)}
           >
             {projectName}
-            <svg className="w-4 h-4 text-gray-600 group-hover:text-orange-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-4 h-4 text-gray-600 group-hover:text-gray-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
             </svg>
           </h1>

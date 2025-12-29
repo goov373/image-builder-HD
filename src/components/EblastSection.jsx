@@ -96,7 +96,7 @@ const EblastSection = ({
           <SectionTypeBadge type={section.sectionType} />
         </div>
         {isSectionSelected && (
-          <span className="text-[9px] bg-orange-500/20 text-orange-400 px-1.5 py-0.5 rounded font-medium">
+          <span className="text-[9px] bg-gray-600 text-gray-300 px-1.5 py-0.5 rounded font-medium">
             EDITING
           </span>
         )}
@@ -106,7 +106,7 @@ const EblastSection = ({
       <div 
         className={`relative overflow-hidden shadow-lg cursor-pointer transition-all rounded border ${
           isSectionSelected 
-            ? 'ring-2 ring-orange-500/70 border-orange-500/50' 
+            ? 'ring-2 ring-gray-400/50 border-gray-400' 
             : 'border-gray-600 hover:border-gray-500'
         }`}
         onMouseEnter={() => setIsHovered(true)}

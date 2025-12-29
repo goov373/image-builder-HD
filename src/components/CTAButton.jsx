@@ -81,7 +81,7 @@ const CTAButton = ({
         onBlur={handleBlur}
         onKeyDown={handleKeyDown}
         autoFocus
-        className={`${sizeClasses[size]} ${borderRadius} font-semibold outline-none ring-2 ring-orange-500`}
+        className={`${sizeClasses[size]} ${borderRadius} font-semibold outline-none ring-2 ring-gray-400`}
         style={getVariantStyles()}
         onClick={(e) => e.stopPropagation()}
       />
@@ -99,8 +99,8 @@ const CTAButton = ({
         cursor-pointer 
         transition-all 
         duration-150
-        ${isEditable ? 'hover:ring-2 hover:ring-orange-500/50' : ''}
-        ${isSelected ? 'ring-2 ring-orange-500' : ''}
+        ${isEditable ? 'hover:ring-2 hover:ring-gray-400/50' : ''}
+        ${isSelected ? 'ring-2 ring-gray-400' : ''}
       `}
       style={getVariantStyles()}
     >

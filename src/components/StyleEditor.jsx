@@ -16,7 +16,7 @@ const SliderControl = ({ label, value, min, max, step = 1, unit = 'px', onChange
       step={step}
       value={value}
       onChange={(e) => onChange(Number(e.target.value))}
-      className="w-full h-1.5 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-orange-500"
+      className="w-full h-1.5 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-gray-400"
     />
   </div>
 );
@@ -54,7 +54,7 @@ const ToggleControl = ({ label, value, onChange }) => (
     <button
       type="button"
       onClick={() => onChange(!value)}
-      className={`w-10 h-5 rounded-full transition-colors ${value ? 'bg-orange-500' : 'bg-gray-700'}`}
+      className={`w-10 h-5 rounded-full transition-colors ${value ? 'bg-gray-500' : 'bg-gray-700'}`}
     >
       <div 
         className={`w-4 h-4 rounded-full bg-white shadow transition-transform ${value ? 'translate-x-5' : 'translate-x-0.5'}`}
@@ -143,7 +143,7 @@ const StyleEditor = ({ style, onChange, accentColor }) => {
                     onClick={() => updateStyle('borderStyle', type)}
                     className={`px-2 py-1 rounded text-[10px] capitalize ${
                       style.borderStyle === type 
-                        ? 'bg-orange-500 text-white' 
+                        ? 'bg-gray-600 text-white' 
                         : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
                     }`}
                   >

@@ -50,7 +50,7 @@ const CarouselRow = ({ carousel, designSystem, isSelected, hasAnySelection, sele
   return (
     <div 
       data-carousel-id={carousel.id}
-      className={`mb-10 rounded-xl transition-all duration-150 cursor-pointer overflow-x-auto hide-scrollbar ${isSelected ? 'bg-orange-500/5 border border-orange-500/20 py-4' : 'hover:bg-gray-800/30 border border-transparent py-4'} ${isFaded ? 'opacity-20 hover:opacity-50' : 'opacity-100'}`}
+      className={`mb-10 rounded-xl transition-all duration-150 cursor-pointer overflow-x-auto hide-scrollbar ${isSelected ? 'bg-gray-800/40 border border-gray-600 py-4' : 'hover:bg-gray-800/30 border border-transparent py-4'} ${isFaded ? 'opacity-20 hover:opacity-50' : 'opacity-100'}`}
       style={{ marginLeft: '10px', marginRight: '10px', width: 'fit-content', minWidth: 'auto', maxWidth: 'calc(100% - 20px)' }}
       onClick={(e) => { e.stopPropagation(); onSelect(carousel.id); }}
     >
@@ -59,18 +59,18 @@ const CarouselRow = ({ carousel, designSystem, isSelected, hasAnySelection, sele
           <button 
             type="button"
             onClick={(e) => { e.stopPropagation(); onSelect(isSelected ? null : carousel.id); }} 
-            className={`w-11 h-11 rounded-xl border-2 flex items-center justify-center transition-all duration-150 ${isSelected ? 'border-orange-500 bg-orange-500/10 hover:bg-orange-500/20' : 'border-gray-600 hover:border-gray-500 hover:bg-gray-800'}`}
+            className={`w-11 h-11 rounded-xl border-2 flex items-center justify-center transition-all duration-150 ${isSelected ? 'border-gray-500 bg-gray-700 hover:bg-gray-600' : 'border-gray-600 hover:border-gray-500 hover:bg-gray-800'}`}
           >
             {isSelected ? (
-              <svg className="w-5 h-5 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
             ) : (
               <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" /></svg>
             )}
           </button>
           <div>
             <div className="flex items-center gap-2">
-              <h2 className={`text-lg font-bold transition-colors ${isSelected ? 'text-orange-400' : 'text-white'}`}>{carousel.name}</h2>
-              {isSelected && <span className="text-[9px] bg-orange-500/20 text-orange-400 px-1.5 py-0.5 rounded font-medium">EDITING</span>}
+              <h2 className={`text-lg font-bold transition-colors ${isSelected ? 'text-white' : 'text-white'}`}>{carousel.name}</h2>
+              {isSelected && <span className="text-[9px] bg-gray-600 text-gray-300 px-1.5 py-0.5 rounded font-medium">EDITING</span>}
               {/* Remove Row Button - next to EDITING tag */}
               {isSelected && (
                 <button
@@ -122,9 +122,9 @@ const CarouselRow = ({ carousel, designSystem, isSelected, hasAnySelection, sele
                     <button
                       type="button"
                       onClick={(e) => { e.stopPropagation(); onAddFrame(carousel.id, index + 1); }} 
-                      className="w-7 h-7 rounded-full border-2 border-dashed border-gray-600 opacity-50 hover:opacity-100 hover:border-orange-500 hover:bg-orange-500/10 flex items-center justify-center transition-all duration-150"
+                      className="w-7 h-7 rounded-full border-2 border-dashed border-gray-600 opacity-50 hover:opacity-100 hover:border-gray-400 hover:bg-gray-700 flex items-center justify-center transition-all duration-150"
                     >
-                      <svg className="w-3.5 h-3.5 text-gray-500 hover:text-orange-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-3.5 h-3.5 text-gray-500 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                       </svg>
                     </button>

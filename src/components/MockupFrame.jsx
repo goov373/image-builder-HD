@@ -250,7 +250,7 @@ const MockupFrame = ({
       onMouseLeave={() => setIsHovered(false)}
       className={`
         overflow-hidden transition-all duration-200
-        ${isSelected ? 'ring-2 ring-orange-500' : ''}
+        ${isSelected ? 'ring-2 ring-gray-400' : ''}
         ${isHovered && !isSelected ? 'ring-1 ring-white/20' : ''}
         cursor-pointer
       `}

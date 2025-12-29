@@ -77,7 +77,7 @@ const VideoCoverFrame = ({
       {/* Main Frame */}
       <div 
         className={`relative overflow-hidden shadow-xl cursor-pointer transition-all rounded-lg ${
-          isSelected ? 'ring-2 ring-orange-500' : 'hover:ring-2 hover:ring-gray-500'
+          isSelected ? 'ring-2 ring-gray-400' : 'hover:ring-2 hover:ring-gray-500'
         }`}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}

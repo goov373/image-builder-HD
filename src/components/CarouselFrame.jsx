@@ -98,7 +98,7 @@ export const CarouselFrame = ({
         data-carousel-id={carouselId}
         data-project-key={`carousel-${carouselId}`}
         data-exportable="true"
-        className={`relative overflow-hidden shadow-lg cursor-pointer transition-all border border-gray-600 ${isFrameSelected ? 'ring-2 ring-orange-500/70' : 'hover:border-gray-500'}`}
+        className={`relative overflow-hidden shadow-lg cursor-pointer transition-all border ${isFrameSelected ? 'border-gray-400 ring-2 ring-gray-400/50' : 'border-gray-600 hover:border-gray-500'}`}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         style={{ background: frame.backgroundOverride || style.background, width: size.width, height: size.height }}

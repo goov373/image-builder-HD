@@ -13,7 +13,7 @@ const FormatButton = ({ formatKey, size, isSelected, onClick }) => {
         type="button"
         onClick={onClick}
         className={`flex items-center justify-center gap-1 py-1 rounded text-[10px] font-medium transition-colors ${
-          isSelected ? 'bg-orange-500 text-white' : 'text-gray-400 hover:text-gray-200 hover:bg-gray-700'
+          isSelected ? 'bg-gray-600 text-white' : 'text-gray-400 hover:text-gray-200 hover:bg-gray-700'
         }`}
         style={{ width: formatKey === 'landscape' ? 56 : 46 }}
       >

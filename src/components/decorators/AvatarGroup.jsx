@@ -26,7 +26,7 @@ const AvatarGroup = ({
       onClick={onClick}
       className={`
         flex items-center
-        ${isSelected ? 'ring-2 ring-orange-500 ring-offset-2 ring-offset-gray-900 rounded-full' : ''}
+        ${isSelected ? 'ring-2 ring-gray-400 ring-offset-2 ring-offset-gray-900 rounded-full' : ''}
         cursor-pointer transition-all duration-150 hover:scale-105
       `}
       style={style}
