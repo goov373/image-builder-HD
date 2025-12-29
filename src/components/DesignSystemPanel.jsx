@@ -11,6 +11,7 @@ const DesignSystemPanel = ({
   isOpen,
   selectedCarouselId,
   selectedFrameId,
+  selectedCarouselFrames = [], // Array of frames in the selected carousel
   onSetFrameBackground,
   onSetRowStretchedBackground 
 }) => {
@@ -18,10 +19,36 @@ const DesignSystemPanel = ({
   const hasRowSelected = selectedCarouselId !== null;
   const [applyMode, setApplyMode] = useState('frame'); // 'frame' or 'row'
   
+  // Frame range selection for stretched gradients
+  const [stretchRange, setStretchRange] = useState({ start: 0, end: null }); // null end means "all"
+  const totalFrames = selectedCarouselFrames.length;
+  
+  // Reset range when carousel changes
+  const effectiveEnd = stretchRange.end !== null ? stretchRange.end : totalFrames - 1;
+  const selectedFrameCount = effectiveEnd - stretchRange.start + 1;
+  
+  const handleFrameRangeClick = (index) => {
+    if (stretchRange.start === null || (stretchRange.end !== null)) {
+      // Start new selection
+      setStretchRange({ start: index, end: null });
+    } else {
+      // Complete the selection
+      const start = Math.min(stretchRange.start, index);
+      const end = Math.max(stretchRange.start, index);
+      setStretchRange({ start, end });
+    }
+  };
+  
+  const handleSelectAllFrames = () => {
+    setStretchRange({ start: 0, end: totalFrames - 1 });
+  };
+  
   const handleBackgroundClick = (background) => {
     if (applyMode === 'row' && hasRowSelected && onSetRowStretchedBackground) {
-      // Apply stretched across all frames in the row
-      onSetRowStretchedBackground(selectedCarouselId, background);
+      // Apply stretched across selected frame range
+      const startIdx = stretchRange.start;
+      const endIdx = stretchRange.end !== null ? stretchRange.end : totalFrames - 1;
+      onSetRowStretchedBackground(selectedCarouselId, background, startIdx, endIdx);
     } else if (hasFrameSelected && onSetFrameBackground) {
       // Apply to single frame
       onSetFrameBackground(selectedCarouselId, selectedFrameId, background);
@@ -382,6 +409,58 @@ const DesignSystemPanel = ({
                 >
                   Row (Stretch)
                 </button>
+              </div>
+            </div>
+          )}
+          
+          {/* Frame Range Selector - only show when in Row mode */}
+          {applyMode === 'row' && hasRowSelected && totalFrames > 0 && (
+            <div className="mb-3 p-2 bg-gray-800/50 rounded-lg">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[10px] text-gray-400">Select frames to stretch:</span>
+                <button
+                  type="button"
+                  onClick={handleSelectAllFrames}
+                  className="text-[10px] text-gray-400 hover:text-white transition-colors duration-150"
+                >
+                  Select all
+                </button>
+              </div>
+              
+              {/* Frame selector buttons */}
+              <div className="flex gap-1 flex-wrap">
+                {selectedCarouselFrames.map((frame, index) => {
+                  const isInRange = index >= stretchRange.start && index <= effectiveEnd;
+                  const isStart = index === stretchRange.start;
+                  const isEnd = index === effectiveEnd;
+                  
+                  return (
+                    <button
+                      key={frame.id}
+                      type="button"
+                      onClick={() => handleFrameRangeClick(index)}
+                      className={`w-8 h-8 rounded text-[10px] font-medium transition-all duration-150 border ${
+                        isInRange
+                          ? 'bg-gray-600 border-gray-500 text-white'
+                          : 'bg-gray-800 border-gray-700 text-gray-500 hover:border-gray-600 hover:text-gray-400'
+                      } ${isStart || isEnd ? 'ring-1 ring-gray-400' : ''}`}
+                      title={`Frame ${index + 1}`}
+                    >
+                      {index + 1}
+                    </button>
+                  );
+                })}
+              </div>
+              
+              {/* Selection info */}
+              <div className="mt-2 text-[10px] text-gray-500">
+                {stretchRange.end !== null ? (
+                  <span>Stretching across frames {stretchRange.start + 1} – {effectiveEnd + 1} ({selectedFrameCount} frames)</span>
+                ) : stretchRange.start !== null ? (
+                  <span>Click another frame to set range end (starting at {stretchRange.start + 1})</span>
+                ) : (
+                  <span>Click a frame to start selection</span>
+                )}
               </div>
             </div>
           )}

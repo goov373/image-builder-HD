@@ -288,9 +288,9 @@ function carouselReducer(state, action) {
     }
 
     case CAROUSEL_ACTIONS.SET_ROW_STRETCHED_BACKGROUND: {
-      // Apply a gradient stretched across all frames in a carousel row
-      // Each frame shows a slice of the gradient using background-size and background-position
-      const { carouselId, background } = action;
+      // Apply a gradient stretched across selected frames in a carousel row
+      // Each selected frame shows a slice of the gradient using background-size and background-position
+      const { carouselId, background, startIdx = 0, endIdx } = action;
       return {
         ...state,
         carousels: state.carousels.map(carousel => {
@@ -298,20 +298,27 @@ function carouselReducer(state, action) {
           const numFrames = carousel.frames.length;
           if (numFrames === 0) return carousel;
           
+          // Calculate the actual end index (default to last frame)
+          const actualEndIdx = endIdx !== undefined ? endIdx : numFrames - 1;
+          const selectedCount = actualEndIdx - startIdx + 1;
+          
           return {
             ...carousel,
             frames: carousel.frames.map((frame, index) => {
-              // Each frame shows 1/numFrames of the total gradient
-              // background-size makes gradient N times wider than frame
-              // background-position shifts left by (index * 100)% to show correct slice
-              // e.g., for 5 frames: frame 0 = 0%, frame 1 = -100%, frame 2 = -200%, etc.
+              // Only apply to frames within the selected range
+              if (index < startIdx || index > actualEndIdx) {
+                return frame; // Leave unselected frames unchanged
+              }
+              
+              // Calculate position relative to the selected range
+              const relativeIndex = index - startIdx;
               
               return {
                 ...frame,
                 backgroundOverride: {
                   gradient: background,
-                  size: `${numFrames * 100}% 100%`,
-                  position: `${-index * 100}% 0%`,
+                  size: `${selectedCount * 100}% 100%`,
+                  position: `${-relativeIndex * 100}% 0%`,
                   isStretched: true,
                 }
               };
@@ -457,8 +464,8 @@ export default function useCarousels(initialData) {
     handleSetFrameBackground: useCallback((carouselId, frameId, background) =>
       dispatch({ type: CAROUSEL_ACTIONS.SET_FRAME_BACKGROUND, carouselId, frameId, background }), []),
     
-    handleSetRowStretchedBackground: useCallback((carouselId, background) =>
-      dispatch({ type: CAROUSEL_ACTIONS.SET_ROW_STRETCHED_BACKGROUND, carouselId, background }), []),
+    handleSetRowStretchedBackground: useCallback((carouselId, background, startIdx, endIdx) =>
+      dispatch({ type: CAROUSEL_ACTIONS.SET_ROW_STRETCHED_BACKGROUND, carouselId, background, startIdx, endIdx }), []),
     
     handleSmoothBackgrounds: useCallback((carouselId, smoothedFrames) =>
       dispatch({ type: CAROUSEL_ACTIONS.SMOOTH_BACKGROUNDS, carouselId, smoothedFrames }), []),

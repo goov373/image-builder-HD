@@ -267,6 +267,7 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
           isOpen={activePanel === 'design'}
           selectedCarouselId={carousels.selectedCarouselId}
           selectedFrameId={carousels.selectedFrameId}
+          selectedCarouselFrames={carousels.selectedCarousel?.frames || []}
           onSetFrameBackground={carousels.handleSetFrameBackground}
           onSetRowStretchedBackground={carousels.handleSetRowStretchedBackground}
         />
