@@ -1,5 +1,6 @@
 import React from 'react';
 import { frameSizes, layoutNames, layoutVariantNames, allFonts, getFrameStyle } from '../data';
+import { smoothCarouselBackgrounds } from '../utils';
 import { 
   useDesignSystemContext, 
   useSelectionContext, 
@@ -30,6 +31,7 @@ export default function Toolbar({ totalOffset, activeTab }) {
     handleShuffleLayoutVariant,
     handleUpdateFormatting,
     handleChangeFrameSize,
+    handleSmoothBackgrounds,
   } = carouselsCtx;
 
   const {
@@ -83,6 +85,39 @@ export default function Toolbar({ totalOffset, activeTab }) {
                 </div>
               )}
             </div>
+            
+            {/* Smooth Backgrounds Button */}
+            <button
+              onClick={() => {
+                if (!selectedCarousel) return;
+                
+                // Get current backgrounds for each frame
+                const getBackgroundForFrame = (frame) => {
+                  if (frame.backgroundOverride) return frame.backgroundOverride;
+                  const style = getFrameStyle(selectedCarousel.id, frame.style, designSystem);
+                  return style.background;
+                };
+                
+                // Run smoothing algorithm
+                const smoothedFrames = smoothCarouselBackgrounds(
+                  selectedCarousel.frames,
+                  getBackgroundForFrame,
+                  { intensity: 0.5 }
+                );
+                
+                // Apply smoothed backgrounds
+                if (smoothedFrames.length > 0) {
+                  handleSmoothBackgrounds(selectedCarousel.id, smoothedFrames);
+                }
+              }}
+              className="flex items-center gap-1.5 px-3 py-2 bg-gray-700/50 rounded-lg hover:bg-gray-700 transition-colors group"
+              title="Smooth background transitions between frames"
+            >
+              <svg className="w-4 h-4 text-gray-400 group-hover:text-purple-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+              <span className="text-xs font-medium text-gray-300 group-hover:text-white transition-colors">Smooth</span>
+            </button>
           </div>
 
           {/* Layout Group */}

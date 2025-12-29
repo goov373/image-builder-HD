@@ -23,6 +23,7 @@ export const CAROUSEL_ACTIONS = {
   REMOVE_ROW: 'REMOVE_ROW',
   RESET_CAROUSEL: 'RESET_CAROUSEL',
   SET_FRAME_BACKGROUND: 'SET_FRAME_BACKGROUND',
+  SMOOTH_BACKGROUNDS: 'SMOOTH_BACKGROUNDS',
 };
 
 // Initial state shape
@@ -285,6 +286,29 @@ function carouselReducer(state, action) {
       };
     }
 
+    case CAROUSEL_ACTIONS.SMOOTH_BACKGROUNDS: {
+      // Apply smoothed backgrounds to all frames in a carousel
+      // action.smoothedFrames: Array<{ id: number, background: string }>
+      const { carouselId, smoothedFrames } = action;
+      if (!smoothedFrames || smoothedFrames.length === 0) return state;
+      
+      const smoothedMap = new Map(smoothedFrames.map(f => [f.id, f.background]));
+      
+      return {
+        ...state,
+        carousels: state.carousels.map(carousel => {
+          if (carousel.id !== carouselId) return carousel;
+          return {
+            ...carousel,
+            frames: carousel.frames.map(frame => {
+              const newBg = smoothedMap.get(frame.id);
+              return newBg ? { ...frame, backgroundOverride: newBg } : frame;
+            })
+          };
+        })
+      };
+    }
+
     default:
       return state;
   }
@@ -390,6 +414,9 @@ export default function useCarousels(initialData) {
     
     handleSetFrameBackground: useCallback((carouselId, frameId, background) =>
       dispatch({ type: CAROUSEL_ACTIONS.SET_FRAME_BACKGROUND, carouselId, frameId, background }), []),
+    
+    handleSmoothBackgrounds: useCallback((carouselId, smoothedFrames) =>
+      dispatch({ type: CAROUSEL_ACTIONS.SMOOTH_BACKGROUNDS, carouselId, smoothedFrames }), []),
   };
 
   return {
