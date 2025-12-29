@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
 const MAX_TABS = 10;
-const STORAGE_KEY = 'carousel-tool-tabs';
+const STORAGE_KEY = 'carousel-tool-tabs-v2';
 
 // Load from localStorage or use initial data
 function loadFromStorage(initialTabs) {
@@ -10,16 +10,16 @@ function loadFromStorage(initialTabs) {
     if (saved) {
       const parsed = JSON.parse(saved);
       return {
-        tabs: parsed.tabs || initialTabs,
-        activeTabId: parsed.activeTabId || initialTabs[0]?.id || null,
+        projects: parsed.projects || initialTabs,
+        activeTabId: parsed.activeTabId || null,
       };
     }
   } catch (e) {
     console.warn('Failed to load tabs from localStorage:', e);
   }
   return {
-    tabs: initialTabs,
-    activeTabId: initialTabs[0]?.id || null,
+    projects: initialTabs,
+    activeTabId: null,
   };
 }
 
@@ -27,34 +27,39 @@ export default function useTabs(initialTabs = []) {
   const [initialized, setInitialized] = useState(false);
   const stored = loadFromStorage(initialTabs);
   
-  const [tabs, setTabs] = useState(stored.tabs);
+  // All saved projects (persisted)
+  const [projects, setProjects] = useState(stored.projects);
+  // IDs of projects currently open as tabs
+  const [openTabIds, setOpenTabIds] = useState([]);
   const [activeTabId, setActiveTabId] = useState(stored.activeTabId);
   const [currentView, setCurrentView] = useState('home');
+  
+  // Derive open tabs from projects and openTabIds
+  const tabs = projects.filter(p => openTabIds.includes(p.id));
 
-  // Save to localStorage whenever tabs or activeTabId changes
+  // Save to localStorage whenever projects or activeTabId changes
   useEffect(() => {
     if (!initialized) {
       setInitialized(true);
       return;
     }
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({ tabs, activeTabId }));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ projects, activeTabId }));
     } catch (e) {
-      console.warn('Failed to save tabs to localStorage:', e);
+      console.warn('Failed to save projects to localStorage:', e);
     }
-  }, [tabs, activeTabId, initialized]);
+  }, [projects, activeTabId, initialized]);
 
-  const activeTab = tabs.find(t => t.id === activeTabId);
+  const activeTab = projects.find(p => p.id === activeTabId);
 
   const handleTabClick = (tabId) => {
     setActiveTabId(tabId);
-    setTabs(prev => prev.map(tab => ({ ...tab, active: tab.id === tabId })));
   };
 
   const handleUpdateProjectName = (newName) => {
     if (!newName.trim()) return;
-    setTabs(prev => prev.map(tab => 
-      tab.id === activeTabId ? { ...tab, name: newName.trim() } : tab
+    setProjects(prev => prev.map(p => 
+      p.id === activeTabId ? { ...p, name: newName.trim() } : p
     ));
   };
 
@@ -64,25 +69,28 @@ export default function useTabs(initialTabs = []) {
   };
 
   const handleOpenProject = (projectId, closeAccount) => {
+    // Add to open tabs if not already open
+    if (!openTabIds.includes(projectId)) {
+      setOpenTabIds(prev => [...prev, projectId]);
+    }
     setActiveTabId(projectId);
-    setTabs(prev => prev.map(tab => ({ ...tab, active: tab.id === projectId })));
     if (closeAccount) closeAccount();
     setCurrentView('editor');
   };
 
   const handleCreateNewFromHome = (closeAccount) => {
-    const newId = Math.max(...tabs.map(t => t.id), 0) + 1;
-    const newTab = { 
+    const newId = Math.max(...projects.map(p => p.id), 0) + 1;
+    const newProject = { 
       id: newId, 
       name: 'Untitled Project', 
-      active: true, 
       hasContent: false, 
       createdAt: new Date().toISOString().split('T')[0],
       updatedAt: new Date().toISOString().split('T')[0],
       frameCount: 0,
       projectType: 'carousel'
     };
-    setTabs(prev => [...prev.map(t => ({ ...t, active: false })), newTab]);
+    setProjects(prev => [...prev, newProject]);
+    setOpenTabIds(prev => [...prev, newId]);
     setActiveTabId(newId);
     if (closeAccount) closeAccount();
     setCurrentView('editor');
@@ -90,52 +98,52 @@ export default function useTabs(initialTabs = []) {
 
   const handleCloseTab = (tabId, e) => {
     e.stopPropagation();
-    const newTabs = tabs.filter(t => t.id !== tabId);
+    // Remove from open tabs (project stays saved)
+    const newOpenIds = openTabIds.filter(id => id !== tabId);
+    setOpenTabIds(newOpenIds);
     
-    // If closing the last tab, go to homepage
-    if (newTabs.length === 0) {
-      setTabs([]);
+    // If closing the last open tab, go to homepage
+    if (newOpenIds.length === 0) {
       setActiveTabId(null);
       setCurrentView('home');
       return;
     }
     
-    // If closing the active tab, switch to first remaining tab
+    // If closing the active tab, switch to first remaining open tab
     if (activeTabId === tabId) {
-      setActiveTabId(newTabs[0].id);
-      newTabs[0].active = true;
+      setActiveTabId(newOpenIds[0]);
     }
-    setTabs(newTabs);
   };
 
   const handleAddTab = (closeAccount) => {
-    if (tabs.length >= MAX_TABS) return;
-    const newId = Math.max(...tabs.map(t => t.id), 0) + 1;
-    const newTab = { 
+    if (openTabIds.length >= MAX_TABS) return;
+    const newId = Math.max(...projects.map(p => p.id), 0) + 1;
+    const newProject = { 
       id: newId, 
       name: 'Untitled Project', 
-      active: true, 
       hasContent: false, 
       createdAt: new Date().toISOString().split('T')[0],
       updatedAt: new Date().toISOString().split('T')[0],
       frameCount: 0
     };
-    setTabs(prev => [...prev.map(t => ({ ...t, active: false })), newTab]);
+    setProjects(prev => [...prev, newProject]);
+    setOpenTabIds(prev => [...prev, newId]);
     setActiveTabId(newId);
     if (closeAccount) closeAccount();
     setCurrentView('editor');
   };
 
   const handleCreateProject = (projectType, projectName) => {
-    setTabs(prev => prev.map(t => 
-      t.id === activeTabId 
-        ? { ...t, name: projectName || 'New Project', hasContent: true, projectType: projectType || 'carousel' }
-        : t
+    setProjects(prev => prev.map(p => 
+      p.id === activeTabId 
+        ? { ...p, name: projectName || 'New Project', hasContent: true, projectType: projectType || 'carousel' }
+        : p
     ));
   };
 
   return {
-    tabs,
+    tabs,           // Open tabs (for TabBar)
+    projects,       // All saved projects (for Homepage)
     activeTabId,
     activeTab,
     currentView,

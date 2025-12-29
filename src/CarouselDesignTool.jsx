@@ -272,7 +272,7 @@ export default function CarouselDesignTool() {
             style={{ left: totalOffset, transition: 'left 0.3s ease-out' }}
           >
             <Homepage 
-              projects={tabs.tabs} 
+              projects={tabs.projects} 
               onOpenProject={handleOpenProject}
               onCreateNew={handleCreateNewFromHome}
             />
