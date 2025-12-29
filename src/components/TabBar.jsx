@@ -20,7 +20,7 @@ export default function TabBar({
   const availableProjects = projects.filter(p => !openTabIds.includes(p.id));
   return (
     <div className="fixed top-0 right-0 z-[110] border-b border-gray-800" style={{ height: 56, left: sidebarOffset, backgroundColor: '#0d1321', transition: 'left 0.3s ease-out' }}>
-      <div className="flex items-end h-full">
+      <div className="flex items-end h-full pl-5">
         {/* Tabs */}
         <div className="flex items-end">
           {tabs.map((tab, index) => {
