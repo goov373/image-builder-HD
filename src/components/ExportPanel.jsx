@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import html2canvas from 'html2canvas';
 
 /**
  * Export Panel
@@ -127,6 +128,44 @@ const ExportPanel = ({
     setSelectedItems({});
   };
 
+  // Get resolution multiplier
+  const getScale = () => {
+    switch (resolution) {
+      case '1x': return 1;
+      case '2x': return 2;
+      case '3x': return 3;
+      default: return 2;
+    }
+  };
+
+  // Get MIME type for format
+  const getMimeType = () => {
+    switch (format) {
+      case 'png': return 'image/png';
+      case 'jpg': return 'image/jpeg';
+      case 'webp': return 'image/webp';
+      default: return 'image/png';
+    }
+  };
+
+  // Get file extension
+  const getExtension = () => {
+    switch (format) {
+      case 'jpg': return 'jpg';
+      case 'webp': return 'webp';
+      case 'png': 
+      default: return 'png';
+    }
+  };
+
+  // Download a single file
+  const downloadFile = (dataUrl, filename) => {
+    const link = document.createElement('a');
+    link.download = filename;
+    link.href = dataUrl;
+    link.click();
+  };
+
   // Handle export
   const handleExport = async () => {
     const count = getSelectedCount();
@@ -136,23 +175,61 @@ const ExportPanel = ({
     setExportSuccess(false);
     
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
       const selectedItemIds = Object.keys(selectedItems).filter(id => selectedItems[id]);
+      const scale = getScale();
+      const mimeType = getMimeType();
+      const extension = getExtension();
       
-      console.log('Exporting:', {
-        projectName: selectedProject.name,
-        projectType: selectedProject.type,
-        items: selectedItemIds,
-        format,
-        resolution,
-        background: background === 'custom' ? customBgColor : background
-      });
+      // Find frame elements in the DOM by data attributes
+      // Frames should have data-frame-id and data-carousel-id attributes
+      const exportedFiles = [];
       
-      setExportSuccess(true);
-      setTimeout(() => setExportSuccess(false), 3000);
+      for (let i = 0; i < selectedItemIds.length; i++) {
+        const itemId = selectedItemIds[i];
+        
+        // Try to find the frame element
+        // Look for elements with data-frame-id matching the selected item
+        const frameElement = document.querySelector(
+          `[data-frame-id="${itemId}"][data-project-key="${selectedProjectKey}"]`
+        ) || document.querySelector(`[data-frame-id="${itemId}"]`);
+        
+        if (frameElement) {
+          // Capture the element with html2canvas
+          const canvas = await html2canvas(frameElement, {
+            scale: scale,
+            backgroundColor: background === 'transparent' ? null : 
+                            background === 'custom' ? customBgColor : undefined,
+            useCORS: true,
+            allowTaint: true,
+            logging: false,
+          });
+          
+          // Convert to desired format
+          const dataUrl = canvas.toDataURL(mimeType, 0.95);
+          const filename = `${selectedProject.name.replace(/[^a-z0-9]/gi, '_')}_${itemLabel}_${i + 1}.${extension}`;
+          
+          exportedFiles.push({ dataUrl, filename });
+        }
+      }
+      
+      // Download all files
+      if (exportedFiles.length > 0) {
+        // Small delay between downloads to prevent browser blocking
+        for (let i = 0; i < exportedFiles.length; i++) {
+          await new Promise(resolve => setTimeout(resolve, 100));
+          downloadFile(exportedFiles[i].dataUrl, exportedFiles[i].filename);
+        }
+        setExportSuccess(true);
+        setTimeout(() => setExportSuccess(false), 3000);
+      } else {
+        // If no frames found in DOM, show a helpful message
+        console.warn('No frame elements found in DOM. Make sure frames have data-frame-id attributes.');
+        alert('Could not find frames to export. Please make sure you have a project open with visible frames.');
+      }
+      
     } catch (error) {
       console.error('Export failed:', error);
+      alert('Export failed. Please try again.');
     } finally {
       setIsExporting(false);
     }

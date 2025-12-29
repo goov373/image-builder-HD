@@ -94,6 +94,10 @@ export const CarouselFrame = ({
   return (
     <div className="flex flex-col" style={{ width: size.width }}>
       <div 
+        data-frame-id={frame.id}
+        data-carousel-id={carouselId}
+        data-project-key={`carousel-${carouselId}`}
+        data-exportable="true"
         className={`relative overflow-hidden shadow-lg cursor-pointer transition-all border border-gray-600 ${isFrameSelected ? 'ring-2 ring-orange-500/70' : 'hover:border-gray-500'}`}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
