@@ -208,6 +208,11 @@ const Homepage = ({
                       <span>•</span>
                       <span>Updated {project.updatedAt}</span>
                     </div>
+                    {project.lastEditedBy && (
+                      <div className="text-[10px] text-gray-600 mt-1.5 truncate">
+                        Last edited by: {project.lastEditedBy}
+                      </div>
+                    )}
                   </div>
                   
                   {/* Three-dot Menu */}

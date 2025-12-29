@@ -23,9 +23,12 @@ function loadFromStorage(initialTabs) {
   };
 }
 
-export default function useTabs(initialTabs = []) {
+export default function useTabs(initialTabs = [], user = null) {
   const [initialized, setInitialized] = useState(false);
   const stored = loadFromStorage(initialTabs);
+  
+  // Helper to get user email for edit tracking
+  const getUserEmail = () => user?.email || 'Unknown user';
   
   // All saved projects (persisted)
   const [projects, setProjects] = useState(stored.projects);
@@ -71,7 +74,7 @@ export default function useTabs(initialTabs = []) {
     }
     
     setProjects(prev => prev.map(p => 
-      p.id === activeTabId ? { ...p, name: trimmedName } : p
+      p.id === activeTabId ? { ...p, name: trimmedName, updatedAt: new Date().toISOString().split('T')[0], lastEditedBy: getUserEmail() } : p
     ));
     
     return { success: true };
@@ -91,10 +94,10 @@ export default function useTabs(initialTabs = []) {
     if (closeAccount) closeAccount();
     setCurrentView('editor');
     
-    // Update the project's updatedAt to reflect it was recently opened
+    // Update the project's updatedAt and lastEditedBy to reflect it was recently opened
     setProjects(prev => prev.map(p => 
       p.id === projectId 
-        ? { ...p, updatedAt: new Date().toISOString().split('T')[0] }
+        ? { ...p, updatedAt: new Date().toISOString().split('T')[0], lastEditedBy: getUserEmail() }
         : p
     ));
   };
@@ -107,6 +110,7 @@ export default function useTabs(initialTabs = []) {
       hasContent: false, 
       createdAt: new Date().toISOString().split('T')[0],
       updatedAt: new Date().toISOString().split('T')[0],
+      lastEditedBy: getUserEmail(),
       frameCount: 0,
       projectType: 'carousel'
     };
@@ -145,6 +149,7 @@ export default function useTabs(initialTabs = []) {
       hasContent: false, 
       createdAt: new Date().toISOString().split('T')[0],
       updatedAt: new Date().toISOString().split('T')[0],
+      lastEditedBy: getUserEmail(),
       frameCount: 0
     };
     setProjects(prev => [...prev, newProject]);
@@ -157,7 +162,7 @@ export default function useTabs(initialTabs = []) {
   const handleCreateProject = (projectType, projectName) => {
     setProjects(prev => prev.map(p => 
       p.id === activeTabId 
-        ? { ...p, name: projectName || 'New Project', hasContent: true, projectType: projectType || 'carousel' }
+        ? { ...p, name: projectName || 'New Project', hasContent: true, projectType: projectType || 'carousel', updatedAt: new Date().toISOString().split('T')[0], lastEditedBy: getUserEmail() }
         : p
     ));
   };
@@ -190,6 +195,7 @@ export default function useTabs(initialTabs = []) {
       name: `${projectToDupe.name} (Copy)`,
       createdAt: new Date().toISOString().split('T')[0],
       updatedAt: new Date().toISOString().split('T')[0],
+      lastEditedBy: getUserEmail(),
     };
     setProjects(prev => [...prev, newProject]);
   };
@@ -209,7 +215,7 @@ export default function useTabs(initialTabs = []) {
     }
     
     setProjects(prev => prev.map(p => 
-      p.id === projectId ? { ...p, name: trimmedName } : p
+      p.id === projectId ? { ...p, name: trimmedName, updatedAt: new Date().toISOString().split('T')[0], lastEditedBy: getUserEmail() } : p
     ));
     
     return { success: true };

@@ -42,7 +42,7 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
   const [designSystem, setDesignSystem] = useDesignSystem(defaultDesignSystem);
 
   // Use custom hooks for complex state management
-  const tabs = useTabs(INITIAL_TABS);
+  const tabs = useTabs(INITIAL_TABS, user);
   const carousels = useCarousels(initialCarousels);
   const eblasts = useEblasts(initialEblasts);
   const videoCovers = useVideoCovers(initialVideoCovers);
