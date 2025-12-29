@@ -14,7 +14,11 @@ export default function TabBar({
   onAddTab,
   maxTabs = 10,
   sidebarOffset = 64,
+  projects = [],
 }) {
+  // Get projects that aren't already open as tabs
+  const openTabIds = tabs.map(t => t.id);
+  const availableProjects = projects.filter(p => !openTabIds.includes(p.id));
   return (
     <div className="fixed top-0 right-0 z-[110] border-b border-gray-700" style={{ height: 56, left: sidebarOffset, backgroundColor: '#0d1321', transition: 'left 0.3s ease-out' }}>
       <div className="flex items-end h-full">
@@ -113,37 +117,34 @@ export default function TabBar({
                 <div className="my-1.5 border-t border-gray-700" />
                 
                 {/* Existing Projects Header */}
-                <div className="px-3 py-1.5 text-xs font-medium text-gray-500 uppercase tracking-wide">
-                  Open Existing
-                </div>
-                
-                {/* List of existing projects */}
-                {tabs.map(project => (
-                  <button
-                    key={project.id}
-                    onClick={() => { onOpenProject(project.id); setShowNewTabMenu(false); }}
-                    className={`w-full flex items-center gap-3 px-3 py-2 text-left text-sm transition-colors ${
-                      project.id === activeTabId && currentView !== 'home'
-                        ? 'bg-gray-700/50 text-white' 
-                        : 'text-gray-300 hover:bg-gray-700'
-                    }`}
-                  >
-                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${project.hasContent ? 'bg-gray-700' : 'bg-gray-800 border border-gray-700'}`}>
-                      <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                      </svg>
+                {availableProjects.length > 0 && (
+                  <>
+                    <div className="px-3 py-1.5 text-xs font-medium text-gray-500 uppercase tracking-wide">
+                      Open Existing
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="font-medium truncate">{project.name}</div>
-                      <div className="text-xs text-gray-500">
-                        {project.hasContent ? `${project.frameCount || 5} frames` : 'Empty'}
-                      </div>
-                    </div>
-                    {project.id === activeTabId && currentView !== 'home' && (
-                      <div className="w-1.5 h-1.5 rounded-full bg-orange-500" />
-                    )}
-                  </button>
-                ))}
+                    
+                    {/* List of existing projects */}
+                    {availableProjects.map(project => (
+                      <button
+                        key={project.id}
+                        onClick={() => { onOpenProject(project.id); setShowNewTabMenu(false); }}
+                        className="w-full flex items-center gap-3 px-3 py-2 text-left text-sm transition-colors text-gray-300 hover:bg-gray-700"
+                      >
+                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${project.hasContent ? 'bg-gray-700' : 'bg-gray-800 border border-gray-700'}`}>
+                          <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                          </svg>
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="font-medium truncate">{project.name}</div>
+                          <div className="text-xs text-gray-500">
+                            {project.hasContent ? `${project.frameCount || 5} frames` : 'Empty'}
+                          </div>
+                        </div>
+                      </button>
+                    ))}
+                  </>
+                )}
               </div>
             )}
           </div>
