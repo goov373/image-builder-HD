@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 /**
  * Export Panel
- * Project & frame selection with export options
+ * Canva-style project & frame selection with export options
  */
 const ExportPanel = ({ 
   onClose, 
@@ -13,47 +13,55 @@ const ExportPanel = ({
   singleImages = [],
   projectType = 'carousel'
 }) => {
-  const [selectedProjectId, setSelectedProjectId] = useState(null);
   const [format, setFormat] = useState('png');
   const [resolution, setResolution] = useState('2x');
   const [background, setBackground] = useState('original');
   const [customBgColor, setCustomBgColor] = useState('#000000');
-  const [selectedItems, setSelectedItems] = useState({});
-  const [expandedRows, setExpandedRows] = useState({});
+  const [selectedItems, setSelectedItems] = useState({}); // { 'carousel-1': { 1: true, 2: true }, ... }
+  const [expandedProjects, setExpandedProjects] = useState({});
   const [isExporting, setIsExporting] = useState(false);
   const [exportSuccess, setExportSuccess] = useState(false);
 
-  // Combine all projects into a unified list
+  // Combine all projects into a unified list with unique keys
   const allProjects = [
-    ...carousels.map(c => ({ ...c, type: 'carousel', items: c.frames, itemLabel: 'Frame' })),
-    ...eblasts.map(e => ({ ...e, type: 'eblast', items: e.sections || [], itemLabel: 'Section' })),
-    ...videoCovers.map(v => ({ ...v, type: 'videoCover', items: v.frames || [], itemLabel: 'Cover' })),
-    ...singleImages.map(s => ({ ...s, type: 'singleImage', items: s.layers || [], itemLabel: 'Layer' })),
+    ...carousels.map(c => ({ ...c, type: 'carousel', items: c.frames || [], itemLabel: 'Frame', key: `carousel-${c.id}` })),
+    ...eblasts.map(e => ({ ...e, type: 'eblast', items: e.sections || [], itemLabel: 'Section', key: `eblast-${e.id}` })),
+    ...videoCovers.map(v => ({ ...v, type: 'videoCover', items: v.frames || [], itemLabel: 'Cover', key: `videoCover-${v.id}` })),
+    ...singleImages.map(s => ({ ...s, type: 'singleImage', items: s.layers || [], itemLabel: 'Layer', key: `singleImage-${s.id}` })),
   ];
 
-  // Get currently selected project
-  const selectedProject = allProjects.find(p => p.id === selectedProjectId && p.type === getProjectTypeFromId(selectedProjectId));
-  
-  function getProjectTypeFromId(id) {
-    if (carousels.find(c => c.id === id)) return 'carousel';
-    if (eblasts.find(e => e.id === id)) return 'eblast';
-    if (videoCovers.find(v => v.id === id)) return 'videoCover';
-    if (singleImages.find(s => s.id === id)) return 'singleImage';
-    return null;
-  }
-
-  // Auto-select first project if none selected
-  useEffect(() => {
-    if (!selectedProjectId && allProjects.length > 0) {
-      setSelectedProjectId(allProjects[0].id);
+  // Get type icon based on project type
+  const getTypeIcon = (type) => {
+    switch (type) {
+      case 'carousel':
+        return (
+          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+          </svg>
+        );
+      case 'eblast':
+        return (
+          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+          </svg>
+        );
+      case 'videoCover':
+        return (
+          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        );
+      case 'singleImage':
+        return (
+          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+        );
+      default:
+        return null;
     }
-  }, [allProjects.length, selectedProjectId]);
-
-  // Reset selections when project changes
-  useEffect(() => {
-    setSelectedItems({});
-    setExpandedRows({});
-  }, [selectedProjectId]);
+  };
 
   const formats = [
     { id: 'png', name: 'PNG', supportsTransparent: true },
@@ -76,28 +84,80 @@ const ExportPanel = ({
     { id: 'custom', name: 'Custom Color', desc: 'Solid fill' },
   ];
 
-  // Get items for selected project
-  const projectItems = selectedProject?.items || [];
-  const itemLabel = selectedProject?.itemLabel || 'Frame';
-
-  // Count total selected items
+  // Count total selected items across all projects
   const getSelectedCount = () => {
-    return Object.values(selectedItems).filter(Boolean).length;
+    let count = 0;
+    Object.values(selectedItems).forEach(projectSelection => {
+      if (typeof projectSelection === 'object') {
+        count += Object.values(projectSelection).filter(Boolean).length;
+      }
+    });
+    return count;
+  };
+
+  // Get total frames across all projects
+  const getTotalFrames = () => {
+    return allProjects.reduce((acc, p) => acc + (p.items?.length || 0), 0);
+  };
+
+  // Check if project is fully selected
+  const isProjectFullySelected = (projectKey, itemCount) => {
+    const selection = selectedItems[projectKey] || {};
+    const selectedCount = Object.values(selection).filter(Boolean).length;
+    return selectedCount === itemCount && itemCount > 0;
+  };
+
+  // Check if project is partially selected
+  const isProjectPartiallySelected = (projectKey) => {
+    const selection = selectedItems[projectKey] || {};
+    const selectedCount = Object.values(selection).filter(Boolean).length;
+    return selectedCount > 0;
+  };
+
+  // Toggle entire project selection
+  const toggleProject = (projectKey, items) => {
+    const isFullySelected = isProjectFullySelected(projectKey, items.length);
+    
+    if (isFullySelected) {
+      // Deselect all items in this project
+      setSelectedItems(prev => ({ ...prev, [projectKey]: {} }));
+    } else {
+      // Select all items in this project
+      const newSelection = {};
+      items.forEach(item => {
+        newSelection[item.id] = true;
+      });
+      setSelectedItems(prev => ({ ...prev, [projectKey]: newSelection }));
+    }
   };
 
   // Toggle individual item
-  const toggleItem = (itemId) => {
+  const toggleItem = (projectKey, itemId) => {
     setSelectedItems(prev => ({
       ...prev,
-      [itemId]: !prev[itemId]
+      [projectKey]: {
+        ...(prev[projectKey] || {}),
+        [itemId]: !(prev[projectKey]?.[itemId])
+      }
     }));
   };
 
-  // Select all items in current project
+  // Toggle project expansion
+  const toggleExpanded = (projectKey) => {
+    setExpandedProjects(prev => ({
+      ...prev,
+      [projectKey]: !prev[projectKey]
+    }));
+  };
+
+  // Select all across all projects
   const selectAll = () => {
     const newSelection = {};
-    projectItems.forEach(item => {
-      newSelection[item.id] = true;
+    allProjects.forEach(project => {
+      newSelection[project.key] = {};
+      project.items.forEach(item => {
+        newSelection[project.key][item.id] = true;
+      });
     });
     setSelectedItems(newSelection);
   };
@@ -109,26 +169,31 @@ const ExportPanel = ({
 
   // Handle export
   const handleExport = async () => {
-    if (selectedCount === 0) return;
+    const count = getSelectedCount();
+    if (count === 0) return;
     
     setIsExporting(true);
     setExportSuccess(false);
     
-    // Simulate export process
-    // In a real implementation, this would:
-    // 1. Capture each selected frame as an image
-    // 2. Apply resolution scaling
-    // 3. Apply background settings
-    // 4. Convert to selected format
-    // 5. Trigger download or zip multiple files
-    
     try {
       await new Promise(resolve => setTimeout(resolve, 1500));
       
-      // Mock success - in real implementation, trigger actual download
+      // Build export manifest
+      const exportData = [];
+      allProjects.forEach(project => {
+        const projectSelection = selectedItems[project.key] || {};
+        const selectedItemIds = Object.keys(projectSelection).filter(id => projectSelection[id]);
+        if (selectedItemIds.length > 0) {
+          exportData.push({
+            projectName: project.name,
+            projectType: project.type,
+            items: selectedItemIds
+          });
+        }
+      });
+      
       console.log('Exporting:', {
-        project: selectedProject?.name,
-        items: Object.keys(selectedItems).filter(id => selectedItems[id]),
+        projects: exportData,
         format,
         resolution,
         background: background === 'custom' ? customBgColor : background
@@ -144,7 +209,7 @@ const ExportPanel = ({
   };
 
   const selectedCount = getSelectedCount();
-  const totalItems = projectItems.length;
+  const totalFrames = getTotalFrames();
   const supportsTransparent = formats.find(f => f.id === format)?.supportsTransparent;
 
   return (
@@ -166,62 +231,124 @@ const ExportPanel = ({
       <div className="flex-1 overflow-y-auto overflow-x-hidden">
         <div className="p-4 space-y-5">
           
-          {/* Project Selection */}
+          {/* Project & Frame Selection - Canva-style */}
           <div>
-            <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-2">Select Project</h3>
-            <select
-              value={selectedProjectId || ''}
-              onChange={(e) => setSelectedProjectId(Number(e.target.value))}
-              className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-xs text-white hover:border-orange-500 focus:border-orange-500 focus:outline-none transition-colors cursor-pointer"
-            >
-              {allProjects.length === 0 ? (
-                <option value="">No projects available</option>
-              ) : (
-                allProjects.map(project => (
-                  <option key={`${project.type}-${project.id}`} value={project.id}>
-                    {project.name} ({project.type})
-                  </option>
-                ))
-              )}
-            </select>
-          </div>
-
-          {/* Frame/Item Selection */}
-          {selectedProject && (
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Select {itemLabel}s</h3>
-                <div className="flex gap-2">
-                  <button type="button" onClick={selectAll} className="text-[10px] text-orange-400 hover:text-orange-300">All</button>
-                  <span className="text-gray-600">|</span>
-                  <button type="button" onClick={deselectAll} className="text-[10px] text-gray-500 hover:text-gray-400">None</button>
-                </div>
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Select Content</h3>
+              <div className="flex gap-2">
+                <button type="button" onClick={selectAll} className="text-[10px] text-orange-400 hover:text-orange-300">All</button>
+                <span className="text-gray-600">|</span>
+                <button type="button" onClick={deselectAll} className="text-[10px] text-gray-500 hover:text-gray-400">None</button>
               </div>
-              <div className="bg-gray-800/50 rounded-lg border border-gray-700/50 p-3">
-                {projectItems.length === 0 ? (
-                  <p className="text-xs text-gray-500 text-center py-2">No {itemLabel.toLowerCase()}s in this project</p>
-                ) : (
-                  <div className="flex flex-wrap gap-1.5">
-                    {projectItems.map((item, index) => (
+            </div>
+            
+            {allProjects.length === 0 ? (
+              <div className="bg-gray-800/50 rounded-lg border border-gray-700/50 p-6 text-center">
+                <svg className="w-8 h-8 mx-auto mb-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                </svg>
+                <p className="text-xs text-gray-500">No projects to export</p>
+              </div>
+            ) : (
+              <div className="bg-gray-800/30 rounded-lg border border-gray-700/50 overflow-hidden">
+                {allProjects.map((project) => (
+                  <div key={project.key} className="border-b border-gray-700/50 last:border-b-0">
+                    {/* Project Row */}
+                    <div className="flex items-center gap-2 px-3 py-2.5 hover:bg-gray-700/30 transition-colors">
+                      {/* Checkbox */}
                       <button
                         type="button"
-                        key={item.id}
-                        onClick={() => toggleItem(item.id)}
-                        className={`px-3 py-1.5 rounded text-[11px] font-medium transition-colors ${
-                          selectedItems[item.id]
-                            ? 'bg-orange-500 text-white'
-                            : 'bg-gray-700 text-gray-400 hover:bg-gray-600'
+                        onClick={() => toggleProject(project.key, project.items)}
+                        className={`w-4 h-4 rounded flex-shrink-0 border flex items-center justify-center transition-all ${
+                          isProjectFullySelected(project.key, project.items.length)
+                            ? 'bg-orange-500 border-orange-500'
+                            : isProjectPartiallySelected(project.key)
+                            ? 'bg-orange-500/40 border-orange-500'
+                            : 'border-gray-500 hover:border-gray-400'
                         }`}
                       >
-                        {itemLabel} {index + 1}
+                        {isProjectFullySelected(project.key, project.items.length) && (
+                          <svg className="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                          </svg>
+                        )}
+                        {isProjectPartiallySelected(project.key) && !isProjectFullySelected(project.key, project.items.length) && (
+                          <div className="w-2 h-0.5 bg-white rounded-full" />
+                        )}
                       </button>
-                    ))}
+                      
+                      {/* Type Icon */}
+                      <span className="text-gray-500 flex-shrink-0">
+                        {getTypeIcon(project.type)}
+                      </span>
+                      
+                      {/* Project Name - Clickable to expand */}
+                      <button
+                        type="button"
+                        onClick={() => toggleExpanded(project.key)}
+                        className="flex-1 flex items-center gap-2 text-left min-w-0"
+                      >
+                        <span className="text-xs text-white truncate">{project.name}</span>
+                        <span className="text-[10px] text-gray-500 flex-shrink-0">
+                          {project.items.length} {project.itemLabel.toLowerCase()}{project.items.length !== 1 ? 's' : ''}
+                        </span>
+                      </button>
+                      
+                      {/* Expand Arrow */}
+                      <button
+                        type="button"
+                        onClick={() => toggleExpanded(project.key)}
+                        className="p-1 text-gray-500 hover:text-gray-400 transition-colors flex-shrink-0"
+                      >
+                        <svg 
+                          className={`w-3 h-3 transition-transform duration-200 ${expandedProjects[project.key] ? 'rotate-180' : ''}`} 
+                          fill="none" 
+                          stroke="currentColor" 
+                          viewBox="0 0 24 24"
+                        >
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </button>
+                    </div>
+                    
+                    {/* Expanded Frame List */}
+                    <div 
+                      className={`overflow-hidden transition-all duration-200 ease-out ${
+                        expandedProjects[project.key] ? 'max-h-48 opacity-100' : 'max-h-0 opacity-0'
+                      }`}
+                    >
+                      <div className="px-3 pb-2.5 pt-1">
+                        <div className="pl-6 border-l border-gray-700/50 ml-2">
+                          {project.items.length === 0 ? (
+                            <p className="text-[10px] text-gray-600 py-1 pl-3">No {project.itemLabel.toLowerCase()}s</p>
+                          ) : (
+                            <div className="flex flex-wrap gap-1.5 pl-3">
+                              {project.items.map((item, index) => (
+                                <button
+                                  type="button"
+                                  key={item.id}
+                                  onClick={() => toggleItem(project.key, item.id)}
+                                  className={`px-2.5 py-1 rounded text-[10px] font-medium transition-all ${
+                                    selectedItems[project.key]?.[item.id]
+                                      ? 'bg-orange-500 text-white shadow-sm shadow-orange-500/25'
+                                      : 'bg-gray-700/70 text-gray-400 hover:bg-gray-600 hover:text-gray-300'
+                                  }`}
+                                >
+                                  {project.itemLabel} {index + 1}
+                                </button>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                )}
+                ))}
               </div>
-              <p className="text-[10px] text-gray-500 mt-1.5">{selectedCount} of {totalItems} {itemLabel.toLowerCase()}s selected</p>
-            </div>
-          )}
+            )}
+            
+            <p className="text-[10px] text-gray-500 mt-2">{selectedCount} of {totalFrames} items selected</p>
+          </div>
 
           {/* Format Section */}
           <div>
@@ -344,9 +471,9 @@ const ExportPanel = ({
               <span>Exporting...</span>
             </>
           ) : selectedCount > 0 ? (
-            `Export ${selectedCount} ${itemLabel}${selectedCount > 1 ? 's' : ''}`
+            `Export ${selectedCount} item${selectedCount > 1 ? 's' : ''}`
           ) : (
-            `Select ${itemLabel.toLowerCase()}s to export`
+            'Select items to export'
           )}
         </button>
       </div>
