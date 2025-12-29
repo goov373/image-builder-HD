@@ -254,7 +254,7 @@ const DesignSystemPanel = ({ designSystem, onUpdate, onClose, isOpen }) => {
         
         {/* Fonts Section */}
         <div className="p-4 border-b border-gray-800">
-          <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-3">Nunito Sans</h3>
+          <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-3">Brand Font: Nunito Sans</h3>
           <div className="bg-gray-800/60 rounded-xl p-3 space-y-3">
             <div>
               <label className="text-[10px] text-gray-400 font-medium block mb-1.5">Heading Weight</label>
