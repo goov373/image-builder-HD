@@ -46,14 +46,14 @@ export const LayoutBottomStack = ({ headline, body, text, accent, isLandscape, h
   const headlineFontSize = (formatting.headline?.fontSize || 1) * (fontSizes.headline || 14);
   const bodyFontSize = (formatting.body?.fontSize || 1) * (fontSizes.body || 12);
   
-  const headlineStyle = { color: text || '#ffffff', fontFamily: headingFont, fontSize: headlineFontSize, lineHeight: fontSizes.lineHeight || 1.3, ...textWrapStyles };
-  const bodyStyle = { fontFamily: bodyFont, fontSize: bodyFontSize, lineHeight: fontSizes.lineHeight || 1.4, ...textWrapStyles };
+  const headlineStyle = { color: text || '#ffffff', fontFamily: headingFont, fontSize: headlineFontSize, fontWeight: 700, lineHeight: fontSizes.lineHeight || 1.3, ...textWrapStyles };
+  const bodyStyle = { fontFamily: bodyFont, fontSize: bodyFontSize, fontWeight: 400, lineHeight: fontSizes.lineHeight || 1.4, ...textWrapStyles };
 
   if (isLandscape) {
     return (
       <div className={`absolute inset-0 flex ${getLandscapeAlignment()} px-3 py-3 ${getLandscapeGradient()}`}>
         <div className="flex items-center justify-between w-full gap-4">
-          <EditableTextField {...commonProps} field="headline" isActive={activeField === 'headline'} formatting={formatting.headline || {}} className="font-bold leading-tight block flex-1 min-w-0" style={headlineStyle}>{headline}</EditableTextField>
+          <EditableTextField {...commonProps} field="headline" isActive={activeField === 'headline'} formatting={formatting.headline || {}} className="leading-tight block flex-1 min-w-0" style={headlineStyle}>{headline}</EditableTextField>
           <EditableTextField {...commonProps} field="body" isActive={activeField === 'body'} formatting={formatting.body || {}} className="text-gray-200 leading-snug text-right block max-w-[40%] min-w-0" style={bodyStyle}>{body}</EditableTextField>
         </div>
       </div>
@@ -63,7 +63,7 @@ export const LayoutBottomStack = ({ headline, body, text, accent, isLandscape, h
   return (
     <div className={`absolute inset-0 flex flex-col ${getAlignment()} p-4 ${getGradient()}`}>
       <div className="relative mb-1.5 w-full">
-        <EditableTextField {...commonProps} field="headline" isActive={activeField === 'headline'} formatting={formatting.headline || {}} className="font-bold leading-tight block w-full" style={headlineStyle}>{headline}</EditableTextField>
+        <EditableTextField {...commonProps} field="headline" isActive={activeField === 'headline'} formatting={formatting.headline || {}} className="leading-tight block w-full" style={headlineStyle}>{headline}</EditableTextField>
       </div>
       <div className="relative w-full">
         <EditableTextField {...commonProps} field="body" isActive={activeField === 'body'} formatting={formatting.body || {}} className="text-gray-200 leading-snug block w-full" style={bodyStyle}>{body}</EditableTextField>
@@ -107,8 +107,8 @@ export const LayoutCenterDrama = ({ headline, body, text, accent, isLandscape, h
   const headlineFontSize = (formatting.headline?.fontSize || 1) * ((fontSizes.headline || 14) + 2);
   const bodyFontSize = (formatting.body?.fontSize || 1) * (fontSizes.body || 12);
   
-  const headlineStyle = { color: text || '#ffffff', fontFamily: headingFont, fontSize: headlineFontSize, lineHeight: fontSizes.lineHeight || 1.3, ...textWrapStyles };
-  const bodyStyle = { fontFamily: bodyFont, fontSize: bodyFontSize, lineHeight: (fontSizes.lineHeight || 1.4) + 0.1, ...textWrapStyles };
+  const headlineStyle = { color: text || '#ffffff', fontFamily: headingFont, fontSize: headlineFontSize, fontWeight: 700, lineHeight: fontSizes.lineHeight || 1.3, ...textWrapStyles };
+  const bodyStyle = { fontFamily: bodyFont, fontSize: bodyFontSize, fontWeight: 400, lineHeight: (fontSizes.lineHeight || 1.4) + 0.1, ...textWrapStyles };
 
   if (isLandscape) {
     return (
@@ -180,14 +180,14 @@ export const LayoutEditorialLeft = ({ headline, body, text, accent, isLandscape,
   const headlineFontSize = (formatting.headline?.fontSize || 1) * (fontSizes.headline || 14);
   const bodyFontSize = (formatting.body?.fontSize || 1) * (fontSizes.body || 12);
   
-  const headlineStyle = { color: text || '#ffffff', fontFamily: headingFont, fontSize: headlineFontSize, lineHeight: fontSizes.lineHeight || 1.3, ...textWrapStyles };
-  const bodyStyle = { fontFamily: bodyFont, fontSize: bodyFontSize, lineHeight: fontSizes.lineHeight || 1.4, ...textWrapStyles };
+  const headlineStyle = { color: text || '#ffffff', fontFamily: headingFont, fontSize: headlineFontSize, fontWeight: 700, lineHeight: fontSizes.lineHeight || 1.3, ...textWrapStyles };
+  const bodyStyle = { fontFamily: bodyFont, fontSize: bodyFontSize, fontWeight: 400, lineHeight: fontSizes.lineHeight || 1.4, ...textWrapStyles };
 
   if (isLandscape) {
     return (
       <div className={`absolute inset-0 flex items-center ${getLandscapeContentAlign()} p-3 gap-3`}>
         <div className="w-1 h-10 rounded-full flex-shrink-0" style={{ background: accent }} />
-        <EditableTextField {...commonProps} field="headline" isActive={activeField === 'headline'} formatting={formatting.headline || {}} className={`font-bold leading-tight block flex-1 min-w-0 ${variant === 1 ? 'text-center' : variant === 2 ? 'text-right' : 'text-left'}`} style={headlineStyle}>{headline}</EditableTextField>
+        <EditableTextField {...commonProps} field="headline" isActive={activeField === 'headline'} formatting={formatting.headline || {}} className={`leading-tight block flex-1 min-w-0 ${variant === 1 ? 'text-center' : variant === 2 ? 'text-right' : 'text-left'}`} style={headlineStyle}>{headline}</EditableTextField>
         <div className="relative bg-black/40 backdrop-blur-sm rounded px-2 py-1 max-w-[35%] min-w-0">
           <EditableTextField {...commonProps} field="body" isActive={activeField === 'body'} formatting={formatting.body || {}} className={`text-gray-200 leading-snug italic block ${variant === 1 ? 'text-center' : variant === 2 ? 'text-left' : 'text-right'}`} style={bodyStyle}>{body}</EditableTextField>
         </div>
@@ -200,7 +200,7 @@ export const LayoutEditorialLeft = ({ headline, body, text, accent, isLandscape,
     <div className={`absolute inset-0 flex flex-col ${getHeadlineAlign()} p-4 pt-8`}>
       <div className={`w-8 h-1 rounded-full mb-3 flex-shrink-0 ${getAccentAlign()}`} style={{ background: accent }} />
       <div className="relative max-w-[85%] w-full mb-auto">
-        <EditableTextField {...commonProps} field="headline" isActive={activeField === 'headline'} formatting={formatting.headline || {}} className="font-bold leading-tight block w-full" style={headlineStyle}>{headline}</EditableTextField>
+        <EditableTextField {...commonProps} field="headline" isActive={activeField === 'headline'} formatting={formatting.headline || {}} className="leading-tight block w-full" style={headlineStyle}>{headline}</EditableTextField>
       </div>
       <div className={`relative ${getBodyAlign()} max-w-[75%] bg-black/30 backdrop-blur-sm rounded-lg p-2`}>
         <EditableTextField {...commonProps} field="body" isActive={activeField === 'body'} formatting={formatting.body || {}} className="text-gray-200 leading-snug italic block w-full" style={bodyStyle}>{body}</EditableTextField>

@@ -18,11 +18,15 @@ const EditableTextField = ({ children, field, isFrameSelected, isActive, onActiv
     };
   };
 
-  // Determine font weight: explicit fontWeight > bold toggle > style default
+  // Determine font weight: bold toggle (if set) > explicit fontWeight > style default
+  // Bold toggle takes priority because it's a direct user action
   const getFontWeight = () => {
+    // If bold is explicitly set (true/false), use that
+    if (formatting.bold === true) return '700';
+    if (formatting.bold === false) return '400';
+    // Otherwise use explicit fontWeight if set
     if (formatting.fontWeight) return formatting.fontWeight;
-    if (formatting.bold === true) return 'bold';
-    if (formatting.bold === false) return 'normal';
+    // Fall back to style default
     return style.fontWeight;
   };
 
