@@ -65,14 +65,14 @@ const DesignSystemPanel = ({
   ];
 
   // ===== ORANGE GRADIENTS (3) =====
-  // ===== ORANGE/GOLD GRADIENTS (3) - Light & Airy =====
+  // ===== ORANGE GRADIENTS (3) - Light & Airy =====
   const orangeGradients = [
-    // 1. Soft golden diagonal - light peach to warm amber
-    'linear-gradient(135deg, #fcd9b6 0%, #f5c28b 25%, #e9a86a 50%, #dda15e 75%, #d4a056 100%)',
-    // 2. Warm vertical - cream gold fading to amber
-    'linear-gradient(180deg, #fde2c4 0%, #f5c78f 30%, #e9a86a 60%, #d4995a 100%)',
-    // 3. Subtle radial glow - golden center with warm edges
-    'radial-gradient(ellipse at 50% 30%, #fde8d0 0%, #f5d4a8 30%, transparent 60%), linear-gradient(160deg, #e9a86a 0%, #dda15e 40%, #d4995a 70%, #c98f52 100%)',
+    // 1. Soft peach-orange diagonal - light to warm orange
+    'linear-gradient(135deg, #fdd8c2 0%, #fcb88a 25%, #f9a066 50%, #f78b4a 75%, #f57c3a 100%)',
+    // 2. Warm vertical - cream orange fading to rich orange
+    'linear-gradient(180deg, #fee0cc 0%, #fcb98c 30%, #f9944e 60%, #f7843c 100%)',
+    // 3. Subtle radial glow - light orange center with warm edges
+    'radial-gradient(ellipse at 50% 30%, #fee8d8 0%, #fcc8a0 30%, transparent 60%), linear-gradient(160deg, #f9a066 0%, #f78b4a 40%, #f57c3a 70%, #e86f30 100%)',
   ];
 
   // ===== BLACK/DARK GRADIENTS (3) =====
