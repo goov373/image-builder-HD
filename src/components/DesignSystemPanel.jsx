@@ -37,14 +37,14 @@ const DesignSystemPanel = ({
 
   // HelloData brand-aligned gradients
   // ===== WHITE-DOMINANT PURPLE GRADIENTS (3) =====
-  // For pages that feel primarily white (60-70%) with subtle purple accents
+  // For pages that feel primarily white with purple stretched/blended in
   const whitePurpleGradients = [
-    // 1. Diagonal mesh - extended white with gentle purple fade
-    'linear-gradient(135deg, #ffffff 0%, #ffffff 35%, #f8f9ff 50%, #eef1f9 65%, #d4d9fc 80%, #a5b4fc 92%, #818cf8 100%)',
-    // 2. Vertical fade - stretched white with soft purple bottom
-    'linear-gradient(180deg, #ffffff 0%, #ffffff 40%, #f8f9ff 55%, #eef1f9 70%, #c7d2fe 85%, #a5b4fc 100%)',
-    // 3. Radial center - large white center with gentle purple edge
-    'radial-gradient(ellipse at 50% 40%, #ffffff 0%, #ffffff 35%, #f8f9ff 50%, #eef1f9 65%, #c7d2fe 82%, #a5b4fc 100%)',
+    // 1. Diagonal mesh - purple stretched further with smooth blend
+    'linear-gradient(135deg, #ffffff 0%, #f5f6ff 15%, #e8ebf7 30%, #d4d9fc 45%, #b8c0f5 60%, #a5b4fc 75%, #818cf8 90%, #6466e9 100%)',
+    // 2. Vertical fade - purple blending up smoothly
+    'linear-gradient(180deg, #ffffff 0%, #f5f6ff 18%, #e8ebf7 35%, #c7d2fe 52%, #a5b4fc 70%, #818cf8 85%, #6466e9 100%)',
+    // 3. Radial center - purple edges stretched inward with smooth fade
+    'radial-gradient(ellipse at 50% 40%, #ffffff 0%, #f5f6ff 18%, #e8ebf7 35%, #c7d2fe 52%, #a5b4fc 70%, #818cf8 85%, #6466e9 100%)',
   ];
 
   // ===== PURPLE RADIAL GRADIENTS (3) =====
