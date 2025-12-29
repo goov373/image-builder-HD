@@ -36,11 +36,15 @@ const DesignSystemPanel = ({
   ];
 
   // HelloData brand-aligned gradients
-  // ===== PURPLE CONICAL GRADIENTS (3) =====
+  // ===== PURPLE RADIAL GRADIENTS (3) =====
+  // Soft highlight aesthetic with organic glow effects
   const purpleConicals = [
-    'linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(200, 200, 220, 0.08) 50%, transparent 100%), linear-gradient(135deg, rgba(100, 102, 233, 0.3) 0%, rgba(129, 140, 248, 0.15) 100%), conic-gradient(from 180deg at 20% 50%, #6466e9 0deg, #818cf8 120deg, #b8bdd6 240deg, #6466e9 360deg)',
-    'linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(200, 200, 220, 0.06) 50%, transparent 100%), radial-gradient(ellipse at 30% 70%, rgba(129, 140, 248, 0.25) 0%, transparent 50%), linear-gradient(135deg, rgba(74, 77, 207, 0.25) 0%, rgba(100, 102, 233, 0.1) 100%), conic-gradient(from 225deg at 15% 85%, #4a4dcf 0deg, #5558d9 45deg, #6466e9 90deg, #818cf8 135deg, #6466e9 180deg, #5558d9 225deg, #4a4dcf 270deg, #3d3fa8 315deg, #4a4dcf 360deg)',
-    'linear-gradient(135deg, rgba(255, 255, 255, 0.18) 0%, rgba(200, 200, 220, 0.1) 50%, transparent 100%), linear-gradient(135deg, rgba(61, 63, 168, 0.35) 0%, rgba(85, 88, 217, 0.15) 100%), conic-gradient(from 135deg at 85% 85%, #3d3fa8 0deg, #4a4dcf 60deg, #5558d9 120deg, #6466e9 180deg, #5558d9 240deg, #4a4dcf 300deg, #3d3fa8 360deg)',
+    // Gradient 1: Upper-left soft white highlight on medium purple base
+    'radial-gradient(ellipse at 25% 25%, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0.1) 25%, transparent 50%), radial-gradient(ellipse at 50% 50%, #7578eb 0%, #6466e9 60%, #5558d9 100%)',
+    // Gradient 2: Centered subtle glow, uniform purple
+    'radial-gradient(ellipse at 50% 45%, rgba(165, 180, 252, 0.4) 0%, transparent 45%), linear-gradient(180deg, #7578eb 0%, #6466e9 50%, #5c5fdb 100%)',
+    // Gradient 3: Lighter/muted periwinkle, washed soft aesthetic
+    'radial-gradient(ellipse at 60% 40%, rgba(255, 255, 255, 0.25) 0%, transparent 50%), linear-gradient(160deg, #a5b4fc 0%, #8b8fef 35%, #7578eb 70%, #6c6fe5 100%)',
   ];
 
   // ===== PURPLE MESH GRADIENTS (6) =====
