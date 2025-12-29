@@ -39,8 +39,8 @@ const DesignSystemPanel = ({
   // ===== PURPLE RADIAL GRADIENTS (3) =====
   // Soft highlight aesthetic with organic glow effects
   const purpleConicals = [
-    // Gradient 1: Upper-left soft white highlight on medium purple base
-    'radial-gradient(ellipse at 25% 25%, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0.1) 25%, transparent 50%), radial-gradient(ellipse at 50% 50%, #7578eb 0%, #6466e9 60%, #5558d9 100%)',
+    // Gradient 1: Upper-left soft lavender highlight on medium purple base (stretched, blended)
+    'radial-gradient(ellipse at 25% 25%, rgba(199, 210, 254, 0.5) 0%, rgba(165, 180, 252, 0.25) 30%, rgba(129, 140, 248, 0.1) 50%, transparent 70%), radial-gradient(ellipse at 50% 50%, #7578eb 0%, #6466e9 60%, #5558d9 100%)',
     // Gradient 2: Centered subtle glow, uniform purple
     'radial-gradient(ellipse at 50% 45%, rgba(165, 180, 252, 0.4) 0%, transparent 45%), linear-gradient(180deg, #7578eb 0%, #6466e9 50%, #5c5fdb 100%)',
     // Gradient 3: Lighter/muted periwinkle, washed soft aesthetic
