@@ -27,8 +27,11 @@ const EditableTextField = ({ children, field, isFrameSelected, isActive, onActiv
     textAlign: formatting.textAlign || style.textAlign,
     lineHeight: formatting.lineHeight !== undefined ? formatting.lineHeight : style.lineHeight,
     letterSpacing: formatting.letterSpacing !== undefined ? `${formatting.letterSpacing}px` : style.letterSpacing,
-    transform: formatting.fontSize ? `scale(${formatting.fontSize})` : undefined,
-    transformOrigin: 'left center',
+    // Text wrapping - always enabled to prevent overflow
+    wordWrap: 'break-word',
+    overflowWrap: 'break-word',
+    hyphens: 'auto',
+    whiteSpace: 'pre-wrap',
     ...getUnderlineStyles(),
   };
   
