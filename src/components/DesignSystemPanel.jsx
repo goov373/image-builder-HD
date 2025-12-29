@@ -41,8 +41,8 @@ const DesignSystemPanel = ({
   const purpleConicals = [
     // Gradient 1: Upper-left soft lavender highlight on medium purple base (stretched, blended)
     'radial-gradient(ellipse at 25% 25%, rgba(199, 210, 254, 0.5) 0%, rgba(165, 180, 252, 0.25) 30%, rgba(129, 140, 248, 0.1) 50%, transparent 70%), radial-gradient(ellipse at 50% 50%, #7578eb 0%, #6466e9 60%, #5558d9 100%)',
-    // Gradient 2: Centered subtle glow, uniform purple
-    'radial-gradient(ellipse at 50% 45%, rgba(165, 180, 252, 0.4) 0%, transparent 45%), linear-gradient(180deg, #7578eb 0%, #6466e9 50%, #5c5fdb 100%)',
+    // Gradient 2: Centered subtle glow, blended into uniform purple
+    'radial-gradient(ellipse at 50% 45%, rgba(165, 180, 252, 0.35) 0%, rgba(129, 140, 248, 0.25) 25%, rgba(100, 102, 233, 0.12) 45%, transparent 65%), linear-gradient(180deg, #7578eb 0%, #6466e9 50%, #5c5fdb 100%)',
     // Gradient 3: Lighter/muted periwinkle, washed soft aesthetic
     'radial-gradient(ellipse at 60% 40%, rgba(255, 255, 255, 0.25) 0%, transparent 50%), linear-gradient(160deg, #a5b4fc 0%, #8b8fef 35%, #7578eb 70%, #6c6fe5 100%)',
   ];
