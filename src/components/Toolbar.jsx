@@ -221,95 +221,56 @@ export default function Toolbar({ totalOffset, activeTab }) {
             <div ref={smoothPickerRef} className="relative">
               <button
                 onClick={() => showSmoothPicker ? closeSmoothPicker(false) : openSmoothPicker()}
-                className={`flex items-center gap-1.5 px-3 py-2 rounded-lg transition-colors group ${
-                  showSmoothPicker ? 'bg-purple-600 text-white' : 'bg-gray-700/50 hover:bg-gray-700'
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors ${
+                  showSmoothPicker ? 'bg-orange-500 text-white' : 'bg-gray-700/50 text-gray-300 hover:bg-gray-700'
                 }`}
                 title="Smooth background transitions between frames"
               >
-                <svg className={`w-4 h-4 transition-colors ${showSmoothPicker ? 'text-white' : 'text-gray-400 group-hover:text-purple-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                </svg>
-                <span className={`text-xs font-medium transition-colors ${showSmoothPicker ? 'text-white' : 'text-gray-300 group-hover:text-white'}`}>Smooth</span>
-                <svg className={`w-3 h-3 transition-transform ${showSmoothPicker ? 'rotate-180 text-white' : 'text-gray-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <span>Smooth</span>
+                <svg className={`w-2.5 h-2.5 transition-transform ${showSmoothPicker ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
               
               {showSmoothPicker && (
-                <div className="absolute top-full left-0 mt-2 p-4 bg-gray-800 border border-gray-700 rounded-xl shadow-xl z-[200] min-w-[240px]">
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="text-xs font-medium text-gray-300">Blend Intensity</span>
-                    <span className="text-xs font-medium text-purple-400">{currentNotch.label}</span>
-                  </div>
+                <div className="absolute top-full left-0 mt-2 p-3 bg-gray-800 border border-gray-700 rounded-lg shadow-xl z-[200] min-w-[200px]">
                   
-                  {/* Notched Slider with Labels */}
-                  <div className="relative mb-5">
-                    {/* Track background */}
-                    <div className="absolute top-1/2 left-0 right-0 h-2 bg-gray-700 rounded-full -translate-y-1/2" />
-                    
-                    {/* Filled track */}
-                    <div 
-                      className="absolute top-1/2 left-0 h-2 bg-purple-600 rounded-full -translate-y-1/2 transition-all duration-150"
-                      style={{ width: `${((smoothIntensity - 1) / 3) * 100}%` }}
-                    />
-                    
-                    {/* Notch buttons */}
-                    <div className="relative flex justify-between items-center h-8">
+                  {/* Intensity Section */}
+                  <div className="mb-3">
+                    <div className="text-[10px] text-gray-500 uppercase tracking-wide mb-2">Intensity</div>
+                    <div className="flex gap-1">
                       {SMOOTH_NOTCHES.map((notch) => (
                         <button
                           key={notch.step}
                           onClick={() => handleSliderChange(notch.step)}
-                          className={`relative z-10 w-6 h-6 rounded-full border-2 transition-all duration-150 ${
-                            smoothIntensity >= notch.step
-                              ? 'bg-purple-600 border-purple-400 scale-110'
-                              : 'bg-gray-700 border-gray-600 hover:border-purple-400'
-                          } ${smoothIntensity === notch.step ? 'ring-2 ring-purple-400/50 ring-offset-2 ring-offset-gray-800' : ''}`}
-                          title={`${notch.label} (${notch.value}%)`}
-                        >
-                          {smoothIntensity === notch.step && (
-                            <div className="absolute inset-0 flex items-center justify-center">
-                              <div className="w-2 h-2 bg-white rounded-full" />
-                            </div>
-                          )}
-                        </button>
-                      ))}
-                    </div>
-                    
-                    {/* Labels under notches */}
-                    <div className="flex justify-between mt-1">
-                      {SMOOTH_NOTCHES.map((notch) => (
-                        <span 
-                          key={notch.step} 
-                          className={`text-[9px] w-6 text-center transition-colors ${
-                            smoothIntensity === notch.step ? 'text-purple-400 font-medium' : 'text-gray-500'
+                          className={`flex-1 px-2 py-1.5 rounded text-[11px] font-medium transition-colors ${
+                            smoothIntensity === notch.step
+                              ? 'bg-orange-500 text-white'
+                              : 'bg-gray-700 text-gray-400 hover:bg-gray-600 hover:text-white'
                           }`}
                         >
                           {notch.label}
-                        </span>
+                        </button>
                       ))}
                     </div>
                   </div>
                   
-                  {/* Flow Direction */}
-                  <div className="mb-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-xs font-medium text-gray-300">Flow Direction</span>
-                      <span className="text-xs font-medium text-purple-400">{currentDirection.label}</span>
-                    </div>
-                    <div className="grid grid-cols-2 gap-2">
+                  {/* Direction Section */}
+                  <div className="mb-3">
+                    <div className="text-[10px] text-gray-500 uppercase tracking-wide mb-2">Direction</div>
+                    <div className="flex gap-1">
                       {SMOOTH_DIRECTIONS.map((dir) => (
                         <button
                           key={dir.id}
                           onClick={() => handleDirectionChange(dir.id)}
-                          className={`flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg transition-all ${
+                          className={`flex-1 flex items-center justify-center gap-1.5 px-2 py-1.5 rounded text-[11px] font-medium transition-colors ${
                             smoothDirection === dir.id
-                              ? 'bg-purple-600 text-white ring-2 ring-purple-400/50'
+                              ? 'bg-orange-500 text-white'
                               : 'bg-gray-700 text-gray-400 hover:bg-gray-600 hover:text-white'
                           }`}
-                          title={dir.label}
                         >
-                          <span className="text-lg leading-none">{dir.icon}</span>
-                          <span className="text-xs font-medium">{dir.label}</span>
+                          <span className="text-sm">{dir.icon}</span>
+                          <span>{dir.label}</span>
                         </button>
                       ))}
                     </div>
@@ -317,34 +278,27 @@ export default function Toolbar({ totalOffset, activeTab }) {
                   
                   {/* Preview indicator */}
                   {previewApplied && (
-                    <div className="flex items-center gap-2 mb-3 px-2 py-1.5 bg-purple-900/30 border border-purple-700/50 rounded-lg">
-                      <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse" />
-                      <span className="text-[10px] text-purple-300">Preview active</span>
+                    <div className="flex items-center gap-1.5 mb-3 text-[10px] text-orange-400">
+                      <div className="w-1.5 h-1.5 bg-orange-400 rounded-full animate-pulse" />
+                      <span>Preview active</span>
                     </div>
                   )}
                   
                   {/* Action buttons */}
-                  <div className="flex gap-2">
+                  <div className="flex gap-1.5 pt-2 border-t border-gray-700">
                     <button
                       onClick={() => closeSmoothPicker(false)}
-                      className="flex-1 py-2 bg-gray-700 hover:bg-gray-600 text-gray-300 text-xs font-medium rounded-lg transition-colors"
+                      className="flex-1 py-1.5 text-gray-400 text-[11px] font-medium rounded hover:text-white transition-colors"
                     >
                       Cancel
                     </button>
                     <button
                       onClick={() => closeSmoothPicker(true)}
-                      className="flex-1 py-2 bg-purple-600 hover:bg-purple-500 text-white text-xs font-medium rounded-lg transition-colors flex items-center justify-center gap-1.5"
+                      className="flex-1 py-1.5 bg-orange-500 hover:bg-orange-400 text-white text-[11px] font-medium rounded transition-colors"
                     >
-                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
                       Apply
                     </button>
                   </div>
-                  
-                  <p className="text-[9px] text-gray-500 text-center mt-3">
-                    Drag to preview • Click Apply to save
-                  </p>
                 </div>
               )}
             </div>
