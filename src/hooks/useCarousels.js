@@ -288,7 +288,8 @@ function carouselReducer(state, action) {
 
     case CAROUSEL_ACTIONS.SMOOTH_BACKGROUNDS: {
       // Apply smoothed backgrounds to all frames in a carousel
-      // action.smoothedFrames: Array<{ id: number, background: string }>
+      // action.smoothedFrames: Array<{ id: number, background: string | null }>
+      // If background is null, clear the backgroundOverride (reset to default)
       const { carouselId, smoothedFrames } = action;
       if (!smoothedFrames || smoothedFrames.length === 0) return state;
       
@@ -301,8 +302,14 @@ function carouselReducer(state, action) {
           return {
             ...carousel,
             frames: carousel.frames.map(frame => {
+              if (!smoothedMap.has(frame.id)) return frame;
               const newBg = smoothedMap.get(frame.id);
-              return newBg ? { ...frame, backgroundOverride: newBg } : frame;
+              // If null, remove backgroundOverride; otherwise set it
+              if (newBg === null) {
+                const { backgroundOverride, ...rest } = frame;
+                return rest;
+              }
+              return { ...frame, backgroundOverride: newBg };
             })
           };
         })

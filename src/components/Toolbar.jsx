@@ -154,6 +154,22 @@ export default function Toolbar({ totalOffset, activeTab }) {
     }
   };
 
+  // Reset all backgrounds to defaults (clear all backgroundOverride)
+  const resetAllBackgrounds = () => {
+    if (!selectedCarousel) return;
+    
+    console.log('Smooth: Resetting all backgrounds to defaults');
+    const resetFrames = selectedCarousel.frames?.map(frame => ({
+      id: frame.id,
+      background: null // null will be handled by reducer to clear backgroundOverride
+    }));
+    
+    if (resetFrames?.length > 0) {
+      handleSmoothBackgrounds(selectedCarousel.id, resetFrames);
+    }
+    closeSmoothPicker(false);
+  };
+
   // Close picker and revert if not saved
   const closeSmoothPicker = (save = false) => {
     if (!save && previewApplied) {
@@ -283,6 +299,14 @@ export default function Toolbar({ totalOffset, activeTab }) {
                       <span>Preview active</span>
                     </div>
                   )}
+                  
+                  {/* Reset button */}
+                  <button
+                    onClick={resetAllBackgrounds}
+                    className="w-full mb-3 py-1.5 text-gray-500 text-[11px] font-medium rounded border border-gray-700 hover:border-gray-600 hover:text-gray-300 transition-colors"
+                  >
+                    Reset to defaults
+                  </button>
                   
                   {/* Action buttons */}
                   <div className="flex gap-1.5 pt-2 border-t border-gray-700">
