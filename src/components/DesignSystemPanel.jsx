@@ -50,14 +50,14 @@ const DesignSystemPanel = ({
   // ===== PURPLE LINEAR FADE GRADIENTS (6) =====
   // Smooth gradual fades in different directions - light to purple transitions
   const purpleMeshes = [
-    // 1. Vertical: Light lavender top → Deep purple bottom (like reference)
-    'linear-gradient(180deg, #c7d2fe 0%, #a5b4fc 20%, #818cf8 45%, #6466e9 70%, #5558d9 100%)',
+    // 1. Mesh: Purple from lower-left + upper-right corners, light center
+    'radial-gradient(ellipse at 15% 85%, #6466e9 0%, #818cf8 30%, transparent 55%), radial-gradient(ellipse at 85% 15%, #6466e9 0%, #818cf8 30%, transparent 55%), radial-gradient(ellipse at 50% 50%, #c7d2fe 0%, #a5b4fc 40%, transparent 70%), linear-gradient(135deg, #b8c0f0 0%, #a5b4fc 50%, #b8c0f0 100%)',
     // 2. Diagonal top-left: Light corner fading to purple
     'linear-gradient(135deg, #c7d2fe 0%, #a5b4fc 25%, #818cf8 50%, #6466e9 75%, #5558d9 100%)',
     // 3. Diagonal: Light top-left → Deep purple bottom-right (135deg)
     'linear-gradient(135deg, #c7d2fe 0%, #a5b4fc 25%, #818cf8 50%, #6466e9 75%, #5c5fdb 100%)',
-    // 4. Reverse vertical: Purple top → Light bottom
-    'linear-gradient(0deg, #c7d2fe 0%, #a5b4fc 25%, #818cf8 50%, #6466e9 75%, #5558d9 100%)',
+    // 4. Mesh: Purple from upper-left + lower-right corners, muted center
+    'radial-gradient(ellipse at 20% 20%, #7578eb 0%, #918df5 25%, transparent 50%), radial-gradient(ellipse at 80% 80%, #7578eb 0%, #918df5 25%, transparent 50%), radial-gradient(ellipse at 50% 50%, #d4d9fc 0%, #c7d2fe 35%, transparent 65%), linear-gradient(135deg, #c7d2fe 0%, #b8c0f0 50%, #c7d2fe 100%)',
     // 5. Diagonal bottom-left: Light corner fading to purple top-right
     'linear-gradient(45deg, #c7d2fe 0%, #a5b4fc 25%, #818cf8 50%, #6466e9 75%, #5558d9 100%)',
     // 6. Subtle angle: Soft transition with extended mid-tones
