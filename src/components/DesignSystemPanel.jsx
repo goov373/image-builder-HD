@@ -78,20 +78,12 @@ const DesignSystemPanel = ({
     'linear-gradient(135deg, #0f0f10 0%, #18191A 50%, #27282a 100%)', // Deep black to charcoal
   ];
 
-  // ===== LIGHT GREY GRADIENTS (3) =====
-  const lightGreyGradients = [
-    'linear-gradient(135deg, #eef1f9 0%, #ffffff 100%)',   // Light Grey to White
-    'radial-gradient(ellipse at 50% 0%, #ffffff 0%, #eef1f9 50%, #d1d5eb 100%)', // Light radial
-    'linear-gradient(135deg, #eef1f9 0%, #EEF2FF 50%, #d1d5eb 100%)', // Light Grey to Purple tint
-  ];
-
   // Combined gradients array
   const gradients = [
     ...purpleConicals,
     ...purpleMeshes,
     ...orangeGradients,
     ...blackGradients,
-    ...lightGreyGradients,
   ];
 
   // HelloData brand palette - solid colors
