@@ -90,6 +90,13 @@ export default function useTabs(initialTabs = []) {
     setActiveTabId(projectId);
     if (closeAccount) closeAccount();
     setCurrentView('editor');
+    
+    // Update the project's updatedAt to reflect it was recently opened
+    setProjects(prev => prev.map(p => 
+      p.id === projectId 
+        ? { ...p, updatedAt: new Date().toISOString().split('T')[0] }
+        : p
+    ));
   };
 
   const handleCreateNewFromHome = (closeAccount) => {

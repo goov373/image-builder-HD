@@ -136,9 +136,11 @@ const Homepage = ({
           </button>
         </div>
         
-        {/* Project Grid */}
+        {/* Project Grid - sorted newest to oldest */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {projects.map(project => (
+          {[...projects]
+            .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
+            .map(project => (
             <div 
               key={project.id}
               role="button"

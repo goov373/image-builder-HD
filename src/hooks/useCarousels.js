@@ -21,6 +21,7 @@ export const CAROUSEL_ACTIONS = {
   REORDER_FRAMES: 'REORDER_FRAMES',
   ADD_ROW: 'ADD_ROW',
   REMOVE_ROW: 'REMOVE_ROW',
+  RESET_CAROUSEL: 'RESET_CAROUSEL',
 };
 
 // Initial state shape
@@ -255,6 +256,18 @@ function carouselReducer(state, action) {
       };
     }
 
+    case CAROUSEL_ACTIONS.RESET_CAROUSEL: {
+      // Replace a specific carousel with its original data from initialData
+      const { carouselId, originalCarousel } = action;
+      if (!originalCarousel) return state;
+      return {
+        ...state,
+        carousels: state.carousels.map(c => 
+          c.id === carouselId ? { ...originalCarousel } : c
+        )
+      };
+    }
+
     default:
       return state;
   }
@@ -350,6 +363,13 @@ export default function useCarousels(initialData) {
     
     handleRemoveRow: useCallback((carouselId) =>
       dispatch({ type: CAROUSEL_ACTIONS.REMOVE_ROW, carouselId }), []),
+    
+    handleResetCarousel: useCallback((carouselId) => {
+      const originalCarousel = initialData.find(c => c.id === carouselId);
+      if (originalCarousel) {
+        dispatch({ type: CAROUSEL_ACTIONS.RESET_CAROUSEL, carouselId, originalCarousel });
+      }
+    }, [initialData]),
   };
 
   return {
