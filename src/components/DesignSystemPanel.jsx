@@ -23,25 +23,9 @@ const DesignSystemPanel = ({
   const [stretchRange, setStretchRange] = useState({ start: 0, end: null }); // null end means "all"
   const totalFrames = selectedCarouselFrames.length;
   
-  // Reset range when carousel changes
-  const effectiveEnd = stretchRange.end !== null ? stretchRange.end : totalFrames - 1;
-  const selectedFrameCount = effectiveEnd - stretchRange.start + 1;
-  
-  const handleFrameRangeClick = (index) => {
-    if (stretchRange.start === null || (stretchRange.end !== null)) {
-      // Start new selection
-      setStretchRange({ start: index, end: null });
-    } else {
-      // Complete the selection
-      const start = Math.min(stretchRange.start, index);
-      const end = Math.max(stretchRange.start, index);
-      setStretchRange({ start, end });
-    }
-  };
-  
-  const handleSelectAllFrames = () => {
-    setStretchRange({ start: 0, end: totalFrames - 1 });
-  };
+  // Calculate effective end (default to last frame if not set)
+  const effectiveEnd = stretchRange.end !== null ? Math.min(stretchRange.end, totalFrames - 1) : totalFrames - 1;
+  const selectedFrameCount = Math.max(0, effectiveEnd - stretchRange.start + 1);
   
   const handleBackgroundClick = (background) => {
     if (applyMode === 'row' && hasRowSelected && onSetRowStretchedBackground) {
@@ -414,54 +398,89 @@ const DesignSystemPanel = ({
           )}
           
           {/* Frame Range Selector - only show when in Row mode */}
-          {applyMode === 'row' && hasRowSelected && totalFrames > 0 && (
-            <div className="mb-3 p-2 bg-gray-800/50 rounded-lg">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-[10px] text-gray-400">Select frames to stretch:</span>
-                <button
-                  type="button"
-                  onClick={handleSelectAllFrames}
-                  className="text-[10px] text-gray-400 hover:text-white transition-colors duration-150"
-                >
-                  Select all
-                </button>
+          {applyMode === 'row' && hasRowSelected && totalFrames > 1 && (
+            <div className="mb-3 p-3 bg-gray-800/50 rounded-lg">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-[10px] text-gray-400">Frame range:</span>
+                <span className="text-[10px] text-white font-medium">
+                  {stretchRange.start + 1} – {effectiveEnd + 1}
+                </span>
               </div>
               
-              {/* Frame selector buttons */}
-              <div className="flex gap-1 flex-wrap">
-                {selectedCarouselFrames.map((frame, index) => {
-                  const isInRange = index >= stretchRange.start && index <= effectiveEnd;
-                  const isStart = index === stretchRange.start;
-                  const isEnd = index === effectiveEnd;
-                  
-                  return (
-                    <button
-                      key={frame.id}
-                      type="button"
-                      onClick={() => handleFrameRangeClick(index)}
-                      className={`w-8 h-8 rounded text-[10px] font-medium transition-all duration-150 border ${
-                        isInRange
-                          ? 'bg-gray-600 border-gray-500 text-white'
-                          : 'bg-gray-800 border-gray-700 text-gray-500 hover:border-gray-600 hover:text-gray-400'
-                      } ${isStart || isEnd ? 'ring-1 ring-gray-400' : ''}`}
-                      title={`Frame ${index + 1}`}
-                    >
-                      {index + 1}
-                    </button>
-                  );
-                })}
+              {/* Dual Range Slider */}
+              <div className="relative h-6 mb-2">
+                {/* Track background */}
+                <div className="absolute top-1/2 -translate-y-1/2 left-0 right-0 h-1.5 bg-gray-700 rounded-full" />
+                
+                {/* Selected range highlight */}
+                <div 
+                  className="absolute top-1/2 -translate-y-1/2 h-1.5 bg-gray-500 rounded-full"
+                  style={{
+                    left: `${(stretchRange.start / (totalFrames - 1)) * 100}%`,
+                    right: `${100 - (effectiveEnd / (totalFrames - 1)) * 100}%`,
+                  }}
+                />
+                
+                {/* Start slider */}
+                <input
+                  type="range"
+                  min={0}
+                  max={totalFrames - 1}
+                  value={stretchRange.start}
+                  onChange={(e) => {
+                    const val = parseInt(e.target.value);
+                    if (val <= effectiveEnd) {
+                      setStretchRange(prev => ({ ...prev, start: val }));
+                    }
+                  }}
+                  className="absolute w-full h-6 appearance-none bg-transparent cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-gray-400 [&::-webkit-slider-thumb]:cursor-grab [&::-webkit-slider-thumb]:hover:border-gray-300 [&::-webkit-slider-thumb]:shadow-md"
+                  style={{ zIndex: stretchRange.start > totalFrames - 2 ? 5 : 3 }}
+                />
+                
+                {/* End slider */}
+                <input
+                  type="range"
+                  min={0}
+                  max={totalFrames - 1}
+                  value={effectiveEnd}
+                  onChange={(e) => {
+                    const val = parseInt(e.target.value);
+                    if (val >= stretchRange.start) {
+                      setStretchRange(prev => ({ ...prev, end: val }));
+                    }
+                  }}
+                  className="absolute w-full h-6 appearance-none bg-transparent cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-gray-400 [&::-webkit-slider-thumb]:cursor-grab [&::-webkit-slider-thumb]:hover:border-gray-300 [&::-webkit-slider-thumb]:shadow-md"
+                  style={{ zIndex: 4 }}
+                />
+              </div>
+              
+              {/* Frame number labels */}
+              <div className="flex justify-between px-1">
+                {selectedCarouselFrames.map((_, index) => (
+                  <span 
+                    key={index} 
+                    className={`text-[9px] ${
+                      index >= stretchRange.start && index <= effectiveEnd 
+                        ? 'text-white font-medium' 
+                        : 'text-gray-600'
+                    }`}
+                  >
+                    {index + 1}
+                  </span>
+                ))}
               </div>
               
               {/* Selection info */}
-              <div className="mt-2 text-[10px] text-gray-500">
-                {stretchRange.end !== null ? (
-                  <span>Stretching across frames {stretchRange.start + 1} – {effectiveEnd + 1} ({selectedFrameCount} frames)</span>
-                ) : stretchRange.start !== null ? (
-                  <span>Click another frame to set range end (starting at {stretchRange.start + 1})</span>
-                ) : (
-                  <span>Click a frame to start selection</span>
-                )}
+              <div className="mt-2 text-[10px] text-gray-500 text-center">
+                Stretching across {selectedFrameCount} frame{selectedFrameCount > 1 ? 's' : ''}
               </div>
+            </div>
+          )}
+          
+          {/* Single frame message */}
+          {applyMode === 'row' && hasRowSelected && totalFrames === 1 && (
+            <div className="mb-3 p-2 bg-gray-800/50 rounded-lg text-[10px] text-gray-500 text-center">
+              Add more frames to use stretch mode
             </div>
           )}
           <div className="grid grid-cols-3 gap-2 mb-3">
