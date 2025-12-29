@@ -2,13 +2,14 @@ import { useState } from 'react';
 
 /**
  * Login Page Component
- * Simple email/password authentication matching app design
+ * Muted grey card style matching homepage project cards
  */
 export default function LoginPage({ onLogin, error: externalError, loading: externalLoading }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [localError, setLocalError] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
   const error = externalError || localError;
   const loading = externalLoading || isSubmitting;
@@ -37,29 +38,47 @@ export default function LoginPage({ onLogin, error: externalError, loading: exte
   };
 
   return (
-    <div className="min-h-screen bg-gray-950 flex items-center justify-center p-4">
-
-      {/* Login Card */}
-      <div className="relative w-full max-w-md">
-        <div className="bg-gray-900 border border-gray-800 rounded-2xl shadow-2xl p-8">
-          {/* Logo/Brand */}
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-gray-600 to-gray-700 rounded-2xl mb-4">
-              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div className="min-h-screen flex items-center justify-center p-4" style={{ backgroundColor: '#0d1321' }}>
+      {/* Login Card - matching project card style */}
+      <div 
+        className={`relative w-full max-w-md bg-gray-900 border rounded-xl overflow-hidden transition-all duration-150 ${
+          isHovered ? 'border-gray-600 bg-gray-800/50' : 'border-gray-800'
+        }`}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
+        {/* Header area - like thumbnail */}
+        <div className="h-32 bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center relative overflow-hidden">
+          <div className={`flex flex-col items-center transform transition-transform duration-150 ${isHovered ? 'scale-105' : ''}`}>
+            {/* Icon */}
+            <div className={`w-14 h-14 rounded-xl flex items-center justify-center transition-colors duration-150 ${
+              isHovered ? 'bg-gray-700' : 'bg-gray-700/50'
+            } border border-gray-600`}>
+              <svg className="w-7 h-7 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
               </svg>
             </div>
-            <h1 className="text-2xl font-bold text-white mb-1" style={{ fontFamily: '"Nunito Sans", sans-serif' }}>
+          </div>
+          
+          {/* Hover overlay */}
+          <div className={`absolute inset-0 transition-colors duration-150 ${isHovered ? 'bg-gray-700/20' : 'bg-transparent'}`} />
+        </div>
+
+        {/* Content area */}
+        <div className="p-6">
+          {/* Title */}
+          <div className="mb-6">
+            <h1 className={`text-xl font-semibold mb-1 transition-colors duration-150 ${isHovered ? 'text-gray-300' : 'text-white'}`} style={{ fontFamily: '"Nunito Sans", sans-serif' }}>
               Content Builder
             </h1>
             <p className="text-gray-500 text-sm">Sign in to your account</p>
           </div>
 
           {/* Login Form */}
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-4">
             {/* Email Field */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-400 mb-1.5">
+              <label htmlFor="email" className="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wide">
                 Email
               </label>
               <input
@@ -67,7 +86,7 @@ export default function LoginPage({ onLogin, error: externalError, loading: exte
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+                className="w-full px-3.5 py-2.5 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-600 focus:outline-none focus:border-gray-500 focus:bg-gray-800 transition-all text-sm"
                 placeholder="you@company.com"
                 disabled={loading}
                 autoComplete="email"
@@ -76,7 +95,7 @@ export default function LoginPage({ onLogin, error: externalError, loading: exte
 
             {/* Password Field */}
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-400 mb-1.5">
+              <label htmlFor="password" className="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wide">
                 Password
               </label>
               <input
@@ -84,7 +103,7 @@ export default function LoginPage({ onLogin, error: externalError, loading: exte
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+                className="w-full px-3.5 py-2.5 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-600 focus:outline-none focus:border-gray-500 focus:bg-gray-800 transition-all text-sm"
                 placeholder="••••••••"
                 disabled={loading}
                 autoComplete="current-password"
@@ -93,23 +112,23 @@ export default function LoginPage({ onLogin, error: externalError, loading: exte
 
             {/* Error Message */}
             {error && (
-              <div className="flex items-center gap-2 p-3 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400 text-sm">
-                <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="flex items-center gap-2 p-2.5 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 text-xs">
+                <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 <span>{error}</span>
               </div>
             )}
 
-            {/* Submit Button */}
+            {/* Submit Button - styled like "Open Project" hover button */}
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3.5 bg-gradient-to-r from-gray-600 to-gray-700 hover:from-orange-500 hover:to-orange-600 active:from-orange-600 active:to-orange-700 text-white font-semibold rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="w-full py-2.5 bg-gray-700 hover:bg-gray-600 border border-gray-600 hover:border-gray-500 text-white font-medium rounded-lg transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm mt-2"
             >
               {loading ? (
                 <>
-                  <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                   </svg>
@@ -122,15 +141,13 @@ export default function LoginPage({ onLogin, error: externalError, loading: exte
           </form>
 
           {/* Footer */}
-          <div className="mt-6 text-center">
-            <p className="text-gray-600 text-xs">
+          <div className="mt-5 pt-4 border-t border-gray-800">
+            <p className="text-gray-600 text-[10px] text-center">
               Need access? Contact your team admin.
             </p>
           </div>
         </div>
-
       </div>
     </div>
   );
 }
-
