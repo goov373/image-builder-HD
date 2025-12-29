@@ -216,17 +216,17 @@ export default function Toolbar({ totalOffset, activeTab }) {
           <div className={`flex items-center gap-2 px-2 py-1.5 bg-gray-800/60 rounded-xl transition-opacity ${selectedCarouselId ? 'opacity-100' : 'opacity-40 pointer-events-none'}`}>
             {/* Format dropdown */}
             <div ref={formatPickerRef} className="relative">
-              <button onClick={() => { const wasOpen = showFormatPicker; closeAllDropdowns(); if (!wasOpen) setShowFormatPicker(true); }} className="flex items-center gap-2 px-3 py-2 bg-gray-700/50 rounded-lg hover:bg-gray-700 transition-colors">
+              <button onClick={() => { const wasOpen = showFormatPicker; closeAllDropdowns(); if (!wasOpen) setShowFormatPicker(true); }} className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all border ${showFormatPicker ? 'bg-gray-700 border-gray-500' : 'bg-gray-800/50 border-gray-700 hover:bg-gray-700 hover:border-gray-600'}`}>
                 <span className="text-xs font-medium text-gray-300">Format</span>
                 <span className="text-[11px] text-gray-500">{frameSizes[selectedCarousel?.frameSize]?.name || 'Portrait'}</span>
-                <svg className={`w-3 h-3 text-gray-400 transition-transform ${showFormatPicker ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                <svg className={`w-3 h-3 text-gray-500 transition-transform ${showFormatPicker ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
               </button>
               {showFormatPicker && (
-                <div className="absolute top-full left-0 mt-2 p-1.5 bg-gray-800 border border-gray-700 rounded-lg shadow-xl z-[200] min-w-[160px]">
+                <div className="absolute top-full left-0 mt-2 p-1.5 bg-gray-900 border border-gray-700 rounded-xl shadow-xl z-[200] min-w-[180px] overflow-hidden">
                   {Object.entries(frameSizes).filter(([key]) => key !== 'landscape').map(([key, size]) => (
-                    <button key={key} onClick={() => { handleChangeFrameSize(selectedCarouselId, key); setShowFormatPicker(false); }} className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-left text-xs transition-colors ${selectedCarousel?.frameSize === key ? 'bg-orange-500 text-white' : 'text-gray-300 hover:bg-gray-700'}`}>
+                    <button key={key} onClick={() => { handleChangeFrameSize(selectedCarouselId, key); setShowFormatPicker(false); }} className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-left text-xs transition-all ${selectedCarousel?.frameSize === key ? 'bg-gray-700 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-gray-300'}`}>
                       <span className="font-medium">{size.name}</span>
-                      <span className="text-gray-500 ml-auto">{size.ratio}</span>
+                      <span className="text-gray-600">{size.ratio}</span>
                     </button>
                   ))}
                 </div>
@@ -237,32 +237,32 @@ export default function Toolbar({ totalOffset, activeTab }) {
             <div ref={smoothPickerRef} className="relative">
               <button
                 onClick={() => showSmoothPicker ? closeSmoothPicker(false) : openSmoothPicker()}
-                className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors ${
-                  showSmoothPicker ? 'bg-orange-500 text-white' : 'bg-gray-700/50 text-gray-300 hover:bg-gray-700'
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium transition-all border ${
+                  showSmoothPicker ? 'bg-gray-700 border-gray-500 text-white' : 'bg-gray-800/50 border-gray-700 text-gray-300 hover:bg-gray-700 hover:border-gray-600'
                 }`}
                 title="Smooth background transitions between frames"
               >
                 <span>Smooth</span>
-                <svg className={`w-2.5 h-2.5 transition-transform ${showSmoothPicker ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className={`w-2.5 h-2.5 text-gray-500 transition-transform ${showSmoothPicker ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
               
               {showSmoothPicker && (
-                <div className="absolute top-full left-0 mt-2 p-3 bg-gray-800 border border-gray-700 rounded-lg shadow-xl z-[200] min-w-[200px]">
+                <div className="absolute top-full left-0 mt-2 p-3 bg-gray-900 border border-gray-700 rounded-xl shadow-xl z-[200] min-w-[220px]">
                   
                   {/* Intensity Section */}
-                  <div className="mb-3">
+                  <div className="mb-4">
                     <div className="text-[10px] text-gray-500 uppercase tracking-wide mb-2">Intensity</div>
-                    <div className="flex gap-1">
+                    <div className="flex gap-1.5">
                       {SMOOTH_NOTCHES.map((notch) => (
                         <button
                           key={notch.step}
                           onClick={() => handleSliderChange(notch.step)}
-                          className={`flex-1 px-2 py-1.5 rounded text-[11px] font-medium transition-colors ${
+                          className={`flex-1 px-2 py-1.5 rounded-lg text-[11px] font-medium transition-all border ${
                             smoothIntensity === notch.step
-                              ? 'bg-orange-500 text-white'
-                              : 'bg-gray-700 text-gray-400 hover:bg-gray-600 hover:text-white'
+                              ? 'bg-gray-700 border-gray-500 text-white'
+                              : 'bg-gray-800/50 border-gray-700 text-gray-500 hover:bg-gray-800 hover:border-gray-600 hover:text-gray-300'
                           }`}
                         >
                           {notch.label}
@@ -272,17 +272,17 @@ export default function Toolbar({ totalOffset, activeTab }) {
                   </div>
                   
                   {/* Direction Section */}
-                  <div className="mb-3">
+                  <div className="mb-4">
                     <div className="text-[10px] text-gray-500 uppercase tracking-wide mb-2">Direction</div>
-                    <div className="flex gap-1">
+                    <div className="flex gap-1.5">
                       {SMOOTH_DIRECTIONS.map((dir) => (
                         <button
                           key={dir.id}
                           onClick={() => handleDirectionChange(dir.id)}
-                          className={`flex-1 flex items-center justify-center gap-1.5 px-2 py-1.5 rounded text-[11px] font-medium transition-colors ${
+                          className={`flex-1 flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg text-[11px] font-medium transition-all border ${
                             smoothDirection === dir.id
-                              ? 'bg-orange-500 text-white'
-                              : 'bg-gray-700 text-gray-400 hover:bg-gray-600 hover:text-white'
+                              ? 'bg-gray-700 border-gray-500 text-white'
+                              : 'bg-gray-800/50 border-gray-700 text-gray-500 hover:bg-gray-800 hover:border-gray-600 hover:text-gray-300'
                           }`}
                         >
                           <span className="text-sm">{dir.icon}</span>
@@ -294,8 +294,8 @@ export default function Toolbar({ totalOffset, activeTab }) {
                   
                   {/* Preview indicator */}
                   {previewApplied && (
-                    <div className="flex items-center gap-1.5 mb-3 text-[10px] text-orange-400">
-                      <div className="w-1.5 h-1.5 bg-orange-400 rounded-full animate-pulse" />
+                    <div className="flex items-center gap-1.5 mb-3 text-[10px] text-gray-400">
+                      <div className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-pulse" />
                       <span>Preview active</span>
                     </div>
                   )}
@@ -303,22 +303,22 @@ export default function Toolbar({ totalOffset, activeTab }) {
                   {/* Reset button */}
                   <button
                     onClick={resetAllBackgrounds}
-                    className="w-full mb-3 py-1.5 text-gray-500 text-[11px] font-medium rounded border border-gray-700 hover:border-gray-600 hover:text-gray-300 transition-colors"
+                    className="w-full mb-3 py-1.5 text-gray-500 text-[11px] font-medium rounded-lg border border-gray-700/50 hover:border-gray-600 hover:bg-gray-800/50 hover:text-gray-300 transition-all"
                   >
                     Reset to defaults
                   </button>
                   
                   {/* Action buttons */}
-                  <div className="flex gap-1.5 pt-2 border-t border-gray-700">
+                  <div className="flex gap-1.5 pt-3 border-t border-gray-800">
                     <button
                       onClick={() => closeSmoothPicker(false)}
-                      className="flex-1 py-1.5 text-gray-400 text-[11px] font-medium rounded hover:text-white transition-colors"
+                      className="flex-1 py-1.5 text-gray-500 text-[11px] font-medium rounded-lg border border-gray-700/50 hover:border-gray-600 hover:bg-gray-800/50 hover:text-gray-300 transition-all"
                     >
                       Cancel
                     </button>
                     <button
                       onClick={() => closeSmoothPicker(true)}
-                      className="flex-1 py-1.5 bg-orange-500 hover:bg-orange-400 text-white text-[11px] font-medium rounded transition-colors"
+                      className="flex-1 py-1.5 bg-gray-700 hover:bg-gray-600 border border-gray-600 hover:border-gray-500 text-white text-[11px] font-medium rounded-lg transition-all"
                     >
                       Apply
                     </button>
