@@ -18,8 +18,8 @@ export const allFonts: FontOption[] = [...fontOptions.sansSerif, ...fontOptions.
 
 // HelloData.ai Brand Colors
 // Primary: Purple - Main brand identity, headers, key elements
-// Secondary: Orange - Energy, CTAs, action states
-// Accent: Purple - Consistent with primary for brand cohesion
+// Secondary: Light Grey - Backgrounds, secondary elements
+// Accent: Orange - CTAs, highlights, energy
 // Neutrals: Shadow dark → Medium grey → Light purple tint
 export const defaultDesignSystem: DesignSystem = {
   primary: '#6466e9',      // Purple - Main brand color
@@ -28,7 +28,9 @@ export const defaultDesignSystem: DesignSystem = {
   neutral1: '#18191A',     // Shadow - Deep backgrounds, text
   neutral2: '#6B7280',     // Medium Grey - Secondary text, borders
   neutral3: '#EEF2FF',     // Purple Light - Light backgrounds, cards
-  fontHeadline: '"DM Sans", sans-serif',
-  fontBody: '"Inter", sans-serif'
+  headingFont: '"Nunito Sans", sans-serif',
+  bodyFont: '"Nunito Sans", sans-serif',
+  headingWeight: '700',    // Bold for headings
+  bodyWeight: '400'        // Regular for body text
 };
 

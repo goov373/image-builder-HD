@@ -9,8 +9,10 @@ export interface DesignSystem {
   neutral1: string;
   neutral2: string;
   neutral3: string;
-  fontHeadline: string;
-  fontBody: string;
+  headingFont: string;
+  bodyFont: string;
+  headingWeight: string;
+  bodyWeight: string;
 }
 
 // ===== Frame & Carousel Types =====

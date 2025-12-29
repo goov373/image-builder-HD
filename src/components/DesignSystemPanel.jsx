@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { allFonts } from '../data';
 
 /**
  * Design & Assets Panel
@@ -255,30 +254,40 @@ const DesignSystemPanel = ({ designSystem, onUpdate, onClose, isOpen }) => {
         
         {/* Fonts Section */}
         <div className="p-4 border-b border-gray-800">
-          <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-3">Fonts</h3>
+          <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-3">Nunito Sans</h3>
           <div className="bg-gray-800/60 rounded-xl p-3 space-y-3">
             <div>
-              <label className="text-[10px] text-gray-400 font-medium block mb-1.5">Heading Font</label>
+              <label className="text-[10px] text-gray-400 font-medium block mb-1.5">Heading Weight</label>
               <select
-                value={designSystem.headingFont}
-                onChange={(e) => onUpdate({ ...designSystem, headingFont: e.target.value })}
+                value={designSystem.headingWeight || '700'}
+                onChange={(e) => onUpdate({ ...designSystem, headingWeight: e.target.value })}
                 className="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-3 py-2 text-xs text-white hover:border-orange-500 focus:border-orange-500 focus:outline-none transition-colors cursor-pointer"
               >
-                {allFonts.map(font => (
-                  <option key={font.value} value={font.value}>{font.name}</option>
-                ))}
+                <option value="200" style={{ fontFamily: 'Nunito Sans', fontWeight: 200 }}>ExtraLight (200)</option>
+                <option value="300" style={{ fontFamily: 'Nunito Sans', fontWeight: 300 }}>Light (300)</option>
+                <option value="400" style={{ fontFamily: 'Nunito Sans', fontWeight: 400 }}>Regular (400)</option>
+                <option value="500" style={{ fontFamily: 'Nunito Sans', fontWeight: 500 }}>Medium (500)</option>
+                <option value="600" style={{ fontFamily: 'Nunito Sans', fontWeight: 600 }}>SemiBold (600)</option>
+                <option value="700" style={{ fontFamily: 'Nunito Sans', fontWeight: 700 }}>Bold (700)</option>
+                <option value="800" style={{ fontFamily: 'Nunito Sans', fontWeight: 800 }}>ExtraBold (800)</option>
+                <option value="900" style={{ fontFamily: 'Nunito Sans', fontWeight: 900 }}>Black (900)</option>
               </select>
             </div>
             <div>
-              <label className="text-[10px] text-gray-400 font-medium block mb-1.5">Body Font</label>
+              <label className="text-[10px] text-gray-400 font-medium block mb-1.5">Body Weight</label>
               <select
-                value={designSystem.bodyFont}
-                onChange={(e) => onUpdate({ ...designSystem, bodyFont: e.target.value })}
+                value={designSystem.bodyWeight || '400'}
+                onChange={(e) => onUpdate({ ...designSystem, bodyWeight: e.target.value })}
                 className="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-3 py-2 text-xs text-white hover:border-orange-500 focus:border-orange-500 focus:outline-none transition-colors cursor-pointer"
               >
-                {allFonts.map(font => (
-                  <option key={font.value} value={font.value}>{font.name}</option>
-                ))}
+                <option value="200" style={{ fontFamily: 'Nunito Sans', fontWeight: 200 }}>ExtraLight (200)</option>
+                <option value="300" style={{ fontFamily: 'Nunito Sans', fontWeight: 300 }}>Light (300)</option>
+                <option value="400" style={{ fontFamily: 'Nunito Sans', fontWeight: 400 }}>Regular (400)</option>
+                <option value="500" style={{ fontFamily: 'Nunito Sans', fontWeight: 500 }}>Medium (500)</option>
+                <option value="600" style={{ fontFamily: 'Nunito Sans', fontWeight: 600 }}>SemiBold (600)</option>
+                <option value="700" style={{ fontFamily: 'Nunito Sans', fontWeight: 700 }}>Bold (700)</option>
+                <option value="800" style={{ fontFamily: 'Nunito Sans', fontWeight: 800 }}>ExtraBold (800)</option>
+                <option value="900" style={{ fontFamily: 'Nunito Sans', fontWeight: 900 }}>Black (900)</option>
               </select>
             </div>
           </div>
