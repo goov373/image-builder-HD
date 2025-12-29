@@ -101,7 +101,7 @@ const DesignSystemPanel = ({
   
   return (
     <div 
-      className={`fixed top-[56px] h-[calc(100%-56px)] w-72 bg-gray-900 border-r border-gray-800 z-40 flex flex-col ${isOpen ? 'pointer-events-auto' : 'pointer-events-none'}`}
+      className={`fixed top-[56px] h-[calc(100%-56px)] w-72 bg-gray-900 border-r border-t border-gray-800 z-40 flex flex-col ${isOpen ? 'pointer-events-auto' : 'pointer-events-none'}`}
       style={{ left: isOpen ? 64 : -224, transition: 'left 0.3s ease-out' }}
     >
       {/* Fixed Header */}
