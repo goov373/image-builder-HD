@@ -43,8 +43,8 @@ const DesignSystemPanel = ({
     'linear-gradient(135deg, #ffffff 0%, #f5f6ff 15%, #e8ebf7 30%, #d4d9fc 45%, #b8c0f5 60%, #a5b4fc 75%, #818cf8 90%, #6466e9 100%)',
     // 2. Vertical fade - purple blending up smoothly
     'linear-gradient(180deg, #ffffff 0%, #f5f6ff 18%, #e8ebf7 35%, #c7d2fe 52%, #a5b4fc 70%, #818cf8 85%, #6466e9 100%)',
-    // 3. Radial center - purple edges stretched inward with smooth fade
-    'radial-gradient(ellipse at 50% 40%, #ffffff 0%, #f5f6ff 18%, #e8ebf7 35%, #c7d2fe 52%, #a5b4fc 70%, #818cf8 85%, #6466e9 100%)',
+    // 3. Corner mesh - white upper-left with purple sweeping from bottom-right corner
+    'linear-gradient(315deg, #6466e9 0%, #818cf8 12%, #a5b4fc 25%, #c7d2fe 40%, #e8ebf7 55%, #f5f6ff 72%, #ffffff 100%)',
   ];
 
   // ===== PURPLE RADIAL GRADIENTS (3) =====
