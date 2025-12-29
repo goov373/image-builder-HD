@@ -155,6 +155,59 @@ export default function useTabs(initialTabs = []) {
     ));
   };
 
+  const handleDeleteProject = (projectId) => {
+    // Remove from projects
+    setProjects(prev => prev.filter(p => p.id !== projectId));
+    // Remove from open tabs if open
+    setOpenTabIds(prev => prev.filter(id => id !== projectId));
+    // If this was the active tab, switch to another or go home
+    if (activeTabId === projectId) {
+      const remainingOpenIds = openTabIds.filter(id => id !== projectId);
+      if (remainingOpenIds.length > 0) {
+        setActiveTabId(remainingOpenIds[0]);
+      } else {
+        setActiveTabId(null);
+        setCurrentView('home');
+      }
+    }
+  };
+
+  const handleDuplicateProject = (projectId) => {
+    const projectToDupe = projects.find(p => p.id === projectId);
+    if (!projectToDupe) return;
+    
+    const newId = Math.max(...projects.map(p => p.id), 0) + 1;
+    const newProject = {
+      ...projectToDupe,
+      id: newId,
+      name: `${projectToDupe.name} (Copy)`,
+      createdAt: new Date().toISOString().split('T')[0],
+      updatedAt: new Date().toISOString().split('T')[0],
+    };
+    setProjects(prev => [...prev, newProject]);
+  };
+
+  const handleRenameProject = (projectId, newName) => {
+    if (!newName.trim()) return { success: false, error: 'Name cannot be empty' };
+    
+    const trimmedName = newName.trim();
+    
+    // Check if name already exists (excluding current project)
+    const nameExists = projects.some(p => 
+      p.id !== projectId && p.name.toLowerCase() === trimmedName.toLowerCase()
+    );
+    
+    if (nameExists) {
+      return { success: false, error: 'A project with this name already exists' };
+    }
+    
+    setProjects(prev => prev.map(p => 
+      p.id === projectId ? { ...p, name: trimmedName } : p
+    ));
+    
+    return { success: true };
+  };
+
   return {
     tabs,           // Open tabs (for TabBar)
     projects,       // All saved projects (for Homepage)
@@ -170,6 +223,9 @@ export default function useTabs(initialTabs = []) {
     handleCloseTab,
     handleAddTab,
     handleCreateProject,
+    handleDeleteProject,
+    handleDuplicateProject,
+    handleRenameProject,
   };
 }
 

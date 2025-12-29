@@ -275,6 +275,9 @@ export default function CarouselDesignTool() {
               projects={tabs.projects} 
               onOpenProject={handleOpenProject}
               onCreateNew={handleCreateNewFromHome}
+              onDeleteProject={tabs.handleDeleteProject}
+              onDuplicateProject={tabs.handleDuplicateProject}
+              onRenameProject={tabs.handleRenameProject}
             />
           </div>
         ) : (
