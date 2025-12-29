@@ -61,11 +61,8 @@ export default function TabBar({
             );
           })}
           
-          {/* Separator before add button */}
-          <div className="w-px h-5 bg-gray-700 self-center mx-1" />
-          
           {/* Add Tab Button with Dropdown */}
-          <div ref={newTabMenuRef} className="relative mb-1">
+          <div ref={newTabMenuRef} className="relative mb-1 ml-2">
             <button 
               onClick={() => { const wasOpen = showNewTabMenu; closeAllDropdowns(); if (!wasOpen && tabs.length < maxTabs) setShowNewTabMenu(true); }}
               disabled={tabs.length >= maxTabs}
