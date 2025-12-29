@@ -105,19 +105,34 @@ const DesignSystemPanel = ({
   // ===== ORANGE GRADIENTS (3) =====
   // ===== ORANGE GRADIENTS (3) - Light & Airy =====
   const orangeGradients = [
+    // Row 1: Light & airy orange
     // 1. Soft peach-orange diagonal - light to warm orange
     'linear-gradient(135deg, #fdd8c2 0%, #fcb88a 25%, #f9a066 50%, #f78b4a 75%, #f57c3a 100%)',
     // 2. Warm vertical - cream orange fading to rich orange
     'linear-gradient(180deg, #fee0cc 0%, #fcb98c 30%, #f9944e 60%, #f7843c 100%)',
     // 3. Subtle radial glow - soft highlight like purple R1C3
     'radial-gradient(ellipse at 60% 40%, rgba(255, 255, 255, 0.25) 0%, transparent 50%), linear-gradient(160deg, #fcb88a 0%, #f9a066 35%, #f78b4a 70%, #f57c3a 100%)',
+    
+    // Row 2: Additional orange variants
+    // 4. Horizontal fade - rich orange left to peach right
+    'linear-gradient(90deg, #f57c3a 0%, #f78b4a 20%, #f9a066 45%, #fcb88a 70%, #fdd8c2 100%)',
+    // 5. Corner sweep - orange from bottom-left
+    'linear-gradient(45deg, #e86a2c 0%, #f57c3a 18%, #f9944e 38%, #fcb88a 60%, #fde5d4 85%, #ffffff 100%)',
+    // 6. Radial center - warm glow from center
+    'radial-gradient(ellipse at 50% 50%, #fde5d4 0%, #fcb88a 25%, #f9a066 50%, #f78b4a 75%, #f57c3a 100%)',
   ];
 
-  // ===== BLACK/DARK GRADIENTS (3) =====
+  // ===== BLACK/DARK GRADIENTS (6) =====
   const blackGradients = [
+    // Row 1: Subtle dark fades
     'linear-gradient(135deg, #18191A 0%, #2d2e30 100%)',   // Shadow to Charcoal
     'linear-gradient(180deg, #1f2022 0%, #18191A 100%)',   // Vertical dark fade
     'linear-gradient(135deg, #0f0f10 0%, #18191A 50%, #27282a 100%)', // Deep black to charcoal
+    
+    // Row 2: Additional dark variants
+    'linear-gradient(90deg, #0a0a0b 0%, #18191A 50%, #252628 100%)',   // Horizontal dark sweep
+    'linear-gradient(45deg, #18191A 0%, #1f2022 30%, #2a2b2d 60%, #353638 100%)', // Corner charcoal fade
+    'radial-gradient(ellipse at 50% 50%, #2d2e30 0%, #232425 40%, #18191A 80%, #0f0f10 100%)', // Radial dark vignette
   ];
 
   // Combined gradients array
