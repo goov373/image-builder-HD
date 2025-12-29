@@ -16,11 +16,13 @@ import {
  * Options for the smoothing algorithm
  * @typedef {Object} SmoothOptions
  * @property {number} intensity - How much to blend (0 = no change, 1 = full blend)
+ * @property {'horizontal'|'vertical'|'radial'|'diagonal'} direction - Flow direction
  * @property {boolean} wrapAround - Whether to connect last frame to first
  */
 
 const DEFAULT_OPTIONS = {
   intensity: 0.5,
+  direction: 'horizontal',
   wrapAround: false
 };
 
@@ -35,7 +37,7 @@ export function smoothCarouselBackgrounds(frames, getBackgroundForFrame, options
   const opts = { ...DEFAULT_OPTIONS, ...options };
   
   console.log('=== SMOOTH ENGINE START ===');
-  console.log('Frames:', frames.length, 'Intensity:', opts.intensity);
+  console.log('Frames:', frames.length, 'Intensity:', opts.intensity, 'Direction:', opts.direction);
   
   if (!frames || frames.length < 2) {
     return []; // Need at least 2 frames to smooth
@@ -67,7 +69,8 @@ export function smoothCarouselBackgrounds(frames, getBackgroundForFrame, options
     const result = createFlowingPair(
       current.modified, 
       next.modified, 
-      opts.intensity
+      opts.intensity,
+      opts.direction
     );
     
     current.modified = result.first;
@@ -82,7 +85,8 @@ export function smoothCarouselBackgrounds(frames, getBackgroundForFrame, options
     const result = createFlowingPair(
       last.modified, 
       first.modified, 
-      opts.intensity
+      opts.intensity,
+      opts.direction
     );
     
     last.modified = result.first;
@@ -108,15 +112,17 @@ export function smoothCarouselBackgrounds(frames, getBackgroundForFrame, options
  * @param {string} bg1 - First background CSS
  * @param {string} bg2 - Second background CSS
  * @param {number} intensity - Blend intensity (0-1)
+ * @param {'horizontal'|'vertical'|'radial'|'diagonal'} direction - Flow direction
  * @returns {{ first: string, second: string }}
  */
-function createFlowingPair(bg1, bg2, intensity) {
+function createFlowingPair(bg1, bg2, intensity, direction = 'horizontal') {
   // Extract colors from both backgrounds
   const colors1 = extractColors(bg1);
   const colors2 = extractColors(bg2);
   
   console.log('Colors1:', colors1);
   console.log('Colors2:', colors2);
+  console.log('Direction:', direction);
   
   if (colors1.length === 0 || colors2.length === 0) {
     console.log('No colors found, skipping');
@@ -141,8 +147,8 @@ function createFlowingPair(bg1, bg2, intensity) {
   
   // For high intensity, we create new gradients with flow overlay
   if (intensity >= 0.5) {
-    const modifiedBg1 = addFlowOverlay(bg1, exitColor, bridgeColor, 'exit', intensity);
-    const modifiedBg2 = addFlowOverlay(bg2, bridgeColor, entryColor, 'entry', intensity);
+    const modifiedBg1 = addFlowOverlay(bg1, exitColor, bridgeColor, 'exit', intensity, direction);
+    const modifiedBg2 = addFlowOverlay(bg2, bridgeColor, entryColor, 'entry', intensity, direction);
     
     console.log('Modified bg1:', modifiedBg1?.substring(0, 80) + '...');
     console.log('Modified bg2:', modifiedBg2?.substring(0, 80) + '...');
@@ -165,12 +171,12 @@ function createFlowingPair(bg1, bg2, intensity) {
  * @param {string} originalBg - Original background
  * @param {string} fromColor - Starting color of the flow
  * @param {string} toColor - Ending color of the flow
- * @param {'entry'|'exit'} direction - Whether this is the entry or exit side
+ * @param {'entry'|'exit'} side - Whether this is the entry or exit side
  * @param {number} intensity - Blend intensity
+ * @param {'horizontal'|'vertical'|'radial'|'diagonal'} flowDirection - Flow direction
  * @returns {string}
  */
-function addFlowOverlay(originalBg, fromColor, toColor, direction, intensity) {
-  // Create a horizontal gradient overlay that flows in the right direction
+function addFlowOverlay(originalBg, fromColor, toColor, side, intensity, flowDirection = 'horizontal') {
   // The overlay opacity is based on intensity
   const opacity = Math.min(0.9, intensity);
   
@@ -184,20 +190,59 @@ function addFlowOverlay(originalBg, fromColor, toColor, direction, intensity) {
   
   let flowGradient;
   
-  if (direction === 'exit') {
-    // Exit: gradient flows from transparent (left) to bridge color (right)
-    // This makes the right edge of the frame flow into the next
-    const startOpacity = 0; // Fully transparent on left
-    const endOpacity = opacity; // Visible on right edge
+  // Determine opacities based on entry/exit side
+  const solidOpacity = opacity;
+  const fadeOpacity = 0;
+  
+  switch (flowDirection) {
+    case 'vertical': {
+      // Vertical: top-to-bottom flow
+      if (side === 'exit') {
+        // Exit: transparent at top, bridge color at bottom
+        flowGradient = `linear-gradient(180deg, rgba(${fromRgb.r}, ${fromRgb.g}, ${fromRgb.b}, ${fadeOpacity}) 0%, rgba(${fromRgb.r}, ${fromRgb.g}, ${fromRgb.b}, ${fadeOpacity}) 50%, rgba(${toRgb.r}, ${toRgb.g}, ${toRgb.b}, ${solidOpacity}) 100%)`;
+      } else {
+        // Entry: bridge color at top, transparent at bottom
+        flowGradient = `linear-gradient(180deg, rgba(${fromRgb.r}, ${fromRgb.g}, ${fromRgb.b}, ${solidOpacity}) 0%, rgba(${toRgb.r}, ${toRgb.g}, ${toRgb.b}, ${fadeOpacity}) 50%, rgba(${toRgb.r}, ${toRgb.g}, ${toRgb.b}, ${fadeOpacity}) 100%)`;
+      }
+      break;
+    }
     
-    flowGradient = `linear-gradient(90deg, rgba(${fromRgb.r}, ${fromRgb.g}, ${fromRgb.b}, ${startOpacity}) 0%, rgba(${fromRgb.r}, ${fromRgb.g}, ${fromRgb.b}, ${startOpacity}) 50%, rgba(${toRgb.r}, ${toRgb.g}, ${toRgb.b}, ${endOpacity}) 100%)`;
-  } else {
-    // Entry: gradient flows from bridge color (left) to transparent (right)
-    // This makes the left edge of the frame receive the flow from previous
-    const startOpacity = opacity; // Visible on left edge  
-    const endOpacity = 0; // Fully transparent on right
+    case 'radial': {
+      // Radial: center-outward flow
+      if (side === 'exit') {
+        // Exit: transparent center, bridge color at edges
+        flowGradient = `radial-gradient(circle at center, rgba(${fromRgb.r}, ${fromRgb.g}, ${fromRgb.b}, ${fadeOpacity}) 0%, rgba(${fromRgb.r}, ${fromRgb.g}, ${fromRgb.b}, ${fadeOpacity}) 30%, rgba(${toRgb.r}, ${toRgb.g}, ${toRgb.b}, ${solidOpacity}) 100%)`;
+      } else {
+        // Entry: bridge color at edges, transparent center
+        flowGradient = `radial-gradient(circle at center, rgba(${toRgb.r}, ${toRgb.g}, ${toRgb.b}, ${fadeOpacity}) 0%, rgba(${toRgb.r}, ${toRgb.g}, ${toRgb.b}, ${fadeOpacity}) 30%, rgba(${fromRgb.r}, ${fromRgb.g}, ${fromRgb.b}, ${solidOpacity}) 100%)`;
+      }
+      break;
+    }
     
-    flowGradient = `linear-gradient(90deg, rgba(${fromRgb.r}, ${fromRgb.g}, ${fromRgb.b}, ${startOpacity}) 0%, rgba(${toRgb.r}, ${toRgb.g}, ${toRgb.b}, ${endOpacity}) 50%, rgba(${toRgb.r}, ${toRgb.g}, ${toRgb.b}, ${endOpacity}) 100%)`;
+    case 'diagonal': {
+      // Diagonal: top-left to bottom-right flow
+      if (side === 'exit') {
+        // Exit: transparent top-left, bridge color at bottom-right
+        flowGradient = `linear-gradient(135deg, rgba(${fromRgb.r}, ${fromRgb.g}, ${fromRgb.b}, ${fadeOpacity}) 0%, rgba(${fromRgb.r}, ${fromRgb.g}, ${fromRgb.b}, ${fadeOpacity}) 50%, rgba(${toRgb.r}, ${toRgb.g}, ${toRgb.b}, ${solidOpacity}) 100%)`;
+      } else {
+        // Entry: bridge color at top-left, transparent bottom-right
+        flowGradient = `linear-gradient(135deg, rgba(${fromRgb.r}, ${fromRgb.g}, ${fromRgb.b}, ${solidOpacity}) 0%, rgba(${toRgb.r}, ${toRgb.g}, ${toRgb.b}, ${fadeOpacity}) 50%, rgba(${toRgb.r}, ${toRgb.g}, ${toRgb.b}, ${fadeOpacity}) 100%)`;
+      }
+      break;
+    }
+    
+    case 'horizontal':
+    default: {
+      // Horizontal: left-to-right flow (default)
+      if (side === 'exit') {
+        // Exit: transparent left, bridge color at right
+        flowGradient = `linear-gradient(90deg, rgba(${fromRgb.r}, ${fromRgb.g}, ${fromRgb.b}, ${fadeOpacity}) 0%, rgba(${fromRgb.r}, ${fromRgb.g}, ${fromRgb.b}, ${fadeOpacity}) 50%, rgba(${toRgb.r}, ${toRgb.g}, ${toRgb.b}, ${solidOpacity}) 100%)`;
+      } else {
+        // Entry: bridge color at left, transparent right
+        flowGradient = `linear-gradient(90deg, rgba(${fromRgb.r}, ${fromRgb.g}, ${fromRgb.b}, ${solidOpacity}) 0%, rgba(${toRgb.r}, ${toRgb.g}, ${toRgb.b}, ${fadeOpacity}) 50%, rgba(${toRgb.r}, ${toRgb.g}, ${toRgb.b}, ${fadeOpacity}) 100%)`;
+      }
+      break;
+    }
   }
   
   // Stack the flow gradient on top of original

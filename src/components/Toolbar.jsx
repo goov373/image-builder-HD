@@ -61,6 +61,7 @@ export default function Toolbar({ totalOffset, activeTab }) {
   // Smooth backgrounds state
   const [showSmoothPicker, setShowSmoothPicker] = useState(false);
   const [smoothIntensity, setSmoothIntensity] = useState(2); // 1=Light(25%), 2=Medium(50%), 3=Strong(75%), 4=Full(100%)
+  const [smoothDirection, setSmoothDirection] = useState('horizontal'); // horizontal, vertical, radial, diagonal
   const [originalBackgrounds, setOriginalBackgrounds] = useState(null); // Store originals for cancel
   const [previewApplied, setPreviewApplied] = useState(false);
   const smoothPickerRef = useRef(null);
@@ -72,7 +73,15 @@ export default function Toolbar({ totalOffset, activeTab }) {
     { step: 4, label: 'Full', value: 100 },
   ];
 
+  const SMOOTH_DIRECTIONS = [
+    { id: 'horizontal', label: 'Horizontal', icon: '→' },
+    { id: 'vertical', label: 'Vertical', icon: '↓' },
+    { id: 'radial', label: 'Radial', icon: '◎' },
+    { id: 'diagonal', label: 'Diagonal', icon: '↘' },
+  ];
+
   const currentNotch = SMOOTH_NOTCHES.find(n => n.step === smoothIntensity) || SMOOTH_NOTCHES[1];
+  const currentDirection = SMOOTH_DIRECTIONS.find(d => d.id === smoothDirection) || SMOOTH_DIRECTIONS[0];
 
   // Get backgrounds for frames (using originals if we have them, for proper preview)
   const getBackgroundForFrame = (frame, useOriginal = false) => {
@@ -99,19 +108,19 @@ export default function Toolbar({ totalOffset, activeTab }) {
   };
 
   // Apply preview (temporary)
-  const applyPreview = (notchStep) => {
+  const applyPreview = (notchStep, direction = smoothDirection) => {
     if (!selectedCarousel || !originalBackgrounds) return;
     
     const notch = SMOOTH_NOTCHES.find(n => n.step === notchStep);
     if (!notch) return;
     
-    console.log('Smooth Preview:', notch.label, `(${notch.value}%)`);
+    console.log('Smooth Preview:', notch.label, `(${notch.value}%)`, 'Direction:', direction);
     
     // Calculate smoothed backgrounds from originals
     const smoothedFrames = smoothCarouselBackgrounds(
       selectedCarousel.frames,
       (frame) => originalBackgrounds[frame.id],
-      { intensity: notch.value / 100 }
+      { intensity: notch.value / 100, direction }
     );
     
     if (smoothedFrames.length > 0) {
@@ -148,7 +157,13 @@ export default function Toolbar({ totalOffset, activeTab }) {
   // Handle slider change
   const handleSliderChange = (newStep) => {
     setSmoothIntensity(newStep);
-    applyPreview(newStep);
+    applyPreview(newStep, smoothDirection);
+  };
+
+  // Handle direction change
+  const handleDirectionChange = (newDirection) => {
+    setSmoothDirection(newDirection);
+    applyPreview(smoothIntensity, newDirection);
   };
 
   // Close smooth picker on outside click
@@ -261,6 +276,31 @@ export default function Toolbar({ totalOffset, activeTab }) {
                         >
                           {notch.label}
                         </span>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  {/* Flow Direction */}
+                  <div className="mb-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-xs font-medium text-gray-300">Flow Direction</span>
+                      <span className="text-xs font-medium text-purple-400">{currentDirection.label}</span>
+                    </div>
+                    <div className="grid grid-cols-4 gap-1.5">
+                      {SMOOTH_DIRECTIONS.map((dir) => (
+                        <button
+                          key={dir.id}
+                          onClick={() => handleDirectionChange(dir.id)}
+                          className={`flex flex-col items-center gap-1 px-2 py-2 rounded-lg transition-all ${
+                            smoothDirection === dir.id
+                              ? 'bg-purple-600 text-white ring-2 ring-purple-400/50'
+                              : 'bg-gray-700 text-gray-400 hover:bg-gray-600 hover:text-white'
+                          }`}
+                          title={dir.label}
+                        >
+                          <span className="text-base leading-none">{dir.icon}</span>
+                          <span className="text-[9px] font-medium">{dir.label}</span>
+                        </button>
                       ))}
                     </div>
                   </div>
