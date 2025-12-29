@@ -249,7 +249,10 @@ export default function CarouselDesignTool() {
           designSystem={designSystem} 
           onUpdate={setDesignSystem} 
           onClose={() => setActivePanel(null)} 
-          isOpen={activePanel === 'design'} 
+          isOpen={activePanel === 'design'}
+          selectedCarouselId={carousels.selectedCarouselId}
+          selectedFrameId={carousels.selectedFrameId}
+          onSetFrameBackground={carousels.handleSetFrameBackground}
         />
         <ExportPanel 
           onClose={() => setActivePanel(null)} 

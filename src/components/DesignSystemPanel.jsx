@@ -4,7 +4,22 @@ import { useState } from 'react';
  * Design & Assets Panel
  * Combined Design System, Assets upload, and Backgrounds
  */
-const DesignSystemPanel = ({ designSystem, onUpdate, onClose, isOpen }) => {
+const DesignSystemPanel = ({ 
+  designSystem, 
+  onUpdate, 
+  onClose, 
+  isOpen,
+  selectedCarouselId,
+  selectedFrameId,
+  onSetFrameBackground 
+}) => {
+  const hasFrameSelected = selectedCarouselId !== null && selectedFrameId !== null;
+  
+  const handleBackgroundClick = (background) => {
+    if (hasFrameSelected && onSetFrameBackground) {
+      onSetFrameBackground(selectedCarouselId, selectedFrameId, background);
+    }
+  };
   const [activeTab, setActiveTab] = useState('design'); // 'design' or 'assets'
   const [uploadedFiles, setUploadedFiles] = useState([]); // Mock uploaded files
   const [uploadedDocs, setUploadedDocs] = useState([]); // Mock uploaded docs
@@ -302,14 +317,31 @@ const DesignSystemPanel = ({ designSystem, onUpdate, onClose, isOpen }) => {
       
         {/* Backgrounds Section */}
         <div className="p-4 border-b border-gray-800">
-          <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-3">Backgrounds</h3>
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Backgrounds</h3>
+            {hasFrameSelected ? (
+              <span className="text-[10px] text-green-400 flex items-center gap-1">
+                <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse" />
+                Click to apply
+              </span>
+            ) : (
+              <span className="text-[10px] text-gray-500">Select a frame first</span>
+            )}
+          </div>
           <div className="grid grid-cols-3 gap-2 mb-3">
             {gradients.map((gradient, idx) => (
               <button
                 type="button"
                 key={idx}
-                className="w-full aspect-square rounded-lg border-2 border-gray-700 hover:border-orange-500 transition-colors"
+                onClick={() => handleBackgroundClick(gradient)}
+                disabled={!hasFrameSelected}
+                className={`w-full aspect-square rounded-lg border-2 transition-colors ${
+                  hasFrameSelected 
+                    ? 'border-gray-700 hover:border-orange-500 hover:scale-105 cursor-pointer' 
+                    : 'border-gray-700/50 opacity-60 cursor-not-allowed'
+                }`}
                 style={{ background: gradient }}
+                title={hasFrameSelected ? 'Click to apply this background' : 'Select a frame first'}
               />
             ))}
           </div>
@@ -318,8 +350,15 @@ const DesignSystemPanel = ({ designSystem, onUpdate, onClose, isOpen }) => {
               <div key={color} className="relative group">
                 <button
                   type="button"
-                  className="w-full aspect-square rounded border-2 border-gray-700 hover:border-orange-500 transition-colors"
+                  onClick={() => handleBackgroundClick(color)}
+                  disabled={!hasFrameSelected}
+                  className={`w-full aspect-square rounded border-2 transition-colors ${
+                    hasFrameSelected 
+                      ? 'border-gray-700 hover:border-orange-500 hover:scale-110 cursor-pointer' 
+                      : 'border-gray-700/50 opacity-60 cursor-not-allowed'
+                  }`}
                   style={{ backgroundColor: color }}
+                  title={hasFrameSelected ? 'Click to apply this background' : 'Select a frame first'}
                 />
                 <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-2 py-1 bg-gray-950 text-white text-[10px] font-mono rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50">
                   {color.toUpperCase()}

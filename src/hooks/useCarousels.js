@@ -22,6 +22,7 @@ export const CAROUSEL_ACTIONS = {
   ADD_ROW: 'ADD_ROW',
   REMOVE_ROW: 'REMOVE_ROW',
   RESET_CAROUSEL: 'RESET_CAROUSEL',
+  SET_FRAME_BACKGROUND: 'SET_FRAME_BACKGROUND',
 };
 
 // Initial state shape
@@ -268,6 +269,22 @@ function carouselReducer(state, action) {
       };
     }
 
+    case CAROUSEL_ACTIONS.SET_FRAME_BACKGROUND: {
+      const { carouselId, frameId, background } = action;
+      return {
+        ...state,
+        carousels: state.carousels.map(carousel => {
+          if (carousel.id !== carouselId) return carousel;
+          return {
+            ...carousel,
+            frames: carousel.frames.map(frame =>
+              frame.id === frameId ? { ...frame, backgroundOverride: background } : frame
+            )
+          };
+        })
+      };
+    }
+
     default:
       return state;
   }
@@ -370,6 +387,9 @@ export default function useCarousels(initialData) {
         dispatch({ type: CAROUSEL_ACTIONS.RESET_CAROUSEL, carouselId, originalCarousel });
       }
     }, [initialData]),
+    
+    handleSetFrameBackground: useCallback((carouselId, frameId, background) =>
+      dispatch({ type: CAROUSEL_ACTIONS.SET_FRAME_BACKGROUND, carouselId, frameId, background }), []),
   };
 
   return {
