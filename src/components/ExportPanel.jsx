@@ -13,12 +13,12 @@ const ExportPanel = ({
   singleImages = [],
   projectType = 'carousel'
 }) => {
+  const [selectedProjectKey, setSelectedProjectKey] = useState('');
   const [format, setFormat] = useState('png');
   const [resolution, setResolution] = useState('2x');
   const [background, setBackground] = useState('original');
   const [customBgColor, setCustomBgColor] = useState('#000000');
-  const [selectedItems, setSelectedItems] = useState({}); // { 'carousel-1': { 1: true, 2: true }, ... }
-  const [expandedProjects, setExpandedProjects] = useState({});
+  const [selectedItems, setSelectedItems] = useState({}); // { 1: true, 2: true, ... }
   const [isExporting, setIsExporting] = useState(false);
   const [exportSuccess, setExportSuccess] = useState(false);
 
@@ -29,6 +29,22 @@ const ExportPanel = ({
     ...videoCovers.map(v => ({ ...v, type: 'videoCover', items: v.frames || [], itemLabel: 'Cover', key: `videoCover-${v.id}` })),
     ...singleImages.map(s => ({ ...s, type: 'singleImage', items: s.layers || [], itemLabel: 'Layer', key: `singleImage-${s.id}` })),
   ];
+
+  // Get currently selected project
+  const selectedProject = allProjects.find(p => p.key === selectedProjectKey);
+  const projectItems = selectedProject?.items || [];
+  const itemLabel = selectedProject?.itemLabel || 'Frame';
+
+  // Auto-select first project if none selected
+  if (!selectedProjectKey && allProjects.length > 0) {
+    setSelectedProjectKey(allProjects[0].key);
+  }
+
+  // Handle project change - reset frame selection
+  const handleProjectChange = (newKey) => {
+    setSelectedProjectKey(newKey);
+    setSelectedItems({});
+  };
 
   // Get type icon based on project type
   const getTypeIcon = (type) => {
@@ -84,80 +100,24 @@ const ExportPanel = ({
     { id: 'custom', name: 'Custom Color', desc: 'Solid fill' },
   ];
 
-  // Count total selected items across all projects
+  // Count selected items in current project
   const getSelectedCount = () => {
-    let count = 0;
-    Object.values(selectedItems).forEach(projectSelection => {
-      if (typeof projectSelection === 'object') {
-        count += Object.values(projectSelection).filter(Boolean).length;
-      }
-    });
-    return count;
-  };
-
-  // Get total frames across all projects
-  const getTotalFrames = () => {
-    return allProjects.reduce((acc, p) => acc + (p.items?.length || 0), 0);
-  };
-
-  // Check if project is fully selected
-  const isProjectFullySelected = (projectKey, itemCount) => {
-    const selection = selectedItems[projectKey] || {};
-    const selectedCount = Object.values(selection).filter(Boolean).length;
-    return selectedCount === itemCount && itemCount > 0;
-  };
-
-  // Check if project is partially selected
-  const isProjectPartiallySelected = (projectKey) => {
-    const selection = selectedItems[projectKey] || {};
-    const selectedCount = Object.values(selection).filter(Boolean).length;
-    return selectedCount > 0;
-  };
-
-  // Toggle entire project selection
-  const toggleProject = (projectKey, items) => {
-    const isFullySelected = isProjectFullySelected(projectKey, items.length);
-    
-    if (isFullySelected) {
-      // Deselect all items in this project
-      setSelectedItems(prev => ({ ...prev, [projectKey]: {} }));
-    } else {
-      // Select all items in this project
-      const newSelection = {};
-      items.forEach(item => {
-        newSelection[item.id] = true;
-      });
-      setSelectedItems(prev => ({ ...prev, [projectKey]: newSelection }));
-    }
+    return Object.values(selectedItems).filter(Boolean).length;
   };
 
   // Toggle individual item
-  const toggleItem = (projectKey, itemId) => {
+  const toggleItem = (itemId) => {
     setSelectedItems(prev => ({
       ...prev,
-      [projectKey]: {
-        ...(prev[projectKey] || {}),
-        [itemId]: !(prev[projectKey]?.[itemId])
-      }
+      [itemId]: !prev[itemId]
     }));
   };
 
-  // Toggle project expansion
-  const toggleExpanded = (projectKey) => {
-    setExpandedProjects(prev => ({
-      ...prev,
-      [projectKey]: !prev[projectKey]
-    }));
-  };
-
-  // Select all across all projects
+  // Select all in current project
   const selectAll = () => {
     const newSelection = {};
-    allProjects.forEach(project => {
-      newSelection[project.key] = {};
-      project.items.forEach(item => {
-        newSelection[project.key][item.id] = true;
-      });
+    projectItems.forEach(item => {
+      newSelection[item.id] = true;
     });
     setSelectedItems(newSelection);
   };
@@ -170,7 +130,7 @@ const ExportPanel = ({
   // Handle export
   const handleExport = async () => {
     const count = getSelectedCount();
-    if (count === 0) return;
+    if (count === 0 || !selectedProject) return;
     
     setIsExporting(true);
     setExportSuccess(false);
@@ -178,22 +138,12 @@ const ExportPanel = ({
     try {
       await new Promise(resolve => setTimeout(resolve, 1500));
       
-      // Build export manifest
-      const exportData = [];
-      allProjects.forEach(project => {
-        const projectSelection = selectedItems[project.key] || {};
-        const selectedItemIds = Object.keys(projectSelection).filter(id => projectSelection[id]);
-        if (selectedItemIds.length > 0) {
-          exportData.push({
-            projectName: project.name,
-            projectType: project.type,
-            items: selectedItemIds
-          });
-        }
-      });
+      const selectedItemIds = Object.keys(selectedItems).filter(id => selectedItems[id]);
       
       console.log('Exporting:', {
-        projects: exportData,
+        projectName: selectedProject.name,
+        projectType: selectedProject.type,
+        items: selectedItemIds,
         format,
         resolution,
         background: background === 'custom' ? customBgColor : background
@@ -209,7 +159,7 @@ const ExportPanel = ({
   };
 
   const selectedCount = getSelectedCount();
-  const totalFrames = getTotalFrames();
+  const totalItems = projectItems.length;
   const supportsTransparent = formats.find(f => f.id === format)?.supportsTransparent;
 
   return (
@@ -231,124 +181,83 @@ const ExportPanel = ({
       <div className="flex-1 overflow-y-auto overflow-x-hidden">
         <div className="p-4 space-y-5">
           
-          {/* Project & Frame Selection - Canva-style */}
+          {/* Step 1: Project Selection */}
           <div>
-            <div className="flex items-center justify-between mb-2">
-              <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Select Content</h3>
-              <div className="flex gap-2">
-                <button type="button" onClick={selectAll} className="text-[10px] text-orange-400 hover:text-orange-300">All</button>
-                <span className="text-gray-600">|</span>
-                <button type="button" onClick={deselectAll} className="text-[10px] text-gray-500 hover:text-gray-400">None</button>
-              </div>
-            </div>
-            
+            <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-2">Project</h3>
             {allProjects.length === 0 ? (
-              <div className="bg-gray-800/50 rounded-lg border border-gray-700/50 p-6 text-center">
-                <svg className="w-8 h-8 mx-auto mb-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="bg-gray-800/50 rounded-lg border border-gray-700/50 p-4 text-center">
+                <svg className="w-6 h-6 mx-auto mb-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
                 </svg>
-                <p className="text-xs text-gray-500">No projects to export</p>
+                <p className="text-xs text-gray-500">No projects available</p>
               </div>
             ) : (
-              <div className="bg-gray-800/30 rounded-lg border border-gray-700/50 overflow-hidden">
-                {allProjects.map((project) => (
-                  <div key={project.key} className="border-b border-gray-700/50 last:border-b-0">
-                    {/* Project Row */}
-                    <div className="flex items-center gap-2 px-3 py-2.5 hover:bg-gray-700/30 transition-colors">
-                      {/* Checkbox */}
-                      <button
-                        type="button"
-                        onClick={() => toggleProject(project.key, project.items)}
-                        className={`w-4 h-4 rounded flex-shrink-0 border flex items-center justify-center transition-all ${
-                          isProjectFullySelected(project.key, project.items.length)
-                            ? 'bg-orange-500 border-orange-500'
-                            : isProjectPartiallySelected(project.key)
-                            ? 'bg-orange-500/40 border-orange-500'
-                            : 'border-gray-500 hover:border-gray-400'
-                        }`}
-                      >
-                        {isProjectFullySelected(project.key, project.items.length) && (
-                          <svg className="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                          </svg>
-                        )}
-                        {isProjectPartiallySelected(project.key) && !isProjectFullySelected(project.key, project.items.length) && (
-                          <div className="w-2 h-0.5 bg-white rounded-full" />
-                        )}
-                      </button>
-                      
-                      {/* Type Icon */}
-                      <span className="text-gray-500 flex-shrink-0">
-                        {getTypeIcon(project.type)}
-                      </span>
-                      
-                      {/* Project Name - Clickable to expand */}
-                      <button
-                        type="button"
-                        onClick={() => toggleExpanded(project.key)}
-                        className="flex-1 flex items-center gap-2 text-left min-w-0"
-                      >
-                        <span className="text-xs text-white truncate">{project.name}</span>
-                        <span className="text-[10px] text-gray-500 flex-shrink-0">
-                          {project.items.length} {project.itemLabel.toLowerCase()}{project.items.length !== 1 ? 's' : ''}
-                        </span>
-                      </button>
-                      
-                      {/* Expand Arrow */}
-                      <button
-                        type="button"
-                        onClick={() => toggleExpanded(project.key)}
-                        className="p-1 text-gray-500 hover:text-gray-400 transition-colors flex-shrink-0"
-                      >
-                        <svg 
-                          className={`w-3 h-3 transition-transform duration-200 ${expandedProjects[project.key] ? 'rotate-180' : ''}`} 
-                          fill="none" 
-                          stroke="currentColor" 
-                          viewBox="0 0 24 24"
-                        >
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                        </svg>
-                      </button>
-                    </div>
-                    
-                    {/* Expanded Frame List */}
-                    <div 
-                      className={`overflow-hidden transition-all duration-200 ease-out ${
-                        expandedProjects[project.key] ? 'max-h-48 opacity-100' : 'max-h-0 opacity-0'
-                      }`}
-                    >
-                      <div className="px-3 pb-2.5 pt-1">
-                        <div className="pl-6 border-l border-gray-700/50 ml-2">
-                          {project.items.length === 0 ? (
-                            <p className="text-[10px] text-gray-600 py-1 pl-3">No {project.itemLabel.toLowerCase()}s</p>
-                          ) : (
-                            <div className="flex flex-wrap gap-1.5 pl-3">
-                              {project.items.map((item, index) => (
-                                <button
-                                  type="button"
-                                  key={item.id}
-                                  onClick={() => toggleItem(project.key, item.id)}
-                                  className={`px-2.5 py-1 rounded text-[10px] font-medium transition-all ${
-                                    selectedItems[project.key]?.[item.id]
-                                      ? 'bg-orange-500 text-white shadow-sm shadow-orange-500/25'
-                                      : 'bg-gray-700/70 text-gray-400 hover:bg-gray-600 hover:text-gray-300'
-                                  }`}
-                                >
-                                  {project.itemLabel} {index + 1}
-                                </button>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+              <div className="relative">
+                <select
+                  value={selectedProjectKey}
+                  onChange={(e) => handleProjectChange(e.target.value)}
+                  className="w-full bg-gray-800 border border-gray-700 rounded-lg pl-9 pr-3 py-2.5 text-xs text-white hover:border-orange-500 focus:border-orange-500 focus:outline-none transition-colors cursor-pointer appearance-none"
+                >
+                  {allProjects.map(project => (
+                    <option key={project.key} value={project.key}>
+                      {project.name}
+                    </option>
+                  ))}
+                </select>
+                {/* Type Icon */}
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none">
+                  {selectedProject && getTypeIcon(selectedProject.type)}
+                </span>
+                {/* Dropdown Arrow */}
+                <svg className="absolute right-3 top-1/2 -translate-y-1/2 w-3 h-3 text-gray-500 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
               </div>
             )}
-            
-            <p className="text-[10px] text-gray-500 mt-2">{selectedCount} of {totalFrames} items selected</p>
           </div>
+
+          {/* Step 2: Frame Selection */}
+          {selectedProject && (
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">
+                  {itemLabel}s
+                </h3>
+                <div className="flex gap-2">
+                  <button type="button" onClick={selectAll} className="text-[10px] text-orange-400 hover:text-orange-300">All</button>
+                  <span className="text-gray-600">|</span>
+                  <button type="button" onClick={deselectAll} className="text-[10px] text-gray-500 hover:text-gray-400">None</button>
+                </div>
+              </div>
+              
+              {projectItems.length === 0 ? (
+                <div className="bg-gray-800/50 rounded-lg border border-gray-700/50 p-4 text-center">
+                  <p className="text-xs text-gray-500">No {itemLabel.toLowerCase()}s in this project</p>
+                </div>
+              ) : (
+                <div className="bg-gray-800/30 rounded-lg border border-gray-700/50 p-3">
+                  <div className="flex flex-wrap gap-1.5">
+                    {projectItems.map((item, index) => (
+                      <button
+                        type="button"
+                        key={item.id}
+                        onClick={() => toggleItem(item.id)}
+                        className={`px-3 py-1.5 rounded text-[11px] font-medium transition-all ${
+                          selectedItems[item.id]
+                            ? 'bg-orange-500 text-white shadow-sm shadow-orange-500/25'
+                            : 'bg-gray-700/70 text-gray-400 hover:bg-gray-600 hover:text-gray-300'
+                        }`}
+                      >
+                        {itemLabel} {index + 1}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+              
+              <p className="text-[10px] text-gray-500 mt-2">{selectedCount} of {totalItems} {itemLabel.toLowerCase()}s selected</p>
+            </div>
+          )}
 
           {/* Format Section */}
           <div>
@@ -471,9 +380,9 @@ const ExportPanel = ({
               <span>Exporting...</span>
             </>
           ) : selectedCount > 0 ? (
-            `Export ${selectedCount} item${selectedCount > 1 ? 's' : ''}`
+            `Export ${selectedCount} ${itemLabel}${selectedCount > 1 ? 's' : ''}`
           ) : (
-            'Select items to export'
+            `Select ${itemLabel.toLowerCase()}s to export`
           )}
         </button>
       </div>
