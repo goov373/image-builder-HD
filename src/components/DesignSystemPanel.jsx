@@ -240,12 +240,14 @@ const DesignSystemPanel = ({ designSystem, onUpdate, onClose, isOpen }) => {
             {colorFields.map(field => (
               <div key={field.key} className="flex flex-col items-center gap-1.5">
                 <div className="relative group">
-                  <input
-                    type="color"
-                    value={designSystem[field.key]}
-                    onChange={(e) => onUpdate({ ...designSystem, [field.key]: e.target.value })}
-                    className="w-12 h-12 rounded-lg cursor-pointer border border-gray-500/50 hover:border-orange-500 transition-colors"
-                  />
+                  <div className="w-12 h-12 rounded-lg border border-gray-500/50 hover:border-orange-500 transition-colors overflow-hidden">
+                    <input
+                      type="color"
+                      value={designSystem[field.key]}
+                      onChange={(e) => onUpdate({ ...designSystem, [field.key]: e.target.value })}
+                      className="w-14 h-14 -m-1 cursor-pointer"
+                    />
+                  </div>
                   <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-2 py-1 bg-gray-950 text-white text-[10px] font-mono rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50">
                     {designSystem[field.key].toUpperCase()}
                     <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-950" />
