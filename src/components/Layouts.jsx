@@ -42,8 +42,12 @@ export const LayoutBottomStack = ({ headline, body, text, accent, isLandscape, h
     }
   };
 
-  const headlineStyle = { color: text || '#ffffff', fontFamily: headingFont, fontSize: fontSizes.headline || 14, lineHeight: fontSizes.lineHeight || 1.3, ...textWrapStyles };
-  const bodyStyle = { fontFamily: bodyFont, fontSize: fontSizes.body || 12, lineHeight: fontSizes.lineHeight || 1.4, ...textWrapStyles };
+  // Apply formatting.fontSize as a multiplier (S=0.85, M=1, L=1.2)
+  const headlineFontSize = (formatting.headline?.fontSize || 1) * (fontSizes.headline || 14);
+  const bodyFontSize = (formatting.body?.fontSize || 1) * (fontSizes.body || 12);
+  
+  const headlineStyle = { color: text || '#ffffff', fontFamily: headingFont, fontSize: headlineFontSize, lineHeight: fontSizes.lineHeight || 1.3, ...textWrapStyles };
+  const bodyStyle = { fontFamily: bodyFont, fontSize: bodyFontSize, lineHeight: fontSizes.lineHeight || 1.4, ...textWrapStyles };
 
   if (isLandscape) {
     return (
@@ -99,8 +103,12 @@ export const LayoutCenterDrama = ({ headline, body, text, accent, isLandscape, h
     }
   };
 
-  const headlineStyle = { color: text || '#ffffff', fontFamily: headingFont, fontSize: (fontSizes.headline || 14) + 2, lineHeight: fontSizes.lineHeight || 1.3, ...textWrapStyles };
-  const bodyStyle = { fontFamily: bodyFont, fontSize: fontSizes.body || 12, lineHeight: (fontSizes.lineHeight || 1.4) + 0.1, ...textWrapStyles };
+  // Apply formatting.fontSize as a multiplier (S=0.85, M=1, L=1.2)
+  const headlineFontSize = (formatting.headline?.fontSize || 1) * ((fontSizes.headline || 14) + 2);
+  const bodyFontSize = (formatting.body?.fontSize || 1) * (fontSizes.body || 12);
+  
+  const headlineStyle = { color: text || '#ffffff', fontFamily: headingFont, fontSize: headlineFontSize, lineHeight: fontSizes.lineHeight || 1.3, ...textWrapStyles };
+  const bodyStyle = { fontFamily: bodyFont, fontSize: bodyFontSize, lineHeight: (fontSizes.lineHeight || 1.4) + 0.1, ...textWrapStyles };
 
   if (isLandscape) {
     return (
@@ -168,8 +176,12 @@ export const LayoutEditorialLeft = ({ headline, body, text, accent, isLandscape,
     }
   };
 
-  const headlineStyle = { color: text || '#ffffff', fontFamily: headingFont, fontSize: fontSizes.headline || 14, lineHeight: fontSizes.lineHeight || 1.3, ...textWrapStyles };
-  const bodyStyle = { fontFamily: bodyFont, fontSize: fontSizes.body || 12, lineHeight: fontSizes.lineHeight || 1.4, ...textWrapStyles };
+  // Apply formatting.fontSize as a multiplier (S=0.85, M=1, L=1.2)
+  const headlineFontSize = (formatting.headline?.fontSize || 1) * (fontSizes.headline || 14);
+  const bodyFontSize = (formatting.body?.fontSize || 1) * (fontSizes.body || 12);
+  
+  const headlineStyle = { color: text || '#ffffff', fontFamily: headingFont, fontSize: headlineFontSize, lineHeight: fontSizes.lineHeight || 1.3, ...textWrapStyles };
+  const bodyStyle = { fontFamily: bodyFont, fontSize: bodyFontSize, lineHeight: fontSizes.lineHeight || 1.4, ...textWrapStyles };
 
   if (isLandscape) {
     return (
