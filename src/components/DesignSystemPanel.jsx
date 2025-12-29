@@ -46,8 +46,12 @@ const DesignSystemPanel = ({
   const [uploadProgress, setUploadProgress] = useState({ current: 0, total: 0, fileName: '' });
   const [compressionPreset, setCompressionPreset] = useState('highQuality');
   const fileInputRef = useRef(null);
+  const photoInputRef = useRef(null);
   const MAX_FILES = 50;
   const MAX_DOCS = 20;
+  const [brandPhotos, setBrandPhotos] = useState([]);
+  const [isUploadingPhotos, setIsUploadingPhotos] = useState(false);
+  const [photoUploadProgress, setPhotoUploadProgress] = useState({ current: 0, total: 0, fileName: '' });
 
   // Handle image upload with compression
   const handleImageUpload = async (event) => {
@@ -135,6 +139,62 @@ const DesignSystemPanel = ({
   const totalStorageUsed = uploadedFiles.reduce((acc, file) => acc + (file.size || 0), 0);
   const totalOriginalSize = uploadedFiles.reduce((acc, file) => acc + (file.originalSize || 0), 0);
   const totalSavings = totalOriginalSize > 0 ? Math.round((1 - totalStorageUsed / totalOriginalSize) * 100) : 0;
+
+  // Handle brand photography upload with compression
+  const handlePhotoUpload = async (event) => {
+    const files = event.target.files;
+    if (!files || files.length === 0) return;
+
+    setIsUploadingPhotos(true);
+    setPhotoUploadProgress({ current: 0, total: files.length, fileName: '' });
+
+    try {
+      const preset = COMPRESSION_PRESETS.highQuality; // Always high quality for brand photos
+      
+      const results = await compressImages(
+        files,
+        { preset },
+        (current, total, fileName) => {
+          setPhotoUploadProgress({ current, total, fileName });
+        }
+      );
+
+      const newPhotos = results.map((result) => ({
+        id: Date.now() + Math.random(),
+        name: result.info.newName,
+        url: URL.createObjectURL(result.blob),
+        size: result.info.compressedSize,
+        dimensions: result.info.newDimensions,
+      }));
+
+      setBrandPhotos(prev => [...prev, ...newPhotos]);
+    } catch (error) {
+      console.error('Photo upload failed:', error);
+    } finally {
+      setIsUploadingPhotos(false);
+      setPhotoUploadProgress({ current: 0, total: 0, fileName: '' });
+      if (photoInputRef.current) {
+        photoInputRef.current.value = '';
+      }
+    }
+  };
+
+  const handleRemovePhoto = (photoId) => {
+    setBrandPhotos(prev => {
+      const photo = prev.find(p => p.id === photoId);
+      if (photo?.url) URL.revokeObjectURL(photo.url);
+      return prev.filter(p => p.id !== photoId);
+    });
+  };
+
+  const handlePhotoDrop = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    const files = event.dataTransfer?.files;
+    if (files && files.length > 0) {
+      handlePhotoUpload({ target: { files } });
+    }
+  };
   
   const colorFields = [
     { key: 'primary', label: 'Primary' },
@@ -736,18 +796,75 @@ const DesignSystemPanel = ({
         
         {/* Photography Section */}
         <div className="p-4 border-b border-gray-800">
-          <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-3">Photography</h3>
-          <div className="border-2 border-dashed border-gray-700 rounded-lg p-4 text-center hover:border-gray-600 transition-colors cursor-pointer mb-3">
-            <svg className="w-8 h-8 mx-auto mb-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
-            <p className="text-xs text-gray-400 mb-1">Brand photography</p>
-            <button type="button" className="px-3 py-1.5 bg-gray-700 hover:bg-gray-600 text-xs text-white rounded-lg transition-colors">
-              Upload photos
-            </button>
-            <p className="text-[10px] text-gray-600 mt-2">JPG, PNG up to 10MB each</p>
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Photography</h3>
+            {brandPhotos.length > 0 && (
+              <span className="text-[10px] text-gray-500">{brandPhotos.length} photos</span>
+            )}
           </div>
+          
+          {/* Upload Drop Zone */}
+          <div 
+            className={`border-2 border-dashed rounded-lg p-4 text-center transition-colors cursor-pointer mb-3 ${
+              isUploadingPhotos ? 'border-gray-600 bg-gray-800/50' : 'border-gray-700 hover:border-gray-500'
+            }`}
+            onDrop={handlePhotoDrop}
+            onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); }}
+            onClick={() => !isUploadingPhotos && photoInputRef.current?.click()}
+          >
+            <input
+              ref={photoInputRef}
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={handlePhotoUpload}
+              className="hidden"
+            />
+            
+            {isUploadingPhotos ? (
+              <>
+                <div className="w-8 h-8 mx-auto mb-2 border-2 border-gray-500 border-t-white rounded-full animate-spin" />
+                <p className="text-xs text-white mb-1">
+                  Compressing {photoUploadProgress.current + 1} of {photoUploadProgress.total}...
+                </p>
+                <p className="text-[10px] text-gray-500">{photoUploadProgress.fileName}</p>
+              </>
+            ) : (
+              <>
+                <svg className="w-8 h-8 mx-auto mb-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                <p className="text-[10px] text-gray-500 mb-2">Brand photography</p>
+                <button type="button" className="px-3 py-1.5 bg-gray-700 hover:bg-gray-600 text-xs text-white rounded-lg transition-colors">
+                  Upload photos
+                </button>
+                <p className="text-[10px] text-gray-600 mt-2">Auto-compressed to crisp WebP</p>
+              </>
+            )}
+          </div>
+          
+          {/* Uploaded Photos Grid */}
+          {brandPhotos.length > 0 && (
+            <div className="grid grid-cols-3 gap-2 mb-3">
+              {brandPhotos.map((photo) => (
+                <div key={photo.id} className="relative aspect-square bg-gray-800 rounded-lg overflow-hidden group">
+                  <img src={photo.url} alt={photo.name} className="w-full h-full object-cover" />
+                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <button 
+                      type="button" 
+                      onClick={(e) => { e.stopPropagation(); handleRemovePhoto(photo.id); }}
+                      className="p-1.5 bg-red-500 rounded-full hover:bg-red-600 transition-colors"
+                    >
+                      <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
           
           {/* Stock Photo Sources */}
           <p className="text-[9px] text-gray-500 mb-2 uppercase tracking-wide">Free Stock Photos</p>
