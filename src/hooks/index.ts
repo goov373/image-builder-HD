@@ -5,4 +5,6 @@ export { default as useEblasts } from './useEblasts';
 export { default as useVideoCovers } from './useVideoCovers';
 export { default as useSingleImages } from './useSingleImages';
 export { default as useDesignSystem } from './useDesignSystem';
+export { default as useAuth } from './useAuth';
+export { default as useProjects } from './useProjects';
 

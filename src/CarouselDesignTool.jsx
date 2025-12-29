@@ -32,7 +32,7 @@ const INITIAL_TABS = [
 ];
 
 // Main App Component
-export default function CarouselDesignTool() {
+export default function CarouselDesignTool({ onSignOut = null, user = null }) {
   // UI state
   const [zoom, setZoom] = useState(120);
   const [activePanel, setActivePanel] = useState(null);
@@ -267,7 +267,9 @@ export default function CarouselDesignTool() {
         />
         <AccountPanel 
           onClose={() => setIsAccountOpen(false)} 
-          isOpen={isAccountOpen && tabs.currentView === 'home'} 
+          isOpen={isAccountOpen && tabs.currentView === 'home'}
+          onSignOut={onSignOut}
+          user={user}
         />
 
         {/* Homepage or Editor View */}

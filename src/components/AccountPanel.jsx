@@ -4,7 +4,7 @@ import { useState } from 'react';
  * Account Management Panel
  * Handles team members, invites, and account settings
  */
-const AccountPanel = ({ onClose, isOpen }) => {
+const AccountPanel = ({ onClose, isOpen, onSignOut = null, user = null }) => {
   const [activeTab, setActiveTab] = useState('team'); // 'team', 'invites', 'settings'
   const [showInviteForm, setShowInviteForm] = useState(false);
   const [inviteEmail, setInviteEmail] = useState('');
@@ -302,6 +302,28 @@ const AccountPanel = ({ onClose, isOpen }) => {
                 </div>
               </div>
             </div>
+            
+            {/* Sign Out */}
+            {onSignOut && (
+              <div className="space-y-3">
+                <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wide">Session</h3>
+                <div className="p-3 rounded-lg bg-gray-800/50 border border-gray-700 space-y-2">
+                  {user?.email && (
+                    <p className="text-xs text-gray-400">Signed in as <span className="text-white">{user.email}</span></p>
+                  )}
+                  <button 
+                    type="button" 
+                    onClick={onSignOut}
+                    className="w-full py-2 rounded-lg bg-gray-700 hover:bg-gray-600 text-white text-xs font-medium transition-colors flex items-center justify-center gap-2"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                    Sign Out
+                  </button>
+                </div>
+              </div>
+            )}
             
             {/* Danger Zone */}
             <div className="space-y-3">
