@@ -175,34 +175,41 @@ const DesignSystemPanel = ({ designSystem, onUpdate, onClose, isOpen }) => {
             )}
           </div>
           
-          {/* Your Docs Section */}
+          {/* Upload Docs Section */}
           <div className="p-4 border-t border-gray-800">
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Your Docs</h3>
+              <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Upload Docs</h3>
               <span className="text-[10px] text-gray-500">{uploadedDocs.length}/{MAX_DOCS}</span>
             </div>
-            <div className="border-2 border-dashed border-gray-700 rounded-lg p-3 text-center hover:border-gray-600 transition-colors cursor-pointer mb-3">
-              <svg className="w-6 h-6 mx-auto mb-1.5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="border-2 border-dashed border-gray-700 rounded-lg p-4 text-center hover:border-gray-600 transition-colors cursor-pointer">
+              <svg className="w-8 h-8 mx-auto mb-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
-              <p className="text-[10px] text-gray-400 mb-1">Drop specs here</p>
-              <button type="button" className="px-2.5 py-1 bg-gray-700 hover:bg-gray-600 text-[10px] text-white rounded transition-colors">
-                Browse
+              <p className="text-xs text-gray-400 mb-1">Drop docs here</p>
+              <p className="text-[10px] text-gray-600 mb-2">or</p>
+              <button type="button" className="px-3 py-1.5 bg-gray-700 hover:bg-gray-600 text-xs text-white rounded-lg transition-colors">
+                Browse files
               </button>
-              <p className="text-[9px] text-gray-600 mt-1.5">PDF, DOCX, TXT, MD</p>
+              <p className="text-[10px] text-gray-600 mt-2">PDF, DOCX, TXT, MD up to 10MB each</p>
             </div>
-            <p className="text-[10px] text-gray-500 mb-3 flex items-center gap-1.5">
+            <p className="text-[10px] text-gray-500 mt-3 flex items-center justify-center gap-1.5">
               <svg className="w-3 h-3 text-purple-400" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 2L14.09 8.26L20 9.27L15.55 13.97L16.91 20L12 16.9L7.09 20L8.45 13.97L4 9.27L9.91 8.26L12 2Z" />
               </svg>
               <span>AI will generate projects from your specs</span>
             </p>
+          </div>
+          
+          {/* Your Docs Browser */}
+          <div className="p-4">
+            <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-3">Your Docs</h3>
             {uploadedDocs.length === 0 ? (
-              <div className="text-center py-4 bg-gray-800/30 rounded-lg">
-                <svg className="w-8 h-8 mx-auto mb-2 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="text-center py-8">
+                <svg className="w-12 h-12 mx-auto mb-3 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
-                <p className="text-[10px] text-gray-500">No docs uploaded</p>
+                <p className="text-xs text-gray-500">No docs uploaded yet</p>
+                <p className="text-[10px] text-gray-600 mt-1">Upload docs to use in your designs</p>
               </div>
             ) : (
               <div className="space-y-1.5">
