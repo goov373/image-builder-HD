@@ -24,11 +24,11 @@ export default function TabBar({
         {/* Tabs */}
         <div className="flex items-end">
           {tabs.map((tab, index) => {
-            const isTabActive = tab.active && currentView !== 'home';
+            const isTabActive = tab.id === activeTabId && currentView !== 'home';
             return (
               <div key={tab.id} className="flex items-end">
                 {/* Vertical separator - show before inactive tabs (except first) */}
-                {index > 0 && !isTabActive && !(tabs[index - 1]?.active && currentView !== 'home') && (
+                {index > 0 && !isTabActive && !(tabs[index - 1]?.id === activeTabId && currentView !== 'home') && (
                   <div className="w-px h-5 bg-gray-700 self-center" />
                 )}
                 <div 
