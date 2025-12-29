@@ -7,7 +7,7 @@ import EditableTextField from './EditableTextField';
 export const LayoutBottomStack = ({ headline, body, text, accent, isLandscape, headingFont, bodyFont, variant = 0, isFrameSelected, onUpdateText, activeField, onActivateField, formatting = {}, fontSizes = {} }) => {
   const getAlignment = () => {
     switch (variant) {
-      case 1: return 'justify-start pt-6';
+      case 1: return 'justify-start pt-10'; // Extra padding to clear progress indicator
       case 2: return 'justify-center';
       default: return 'justify-end';
     }
@@ -73,7 +73,7 @@ export const LayoutCenterDrama = ({ headline, body, text, accent, isLandscape, h
   const getAlignment = () => {
     switch (variant) {
       case 1: return 'justify-end pb-6';
-      case 2: return 'justify-start pt-8';
+      case 2: return 'justify-start pt-10'; // Extra padding to clear progress indicator
       default: return 'justify-center';
     }
   };
