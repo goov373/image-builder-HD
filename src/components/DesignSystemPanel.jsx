@@ -54,8 +54,8 @@ const DesignSystemPanel = ({
     'linear-gradient(180deg, #c7d2fe 0%, #a5b4fc 20%, #818cf8 45%, #6466e9 70%, #5558d9 100%)',
     // 2. Diagonal top-left: Light corner fading to purple
     'linear-gradient(135deg, #c7d2fe 0%, #a5b4fc 25%, #818cf8 50%, #6466e9 75%, #5558d9 100%)',
-    // 3. Horizontal: Light left → Purple right
-    'linear-gradient(90deg, #c7d2fe 0%, #a5b4fc 25%, #818cf8 50%, #6466e9 75%, #5c5fdb 100%)',
+    // 3. Vertical mirrored: Deep purple bottom → Light lavender top (mirrors R3C3)
+    'linear-gradient(0deg, #5c5fdb 0%, #6466e9 35%, #818cf8 75%, #c7d2fe 100%)',
     // 4. Reverse vertical: Purple top → Light bottom
     'linear-gradient(0deg, #c7d2fe 0%, #a5b4fc 25%, #818cf8 50%, #6466e9 75%, #5558d9 100%)',
     // 5. Diagonal bottom-left: Light corner fading to purple top-right
