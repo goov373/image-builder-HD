@@ -93,12 +93,23 @@ export default function Toolbar({ totalOffset, activeTab }) {
   const currentNotch = SMOOTH_NOTCHES.find(n => n.step === smoothIntensity) || SMOOTH_NOTCHES[1];
   const currentDirection = SMOOTH_DIRECTIONS.find(d => d.id === smoothDirection) || SMOOTH_DIRECTIONS[0];
 
+  // Helper to extract gradient string from backgroundOverride (handles both string and stretched object)
+  const extractGradientString = (bgOverride) => {
+    if (!bgOverride) return null;
+    if (typeof bgOverride === 'string') return bgOverride;
+    if (typeof bgOverride === 'object' && bgOverride.gradient) return bgOverride.gradient;
+    return null;
+  };
+
   // Get backgrounds for frames (using originals if we have them, for proper preview)
   const getBackgroundForFrame = (frame, useOriginal = false) => {
     if (useOriginal && originalBackgrounds) {
-      return originalBackgrounds[frame.id] || frame.backgroundOverride || getFrameStyle(selectedCarousel?.id, frame.style, designSystem).background;
+      const orig = originalBackgrounds[frame.id];
+      if (orig) return extractGradientString(orig) || orig;
+      return extractGradientString(frame.backgroundOverride) || getFrameStyle(selectedCarousel?.id, frame.style, designSystem).background;
     }
-    if (frame.backgroundOverride) return frame.backgroundOverride;
+    const bgOverride = extractGradientString(frame.backgroundOverride);
+    if (bgOverride) return bgOverride;
     const style = getFrameStyle(selectedCarousel?.id, frame.style, designSystem);
     return style.background;
   };
@@ -107,10 +118,13 @@ export default function Toolbar({ totalOffset, activeTab }) {
   const openSmoothPicker = () => {
     if (!selectedCarousel) return;
     
-    // Store current backgrounds
+    // Store current backgrounds (preserve full object for stretched gradients)
     const originals = {};
     selectedCarousel.frames?.forEach(frame => {
-      originals[frame.id] = getBackgroundForFrame(frame);
+      // Store the actual backgroundOverride (could be string, object, or undefined)
+      originals[frame.id] = frame.backgroundOverride !== undefined 
+        ? frame.backgroundOverride 
+        : getFrameStyle(selectedCarousel?.id, frame.style, designSystem).background;
     });
     setOriginalBackgrounds(originals);
     setPreviewApplied(false);
