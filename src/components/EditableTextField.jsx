@@ -2,7 +2,21 @@
  * Editable Text Field Component
  * Inline-editable text with formatting support
  */
+
+// Strip HTML tags from content (cleanup from rich text experiments)
+const stripHtmlTags = (text) => {
+  if (typeof text !== 'string') return text;
+  if (!text.includes('<')) return text;
+  // Create a temporary element to parse HTML and extract text
+  const tmp = document.createElement('div');
+  tmp.innerHTML = text;
+  return tmp.textContent || tmp.innerText || '';
+};
+
 const EditableTextField = ({ children, field, isFrameSelected, isActive, onActivate, onUpdateText, formatting = {}, className = '', style = {} }) => {
+  // Clean any HTML tags from the content
+  const cleanChildren = stripHtmlTags(children);
+  
   const isHighlight = formatting.underline && formatting.underlineStyle === 'highlight';
   
   const getUnderlineStyles = () => {
@@ -67,7 +81,7 @@ const EditableTextField = ({ children, field, isFrameSelected, isActive, onActiv
       onClick={(e) => { if (isFrameSelected) { e.stopPropagation(); onActivate?.(field); } }}
       onBlur={(e) => { if (isActive) onUpdateText?.(field, e.target.innerText); }}
     >
-      {isHighlight ? <span style={highlightStyle}>{children}</span> : children}
+      {isHighlight ? <span style={highlightStyle}>{cleanChildren}</span> : cleanChildren}
     </span>
   );
 };
