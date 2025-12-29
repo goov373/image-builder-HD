@@ -96,7 +96,7 @@ const Homepage = ({ projects, onOpenProject, onCreateNew }) => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
               </svg>
             </div>
-            <span className="text-gray-500 group-hover:text-orange-400 font-medium transition-colors">Create New Project</span>
+            <span className="text-gray-500 group-hover:text-white font-medium transition-colors">Create New Project</span>
           </div>
         </div>
       </div>
