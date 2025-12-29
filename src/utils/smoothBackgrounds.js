@@ -3,12 +3,11 @@
  * Creates seamless color transitions between carousel frames
  */
 
-import { interpolateColor } from './colorUtils';
+import { interpolateColor, hexToRgb, rgbToHex } from './colorUtils';
 import { 
   getStartColor, 
   getEndColor, 
-  modifyStartColor, 
-  modifyEndColor,
+  extractColors,
   isSolidColor,
   isGradient 
 } from './gradientParser';
@@ -17,13 +16,11 @@ import {
  * Options for the smoothing algorithm
  * @typedef {Object} SmoothOptions
  * @property {number} intensity - How much to blend (0 = no change, 1 = full blend)
- * @property {boolean} preserveCharacter - Try to preserve the original gradient structure
  * @property {boolean} wrapAround - Whether to connect last frame to first
  */
 
 const DEFAULT_OPTIONS = {
   intensity: 0.5,
-  preserveCharacter: true,
   wrapAround: false
 };
 
@@ -37,28 +34,37 @@ const DEFAULT_OPTIONS = {
 export function smoothCarouselBackgrounds(frames, getBackgroundForFrame, options = {}) {
   const opts = { ...DEFAULT_OPTIONS, ...options };
   
+  console.log('=== SMOOTH ENGINE START ===');
+  console.log('Frames:', frames.length, 'Intensity:', opts.intensity);
+  
   if (!frames || frames.length < 2) {
     return []; // Need at least 2 frames to smooth
   }
   
   // Get current backgrounds for all frames
-  const backgrounds = frames.map(frame => ({
-    id: frame.id,
-    original: getBackgroundForFrame(frame),
-    modified: null
-  }));
+  const backgrounds = frames.map(frame => {
+    const bg = getBackgroundForFrame(frame);
+    console.log(`Frame ${frame.id}: ${bg?.substring(0, 60)}...`);
+    return {
+      id: frame.id,
+      original: bg,
+      modified: null
+    };
+  });
   
   // Initialize modified backgrounds with originals
   backgrounds.forEach(bg => {
     bg.modified = bg.original;
   });
   
-  // Process each pair of adjacent frames
+  // For each pair of adjacent frames, create flowing transitions
   for (let i = 0; i < backgrounds.length - 1; i++) {
     const current = backgrounds[i];
     const next = backgrounds[i + 1];
     
-    const result = smoothPair(
+    console.log(`\n--- Processing pair ${i} -> ${i+1} ---`);
+    
+    const result = createFlowingPair(
       current.modified, 
       next.modified, 
       opts.intensity
@@ -73,7 +79,7 @@ export function smoothCarouselBackgrounds(frames, getBackgroundForFrame, options
     const last = backgrounds[backgrounds.length - 1];
     const first = backgrounds[0];
     
-    const result = smoothPair(
+    const result = createFlowingPair(
       last.modified, 
       first.modified, 
       opts.intensity
@@ -84,95 +90,173 @@ export function smoothCarouselBackgrounds(frames, getBackgroundForFrame, options
   }
   
   // Return only frames that changed
-  return backgrounds
+  const modified = backgrounds
     .filter(bg => bg.modified !== bg.original)
     .map(bg => ({
       id: bg.id,
       background: bg.modified
     }));
+    
+  console.log(`\n=== SMOOTH ENGINE END: ${modified.length} frames modified ===`);
+  
+  return modified;
 }
 
 /**
- * Smooth transition between two backgrounds
+ * Create a flowing transition between two backgrounds
+ * For high intensity, this creates a continuous gradient flow effect
  * @param {string} bg1 - First background CSS
  * @param {string} bg2 - Second background CSS
  * @param {number} intensity - Blend intensity (0-1)
  * @returns {{ first: string, second: string }}
  */
-function smoothPair(bg1, bg2, intensity) {
-  // Get exit color of first and entry color of second
-  const exitColor = getEndColor(bg1);
-  const entryColor = getStartColor(bg2);
+function createFlowingPair(bg1, bg2, intensity) {
+  // Extract colors from both backgrounds
+  const colors1 = extractColors(bg1);
+  const colors2 = extractColors(bg2);
   
-  console.log('smoothPair:', { exitColor, entryColor, intensity });
+  console.log('Colors1:', colors1);
+  console.log('Colors2:', colors2);
   
-  if (!exitColor || !entryColor) {
-    console.log('smoothPair: Missing colors, skipping');
+  if (colors1.length === 0 || colors2.length === 0) {
+    console.log('No colors found, skipping');
     return { first: bg1, second: bg2 };
   }
   
-  // Calculate the blend point - where the two should meet
-  const blendColor = interpolateColor(exitColor, entryColor, 0.5);
-  console.log('smoothPair: blendColor =', blendColor);
+  // Get the "exit" color (rightmost color of frame 1)
+  const exitColor = getEndColor(bg1);
+  // Get the "entry" color (leftmost color of frame 2)  
+  const entryColor = getStartColor(bg2);
   
-  // Modify bg1's exit to blend toward the meeting point
-  const newExitColor = interpolateColor(exitColor, blendColor, intensity);
-  const modifiedBg1 = modifyEndColor(bg1, newExitColor);
-  console.log('smoothPair: newExitColor =', newExitColor, 'modified:', modifiedBg1 !== bg1);
+  console.log('Exit color:', exitColor, 'Entry color:', entryColor);
   
-  // Modify bg2's entry to blend from the meeting point
-  const newEntryColor = interpolateColor(entryColor, blendColor, intensity);
-  const modifiedBg2 = modifyStartColor(bg2, newEntryColor);
-  console.log('smoothPair: newEntryColor =', newEntryColor, 'modified:', modifiedBg2 !== bg2);
+  if (!exitColor || !entryColor) {
+    return { first: bg1, second: bg2 };
+  }
   
-  return {
-    first: modifiedBg1,
-    second: modifiedBg2
-  };
+  // Calculate the bridge color based on intensity
+  // At full intensity (1.0), both sides should match
+  const bridgeColor = interpolateColor(exitColor, entryColor, 0.5);
+  console.log('Bridge color:', bridgeColor);
+  
+  // For high intensity, we create new gradients with flow overlay
+  if (intensity >= 0.5) {
+    const modifiedBg1 = addFlowOverlay(bg1, exitColor, bridgeColor, 'exit', intensity);
+    const modifiedBg2 = addFlowOverlay(bg2, bridgeColor, entryColor, 'entry', intensity);
+    
+    console.log('Modified bg1:', modifiedBg1?.substring(0, 80) + '...');
+    console.log('Modified bg2:', modifiedBg2?.substring(0, 80) + '...');
+    
+    return { first: modifiedBg1, second: modifiedBg2 };
+  } else {
+    // For low intensity, use simple color replacement
+    const newExitColor = interpolateColor(exitColor, bridgeColor, intensity * 2);
+    const newEntryColor = interpolateColor(entryColor, bridgeColor, intensity * 2);
+    
+    const modifiedBg1 = replaceColorInBackground(bg1, exitColor, newExitColor);
+    const modifiedBg2 = replaceColorInBackground(bg2, entryColor, newEntryColor);
+    
+    return { first: modifiedBg1, second: modifiedBg2 };
+  }
 }
 
 /**
- * Create a flowing gradient sequence across multiple frames
- * This is a more aggressive smoothing that creates a continuous flow effect
- * @param {string[]} backgrounds - Array of background CSS strings
- * @param {number} intensity - Flow intensity (0-1)
- * @returns {string[]} - Modified backgrounds
+ * Add a flow overlay gradient to create smooth transition effect
+ * @param {string} originalBg - Original background
+ * @param {string} fromColor - Starting color of the flow
+ * @param {string} toColor - Ending color of the flow
+ * @param {'entry'|'exit'} direction - Whether this is the entry or exit side
+ * @param {number} intensity - Blend intensity
+ * @returns {string}
  */
-export function createFlowingSequence(backgrounds, intensity = 0.6) {
-  if (!backgrounds || backgrounds.length < 2) {
-    return backgrounds || [];
+function addFlowOverlay(originalBg, fromColor, toColor, direction, intensity) {
+  // Create a horizontal gradient overlay that flows in the right direction
+  // The overlay opacity is based on intensity
+  const opacity = Math.min(0.9, intensity);
+  
+  // Convert colors to rgba with calculated opacity
+  const fromRgb = hexToRgb(fromColor);
+  const toRgb = hexToRgb(toColor);
+  
+  if (!fromRgb || !toRgb) {
+    return originalBg;
   }
   
-  const result = [...backgrounds];
+  let flowGradient;
   
-  // Extract all endpoint colors to create a palette
-  const colors = backgrounds.map(bg => ({
-    start: getStartColor(bg),
-    end: getEndColor(bg)
-  }));
-  
-  // For each frame except the last, blend its end toward next frame's start
-  for (let i = 0; i < result.length - 1; i++) {
-    const currentEnd = colors[i].end;
-    const nextStart = colors[i + 1].start;
+  if (direction === 'exit') {
+    // Exit: gradient flows from transparent (left) to bridge color (right)
+    // This makes the right edge of the frame flow into the next
+    const startOpacity = 0; // Fully transparent on left
+    const endOpacity = opacity; // Visible on right edge
     
-    if (currentEnd && nextStart) {
-      // Calculate new endpoint that flows into next frame
-      const flowColor = interpolateColor(currentEnd, nextStart, intensity);
-      result[i] = modifyEndColor(result[i], flowColor);
-      
-      // Also modify next frame's start to complete the connection
-      const reverseFlowColor = interpolateColor(nextStart, currentEnd, 1 - intensity);
-      result[i + 1] = modifyStartColor(result[i + 1], reverseFlowColor);
-    }
+    flowGradient = `linear-gradient(90deg, rgba(${fromRgb.r}, ${fromRgb.g}, ${fromRgb.b}, ${startOpacity}) 0%, rgba(${fromRgb.r}, ${fromRgb.g}, ${fromRgb.b}, ${startOpacity}) 50%, rgba(${toRgb.r}, ${toRgb.g}, ${toRgb.b}, ${endOpacity}) 100%)`;
+  } else {
+    // Entry: gradient flows from bridge color (left) to transparent (right)
+    // This makes the left edge of the frame receive the flow from previous
+    const startOpacity = opacity; // Visible on left edge  
+    const endOpacity = 0; // Fully transparent on right
+    
+    flowGradient = `linear-gradient(90deg, rgba(${fromRgb.r}, ${fromRgb.g}, ${fromRgb.b}, ${startOpacity}) 0%, rgba(${toRgb.r}, ${toRgb.g}, ${toRgb.b}, ${endOpacity}) 50%, rgba(${toRgb.r}, ${toRgb.g}, ${toRgb.b}, ${endOpacity}) 100%)`;
   }
   
-  return result;
+  // Stack the flow gradient on top of original
+  return `${flowGradient}, ${originalBg}`;
+}
+
+/**
+ * Replace a specific color in a background string
+ * @param {string} background - CSS background
+ * @param {string} oldColor - Color to replace (hex)
+ * @param {string} newColor - New color (hex)
+ * @returns {string}
+ */
+function replaceColorInBackground(background, oldColor, newColor) {
+  if (!background || !oldColor || !newColor) return background;
+  
+  // Try to replace the exact color
+  const normalizedOld = oldColor.toLowerCase();
+  const normalizedNew = newColor.toLowerCase();
+  
+  // First try exact match
+  if (background.toLowerCase().includes(normalizedOld)) {
+    return background.replace(new RegExp(escapeRegex(oldColor), 'gi'), newColor);
+  }
+  
+  return background;
+}
+
+/**
+ * Escape special characters for regex
+ */
+function escapeRegex(string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+/**
+ * Calculate the perceptual distance between two colors (0-1)
+ * @param {string} color1 - First hex color
+ * @param {string} color2 - Second hex color
+ * @returns {number}
+ */
+export function calculateColorDistance(color1, color2) {
+  const rgb1 = hexToRgb(color1);
+  const rgb2 = hexToRgb(color2);
+  
+  if (!rgb1 || !rgb2) return 1;
+  
+  const maxDistance = Math.sqrt(255*255 * 3);
+  const actualDistance = Math.sqrt(
+    Math.pow(rgb2.r - rgb1.r, 2) + 
+    Math.pow(rgb2.g - rgb1.g, 2) + 
+    Math.pow(rgb2.b - rgb1.b, 2)
+  );
+  
+  return actualDistance / maxDistance;
 }
 
 /**
  * Analyze the color harmony of a frame sequence
- * Useful for determining if smoothing would be beneficial
  * @param {string[]} backgrounds - Array of background CSS strings
  * @returns {{ needsSmoothing: boolean, colorJumps: number[], averageJump: number }}
  */
@@ -197,38 +281,7 @@ export function analyzeColorHarmony(backgrounds) {
     ? colorJumps.reduce((a, b) => a + b, 0) / colorJumps.length 
     : 0;
   
-  // A jump greater than 50% color distance is considered jarring
   const needsSmoothing = averageJump > 0.3;
   
   return { needsSmoothing, colorJumps, averageJump };
 }
-
-/**
- * Calculate the perceptual distance between two colors (0-1)
- * @param {string} color1 - First hex color
- * @param {string} color2 - Second hex color
- * @returns {number}
- */
-function calculateColorDistance(color1, color2) {
-  // Simple RGB distance normalized to 0-1
-  const hex1 = color1.replace('#', '');
-  const hex2 = color2.replace('#', '');
-  
-  const r1 = parseInt(hex1.substr(0, 2), 16);
-  const g1 = parseInt(hex1.substr(2, 2), 16);
-  const b1 = parseInt(hex1.substr(4, 2), 16);
-  
-  const r2 = parseInt(hex2.substr(0, 2), 16);
-  const g2 = parseInt(hex2.substr(2, 2), 16);
-  const b2 = parseInt(hex2.substr(4, 2), 16);
-  
-  const maxDistance = Math.sqrt(255*255 * 3); // Max possible RGB distance
-  const actualDistance = Math.sqrt(
-    Math.pow(r2 - r1, 2) + 
-    Math.pow(g2 - g1, 2) + 
-    Math.pow(b2 - b1, 2)
-  );
-  
-  return actualDistance / maxDistance;
-}
-
