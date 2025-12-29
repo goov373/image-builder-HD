@@ -244,7 +244,7 @@ const DesignSystemPanel = ({ designSystem, onUpdate, onClose, isOpen }) => {
                     type="color"
                     value={designSystem[field.key]}
                     onChange={(e) => onUpdate({ ...designSystem, [field.key]: e.target.value })}
-                    className="w-12 h-12 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-orange-500 transition-colors"
+                    className="w-12 h-12 rounded-lg cursor-pointer border border-gray-500/50 hover:border-orange-500 transition-colors"
                   />
                   <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-2 py-1 bg-gray-950 text-white text-[10px] font-mono rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50">
                     {designSystem[field.key].toUpperCase()}
