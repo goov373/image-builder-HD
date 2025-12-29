@@ -3,7 +3,7 @@ import html2canvas from 'html2canvas';
 
 /**
  * Export Panel
- * Canva-style project & frame selection with export options
+ * Muted grey card aesthetic matching project cards
  */
 const ExportPanel = ({ 
   onClose, 
@@ -19,9 +19,10 @@ const ExportPanel = ({
   const [resolution, setResolution] = useState('2x');
   const [background, setBackground] = useState('original');
   const [customBgColor, setCustomBgColor] = useState('#000000');
-  const [selectedItems, setSelectedItems] = useState({}); // { 1: true, 2: true, ... }
+  const [selectedItems, setSelectedItems] = useState({});
   const [isExporting, setIsExporting] = useState(false);
   const [exportSuccess, setExportSuccess] = useState(false);
+  const [isProjectDropdownOpen, setIsProjectDropdownOpen] = useState(false);
 
   // Combine all projects into a unified list with unique keys
   const allProjects = [
@@ -45,6 +46,7 @@ const ExportPanel = ({
   const handleProjectChange = (newKey) => {
     setSelectedProjectKey(newKey);
     setSelectedItems({});
+    setIsProjectDropdownOpen(false);
   };
 
   // Get type icon based on project type
@@ -180,21 +182,16 @@ const ExportPanel = ({
       const mimeType = getMimeType();
       const extension = getExtension();
       
-      // Find frame elements in the DOM by data attributes
-      // Frames should have data-frame-id and data-carousel-id attributes
       const exportedFiles = [];
       
       for (let i = 0; i < selectedItemIds.length; i++) {
         const itemId = selectedItemIds[i];
         
-        // Try to find the frame element
-        // Look for elements with data-frame-id matching the selected item
         const frameElement = document.querySelector(
           `[data-frame-id="${itemId}"][data-project-key="${selectedProjectKey}"]`
         ) || document.querySelector(`[data-frame-id="${itemId}"]`);
         
         if (frameElement) {
-          // Capture the element with html2canvas
           const canvas = await html2canvas(frameElement, {
             scale: scale,
             backgroundColor: background === 'transparent' ? null : 
@@ -204,7 +201,6 @@ const ExportPanel = ({
             logging: false,
           });
           
-          // Convert to desired format
           const dataUrl = canvas.toDataURL(mimeType, 0.95);
           const filename = `${selectedProject.name.replace(/[^a-z0-9]/gi, '_')}_${itemLabel}_${i + 1}.${extension}`;
           
@@ -212,9 +208,7 @@ const ExportPanel = ({
         }
       }
       
-      // Download all files
       if (exportedFiles.length > 0) {
-        // Small delay between downloads to prevent browser blocking
         for (let i = 0; i < exportedFiles.length; i++) {
           await new Promise(resolve => setTimeout(resolve, 100));
           downloadFile(exportedFiles[i].dataUrl, exportedFiles[i].filename);
@@ -222,7 +216,6 @@ const ExportPanel = ({
         setExportSuccess(true);
         setTimeout(() => setExportSuccess(false), 3000);
       } else {
-        // If no frames found in DOM, show a helpful message
         console.warn('No frame elements found in DOM. Make sure frames have data-frame-id attributes.');
         alert('Could not find frames to export. Please make sure you have a project open with visible frames.');
       }
@@ -247,7 +240,7 @@ const ExportPanel = ({
       {/* Fixed Header */}
       <div className="flex-shrink-0 px-4 border-b border-gray-800 flex items-center justify-between" style={{ height: 64 }}>
         <h2 className="text-sm font-semibold text-white">Export</h2>
-        <button type="button" onClick={onClose} className="text-gray-400 hover:text-white">
+        <button type="button" onClick={onClose} className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-500 hover:text-white hover:bg-gray-700 transition-colors">
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
           </svg>
@@ -258,30 +251,30 @@ const ExportPanel = ({
       <div className="flex-1 overflow-y-auto overflow-x-hidden">
         <div className="p-4 space-y-5">
           
-          {/* Project & Frame Selection - Combined Dropdown + Accordion */}
+          {/* Project & Frame Selection */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Select Content</h3>
+              <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wide">Select Content</h3>
               {selectedProject && (
                 <div className="flex gap-2">
-                  <button type="button" onClick={selectAll} className="text-[10px] text-orange-400 hover:text-orange-300">All</button>
-                  <span className="text-gray-600">|</span>
-                  <button type="button" onClick={deselectAll} className="text-[10px] text-gray-500 hover:text-gray-400">None</button>
+                  <button type="button" onClick={selectAll} className="text-[10px] text-gray-400 hover:text-white transition-colors">All</button>
+                  <span className="text-gray-700">|</span>
+                  <button type="button" onClick={deselectAll} className="text-[10px] text-gray-500 hover:text-gray-400 transition-colors">None</button>
                 </div>
               )}
             </div>
             
             {allProjects.length === 0 ? (
-              <div className="bg-gray-800/50 rounded-lg border border-gray-700/50 p-4 text-center">
+              <div className="bg-gray-800/30 rounded-lg border border-gray-700/50 p-4 text-center">
                 <svg className="w-6 h-6 mx-auto mb-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
                 </svg>
                 <p className="text-xs text-gray-500">No projects available</p>
               </div>
             ) : (
-              <div className="bg-gray-800/30 rounded-lg border border-gray-700/50 overflow-hidden">
+              <div className="bg-gray-800/30 rounded-lg border border-gray-700/50 overflow-hidden transition-colors hover:border-gray-600/50">
                 {/* Project Dropdown Row */}
-                <div className="flex items-center gap-2 px-3 py-2.5 border-b border-gray-700/50">
+                <div className="flex items-center gap-2 px-3 py-2.5 border-b border-gray-700/30">
                   {/* Select All Checkbox */}
                   <button
                     type="button"
@@ -294,10 +287,10 @@ const ExportPanel = ({
                     }}
                     className={`w-4 h-4 rounded flex-shrink-0 border flex items-center justify-center transition-all ${
                       selectedCount === totalItems && totalItems > 0
-                        ? 'bg-orange-500 border-orange-500'
+                        ? 'bg-gray-600 border-gray-500'
                         : selectedCount > 0
-                        ? 'bg-orange-500/40 border-orange-500'
-                        : 'border-gray-500 hover:border-gray-400'
+                        ? 'bg-gray-700 border-gray-500'
+                        : 'border-gray-600 hover:border-gray-500'
                     }`}
                   >
                     {selectedCount === totalItems && totalItems > 0 && (
@@ -320,7 +313,7 @@ const ExportPanel = ({
                     <select
                       value={selectedProjectKey}
                       onChange={(e) => handleProjectChange(e.target.value)}
-                      className="w-full bg-transparent pr-6 text-xs text-white hover:text-orange-300 focus:outline-none transition-colors cursor-pointer appearance-none"
+                      className="w-full bg-transparent pr-6 text-xs text-white hover:text-gray-300 focus:outline-none transition-colors cursor-pointer appearance-none"
                     >
                       {allProjects.map(project => (
                         <option key={project.key} value={project.key} className="bg-gray-800 text-white">
@@ -328,7 +321,6 @@ const ExportPanel = ({
                         </option>
                       ))}
                     </select>
-                    {/* Dropdown Arrow */}
                     <svg className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 text-gray-500 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                     </svg>
@@ -349,10 +341,10 @@ const ExportPanel = ({
                           type="button"
                           key={item.id}
                           onClick={() => toggleItem(item.id)}
-                          className={`px-2.5 py-1 rounded text-[10px] font-medium transition-all ${
+                          className={`px-2.5 py-1 rounded text-[10px] font-medium transition-all border ${
                             selectedItems[item.id]
-                              ? 'bg-orange-500 text-white shadow-sm shadow-orange-500/25'
-                              : 'bg-gray-700/70 text-gray-400 hover:bg-gray-600 hover:text-gray-300'
+                              ? 'bg-gray-700 border-gray-500 text-white'
+                              : 'bg-gray-800/50 border-gray-700 text-gray-500 hover:bg-gray-700 hover:border-gray-600 hover:text-gray-300'
                           }`}
                         >
                           {itemLabel} {index + 1}
@@ -371,13 +363,13 @@ const ExportPanel = ({
             )}
             
             {selectedProject && (
-              <p className="text-[10px] text-gray-500 mt-2">{selectedCount} of {totalItems} {itemLabel.toLowerCase()}s selected</p>
+              <p className="text-[10px] text-gray-600 mt-2">{selectedCount} of {totalItems} {itemLabel.toLowerCase()}s selected</p>
             )}
           </div>
 
           {/* Format Section */}
           <div>
-            <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-2">Format</h3>
+            <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">Format</h3>
             <div className="grid grid-cols-3 gap-1.5">
               {formats.map(f => (
                 <button
@@ -389,10 +381,10 @@ const ExportPanel = ({
                       setBackground('original');
                     }
                   }}
-                  className={`px-2 py-2 rounded text-xs font-medium transition-colors ${
+                  className={`px-2 py-2 rounded-lg text-xs font-medium transition-all border ${
                     format === f.id
-                      ? 'bg-orange-500 text-white'
-                      : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                      ? 'bg-gray-700 border-gray-500 text-white'
+                      : 'bg-gray-800/50 border-gray-700 text-gray-500 hover:bg-gray-700 hover:border-gray-600 hover:text-gray-300'
                   }`}
                 >
                   {f.name}
@@ -403,21 +395,21 @@ const ExportPanel = ({
 
           {/* Resolution Section */}
           <div>
-            <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-2">Resolution</h3>
+            <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">Resolution</h3>
             <div className="grid grid-cols-3 gap-1.5">
               {resolutions.map(r => (
                 <button
                   type="button"
                   key={r.id}
                   onClick={() => setResolution(r.id)}
-                  className={`px-2 py-2 rounded text-center transition-colors ${
+                  className={`px-2 py-2 rounded-lg text-center transition-all border ${
                     resolution === r.id
-                      ? 'bg-orange-500 text-white'
-                      : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                      ? 'bg-gray-700 border-gray-500 text-white'
+                      : 'bg-gray-800/50 border-gray-700 text-gray-500 hover:bg-gray-700 hover:border-gray-600 hover:text-gray-300'
                   }`}
                 >
                   <div className="text-xs font-medium">{r.name}</div>
-                  <div className="text-[9px] opacity-70">{r.desc}</div>
+                  <div className="text-[9px] text-gray-500">{r.desc}</div>
                 </button>
               ))}
             </div>
@@ -425,7 +417,7 @@ const ExportPanel = ({
 
           {/* Background Section */}
           <div>
-            <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-2">Background</h3>
+            <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">Background</h3>
             <div className="space-y-1.5">
               {backgroundOptions.map(bg => (
                 <button
@@ -433,22 +425,22 @@ const ExportPanel = ({
                   key={bg.id}
                   onClick={() => bg.id !== 'transparent' || supportsTransparent ? setBackground(bg.id) : null}
                   disabled={bg.id === 'transparent' && !supportsTransparent}
-                  className={`w-full flex items-center gap-3 px-3 py-2 rounded text-left transition-colors ${
+                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left transition-all border ${
                     background === bg.id
-                      ? 'bg-orange-500/20 border border-orange-500/50'
+                      ? 'bg-gray-800/80 border-gray-600'
                       : bg.id === 'transparent' && !supportsTransparent
-                      ? 'bg-gray-800/50 border border-gray-700/50 opacity-40 cursor-not-allowed'
-                      : 'bg-gray-800 border border-gray-700/50 hover:bg-gray-700'
+                      ? 'bg-gray-800/30 border-gray-700/50 opacity-40 cursor-not-allowed'
+                      : 'bg-gray-800/30 border-gray-700/50 hover:bg-gray-800/50 hover:border-gray-600'
                   }`}
                 >
-                  <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
-                    background === bg.id ? 'border-orange-500' : 'border-gray-600'
+                  <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center transition-colors ${
+                    background === bg.id ? 'border-gray-400' : 'border-gray-600'
                   }`}>
-                    {background === bg.id && <div className="w-2 h-2 rounded-full bg-orange-500" />}
+                    {background === bg.id && <div className="w-2 h-2 rounded-full bg-white" />}
                   </div>
                   <div className="flex-1">
-                    <div className="text-xs text-white">{bg.name}</div>
-                    <div className="text-[10px] text-gray-500">{bg.desc}</div>
+                    <div className={`text-xs transition-colors ${background === bg.id ? 'text-white' : 'text-gray-400'}`}>{bg.name}</div>
+                    <div className="text-[10px] text-gray-600">{bg.desc}</div>
                   </div>
                   {bg.id === 'custom' && background === 'custom' && (
                     <input
@@ -456,7 +448,7 @@ const ExportPanel = ({
                       value={customBgColor}
                       onChange={(e) => setCustomBgColor(e.target.value)}
                       onClick={(e) => e.stopPropagation()}
-                      className="w-6 h-6 rounded cursor-pointer"
+                      className="w-6 h-6 rounded cursor-pointer border border-gray-600"
                     />
                   )}
                 </button>
@@ -470,21 +462,21 @@ const ExportPanel = ({
       {/* Fixed Footer - Export Button */}
       <div className="flex-shrink-0 p-4 border-t border-gray-800 bg-gray-900">
         {exportSuccess && (
-          <div className="mb-3 px-3 py-2 bg-green-500/20 border border-green-500/50 rounded-lg flex items-center gap-2">
+          <div className="mb-3 px-3 py-2 bg-gray-800/50 border border-gray-600 rounded-lg flex items-center gap-2">
             <svg className="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
             </svg>
-            <span className="text-xs text-green-400">Export complete!</span>
+            <span className="text-xs text-gray-300">Export complete!</span>
           </div>
         )}
         <button
           type="button"
           onClick={handleExport}
           disabled={selectedCount === 0 || isExporting}
-          className={`w-full py-3 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
+          className={`w-full py-2.5 rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-2 border ${
             selectedCount > 0 && !isExporting
-              ? 'bg-orange-500 hover:bg-orange-600 text-white'
-              : 'bg-gray-800 text-gray-600 cursor-not-allowed'
+              ? 'bg-gray-700 hover:bg-gray-600 border-gray-600 hover:border-gray-500 text-white'
+              : 'bg-gray-800/50 border-gray-700 text-gray-600 cursor-not-allowed'
           }`}
         >
           {isExporting ? (
@@ -507,5 +499,3 @@ const ExportPanel = ({
 };
 
 export default ExportPanel;
-
-
