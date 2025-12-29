@@ -46,12 +46,8 @@ const DesignSystemPanel = ({
   const [uploadProgress, setUploadProgress] = useState({ current: 0, total: 0, fileName: '' });
   const [compressionPreset, setCompressionPreset] = useState('highQuality');
   const fileInputRef = useRef(null);
-  const photoInputRef = useRef(null);
   const MAX_FILES = 50;
   const MAX_DOCS = 20;
-  const [brandPhotos, setBrandPhotos] = useState([]);
-  const [isUploadingPhotos, setIsUploadingPhotos] = useState(false);
-  const [photoUploadProgress, setPhotoUploadProgress] = useState({ current: 0, total: 0, fileName: '' });
 
   // Handle image upload with compression
   const handleImageUpload = async (event) => {
@@ -140,61 +136,6 @@ const DesignSystemPanel = ({
   const totalOriginalSize = uploadedFiles.reduce((acc, file) => acc + (file.originalSize || 0), 0);
   const totalSavings = totalOriginalSize > 0 ? Math.round((1 - totalStorageUsed / totalOriginalSize) * 100) : 0;
 
-  // Handle brand photography upload with compression
-  const handlePhotoUpload = async (event) => {
-    const files = event.target.files;
-    if (!files || files.length === 0) return;
-
-    setIsUploadingPhotos(true);
-    setPhotoUploadProgress({ current: 0, total: files.length, fileName: '' });
-
-    try {
-      const preset = COMPRESSION_PRESETS.highQuality; // Always high quality for brand photos
-      
-      const results = await compressImages(
-        files,
-        { preset },
-        (current, total, fileName) => {
-          setPhotoUploadProgress({ current, total, fileName });
-        }
-      );
-
-      const newPhotos = results.map((result) => ({
-        id: Date.now() + Math.random(),
-        name: result.info.newName,
-        url: URL.createObjectURL(result.blob),
-        size: result.info.compressedSize,
-        dimensions: result.info.newDimensions,
-      }));
-
-      setBrandPhotos(prev => [...prev, ...newPhotos]);
-    } catch (error) {
-      console.error('Photo upload failed:', error);
-    } finally {
-      setIsUploadingPhotos(false);
-      setPhotoUploadProgress({ current: 0, total: 0, fileName: '' });
-      if (photoInputRef.current) {
-        photoInputRef.current.value = '';
-      }
-    }
-  };
-
-  const handleRemovePhoto = (photoId) => {
-    setBrandPhotos(prev => {
-      const photo = prev.find(p => p.id === photoId);
-      if (photo?.url) URL.revokeObjectURL(photo.url);
-      return prev.filter(p => p.id !== photoId);
-    });
-  };
-
-  const handlePhotoDrop = (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-    const files = event.dataTransfer?.files;
-    if (files && files.length > 0) {
-      handlePhotoUpload({ target: { files } });
-    }
-  };
   
   const colorFields = [
     { key: 'primary', label: 'Primary' },
@@ -796,82 +737,49 @@ const DesignSystemPanel = ({
           </div>
         </div>
         
-        {/* Photography Section */}
+        {/* Photography Section - Displays images from Assets tab */}
         <div className="p-4 border-b border-gray-800">
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Photography</h3>
-            {brandPhotos.length > 0 && (
-              <span className="text-[10px] text-gray-500">{brandPhotos.length} photos</span>
+            {uploadedFiles.length > 0 && (
+              <span className="text-[10px] text-gray-500">{uploadedFiles.length} images</span>
             )}
           </div>
           
-          {/* Upload Drop Zone */}
-          <div 
-            className={`border-2 border-dashed rounded-lg p-4 text-center transition-colors cursor-pointer mb-3 ${
-              isUploadingPhotos ? 'border-gray-600 bg-gray-800/50' : 'border-gray-700 hover:border-gray-500'
-            }`}
-            onDrop={handlePhotoDrop}
-            onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); }}
-            onClick={() => !isUploadingPhotos && photoInputRef.current?.click()}
-          >
-            <input
-              ref={photoInputRef}
-              type="file"
-              accept="image/*"
-              multiple
-              onChange={handlePhotoUpload}
-              className="hidden"
-            />
-            
-            {isUploadingPhotos ? (
-              <>
-                <div className="w-8 h-8 mx-auto mb-2 border-2 border-gray-500 border-t-white rounded-full animate-spin" />
-                <p className="text-xs text-white mb-1">
-                  Compressing {photoUploadProgress.current + 1} of {photoUploadProgress.total}...
-                </p>
-                <p className="text-[10px] text-gray-500">{photoUploadProgress.fileName}</p>
-              </>
-            ) : (
-              <>
-                <svg className="w-8 h-8 mx-auto mb-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-                <p className="text-[10px] text-gray-500 mb-2">Brand photography</p>
-                <button type="button" className="px-3 py-1.5 bg-gray-700 hover:bg-gray-600 text-xs text-white rounded-lg transition-colors">
-                  Upload photos
-                </button>
-                <p className="text-[10px] text-gray-600 mt-2">Auto-compressed to crisp WebP</p>
-              </>
-            )}
-          </div>
-          
-          {/* Uploaded Photos Grid */}
-          {brandPhotos.length > 0 && (
+          {/* Display uploaded images from Assets tab */}
+          {uploadedFiles.length === 0 ? (
+            <div className="text-center py-6 border-2 border-dashed border-gray-700 rounded-lg">
+              <svg className="w-8 h-8 mx-auto mb-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              <p className="text-[10px] text-gray-500 mb-2">No images uploaded yet</p>
+              <button 
+                type="button" 
+                onClick={() => setActiveTab('assets')}
+                className="px-3 py-1.5 bg-gray-700 hover:bg-gray-600 text-xs text-white rounded-lg transition-colors"
+              >
+                Go to Assets to upload
+              </button>
+            </div>
+          ) : (
             <div className="grid grid-cols-3 gap-2 mb-3">
-              {brandPhotos.map((photo) => (
-                <div key={photo.id} className="bg-gray-800 rounded-lg overflow-hidden hover:ring-2 hover:ring-gray-400 transition-all">
-                  {/* Header bar with delete */}
-                  <div className="flex items-center justify-end px-1.5 py-1 bg-gray-900 border-b border-gray-700">
-                    <button 
-                      type="button" 
-                      onClick={(e) => { e.stopPropagation(); handleRemovePhoto(photo.id); }}
-                      className="p-1 hover:bg-red-500 rounded transition-colors group"
-                    >
-                      <svg className="w-2.5 h-2.5 text-gray-500 group-hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                      </svg>
-                    </button>
-                  </div>
+              {uploadedFiles.map((file) => (
+                <button
+                  key={file.id}
+                  type="button"
+                  className="bg-gray-800 rounded-lg overflow-hidden hover:ring-2 hover:ring-gray-400 transition-all text-left"
+                  onClick={() => {/* TODO: Use image in design */}}
+                  title={`Click to use ${file.name}`}
+                >
                   {/* Image */}
                   <div className="aspect-square">
-                    <img src={photo.url} alt={photo.name} className="w-full h-full object-cover" />
+                    <img src={file.url} alt={file.name} className="w-full h-full object-cover" />
                   </div>
                   {/* Footer bar */}
-                  <div className="px-1.5 py-1.5 bg-gray-900 border-t border-gray-700">
-                    <p className="text-[9px] text-gray-300 truncate" title={photo.name}>{photo.name}</p>
+                  <div className="px-1.5 py-1 bg-gray-900 border-t border-gray-700">
+                    <p className="text-[8px] text-gray-400 truncate">{file.name}</p>
                   </div>
-                </div>
+                </button>
               ))}
             </div>
           )}
