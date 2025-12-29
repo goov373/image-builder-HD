@@ -38,21 +38,6 @@ export default function LoginPage({ onLogin, error: externalError, loading: exte
 
   return (
     <div className="min-h-screen bg-gray-950 flex items-center justify-center p-4">
-      {/* Background gradient */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div 
-          className="absolute -top-1/2 -left-1/2 w-full h-full rounded-full opacity-20"
-          style={{
-            background: 'radial-gradient(circle, #6466e9 0%, transparent 70%)',
-          }}
-        />
-        <div 
-          className="absolute -bottom-1/2 -right-1/2 w-full h-full rounded-full opacity-10"
-          style={{
-            background: 'radial-gradient(circle, #F97316 0%, transparent 70%)',
-          }}
-        />
-      </div>
 
       {/* Login Card */}
       <div className="relative w-full max-w-md">
