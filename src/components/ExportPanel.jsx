@@ -1,16 +1,59 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 /**
  * Export Panel
- * Frame selection and export options
+ * Project & frame selection with export options
  */
-const ExportPanel = ({ onClose, isOpen, carousels = [] }) => {
+const ExportPanel = ({ 
+  onClose, 
+  isOpen, 
+  carousels = [], 
+  eblasts = [], 
+  videoCovers = [], 
+  singleImages = [],
+  projectType = 'carousel'
+}) => {
+  const [selectedProjectId, setSelectedProjectId] = useState(null);
   const [format, setFormat] = useState('png');
   const [resolution, setResolution] = useState('2x');
   const [background, setBackground] = useState('original');
   const [customBgColor, setCustomBgColor] = useState('#000000');
   const [selectedItems, setSelectedItems] = useState({});
   const [expandedRows, setExpandedRows] = useState({});
+  const [isExporting, setIsExporting] = useState(false);
+  const [exportSuccess, setExportSuccess] = useState(false);
+
+  // Combine all projects into a unified list
+  const allProjects = [
+    ...carousels.map(c => ({ ...c, type: 'carousel', items: c.frames, itemLabel: 'Frame' })),
+    ...eblasts.map(e => ({ ...e, type: 'eblast', items: e.sections || [], itemLabel: 'Section' })),
+    ...videoCovers.map(v => ({ ...v, type: 'videoCover', items: v.frames || [], itemLabel: 'Cover' })),
+    ...singleImages.map(s => ({ ...s, type: 'singleImage', items: s.layers || [], itemLabel: 'Layer' })),
+  ];
+
+  // Get currently selected project
+  const selectedProject = allProjects.find(p => p.id === selectedProjectId && p.type === getProjectTypeFromId(selectedProjectId));
+  
+  function getProjectTypeFromId(id) {
+    if (carousels.find(c => c.id === id)) return 'carousel';
+    if (eblasts.find(e => e.id === id)) return 'eblast';
+    if (videoCovers.find(v => v.id === id)) return 'videoCover';
+    if (singleImages.find(s => s.id === id)) return 'singleImage';
+    return null;
+  }
+
+  // Auto-select first project if none selected
+  useEffect(() => {
+    if (!selectedProjectId && allProjects.length > 0) {
+      setSelectedProjectId(allProjects[0].id);
+    }
+  }, [allProjects.length, selectedProjectId]);
+
+  // Reset selections when project changes
+  useEffect(() => {
+    setSelectedItems({});
+    setExpandedRows({});
+  }, [selectedProjectId]);
 
   const formats = [
     { id: 'png', name: 'PNG', supportsTransparent: true },
@@ -33,65 +76,28 @@ const ExportPanel = ({ onClose, isOpen, carousels = [] }) => {
     { id: 'custom', name: 'Custom Color', desc: 'Solid fill' },
   ];
 
-  // Count total selected frames
+  // Get items for selected project
+  const projectItems = selectedProject?.items || [];
+  const itemLabel = selectedProject?.itemLabel || 'Frame';
+
+  // Count total selected items
   const getSelectedCount = () => {
-    let count = 0;
-    Object.values(selectedItems).forEach(row => {
-      if (typeof row === 'object') {
-        count += Object.values(row).filter(Boolean).length;
-      }
-    });
-    return count;
+    return Object.values(selectedItems).filter(Boolean).length;
   };
 
-  // Toggle entire row selection
-  const toggleRow = (carouselId, frameCount) => {
-    const currentRow = selectedItems[carouselId] || {};
-    const allSelected = Object.keys(currentRow).length === frameCount && Object.values(currentRow).every(Boolean);
-    
-    if (allSelected) {
-      setSelectedItems(prev => ({ ...prev, [carouselId]: {} }));
-    } else {
-      const newSelection = {};
-      for (let i = 1; i <= frameCount; i++) {
-        newSelection[i] = true;
-      }
-      setSelectedItems(prev => ({ ...prev, [carouselId]: newSelection }));
-    }
-  };
-
-  // Toggle individual frame
-  const toggleFrame = (carouselId, frameId) => {
+  // Toggle individual item
+  const toggleItem = (itemId) => {
     setSelectedItems(prev => ({
       ...prev,
-      [carouselId]: {
-        ...(prev[carouselId] || {}),
-        [frameId]: !(prev[carouselId]?.[frameId])
-      }
+      [itemId]: !prev[itemId]
     }));
   };
 
-  // Check if row is fully selected
-  const isRowFullySelected = (carouselId, frameCount) => {
-    const row = selectedItems[carouselId] || {};
-    return Object.keys(row).length === frameCount && Object.values(row).every(Boolean);
-  };
-
-  // Check if row is partially selected
-  const isRowPartiallySelected = (carouselId) => {
-    const row = selectedItems[carouselId] || {};
-    const selectedCount = Object.values(row).filter(Boolean).length;
-    return selectedCount > 0;
-  };
-
-  // Select all frames
+  // Select all items in current project
   const selectAll = () => {
     const newSelection = {};
-    carousels.forEach(carousel => {
-      newSelection[carousel.id] = {};
-      carousel.frames.forEach(frame => {
-        newSelection[carousel.id][frame.id] = true;
-      });
+    projectItems.forEach(item => {
+      newSelection[item.id] = true;
     });
     setSelectedItems(newSelection);
   };
@@ -101,8 +107,44 @@ const ExportPanel = ({ onClose, isOpen, carousels = [] }) => {
     setSelectedItems({});
   };
 
+  // Handle export
+  const handleExport = async () => {
+    if (selectedCount === 0) return;
+    
+    setIsExporting(true);
+    setExportSuccess(false);
+    
+    // Simulate export process
+    // In a real implementation, this would:
+    // 1. Capture each selected frame as an image
+    // 2. Apply resolution scaling
+    // 3. Apply background settings
+    // 4. Convert to selected format
+    // 5. Trigger download or zip multiple files
+    
+    try {
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      // Mock success - in real implementation, trigger actual download
+      console.log('Exporting:', {
+        project: selectedProject?.name,
+        items: Object.keys(selectedItems).filter(id => selectedItems[id]),
+        format,
+        resolution,
+        background: background === 'custom' ? customBgColor : background
+      });
+      
+      setExportSuccess(true);
+      setTimeout(() => setExportSuccess(false), 3000);
+    } catch (error) {
+      console.error('Export failed:', error);
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   const selectedCount = getSelectedCount();
-  const totalFrames = carousels.reduce((acc, c) => acc + c.frames.length, 0);
+  const totalItems = projectItems.length;
   const supportsTransparent = formats.find(f => f.id === format)?.supportsTransparent;
 
   return (
@@ -124,71 +166,62 @@ const ExportPanel = ({ onClose, isOpen, carousels = [] }) => {
       <div className="flex-1 overflow-y-auto overflow-x-hidden">
         <div className="p-4 space-y-5">
           
-          {/* Selection Section */}
+          {/* Project Selection */}
           <div>
-            <div className="flex items-center justify-between mb-2">
-              <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Select Frames</h3>
-              <div className="flex gap-2">
-                <button type="button" onClick={selectAll} className="text-[10px] text-orange-400 hover:text-orange-300">All</button>
-                <span className="text-gray-600">|</span>
-                <button type="button" onClick={deselectAll} className="text-[10px] text-gray-500 hover:text-gray-400">None</button>
-              </div>
-            </div>
-            <div className="bg-gray-800/50 rounded-lg border border-gray-700/50 max-h-48 overflow-y-auto">
-              {carousels.map((carousel) => (
-                <div key={carousel.id} className="border-b border-gray-700/50 last:border-b-0">
-                  <div 
-                    className="flex items-center gap-2 px-3 py-2 hover:bg-gray-700/30 cursor-pointer"
-                    onClick={() => setExpandedRows(prev => ({ ...prev, [carousel.id]: !prev[carousel.id] }))}
-                  >
-                    <button
-                      type="button"
-                      onClick={(e) => { e.stopPropagation(); toggleRow(carousel.id, carousel.frames.length); }}
-                      className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${
-                        isRowFullySelected(carousel.id, carousel.frames.length)
-                          ? 'bg-orange-500 border-orange-500'
-                          : isRowPartiallySelected(carousel.id)
-                          ? 'bg-orange-500/50 border-orange-500'
-                          : 'border-gray-600 hover:border-gray-500'
-                      }`}
-                    >
-                      {(isRowFullySelected(carousel.id, carousel.frames.length) || isRowPartiallySelected(carousel.id)) && (
-                        <svg className="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                        </svg>
-                      )}
-                    </button>
-                    <span className="text-xs text-white flex-1 truncate">{carousel.name}</span>
-                    <span className="text-[10px] text-gray-500">{carousel.frames.length} frames</span>
-                    <svg className={`w-3 h-3 text-gray-500 transition-transform ${expandedRows[carousel.id] ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </div>
-                  {expandedRows[carousel.id] && (
-                    <div className="bg-gray-800/30 px-3 py-1.5">
-                      <div className="flex flex-wrap gap-1.5">
-                        {carousel.frames.map((frame) => (
-                          <button
-                            type="button"
-                            key={frame.id}
-                            onClick={() => toggleFrame(carousel.id, frame.id)}
-                            className={`px-2 py-1 rounded text-[10px] font-medium transition-colors ${
-                              selectedItems[carousel.id]?.[frame.id]
-                                ? 'bg-orange-500 text-white'
-                                : 'bg-gray-700 text-gray-400 hover:bg-gray-600'
-                            }`}
-                          >
-                            Frame {frame.id}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-            <p className="text-[10px] text-gray-500 mt-1.5">{selectedCount} of {totalFrames} frames selected</p>
+            <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-2">Select Project</h3>
+            <select
+              value={selectedProjectId || ''}
+              onChange={(e) => setSelectedProjectId(Number(e.target.value))}
+              className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-xs text-white hover:border-orange-500 focus:border-orange-500 focus:outline-none transition-colors cursor-pointer"
+            >
+              {allProjects.length === 0 ? (
+                <option value="">No projects available</option>
+              ) : (
+                allProjects.map(project => (
+                  <option key={`${project.type}-${project.id}`} value={project.id}>
+                    {project.name} ({project.type})
+                  </option>
+                ))
+              )}
+            </select>
           </div>
+
+          {/* Frame/Item Selection */}
+          {selectedProject && (
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Select {itemLabel}s</h3>
+                <div className="flex gap-2">
+                  <button type="button" onClick={selectAll} className="text-[10px] text-orange-400 hover:text-orange-300">All</button>
+                  <span className="text-gray-600">|</span>
+                  <button type="button" onClick={deselectAll} className="text-[10px] text-gray-500 hover:text-gray-400">None</button>
+                </div>
+              </div>
+              <div className="bg-gray-800/50 rounded-lg border border-gray-700/50 p-3">
+                {projectItems.length === 0 ? (
+                  <p className="text-xs text-gray-500 text-center py-2">No {itemLabel.toLowerCase()}s in this project</p>
+                ) : (
+                  <div className="flex flex-wrap gap-1.5">
+                    {projectItems.map((item, index) => (
+                      <button
+                        type="button"
+                        key={item.id}
+                        onClick={() => toggleItem(item.id)}
+                        className={`px-3 py-1.5 rounded text-[11px] font-medium transition-colors ${
+                          selectedItems[item.id]
+                            ? 'bg-orange-500 text-white'
+                            : 'bg-gray-700 text-gray-400 hover:bg-gray-600'
+                        }`}
+                      >
+                        {itemLabel} {index + 1}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <p className="text-[10px] text-gray-500 mt-1.5">{selectedCount} of {totalItems} {itemLabel.toLowerCase()}s selected</p>
+            </div>
+          )}
 
           {/* Format Section */}
           <div>
@@ -284,16 +317,37 @@ const ExportPanel = ({ onClose, isOpen, carousels = [] }) => {
 
       {/* Fixed Footer - Export Button */}
       <div className="flex-shrink-0 p-4 border-t border-gray-800 bg-gray-900">
+        {exportSuccess && (
+          <div className="mb-3 px-3 py-2 bg-green-500/20 border border-green-500/50 rounded-lg flex items-center gap-2">
+            <svg className="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
+            <span className="text-xs text-green-400">Export complete!</span>
+          </div>
+        )}
         <button
           type="button"
-          disabled={selectedCount === 0}
-          className={`w-full py-3 rounded-lg text-sm font-medium transition-colors ${
-            selectedCount > 0
+          onClick={handleExport}
+          disabled={selectedCount === 0 || isExporting}
+          className={`w-full py-3 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
+            selectedCount > 0 && !isExporting
               ? 'bg-orange-500 hover:bg-orange-600 text-white'
               : 'bg-gray-800 text-gray-600 cursor-not-allowed'
           }`}
         >
-          {selectedCount > 0 ? `Export ${selectedCount} Frame${selectedCount > 1 ? 's' : ''}` : 'Select frames to export'}
+          {isExporting ? (
+            <>
+              <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+              </svg>
+              <span>Exporting...</span>
+            </>
+          ) : selectedCount > 0 ? (
+            `Export ${selectedCount} ${itemLabel}${selectedCount > 1 ? 's' : ''}`
+          ) : (
+            `Select ${itemLabel.toLowerCase()}s to export`
+          )}
         </button>
       </div>
     </div>
