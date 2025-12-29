@@ -16,13 +16,13 @@ import {
  * Options for the smoothing algorithm
  * @typedef {Object} SmoothOptions
  * @property {number} intensity - How much to blend (0 = no change, 1 = full blend)
- * @property {'horizontal'|'vertical'|'radial'|'diagonal'} direction - Flow direction
+ * @property {'diagonal'|'diagonal-mirror'} direction - Flow direction
  * @property {boolean} wrapAround - Whether to connect last frame to first
  */
 
 const DEFAULT_OPTIONS = {
   intensity: 0.5,
-  direction: 'horizontal',
+  direction: 'diagonal',
   wrapAround: false
 };
 
@@ -173,10 +173,10 @@ function createFlowingPair(bg1, bg2, intensity, direction = 'horizontal') {
  * @param {string} toColor - Ending color of the flow
  * @param {'entry'|'exit'} side - Whether this is the entry or exit side
  * @param {number} intensity - Blend intensity
- * @param {'horizontal'|'vertical'|'radial'|'diagonal'} flowDirection - Flow direction
+ * @param {'diagonal'|'diagonal-mirror'} flowDirection - Flow direction
  * @returns {string}
  */
-function addFlowOverlay(originalBg, fromColor, toColor, side, intensity, flowDirection = 'horizontal') {
+function addFlowOverlay(originalBg, fromColor, toColor, side, intensity, flowDirection = 'diagonal') {
   // The overlay opacity is based on intensity
   const opacity = Math.min(0.9, intensity);
   
@@ -195,31 +195,20 @@ function addFlowOverlay(originalBg, fromColor, toColor, side, intensity, flowDir
   const fadeOpacity = 0;
   
   switch (flowDirection) {
-    case 'vertical': {
-      // Vertical: top-to-bottom flow
+    case 'diagonal-mirror': {
+      // Diagonal Mirror: top-right to bottom-left flow (opposite direction)
       if (side === 'exit') {
-        // Exit: transparent at top, bridge color at bottom
-        flowGradient = `linear-gradient(180deg, rgba(${fromRgb.r}, ${fromRgb.g}, ${fromRgb.b}, ${fadeOpacity}) 0%, rgba(${fromRgb.r}, ${fromRgb.g}, ${fromRgb.b}, ${fadeOpacity}) 50%, rgba(${toRgb.r}, ${toRgb.g}, ${toRgb.b}, ${solidOpacity}) 100%)`;
+        // Exit: transparent top-right, bridge color at bottom-left
+        flowGradient = `linear-gradient(225deg, rgba(${fromRgb.r}, ${fromRgb.g}, ${fromRgb.b}, ${fadeOpacity}) 0%, rgba(${fromRgb.r}, ${fromRgb.g}, ${fromRgb.b}, ${fadeOpacity}) 50%, rgba(${toRgb.r}, ${toRgb.g}, ${toRgb.b}, ${solidOpacity}) 100%)`;
       } else {
-        // Entry: bridge color at top, transparent at bottom
-        flowGradient = `linear-gradient(180deg, rgba(${fromRgb.r}, ${fromRgb.g}, ${fromRgb.b}, ${solidOpacity}) 0%, rgba(${toRgb.r}, ${toRgb.g}, ${toRgb.b}, ${fadeOpacity}) 50%, rgba(${toRgb.r}, ${toRgb.g}, ${toRgb.b}, ${fadeOpacity}) 100%)`;
+        // Entry: bridge color at top-right, transparent bottom-left
+        flowGradient = `linear-gradient(225deg, rgba(${fromRgb.r}, ${fromRgb.g}, ${fromRgb.b}, ${solidOpacity}) 0%, rgba(${toRgb.r}, ${toRgb.g}, ${toRgb.b}, ${fadeOpacity}) 50%, rgba(${toRgb.r}, ${toRgb.g}, ${toRgb.b}, ${fadeOpacity}) 100%)`;
       }
       break;
     }
     
-    case 'radial': {
-      // Radial: center-outward flow
-      if (side === 'exit') {
-        // Exit: transparent center, bridge color at edges
-        flowGradient = `radial-gradient(circle at center, rgba(${fromRgb.r}, ${fromRgb.g}, ${fromRgb.b}, ${fadeOpacity}) 0%, rgba(${fromRgb.r}, ${fromRgb.g}, ${fromRgb.b}, ${fadeOpacity}) 30%, rgba(${toRgb.r}, ${toRgb.g}, ${toRgb.b}, ${solidOpacity}) 100%)`;
-      } else {
-        // Entry: bridge color at edges, transparent center
-        flowGradient = `radial-gradient(circle at center, rgba(${toRgb.r}, ${toRgb.g}, ${toRgb.b}, ${fadeOpacity}) 0%, rgba(${toRgb.r}, ${toRgb.g}, ${toRgb.b}, ${fadeOpacity}) 30%, rgba(${fromRgb.r}, ${fromRgb.g}, ${fromRgb.b}, ${solidOpacity}) 100%)`;
-      }
-      break;
-    }
-    
-    case 'diagonal': {
+    case 'diagonal':
+    default: {
       // Diagonal: top-left to bottom-right flow
       if (side === 'exit') {
         // Exit: transparent top-left, bridge color at bottom-right
@@ -227,19 +216,6 @@ function addFlowOverlay(originalBg, fromColor, toColor, side, intensity, flowDir
       } else {
         // Entry: bridge color at top-left, transparent bottom-right
         flowGradient = `linear-gradient(135deg, rgba(${fromRgb.r}, ${fromRgb.g}, ${fromRgb.b}, ${solidOpacity}) 0%, rgba(${toRgb.r}, ${toRgb.g}, ${toRgb.b}, ${fadeOpacity}) 50%, rgba(${toRgb.r}, ${toRgb.g}, ${toRgb.b}, ${fadeOpacity}) 100%)`;
-      }
-      break;
-    }
-    
-    case 'horizontal':
-    default: {
-      // Horizontal: left-to-right flow (default)
-      if (side === 'exit') {
-        // Exit: transparent left, bridge color at right
-        flowGradient = `linear-gradient(90deg, rgba(${fromRgb.r}, ${fromRgb.g}, ${fromRgb.b}, ${fadeOpacity}) 0%, rgba(${fromRgb.r}, ${fromRgb.g}, ${fromRgb.b}, ${fadeOpacity}) 50%, rgba(${toRgb.r}, ${toRgb.g}, ${toRgb.b}, ${solidOpacity}) 100%)`;
-      } else {
-        // Entry: bridge color at left, transparent right
-        flowGradient = `linear-gradient(90deg, rgba(${fromRgb.r}, ${fromRgb.g}, ${fromRgb.b}, ${solidOpacity}) 0%, rgba(${toRgb.r}, ${toRgb.g}, ${toRgb.b}, ${fadeOpacity}) 50%, rgba(${toRgb.r}, ${toRgb.g}, ${toRgb.b}, ${fadeOpacity}) 100%)`;
       }
       break;
     }

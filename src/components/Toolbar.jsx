@@ -86,10 +86,8 @@ export default function Toolbar({ totalOffset, activeTab }) {
   ];
 
   const SMOOTH_DIRECTIONS = [
-    { id: 'horizontal', label: 'Horizontal', icon: '→' },
-    { id: 'vertical', label: 'Vertical', icon: '↓' },
-    { id: 'radial', label: 'Radial', icon: '◎' },
     { id: 'diagonal', label: 'Diagonal', icon: '↘' },
+    { id: 'diagonal-mirror', label: 'Mirror', icon: '↙' },
   ];
 
   const currentNotch = SMOOTH_NOTCHES.find(n => n.step === smoothIntensity) || SMOOTH_NOTCHES[1];
@@ -298,20 +296,20 @@ export default function Toolbar({ totalOffset, activeTab }) {
                       <span className="text-xs font-medium text-gray-300">Flow Direction</span>
                       <span className="text-xs font-medium text-purple-400">{currentDirection.label}</span>
                     </div>
-                    <div className="grid grid-cols-4 gap-1.5">
+                    <div className="grid grid-cols-2 gap-2">
                       {SMOOTH_DIRECTIONS.map((dir) => (
                         <button
                           key={dir.id}
                           onClick={() => handleDirectionChange(dir.id)}
-                          className={`flex flex-col items-center gap-1 px-2 py-2 rounded-lg transition-all ${
+                          className={`flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg transition-all ${
                             smoothDirection === dir.id
                               ? 'bg-purple-600 text-white ring-2 ring-purple-400/50'
                               : 'bg-gray-700 text-gray-400 hover:bg-gray-600 hover:text-white'
                           }`}
                           title={dir.label}
                         >
-                          <span className="text-base leading-none">{dir.icon}</span>
-                          <span className="text-[9px] font-medium">{dir.label}</span>
+                          <span className="text-lg leading-none">{dir.icon}</span>
+                          <span className="text-xs font-medium">{dir.label}</span>
                         </button>
                       ))}
                     </div>
