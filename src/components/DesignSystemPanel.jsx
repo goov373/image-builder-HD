@@ -47,14 +47,21 @@ const DesignSystemPanel = ({
     'radial-gradient(ellipse at 60% 40%, rgba(255, 255, 255, 0.25) 0%, transparent 50%), linear-gradient(160deg, #a5b4fc 0%, #8b8fef 35%, #7578eb 70%, #6c6fe5 100%)',
   ];
 
-  // ===== PURPLE MESH GRADIENTS (6) =====
+  // ===== PURPLE LINEAR FADE GRADIENTS (6) =====
+  // Smooth gradual fades in different directions - light to purple transitions
   const purpleMeshes = [
-    'radial-gradient(at 40% 20%, #6466e9 0px, transparent 50%), radial-gradient(at 80% 0%, #818cf8 0px, transparent 50%), radial-gradient(at 0% 50%, #5558d9 0px, transparent 50%), radial-gradient(at 80% 50%, #a8aed4 0px, transparent 50%), radial-gradient(at 0% 100%, #6466e9 0px, transparent 50%), radial-gradient(at 80% 100%, #c4c8e8 0px, transparent 50%), linear-gradient(135deg, #4a4dcf 0%, #b8bdd6 100%)',
-    'radial-gradient(at 0% 0%, #818cf8 0px, transparent 50%), radial-gradient(at 100% 0%, #6466e9 0px, transparent 50%), radial-gradient(at 100% 100%, #5558d9 0px, transparent 50%), radial-gradient(at 0% 100%, #a8aed4 0px, transparent 50%), linear-gradient(180deg, #6466e9 0%, #4a4dcf 100%)',
-    'radial-gradient(at 50% 0%, #818cf8 0px, transparent 65%), radial-gradient(at 25% 50%, #6466e9 0px, transparent 55%), radial-gradient(at 0% 100%, #5558d9 0px, transparent 55%), radial-gradient(at 100% 100%, #4a4dcf 0px, transparent 55%), linear-gradient(0deg, #3d3fa8 0%, #4a4dcf 30%, #5558d9 55%, #6466e9 80%, #818cf8 100%)',
-    'radial-gradient(ellipse at 20% 20%, rgba(168, 174, 212, 0.35) 0%, transparent 50%), radial-gradient(ellipse at 80% 70%, rgba(129, 140, 248, 0.25) 0%, transparent 45%), linear-gradient(140deg, rgba(129, 140, 248, 0.5) 0%, rgba(129, 140, 248, 0.35) 12%, rgba(129, 140, 248, 0.15) 18%, transparent 24%), linear-gradient(140deg, transparent 26%, rgba(100, 102, 233, 0.15) 30%, rgba(100, 102, 233, 0.4) 38%, rgba(100, 102, 233, 0.15) 46%, transparent 52%), linear-gradient(140deg, transparent 54%, rgba(85, 88, 217, 0.15) 58%, rgba(85, 88, 217, 0.35) 66%, rgba(85, 88, 217, 0.15) 74%, transparent 80%), linear-gradient(140deg, transparent 82%, rgba(74, 77, 207, 0.2) 88%, rgba(74, 77, 207, 0.35) 94%, rgba(61, 63, 168, 0.25) 100%), linear-gradient(135deg, #3d3fa8 0%, #4a4dcf 100%)',
-    'radial-gradient(ellipse at 10% 30%, rgba(168, 174, 212, 0.3) 0%, transparent 45%), radial-gradient(ellipse at 90% 80%, rgba(129, 140, 248, 0.3) 0%, transparent 50%), radial-gradient(ellipse at 50% 10%, rgba(184, 189, 214, 0.2) 0%, transparent 40%), linear-gradient(155deg, rgba(129, 140, 248, 0.5) 0%, rgba(129, 140, 248, 0.35) 10%, rgba(129, 140, 248, 0.1) 18%, transparent 24%), linear-gradient(155deg, transparent 20%, rgba(100, 102, 233, 0.1) 26%, rgba(100, 102, 233, 0.4) 34%, rgba(100, 102, 233, 0.1) 42%, transparent 48%), linear-gradient(155deg, transparent 44%, rgba(85, 88, 217, 0.1) 50%, rgba(85, 88, 217, 0.35) 58%, rgba(85, 88, 217, 0.1) 66%, transparent 72%), linear-gradient(155deg, transparent 68%, rgba(74, 77, 207, 0.15) 76%, rgba(74, 77, 207, 0.35) 84%, rgba(74, 77, 207, 0.15) 92%, transparent 100%), linear-gradient(135deg, #3d3fa8 0%, #5558d9 100%)',
-    'radial-gradient(ellipse at 0% 0%, rgba(184, 189, 214, 0.35) 0%, transparent 50%), radial-gradient(ellipse at 100% 50%, rgba(168, 174, 212, 0.25) 0%, transparent 45%), radial-gradient(ellipse at 40% 100%, rgba(129, 140, 248, 0.2) 0%, transparent 40%), linear-gradient(145deg, rgba(129, 140, 248, 0.45) 0%, rgba(129, 140, 248, 0.3) 14%, rgba(129, 140, 248, 0.1) 22%, transparent 28%), linear-gradient(145deg, transparent 28%, rgba(100, 102, 233, 0.1) 34%, rgba(100, 102, 233, 0.35) 44%, rgba(100, 102, 233, 0.1) 54%, transparent 60%), linear-gradient(145deg, transparent 58%, rgba(85, 88, 217, 0.1) 64%, rgba(85, 88, 217, 0.35) 74%, rgba(85, 88, 217, 0.1) 84%, transparent 90%), linear-gradient(145deg, transparent 88%, rgba(74, 77, 207, 0.2) 92%, rgba(74, 77, 207, 0.35) 96%, rgba(61, 63, 168, 0.25) 100%), linear-gradient(135deg, #3d3fa8 0%, #5558d9 100%)',
+    // 1. Vertical: Light lavender top → Deep purple bottom (like reference)
+    'linear-gradient(180deg, #c7d2fe 0%, #a5b4fc 20%, #818cf8 45%, #6466e9 70%, #5558d9 100%)',
+    // 2. Diagonal top-left: Light corner fading to purple
+    'linear-gradient(135deg, #c7d2fe 0%, #a5b4fc 25%, #818cf8 50%, #6466e9 75%, #5558d9 100%)',
+    // 3. Horizontal: Light left → Purple right
+    'linear-gradient(90deg, #c7d2fe 0%, #a5b4fc 25%, #818cf8 50%, #6466e9 75%, #5c5fdb 100%)',
+    // 4. Reverse vertical: Purple top → Light bottom
+    'linear-gradient(0deg, #c7d2fe 0%, #a5b4fc 25%, #818cf8 50%, #6466e9 75%, #5558d9 100%)',
+    // 5. Diagonal bottom-left: Light corner fading to purple top-right
+    'linear-gradient(45deg, #c7d2fe 0%, #a5b4fc 25%, #818cf8 50%, #6466e9 75%, #5558d9 100%)',
+    // 6. Subtle angle: Soft transition with extended mid-tones
+    'linear-gradient(160deg, #d4d9fc 0%, #b8c0f0 15%, #a5b4fc 30%, #8b8fef 50%, #7578eb 70%, #6466e9 85%, #5c5fdb 100%)',
   ];
 
   // ===== ORANGE GRADIENTS (3) =====
