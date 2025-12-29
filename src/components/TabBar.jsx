@@ -95,10 +95,10 @@ export default function TabBar({
                 {/* New Project Option */}
                 <button
                   onClick={() => { onAddTab(); setShowNewTabMenu(false); }}
-                  className="w-full flex items-center gap-3 px-3 py-2.5 text-left text-sm text-gray-300 hover:bg-gray-700 transition-colors"
+                  className="group w-full flex items-center gap-3 px-3 py-2.5 text-left text-sm text-gray-300 hover:bg-gray-700 transition-colors"
                 >
-                  <div className="w-8 h-8 rounded-lg bg-orange-500/20 flex items-center justify-center">
-                    <svg className="w-4 h-4 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-8 h-8 rounded-lg bg-gray-700 border border-dashed border-gray-500 group-hover:bg-orange-500 group-hover:border-solid group-hover:border-orange-500 flex items-center justify-center transition-all">
+                    <svg className="w-4 h-4 text-gray-400 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                     </svg>
                   </div>
