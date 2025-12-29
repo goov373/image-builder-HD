@@ -455,14 +455,18 @@ export default function Toolbar({ totalOffset, activeTab }) {
               if (!activeTextField) return; 
               closeAllDropdowns(); 
               const formatting = selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField] || {}; 
-              const isDefaultBold = activeTextField === 'headline';
-              const currentBold = formatting.bold !== undefined ? formatting.bold : isDefaultBold;
-              handleUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'bold', !currentBold); 
+              // Determine current weight - check fontWeight first, then default based on field type
+              const defaultWeight = activeTextField === 'headline' ? '700' : '400';
+              const currentWeight = formatting.fontWeight || defaultWeight;
+              // Toggle between bold (700) and regular (400)
+              const newWeight = currentWeight === '700' ? '400' : '700';
+              handleUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'fontWeight', newWeight); 
             }} className={`w-9 h-9 rounded-lg flex items-center justify-center text-sm font-bold transition-colors ${
               (() => {
                 const formatting = selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField] || {};
-                const isDefaultBold = activeTextField === 'headline';
-                const isBold = formatting.bold !== undefined ? formatting.bold : isDefaultBold;
+                const defaultWeight = activeTextField === 'headline' ? '700' : '400';
+                const currentWeight = formatting.fontWeight || defaultWeight;
+                const isBold = currentWeight === '700';
                 return isBold ? 'bg-orange-500 text-white' : 'text-gray-300 hover:bg-gray-700';
               })()
             }`} title="Bold">B</button>
