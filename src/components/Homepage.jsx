@@ -179,7 +179,8 @@ const Homepage = ({
               
               {/* Info */}
               <div className="p-4">
-                <div className="flex items-start justify-between gap-2">
+                <div className="flex items-stretch justify-between gap-3">
+                  {/* Text content */}
                   <div className="flex-1 min-w-0">
                     {renamingId === project.id ? (
                       <div role="presentation" onClick={(e) => e.stopPropagation()}>
@@ -215,14 +216,14 @@ const Homepage = ({
                     )}
                   </div>
                   
-                  {/* Three-dot Menu */}
-                  <div className="relative" ref={openMenuId === project.id ? menuRef : null}>
+                  {/* Three-dot Menu - spans full height */}
+                  <div className="relative flex items-center" ref={openMenuId === project.id ? menuRef : null}>
                     <button
                       type="button"
                       onClick={(e) => handleMenuClick(e, project.id)}
-                      className="p-1.5 rounded-lg text-gray-500 hover:text-white hover:bg-gray-700 transition-colors opacity-0 group-hover:opacity-100"
+                      className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-500 hover:text-white hover:bg-gray-700 transition-colors opacity-0 group-hover:opacity-100"
                     >
-                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <circle cx="12" cy="5" r="2" />
                         <circle cx="12" cy="12" r="2" />
                         <circle cx="12" cy="19" r="2" />
