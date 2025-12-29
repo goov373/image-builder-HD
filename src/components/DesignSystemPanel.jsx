@@ -236,39 +236,37 @@ const DesignSystemPanel = ({ designSystem, onUpdate, onClose, isOpen }) => {
         {/* Colors Section */}
         <div className="p-4 border-b border-gray-800">
           <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-3">Brand Colors</h3>
-          <div className="bg-gray-800/60 rounded-xl p-3">
-            <div className="grid grid-cols-3 gap-3">
-              {colorFields.map(field => (
-                <div key={field.key} className="flex flex-col items-center gap-1.5">
-                  <div className="relative group">
-                    <input
-                      type="color"
-                      value={designSystem[field.key]}
-                      onChange={(e) => onUpdate({ ...designSystem, [field.key]: e.target.value })}
-                      className="w-12 h-12 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-orange-500 transition-colors"
-                    />
-                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-2 py-1 bg-gray-950 text-white text-[10px] font-mono rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50">
-                      {designSystem[field.key].toUpperCase()}
-                      <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-950" />
-                    </div>
+          <div className="grid grid-cols-3 gap-3">
+            {colorFields.map(field => (
+              <div key={field.key} className="flex flex-col items-center gap-1.5">
+                <div className="relative group">
+                  <input
+                    type="color"
+                    value={designSystem[field.key]}
+                    onChange={(e) => onUpdate({ ...designSystem, [field.key]: e.target.value })}
+                    className="w-12 h-12 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-orange-500 transition-colors"
+                  />
+                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-2 py-1 bg-gray-950 text-white text-[10px] font-mono rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50">
+                    {designSystem[field.key].toUpperCase()}
+                    <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-950" />
                   </div>
-                  <span className="text-[10px] text-gray-400 font-medium">{field.label}</span>
                 </div>
-              ))}
-            </div>
+                <span className="text-[10px] text-gray-400 font-medium">{field.label}</span>
+              </div>
+            ))}
           </div>
         </div>
         
         {/* Fonts Section */}
         <div className="p-4 border-b border-gray-800">
           <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-3">Brand Font: Nunito Sans</h3>
-          <div className="bg-gray-800/60 rounded-xl p-3 space-y-3">
+          <div className="space-y-3">
             <div>
               <label className="text-[10px] text-gray-400 font-medium block mb-1.5">Heading Weight</label>
               <select
                 value={designSystem.headingWeight || '700'}
                 onChange={(e) => onUpdate({ ...designSystem, headingWeight: e.target.value })}
-                className="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-3 py-2 text-xs text-white hover:border-orange-500 focus:border-orange-500 focus:outline-none transition-colors cursor-pointer"
+                className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-xs text-white hover:border-orange-500 focus:border-orange-500 focus:outline-none transition-colors cursor-pointer"
               >
                 <option value="200" style={{ fontFamily: 'Nunito Sans', fontWeight: 200 }}>ExtraLight (200)</option>
                 <option value="300" style={{ fontFamily: 'Nunito Sans', fontWeight: 300 }}>Light (300)</option>
@@ -285,7 +283,7 @@ const DesignSystemPanel = ({ designSystem, onUpdate, onClose, isOpen }) => {
               <select
                 value={designSystem.bodyWeight || '400'}
                 onChange={(e) => onUpdate({ ...designSystem, bodyWeight: e.target.value })}
-                className="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-3 py-2 text-xs text-white hover:border-orange-500 focus:border-orange-500 focus:outline-none transition-colors cursor-pointer"
+                className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-xs text-white hover:border-orange-500 focus:border-orange-500 focus:outline-none transition-colors cursor-pointer"
               >
                 <option value="200" style={{ fontFamily: 'Nunito Sans', fontWeight: 200 }}>ExtraLight (200)</option>
                 <option value="300" style={{ fontFamily: 'Nunito Sans', fontWeight: 300 }}>Light (300)</option>
