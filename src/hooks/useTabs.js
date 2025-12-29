@@ -57,10 +57,24 @@ export default function useTabs(initialTabs = []) {
   };
 
   const handleUpdateProjectName = (newName) => {
-    if (!newName.trim()) return;
+    if (!newName.trim()) return { success: false, error: 'Name cannot be empty' };
+    
+    const trimmedName = newName.trim();
+    
+    // Check if name already exists (excluding current project)
+    const nameExists = projects.some(p => 
+      p.id !== activeTabId && p.name.toLowerCase() === trimmedName.toLowerCase()
+    );
+    
+    if (nameExists) {
+      return { success: false, error: 'A project with this name already exists' };
+    }
+    
     setProjects(prev => prev.map(p => 
-      p.id === activeTabId ? { ...p, name: newName.trim() } : p
+      p.id === activeTabId ? { ...p, name: trimmedName } : p
     ));
+    
+    return { success: true };
   };
 
   const handleGoHome = (clearSelection) => {
