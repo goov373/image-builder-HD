@@ -35,7 +35,7 @@ export {
 // Smooth backgrounds
 export {
   smoothCarouselBackgrounds,
-  createFlowingSequence,
-  analyzeColorHarmony
+  analyzeColorHarmony,
+  calculateColorDistance
 } from './smoothBackgrounds';
 
