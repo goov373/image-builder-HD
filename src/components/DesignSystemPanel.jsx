@@ -37,14 +37,14 @@ const DesignSystemPanel = ({
 
   // HelloData brand-aligned gradients
   // ===== WHITE-DOMINANT PURPLE GRADIENTS (3) =====
-  // For pages that feel primarily white with subtle purple accents
+  // For pages that feel primarily white (60-70%) with visible purple accents
   const whitePurpleGradients = [
-    // 1. Soft corner fade - white with subtle purple in bottom-right
-    'linear-gradient(135deg, #ffffff 0%, #ffffff 50%, #f8f9ff 70%, #eef1f9 85%, #e8ebf7 100%)',
-    // 2. Gentle top-down - white fading to barely-there purple
-    'linear-gradient(180deg, #ffffff 0%, #ffffff 60%, #f5f7fc 80%, #eef1f9 100%)',
-    // 3. Subtle radial glow - white with soft purple edge vignette
-    'radial-gradient(ellipse at 50% 50%, #ffffff 0%, #ffffff 50%, #f8f9ff 70%, #eef1f9 90%, #e4e8f4 100%)',
+    // 1. Diagonal mesh - white top-left fading to purple bottom-right
+    'linear-gradient(135deg, #ffffff 0%, #f8f9ff 25%, #e8ebf7 45%, #c7d2fe 65%, #a5b4fc 80%, #818cf8 95%, #6466e9 100%)',
+    // 2. Vertical fade - white top to purple bottom
+    'linear-gradient(180deg, #ffffff 0%, #f8f9ff 30%, #e8ebf7 50%, #c7d2fe 70%, #918df5 90%, #6466e9 100%)',
+    // 3. Radial center - white center radiating to purple edges
+    'radial-gradient(ellipse at 50% 40%, #ffffff 0%, #f8f9ff 25%, #e8ebf7 45%, #c7d2fe 65%, #a5b4fc 80%, #6466e9 100%)',
   ];
 
   // ===== PURPLE RADIAL GRADIENTS (3) =====
