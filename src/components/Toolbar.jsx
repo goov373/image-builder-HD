@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { frameSizes, layoutNames, layoutVariantNames, allFonts, getFrameStyle } from '../data';
 import { smoothCarouselBackgrounds } from '../utils';
 import { 
@@ -58,6 +58,52 @@ export default function Toolbar({ totalOffset, activeTab }) {
     closeAllDropdowns,
   } = dropdowns;
 
+  // Smooth backgrounds state
+  const [showSmoothPicker, setShowSmoothPicker] = useState(false);
+  const [smoothIntensity, setSmoothIntensity] = useState(50); // 0-100 percentage
+  const smoothPickerRef = useRef(null);
+
+  // Close smooth picker on outside click
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (smoothPickerRef.current && !smoothPickerRef.current.contains(e.target)) {
+        setShowSmoothPicker(false);
+      }
+    };
+    if (showSmoothPicker) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showSmoothPicker]);
+
+  // Apply smooth function
+  const applySmooth = (intensity) => {
+    if (!selectedCarousel) {
+      console.log('Smooth: No carousel selected');
+      return;
+    }
+    
+    console.log('Smooth: Processing carousel', selectedCarousel.id, 'with intensity', intensity + '%');
+    
+    const getBackgroundForFrame = (frame) => {
+      if (frame.backgroundOverride) return frame.backgroundOverride;
+      const style = getFrameStyle(selectedCarousel.id, frame.style, designSystem);
+      return style.background;
+    };
+    
+    const smoothedFrames = smoothCarouselBackgrounds(
+      selectedCarousel.frames,
+      getBackgroundForFrame,
+      { intensity: intensity / 100 }
+    );
+    
+    console.log('Smooth: Got', smoothedFrames.length, 'modified frames');
+    
+    if (smoothedFrames.length > 0) {
+      handleSmoothBackgrounds(selectedCarousel.id, smoothedFrames);
+    }
+  };
+
   if (!activeTab?.hasContent) return null;
 
   return (
@@ -86,53 +132,92 @@ export default function Toolbar({ totalOffset, activeTab }) {
               )}
             </div>
             
-            {/* Smooth Backgrounds Button */}
-            <button
-              onClick={() => {
-                if (!selectedCarousel) {
-                  console.log('Smooth: No carousel selected');
-                  return;
-                }
-                
-                console.log('Smooth: Processing carousel', selectedCarousel.id, 'with', selectedCarousel.frames?.length, 'frames');
-                
-                // Get current backgrounds for each frame
-                const getBackgroundForFrame = (frame) => {
-                  if (frame.backgroundOverride) return frame.backgroundOverride;
-                  const style = getFrameStyle(selectedCarousel.id, frame.style, designSystem);
-                  return style.background;
-                };
-                
-                // Log current backgrounds
-                selectedCarousel.frames?.forEach((frame, i) => {
-                  console.log(`Frame ${i + 1} background:`, getBackgroundForFrame(frame).substring(0, 50) + '...');
-                });
-                
-                // Run smoothing algorithm
-                const smoothedFrames = smoothCarouselBackgrounds(
-                  selectedCarousel.frames,
-                  getBackgroundForFrame,
-                  { intensity: 0.6 }
-                );
-                
-                console.log('Smooth: Got', smoothedFrames.length, 'modified frames');
-                
-                // Apply smoothed backgrounds
-                if (smoothedFrames.length > 0) {
-                  console.log('Smooth: Applying changes...');
-                  handleSmoothBackgrounds(selectedCarousel.id, smoothedFrames);
-                } else {
-                  console.log('Smooth: No changes needed (backgrounds already smooth or algorithm returned empty)');
-                }
-              }}
-              className="flex items-center gap-1.5 px-3 py-2 bg-gray-700/50 rounded-lg hover:bg-gray-700 transition-colors group"
-              title="Smooth background transitions between frames"
-            >
-              <svg className="w-4 h-4 text-gray-400 group-hover:text-purple-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-              </svg>
-              <span className="text-xs font-medium text-gray-300 group-hover:text-white transition-colors">Smooth</span>
-            </button>
+            {/* Smooth Backgrounds Dropdown */}
+            <div ref={smoothPickerRef} className="relative">
+              <button
+                onClick={() => setShowSmoothPicker(!showSmoothPicker)}
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-lg transition-colors group ${
+                  showSmoothPicker ? 'bg-purple-600 text-white' : 'bg-gray-700/50 hover:bg-gray-700'
+                }`}
+                title="Smooth background transitions between frames"
+              >
+                <svg className={`w-4 h-4 transition-colors ${showSmoothPicker ? 'text-white' : 'text-gray-400 group-hover:text-purple-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                <span className={`text-xs font-medium transition-colors ${showSmoothPicker ? 'text-white' : 'text-gray-300 group-hover:text-white'}`}>Smooth</span>
+                <svg className={`w-3 h-3 transition-transform ${showSmoothPicker ? 'rotate-180 text-white' : 'text-gray-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              
+              {showSmoothPicker && (
+                <div className="absolute top-full left-0 mt-2 p-4 bg-gray-800 border border-gray-700 rounded-xl shadow-xl z-[200] min-w-[220px]">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-xs font-medium text-gray-300">Blend Intensity</span>
+                    <span className="text-xs font-mono text-purple-400">{smoothIntensity}%</span>
+                  </div>
+                  
+                  {/* Slider */}
+                  <div className="relative mb-4">
+                    <input
+                      type="range"
+                      min="10"
+                      max="100"
+                      value={smoothIntensity}
+                      onChange={(e) => setSmoothIntensity(parseInt(e.target.value))}
+                      className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer slider-purple"
+                      style={{
+                        background: `linear-gradient(to right, #9333ea ${smoothIntensity}%, #374151 ${smoothIntensity}%)`
+                      }}
+                    />
+                    <div className="flex justify-between mt-1">
+                      <span className="text-[9px] text-gray-500">Subtle</span>
+                      <span className="text-[9px] text-gray-500">Strong</span>
+                    </div>
+                  </div>
+                  
+                  {/* Preset buttons */}
+                  <div className="flex gap-1.5 mb-4">
+                    {[
+                      { label: 'Light', value: 25 },
+                      { label: 'Medium', value: 50 },
+                      { label: 'Strong', value: 75 },
+                      { label: 'Full', value: 100 },
+                    ].map(preset => (
+                      <button
+                        key={preset.value}
+                        onClick={() => setSmoothIntensity(preset.value)}
+                        className={`flex-1 px-2 py-1.5 rounded text-[10px] font-medium transition-colors ${
+                          smoothIntensity === preset.value
+                            ? 'bg-purple-600 text-white'
+                            : 'bg-gray-700 text-gray-400 hover:bg-gray-600 hover:text-white'
+                        }`}
+                      >
+                        {preset.label}
+                      </button>
+                    ))}
+                  </div>
+                  
+                  {/* Apply button */}
+                  <button
+                    onClick={() => {
+                      applySmooth(smoothIntensity);
+                      setShowSmoothPicker(false);
+                    }}
+                    className="w-full py-2.5 bg-purple-600 hover:bg-purple-500 text-white text-xs font-medium rounded-lg transition-colors flex items-center justify-center gap-2"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    Apply Smooth
+                  </button>
+                  
+                  <p className="text-[9px] text-gray-500 text-center mt-3">
+                    Blends background colors between frames
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Layout Group */}
