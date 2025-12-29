@@ -36,6 +36,17 @@ const DesignSystemPanel = ({
   ];
 
   // HelloData brand-aligned gradients
+  // ===== WHITE-DOMINANT PURPLE GRADIENTS (3) =====
+  // For pages that feel primarily white with subtle purple accents
+  const whitePurpleGradients = [
+    // 1. Soft corner fade - white with subtle purple in bottom-right
+    'linear-gradient(135deg, #ffffff 0%, #ffffff 50%, #f8f9ff 70%, #eef1f9 85%, #e8ebf7 100%)',
+    // 2. Gentle top-down - white fading to barely-there purple
+    'linear-gradient(180deg, #ffffff 0%, #ffffff 60%, #f5f7fc 80%, #eef1f9 100%)',
+    // 3. Subtle radial glow - white with soft purple edge vignette
+    'radial-gradient(ellipse at 50% 50%, #ffffff 0%, #ffffff 50%, #f8f9ff 70%, #eef1f9 90%, #e4e8f4 100%)',
+  ];
+
   // ===== PURPLE RADIAL GRADIENTS (3) =====
   // Soft highlight aesthetic with organic glow effects
   const purpleConicals = [
@@ -84,6 +95,7 @@ const DesignSystemPanel = ({
 
   // Combined gradients array
   const gradients = [
+    ...whitePurpleGradients,
     ...purpleConicals,
     ...purpleMeshes,
     ...orangeGradients,
