@@ -232,6 +232,7 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
           onCloseTab={tabs.handleCloseTab}
           onAddTab={handleAddTab}
           maxTabs={tabs.maxTabs}
+          sidebarOffset={totalOffset}
         />
         
         {/* Sidebar */}

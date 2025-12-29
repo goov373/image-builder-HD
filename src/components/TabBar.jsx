@@ -13,9 +13,10 @@ export default function TabBar({
   onCloseTab,
   onAddTab,
   maxTabs = 10,
+  sidebarOffset = 64,
 }) {
   return (
-    <div className="fixed top-0 left-0 right-0 z-[110] border-b border-gray-700" style={{ height: 56, backgroundColor: '#0d1321' }}>
+    <div className="fixed top-0 right-0 z-[110] border-b border-gray-700" style={{ height: 56, left: sidebarOffset, backgroundColor: '#0d1321', transition: 'left 0.3s ease-out' }}>
       <div className="flex items-end h-full">
         {/* Home Button */}
         <div className="flex items-center px-3 pb-2">
