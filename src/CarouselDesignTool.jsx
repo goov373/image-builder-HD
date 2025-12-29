@@ -172,6 +172,8 @@ export default function CarouselDesignTool() {
     handleReorderFrames: carousels.handleReorderFrames,
     handleAddRow: carousels.handleAddRow,
     handleRemoveRow: carousels.handleRemoveRow,
+    handleSetFrameBackground: carousels.handleSetFrameBackground,
+    handleSmoothBackgrounds: carousels.handleSmoothBackgrounds,
     // Eblast methods
     eblasts: eblasts.eblasts,
     handleEblastSetVariant: eblasts.handleSetVariant,

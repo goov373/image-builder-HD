@@ -104,20 +104,26 @@ function smoothPair(bg1, bg2, intensity) {
   const exitColor = getEndColor(bg1);
   const entryColor = getStartColor(bg2);
   
+  console.log('smoothPair:', { exitColor, entryColor, intensity });
+  
   if (!exitColor || !entryColor) {
+    console.log('smoothPair: Missing colors, skipping');
     return { first: bg1, second: bg2 };
   }
   
   // Calculate the blend point - where the two should meet
   const blendColor = interpolateColor(exitColor, entryColor, 0.5);
+  console.log('smoothPair: blendColor =', blendColor);
   
   // Modify bg1's exit to blend toward the meeting point
   const newExitColor = interpolateColor(exitColor, blendColor, intensity);
   const modifiedBg1 = modifyEndColor(bg1, newExitColor);
+  console.log('smoothPair: newExitColor =', newExitColor, 'modified:', modifiedBg1 !== bg1);
   
   // Modify bg2's entry to blend from the meeting point
   const newEntryColor = interpolateColor(entryColor, blendColor, intensity);
   const modifiedBg2 = modifyStartColor(bg2, newEntryColor);
+  console.log('smoothPair: newEntryColor =', newEntryColor, 'modified:', modifiedBg2 !== bg2);
   
   return {
     first: modifiedBg1,

@@ -89,7 +89,12 @@ export default function Toolbar({ totalOffset, activeTab }) {
             {/* Smooth Backgrounds Button */}
             <button
               onClick={() => {
-                if (!selectedCarousel) return;
+                if (!selectedCarousel) {
+                  console.log('Smooth: No carousel selected');
+                  return;
+                }
+                
+                console.log('Smooth: Processing carousel', selectedCarousel.id, 'with', selectedCarousel.frames?.length, 'frames');
                 
                 // Get current backgrounds for each frame
                 const getBackgroundForFrame = (frame) => {
@@ -98,16 +103,26 @@ export default function Toolbar({ totalOffset, activeTab }) {
                   return style.background;
                 };
                 
+                // Log current backgrounds
+                selectedCarousel.frames?.forEach((frame, i) => {
+                  console.log(`Frame ${i + 1} background:`, getBackgroundForFrame(frame).substring(0, 50) + '...');
+                });
+                
                 // Run smoothing algorithm
                 const smoothedFrames = smoothCarouselBackgrounds(
                   selectedCarousel.frames,
                   getBackgroundForFrame,
-                  { intensity: 0.5 }
+                  { intensity: 0.6 }
                 );
+                
+                console.log('Smooth: Got', smoothedFrames.length, 'modified frames');
                 
                 // Apply smoothed backgrounds
                 if (smoothedFrames.length > 0) {
+                  console.log('Smooth: Applying changes...');
                   handleSmoothBackgrounds(selectedCarousel.id, smoothedFrames);
+                } else {
+                  console.log('Smooth: No changes needed (backgrounds already smooth or algorithm returned empty)');
                 }
               }}
               className="flex items-center gap-1.5 px-3 py-2 bg-gray-700/50 rounded-lg hover:bg-gray-700 transition-colors group"
