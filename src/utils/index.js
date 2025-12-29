@@ -39,3 +39,12 @@ export {
   calculateColorDistance
 } from './smoothBackgrounds';
 
+// Image compression
+export {
+  compressImage,
+  compressImages,
+  formatFileSize,
+  getTotalSize,
+  supportsWebP,
+  COMPRESSION_PRESETS
+} from './imageCompression';

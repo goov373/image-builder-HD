@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
+import { compressImages, formatFileSize, COMPRESSION_PRESETS } from '../utils';
 
 /**
  * Design & Assets Panel
@@ -39,10 +40,101 @@ const DesignSystemPanel = ({
     }
   };
   const [activeTab, setActiveTab] = useState('design'); // 'design' or 'assets'
-  const [uploadedFiles, setUploadedFiles] = useState([]); // Mock uploaded files
-  const [uploadedDocs, setUploadedDocs] = useState([]); // Mock uploaded docs
+  const [uploadedFiles, setUploadedFiles] = useState([]); // Compressed uploaded files
+  const [uploadedDocs, setUploadedDocs] = useState([]); // Uploaded docs
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState({ current: 0, total: 0, fileName: '' });
+  const [compressionPreset, setCompressionPreset] = useState('highQuality');
+  const fileInputRef = useRef(null);
   const MAX_FILES = 50;
   const MAX_DOCS = 20;
+
+  // Handle image upload with compression
+  const handleImageUpload = async (event) => {
+    const files = event.target.files;
+    if (!files || files.length === 0) return;
+
+    // Check max files limit
+    if (uploadedFiles.length + files.length > MAX_FILES) {
+      alert(`Maximum ${MAX_FILES} images allowed. You have ${uploadedFiles.length} images.`);
+      return;
+    }
+
+    setIsUploading(true);
+    setUploadProgress({ current: 0, total: files.length, fileName: '' });
+
+    try {
+      const preset = COMPRESSION_PRESETS[compressionPreset];
+      
+      const results = await compressImages(
+        files,
+        { preset },
+        (current, total, fileName) => {
+          setUploadProgress({ current, total, fileName });
+        }
+      );
+
+      // Create URLs for display and add to state
+      const newFiles = results.map((result) => ({
+        id: Date.now() + Math.random(),
+        name: result.info.newName,
+        originalName: result.info.originalName,
+        url: URL.createObjectURL(result.blob),
+        blob: result.blob,
+        file: result.file,
+        size: result.info.compressedSize,
+        originalSize: result.info.originalSize,
+        savings: result.info.savings,
+        dimensions: result.info.newDimensions,
+        format: result.info.format,
+      }));
+
+      setUploadedFiles(prev => [...prev, ...newFiles]);
+    } catch (error) {
+      console.error('Upload failed:', error);
+      alert('Failed to process images. Please try again.');
+    } finally {
+      setIsUploading(false);
+      setUploadProgress({ current: 0, total: 0, fileName: '' });
+      // Reset input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
+  };
+
+  // Handle file removal
+  const handleRemoveFile = (fileId) => {
+    setUploadedFiles(prev => {
+      const file = prev.find(f => f.id === fileId);
+      if (file?.url) {
+        URL.revokeObjectURL(file.url);
+      }
+      return prev.filter(f => f.id !== fileId);
+    });
+  };
+
+  // Handle drag and drop
+  const handleDrop = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    const files = event.dataTransfer?.files;
+    if (files && files.length > 0) {
+      // Create a synthetic event for the handler
+      handleImageUpload({ target: { files } });
+    }
+  };
+
+  const handleDragOver = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+  };
+
+  // Calculate total storage used
+  const totalStorageUsed = uploadedFiles.reduce((acc, file) => acc + (file.size || 0), 0);
+  const totalOriginalSize = uploadedFiles.reduce((acc, file) => acc + (file.originalSize || 0), 0);
+  const totalSavings = totalOriginalSize > 0 ? Math.round((1 - totalStorageUsed / totalOriginalSize) * 100) : 0;
   
   const colorFields = [
     { key: 'primary', label: 'Primary' },
@@ -206,17 +298,82 @@ const DesignSystemPanel = ({
               <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Upload Images</h3>
               <span className="text-[10px] text-gray-500">{uploadedFiles.length}/{MAX_FILES}</span>
             </div>
-            <div className="border-2 border-dashed border-gray-700 rounded-lg p-4 text-center hover:border-gray-600 transition-colors cursor-pointer">
-              <svg className="w-8 h-8 mx-auto mb-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-              <p className="text-xs text-gray-400 mb-1">Drop images here</p>
-              <p className="text-[10px] text-gray-600 mb-2">or</p>
-              <button type="button" className="px-3 py-1.5 bg-gray-700 hover:bg-gray-600 text-xs text-white rounded-lg transition-colors">
-                Browse files
-              </button>
-              <p className="text-[10px] text-gray-600 mt-2">PNG, JPG up to 10MB each</p>
+            
+            {/* Quality Preset Selector */}
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-[10px] text-gray-500">Quality:</span>
+              <select
+                value={compressionPreset}
+                onChange={(e) => setCompressionPreset(e.target.value)}
+                className="flex-1 bg-gray-800 border border-gray-700 rounded px-2 py-1 text-[10px] text-white focus:outline-none focus:border-gray-600"
+              >
+                <option value="highQuality">High (2K) - Best for hero images</option>
+                <option value="standard">Standard (1080p) - Web/social</option>
+                <option value="optimized">Optimized (720p) - Fast loading</option>
+              </select>
             </div>
+            
+            {/* Drop Zone */}
+            <div 
+              className={`border-2 border-dashed rounded-lg p-4 text-center transition-colors cursor-pointer ${
+                isUploading 
+                  ? 'border-gray-600 bg-gray-800/50' 
+                  : 'border-gray-700 hover:border-gray-500'
+              }`}
+              onDrop={handleDrop}
+              onDragOver={handleDragOver}
+              onClick={() => !isUploading && fileInputRef.current?.click()}
+            >
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={handleImageUpload}
+                className="hidden"
+              />
+              
+              {isUploading ? (
+                <>
+                  <div className="w-8 h-8 mx-auto mb-2 border-2 border-gray-500 border-t-white rounded-full animate-spin" />
+                  <p className="text-xs text-white mb-1">
+                    Compressing {uploadProgress.current + 1} of {uploadProgress.total}...
+                  </p>
+                  <p className="text-[10px] text-gray-500">{uploadProgress.fileName}</p>
+                  <div className="mt-2 h-1 bg-gray-700 rounded-full overflow-hidden">
+                    <div 
+                      className="h-full bg-gray-500 transition-all duration-300"
+                      style={{ width: `${((uploadProgress.current + 1) / uploadProgress.total) * 100}%` }}
+                    />
+                  </div>
+                </>
+              ) : (
+                <>
+                  <svg className="w-8 h-8 mx-auto mb-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  <p className="text-xs text-gray-400 mb-1">Drop images here</p>
+                  <p className="text-[10px] text-gray-600 mb-2">or click to browse</p>
+                  <p className="text-[10px] text-gray-600">Auto-compressed to WebP for crisp, fast loading</p>
+                </>
+              )}
+            </div>
+            
+            {/* Storage Stats */}
+            {uploadedFiles.length > 0 && (
+              <div className="mt-3 p-2 bg-gray-800/50 rounded-lg">
+                <div className="flex items-center justify-between text-[10px]">
+                  <span className="text-gray-500">Storage used:</span>
+                  <span className="text-white">{formatFileSize(totalStorageUsed)}</span>
+                </div>
+                {totalSavings > 0 && (
+                  <div className="flex items-center justify-between text-[10px] mt-1">
+                    <span className="text-gray-500">Space saved:</span>
+                    <span className="text-green-400">{totalSavings}% ({formatFileSize(totalOriginalSize - totalStorageUsed)})</span>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
           
           {/* File Browser */}
@@ -232,18 +389,32 @@ const DesignSystemPanel = ({
               </div>
             ) : (
               <div className="grid grid-cols-3 gap-2">
-                {uploadedFiles.map((file, idx) => (
-                  <div key={idx} className="relative aspect-square bg-gray-800 rounded-lg overflow-hidden group cursor-pointer hover:ring-2 hover:ring-gray-400 transition-all">
+                {uploadedFiles.map((file) => (
+                  <div key={file.id} className="relative aspect-square bg-gray-800 rounded-lg overflow-hidden group cursor-pointer hover:ring-2 hover:ring-gray-400 transition-all">
                     <img src={file.url} alt={file.name} className="w-full h-full object-cover" />
-                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                      <button type="button" className="p-1.5 bg-red-500 rounded-full hover:bg-red-600 transition-colors">
+                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2">
+                      <button 
+                        type="button" 
+                        onClick={(e) => { e.stopPropagation(); handleRemoveFile(file.id); }}
+                        className="p-1.5 bg-red-500 rounded-full hover:bg-red-600 transition-colors"
+                      >
                         <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                         </svg>
                       </button>
+                      <div className="text-center px-1">
+                        <p className="text-[9px] text-white">{formatFileSize(file.size)}</p>
+                        {file.savings > 0 && (
+                          <p className="text-[8px] text-green-400">-{file.savings}%</p>
+                        )}
+                      </div>
                     </div>
                     <div className="absolute bottom-0 left-0 right-0 p-1.5 bg-gradient-to-t from-black/70 to-transparent">
                       <p className="text-[9px] text-white truncate">{file.name}</p>
+                    </div>
+                    {/* Format badge */}
+                    <div className="absolute top-1 right-1">
+                      <span className="px-1 py-0.5 bg-black/50 rounded text-[8px] text-white uppercase">{file.format}</span>
                     </div>
                   </div>
                 ))}
