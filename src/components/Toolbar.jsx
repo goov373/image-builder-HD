@@ -333,7 +333,7 @@ export default function Toolbar({ totalOffset, activeTab }) {
             <div ref={layoutPickerRef} className="relative">
               <button onClick={() => { const wasOpen = showLayoutPicker; closeAllDropdowns(); if (!wasOpen) setShowLayoutPicker(true); }} className="flex items-center gap-2 px-3 py-2 bg-gray-700/50 rounded-lg hover:bg-gray-700 transition-colors">
                 <span className="text-xs font-medium text-gray-300">Layout</span>
-                <span className="text-[11px] text-gray-500">{(() => {
+                <span className="text-[11px] text-gray-500 w-[85px] text-left">{(() => {
                   const layoutIdx = selectedFrame?.currentLayout || 0;
                   const variantIdx = selectedFrame?.layoutVariant || 0;
                   const variantName = layoutVariantNames[layoutIdx]?.[variantIdx] || '';
