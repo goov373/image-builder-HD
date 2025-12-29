@@ -23,6 +23,7 @@ export const CAROUSEL_ACTIONS = {
   REMOVE_ROW: 'REMOVE_ROW',
   RESET_CAROUSEL: 'RESET_CAROUSEL',
   SET_FRAME_BACKGROUND: 'SET_FRAME_BACKGROUND',
+  SET_ROW_STRETCHED_BACKGROUND: 'SET_ROW_STRETCHED_BACKGROUND',
   SMOOTH_BACKGROUNDS: 'SMOOTH_BACKGROUNDS',
 };
 
@@ -286,6 +287,41 @@ function carouselReducer(state, action) {
       };
     }
 
+    case CAROUSEL_ACTIONS.SET_ROW_STRETCHED_BACKGROUND: {
+      // Apply a gradient stretched across all frames in a carousel row
+      // Each frame shows a slice of the gradient using background-size and background-position
+      const { carouselId, background } = action;
+      return {
+        ...state,
+        carousels: state.carousels.map(carousel => {
+          if (carousel.id !== carouselId) return carousel;
+          const numFrames = carousel.frames.length;
+          if (numFrames === 0) return carousel;
+          
+          return {
+            ...carousel,
+            frames: carousel.frames.map((frame, index) => {
+              // Calculate the background position for this frame's slice
+              // Each frame shows 1/numFrames of the total gradient
+              const positionPercent = numFrames > 1 
+                ? (index / (numFrames - 1)) * 100 
+                : 0;
+              
+              return {
+                ...frame,
+                backgroundOverride: {
+                  gradient: background,
+                  size: `${numFrames * 100}% 100%`,
+                  position: `${positionPercent}% 0%`,
+                  isStretched: true,
+                }
+              };
+            })
+          };
+        })
+      };
+    }
+
     case CAROUSEL_ACTIONS.SMOOTH_BACKGROUNDS: {
       // Apply smoothed backgrounds to all frames in a carousel
       // action.smoothedFrames: Array<{ id: number, background: string | null }>
@@ -421,6 +457,9 @@ export default function useCarousels(initialData) {
     
     handleSetFrameBackground: useCallback((carouselId, frameId, background) =>
       dispatch({ type: CAROUSEL_ACTIONS.SET_FRAME_BACKGROUND, carouselId, frameId, background }), []),
+    
+    handleSetRowStretchedBackground: useCallback((carouselId, background) =>
+      dispatch({ type: CAROUSEL_ACTIONS.SET_ROW_STRETCHED_BACKGROUND, carouselId, background }), []),
     
     handleSmoothBackgrounds: useCallback((carouselId, smoothedFrames) =>
       dispatch({ type: CAROUSEL_ACTIONS.SMOOTH_BACKGROUNDS, carouselId, smoothedFrames }), []),

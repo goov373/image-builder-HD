@@ -63,6 +63,25 @@ export const CarouselFrame = ({
   const formatting = frame.variants[frame.currentVariant]?.formatting || {};
   const layoutVariant = frame.layoutVariant || 0;
   
+  // Compute background style - handles both simple string and stretched gradient objects
+  const getBackgroundStyle = () => {
+    const bgOverride = frame.backgroundOverride;
+    if (!bgOverride) {
+      return { background: style.background };
+    }
+    // Check if it's a stretched gradient object
+    if (typeof bgOverride === 'object' && bgOverride.isStretched) {
+      return {
+        background: bgOverride.gradient,
+        backgroundSize: bgOverride.size,
+        backgroundPosition: bgOverride.position,
+      };
+    }
+    // Simple string override
+    return { background: bgOverride };
+  };
+  const backgroundStyle = getBackgroundStyle();
+  
   const handleUpdateText = (field, value) => onUpdateText?.(carouselId, frame.id, field, value);
   const handleActivateField = (field) => onActivateTextField?.(field);
   
@@ -101,7 +120,7 @@ export const CarouselFrame = ({
         className={`relative overflow-hidden shadow-lg cursor-pointer transition-all border ${isFrameSelected ? 'border-gray-400 ring-2 ring-gray-400/50' : 'border-gray-600 hover:border-gray-500'}`}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        style={{ background: frame.backgroundOverride || style.background, width: size.width, height: size.height }}
+        style={{ ...backgroundStyle, width: size.width, height: size.height }}
         onClick={(e) => { e.stopPropagation(); onSelectFrame(frame.id); }}
       >
         {renderLayout()}

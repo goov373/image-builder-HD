@@ -11,12 +11,19 @@ const DesignSystemPanel = ({
   isOpen,
   selectedCarouselId,
   selectedFrameId,
-  onSetFrameBackground 
+  onSetFrameBackground,
+  onSetRowStretchedBackground 
 }) => {
   const hasFrameSelected = selectedCarouselId !== null && selectedFrameId !== null;
+  const hasRowSelected = selectedCarouselId !== null;
+  const [applyMode, setApplyMode] = useState('frame'); // 'frame' or 'row'
   
   const handleBackgroundClick = (background) => {
-    if (hasFrameSelected && onSetFrameBackground) {
+    if (applyMode === 'row' && hasRowSelected && onSetRowStretchedBackground) {
+      // Apply stretched across all frames in the row
+      onSetRowStretchedBackground(selectedCarouselId, background);
+    } else if (hasFrameSelected && onSetFrameBackground) {
+      // Apply to single frame
       onSetFrameBackground(selectedCarouselId, selectedFrameId, background);
     }
   };
@@ -338,15 +345,46 @@ const DesignSystemPanel = ({
         <div className="p-4 border-b border-gray-800">
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Backgrounds</h3>
-            {hasFrameSelected ? (
+            {hasRowSelected ? (
               <span className="text-[10px] text-green-400 flex items-center gap-1">
                 <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse" />
-                Click to apply
+                {applyMode === 'row' ? 'Apply to row' : 'Click to apply'}
               </span>
             ) : (
               <span className="text-[10px] text-gray-500">Select a frame first</span>
             )}
           </div>
+          
+          {/* Apply Mode Toggle */}
+          {hasRowSelected && (
+            <div className="flex items-center gap-2 mb-3 p-2 bg-gray-800/50 rounded-lg">
+              <span className="text-[10px] text-gray-400">Apply to:</span>
+              <div className="flex rounded-md overflow-hidden border border-gray-700">
+                <button
+                  type="button"
+                  onClick={() => setApplyMode('frame')}
+                  className={`px-3 py-1 text-[10px] font-medium transition-colors duration-150 ${
+                    applyMode === 'frame' 
+                      ? 'bg-gray-700 text-white' 
+                      : 'bg-transparent text-gray-400 hover:text-gray-300'
+                  }`}
+                >
+                  Frame
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setApplyMode('row')}
+                  className={`px-3 py-1 text-[10px] font-medium transition-colors duration-150 ${
+                    applyMode === 'row' 
+                      ? 'bg-gray-700 text-white' 
+                      : 'bg-transparent text-gray-400 hover:text-gray-300'
+                  }`}
+                >
+                  Row (Stretch)
+                </button>
+              </div>
+            </div>
+          )}
           <div className="grid grid-cols-3 gap-2 mb-3">
             {gradients.map((gradient, idx) => (
               <button
