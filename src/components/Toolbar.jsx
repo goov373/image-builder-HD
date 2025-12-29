@@ -1,5 +1,17 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { frameSizes, layoutNames, layoutVariantNames, allFonts, getFrameStyle } from '../data';
+import { frameSizes, layoutNames, layoutVariantNames, getFrameStyle } from '../data';
+
+// Nunito Sans font weight options
+const FONT_WEIGHTS = [
+  { name: 'ExtraLight', value: '200', weight: 200 },
+  { name: 'Light', value: '300', weight: 300 },
+  { name: 'Regular', value: '400', weight: 400 },
+  { name: 'Medium', value: '500', weight: 500 },
+  { name: 'SemiBold', value: '600', weight: 600 },
+  { name: 'Bold', value: '700', weight: 700 },
+  { name: 'ExtraBold', value: '800', weight: 800 },
+  { name: 'Black', value: '900', weight: 900 },
+];
 import { smoothCarouselBackgrounds } from '../utils';
 import { 
   useDesignSystemContext, 
@@ -399,19 +411,45 @@ export default function Toolbar({ totalOffset, activeTab }) {
           
           {/* Typography Group */}
           <div className={`flex items-center gap-1.5 px-2 py-1.5 bg-gray-800/60 rounded-xl transition-opacity ${activeTextField ? 'opacity-100' : 'opacity-40 pointer-events-none'}`}>
-            {/* Font Type dropdown */}
+            {/* Font Weight dropdown */}
             <div ref={fontPickerRef} className="relative">
               <button onClick={() => { if (!activeTextField) return; const wasOpen = showFontPicker; closeAllDropdowns(); if (!wasOpen) setShowFontPicker(true); }} className="flex items-center gap-1.5 px-3 py-2 bg-gray-700/50 rounded-lg text-xs font-medium text-gray-300 hover:bg-gray-700 transition-colors">
                 <span>Font</span>
                 <svg className={`w-2.5 h-2.5 transition-transform ${showFontPicker ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
               </button>
               {showFontPicker && activeTextField && (
-                <div className="absolute top-full left-0 mt-2 p-1.5 bg-gray-800 border border-gray-700 rounded-lg shadow-xl z-[200] max-h-56 overflow-y-auto min-w-[160px]" onClick={(e) => e.stopPropagation()}>
-                  {allFonts.map(font => (
-                    <button type="button" key={font.value} onClick={(e) => { e.stopPropagation(); handleUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'fontFamily', font.value); setShowFontPicker(false); }} className={`w-full px-3 py-2 rounded-lg text-xs text-left transition-colors ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.fontFamily === font.value ? 'bg-orange-500 text-white' : 'text-gray-300 hover:bg-gray-700'}`} style={{ fontFamily: font.value }}>
-                      {font.name}
-                    </button>
-                  ))}
+                <div className="absolute top-full left-0 mt-2 p-1.5 bg-gray-800 border border-gray-700 rounded-lg shadow-xl z-[200] max-h-64 overflow-y-auto min-w-[180px]" onClick={(e) => e.stopPropagation()}>
+                  <div className="px-2 py-1.5 text-[10px] text-gray-500 uppercase tracking-wide border-b border-gray-700 mb-1">Nunito Sans</div>
+                  {FONT_WEIGHTS.map(weight => {
+                    const isHeadingDefault = weight.value === (designSystem?.headingWeight || '700');
+                    const isBodyDefault = weight.value === (designSystem?.bodyWeight || '400');
+                    const currentWeight = selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.fontWeight;
+                    const isSelected = currentWeight === weight.value;
+                    
+                    return (
+                      <button 
+                        type="button" 
+                        key={weight.value} 
+                        onClick={(e) => { 
+                          e.stopPropagation(); 
+                          handleUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'fontWeight', weight.value); 
+                          setShowFontPicker(false); 
+                        }} 
+                        className={`w-full px-3 py-2 rounded-lg text-xs text-left transition-colors flex items-center justify-between ${isSelected ? 'bg-orange-500 text-white' : 'text-gray-300 hover:bg-gray-700'}`} 
+                        style={{ fontFamily: '"Nunito Sans", sans-serif', fontWeight: weight.weight }}
+                      >
+                        <span>{weight.name}</span>
+                        <span className="flex items-center gap-1">
+                          {isHeadingDefault && (
+                            <span className={`text-[10px] ${isSelected ? 'text-orange-200' : 'text-orange-400'}`} title="Default for Headings">★H</span>
+                          )}
+                          {isBodyDefault && (
+                            <span className={`text-[10px] ${isSelected ? 'text-orange-200' : 'text-orange-400'}`} title="Default for Body">★B</span>
+                          )}
+                        </span>
+                      </button>
+                    );
+                  })}
                 </div>
               )}
             </div>

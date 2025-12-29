@@ -18,9 +18,17 @@ const EditableTextField = ({ children, field, isFrameSelected, isActive, onActiv
     };
   };
 
+  // Determine font weight: explicit fontWeight > bold toggle > style default
+  const getFontWeight = () => {
+    if (formatting.fontWeight) return formatting.fontWeight;
+    if (formatting.bold === true) return 'bold';
+    if (formatting.bold === false) return 'normal';
+    return style.fontWeight;
+  };
+
   const displayStyle = {
     ...style,
-    fontWeight: formatting.bold === true ? 'bold' : formatting.bold === false ? 'normal' : style.fontWeight,
+    fontWeight: getFontWeight(),
     fontStyle: formatting.italic === true ? 'italic' : formatting.italic === false ? 'normal' : style.fontStyle,
     color: formatting.color || style.color,
     fontFamily: formatting.fontFamily || style.fontFamily,
