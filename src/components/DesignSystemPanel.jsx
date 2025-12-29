@@ -71,8 +71,8 @@ const DesignSystemPanel = ({
     'linear-gradient(135deg, #fdd8c2 0%, #fcb88a 25%, #f9a066 50%, #f78b4a 75%, #f57c3a 100%)',
     // 2. Warm vertical - cream orange fading to rich orange
     'linear-gradient(180deg, #fee0cc 0%, #fcb98c 30%, #f9944e 60%, #f7843c 100%)',
-    // 3. Subtle radial glow - light orange center with warm edges
-    'radial-gradient(ellipse at 50% 30%, #fee8d8 0%, #fcc8a0 30%, transparent 60%), linear-gradient(160deg, #f9a066 0%, #f78b4a 40%, #f57c3a 70%, #e86f30 100%)',
+    // 3. Subtle radial glow - soft highlight like purple R1C3
+    'radial-gradient(ellipse at 60% 40%, rgba(255, 255, 255, 0.25) 0%, transparent 50%), linear-gradient(160deg, #fcb88a 0%, #f9a066 35%, #f78b4a 70%, #f57c3a 100%)',
   ];
 
   // ===== BLACK/DARK GRADIENTS (3) =====
