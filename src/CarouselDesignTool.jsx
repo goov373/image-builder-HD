@@ -227,7 +227,6 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
           setShowNewTabMenu={dropdowns.setShowNewTabMenu}
           newTabMenuRef={dropdowns.newTabMenuRef}
           closeAllDropdowns={dropdowns.closeAllDropdowns}
-          onGoHome={handleGoHome}
           onOpenProject={handleOpenProject}
           onCloseTab={tabs.handleCloseTab}
           onAddTab={handleAddTab}
@@ -236,6 +235,18 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
           projects={tabs.projects}
         />
         
+        {/* Fixed Home Button - above sidebar */}
+        <div className="fixed top-0 left-0 z-[120] flex items-center justify-center border-b border-r border-gray-700" style={{ width: 64, height: 56, backgroundColor: '#0d1321' }}>
+          <button 
+            onClick={handleGoHome}
+            className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all ${tabs.currentView === 'home' ? 'text-white bg-gray-800' : 'text-gray-400 hover:text-white hover:bg-gray-800'}`}
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            </svg>
+          </button>
+        </div>
+
         {/* Sidebar */}
         <Sidebar 
           activePanel={activePanel} 
