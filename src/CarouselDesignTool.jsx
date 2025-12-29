@@ -236,7 +236,7 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
         />
         
         {/* Fixed Home Button - above sidebar */}
-        <div className="fixed top-0 left-0 z-[120] flex items-center justify-center border-b border-r border-gray-700" style={{ width: 64, height: 56, backgroundColor: '#0d1321' }}>
+        <div className="fixed top-0 left-0 z-[120] flex items-center justify-center border-b border-r border-gray-800" style={{ width: 64, height: 56, backgroundColor: '#0d1321' }}>
           <button 
             onClick={handleGoHome}
             className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all ${tabs.currentView === 'home' ? 'text-white bg-gray-800' : 'text-gray-400 hover:text-white hover:bg-gray-800'}`}
