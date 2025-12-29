@@ -450,31 +450,33 @@ const DesignSystemPanel = ({
             ) : (
               <div className="grid grid-cols-3 gap-2">
                 {uploadedFiles.map((file) => (
-                  <div key={file.id} className="relative aspect-square bg-gray-800 rounded-lg overflow-hidden group cursor-pointer hover:ring-2 hover:ring-gray-400 transition-all">
-                    <img src={file.url} alt={file.name} className="w-full h-full object-cover" />
-                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2">
+                  <div key={file.id} className="bg-gray-800 rounded-lg overflow-hidden hover:ring-2 hover:ring-gray-400 transition-all">
+                    {/* Header bar */}
+                    <div className="flex items-center justify-between px-1.5 py-1 bg-gray-900 border-b border-gray-700">
+                      <span className="px-1 py-0.5 bg-gray-700 rounded text-[8px] text-gray-300 uppercase">{file.format}</span>
                       <button 
                         type="button" 
                         onClick={(e) => { e.stopPropagation(); handleRemoveFile(file.id); }}
-                        className="p-1.5 bg-red-500 rounded-full hover:bg-red-600 transition-colors"
+                        className="p-1 hover:bg-red-500 rounded transition-colors group"
                       >
-                        <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-2.5 h-2.5 text-gray-500 group-hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                         </svg>
                       </button>
-                      <div className="text-center px-1">
-                        <p className="text-[9px] text-white">{formatFileSize(file.size)}</p>
+                    </div>
+                    {/* Image */}
+                    <div className="aspect-square">
+                      <img src={file.url} alt={file.name} className="w-full h-full object-cover" />
+                    </div>
+                    {/* Footer bar */}
+                    <div className="px-1.5 py-1.5 bg-gray-900 border-t border-gray-700">
+                      <p className="text-[9px] text-gray-300 truncate" title={file.name}>{file.name}</p>
+                      <div className="flex items-center justify-between mt-0.5">
+                        <span className="text-[8px] text-gray-500">{formatFileSize(file.size)}</span>
                         {file.savings > 0 && (
-                          <p className="text-[8px] text-green-400">-{file.savings}%</p>
+                          <span className="text-[8px] text-green-400">-{file.savings}%</span>
                         )}
                       </div>
-                    </div>
-                    <div className="absolute bottom-0 left-0 right-0 p-1.5 bg-gradient-to-t from-black/70 to-transparent">
-                      <p className="text-[9px] text-white truncate">{file.name}</p>
-                    </div>
-                    {/* Format badge */}
-                    <div className="absolute top-1 right-1">
-                      <span className="px-1 py-0.5 bg-black/50 rounded text-[8px] text-white uppercase">{file.format}</span>
                     </div>
                   </div>
                 ))}
@@ -848,18 +850,26 @@ const DesignSystemPanel = ({
           {brandPhotos.length > 0 && (
             <div className="grid grid-cols-3 gap-2 mb-3">
               {brandPhotos.map((photo) => (
-                <div key={photo.id} className="relative aspect-square bg-gray-800 rounded-lg overflow-hidden group">
-                  <img src={photo.url} alt={photo.name} className="w-full h-full object-cover" />
-                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                <div key={photo.id} className="bg-gray-800 rounded-lg overflow-hidden hover:ring-2 hover:ring-gray-400 transition-all">
+                  {/* Header bar with delete */}
+                  <div className="flex items-center justify-end px-1.5 py-1 bg-gray-900 border-b border-gray-700">
                     <button 
                       type="button" 
                       onClick={(e) => { e.stopPropagation(); handleRemovePhoto(photo.id); }}
-                      className="p-1.5 bg-red-500 rounded-full hover:bg-red-600 transition-colors"
+                      className="p-1 hover:bg-red-500 rounded transition-colors group"
                     >
-                      <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-2.5 h-2.5 text-gray-500 group-hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                       </svg>
                     </button>
+                  </div>
+                  {/* Image */}
+                  <div className="aspect-square">
+                    <img src={photo.url} alt={photo.name} className="w-full h-full object-cover" />
+                  </div>
+                  {/* Footer bar */}
+                  <div className="px-1.5 py-1.5 bg-gray-900 border-t border-gray-700">
+                    <p className="text-[9px] text-gray-300 truncate" title={photo.name}>{photo.name}</p>
                   </div>
                 </div>
               ))}
