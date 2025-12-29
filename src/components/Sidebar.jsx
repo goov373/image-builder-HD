@@ -22,7 +22,7 @@ const Sidebar = ({ activePanel, onPanelChange, zoom, onZoomChange, isHomePage, o
             type="button"
             key={panel.id}
             onClick={() => handlePanelClick(panel.id)}
-            className={`w-11 h-11 rounded-xl flex items-center justify-center transition-all ${activePanel === panel.id ? 'bg-orange-500 text-white' : 'text-gray-400 hover:text-white hover:bg-gray-700'}`}
+            className={`w-11 h-11 rounded-xl flex items-center justify-center transition-all ${activePanel === panel.id ? 'bg-gray-700 text-white' : 'text-gray-400 hover:text-white hover:bg-gray-700'}`}
             title={panel.label}
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
