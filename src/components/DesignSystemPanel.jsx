@@ -57,12 +57,21 @@ const DesignSystemPanel = ({
   // ===== WHITE-DOMINANT PURPLE GRADIENTS (3) =====
   // For pages that feel primarily white with purple stretched/blended in
   const whitePurpleGradients = [
+    // Row 1: Primary white-purple fades
     // 1. Diagonal mesh - purple stretched further with smooth blend
     'linear-gradient(135deg, #ffffff 0%, #f5f6ff 15%, #e8ebf7 30%, #d4d9fc 45%, #b8c0f5 60%, #a5b4fc 75%, #818cf8 90%, #6466e9 100%)',
     // 2. Vertical fade - purple blending up smoothly
     'linear-gradient(180deg, #ffffff 0%, #f5f6ff 18%, #e8ebf7 35%, #c7d2fe 52%, #a5b4fc 70%, #818cf8 85%, #6466e9 100%)',
     // 3. Corner mesh - white upper-left with purple sweeping from bottom-right corner
     'linear-gradient(315deg, #6466e9 0%, #818cf8 12%, #a5b4fc 25%, #c7d2fe 40%, #e8ebf7 55%, #f5f6ff 72%, #ffffff 100%)',
+    
+    // Row 2: Additional light variants
+    // 4. Horizontal fade - purple on left, white on right
+    'linear-gradient(90deg, #6466e9 0%, #818cf8 12%, #a5b4fc 28%, #c7d2fe 45%, #e8ebf7 65%, #f5f6ff 82%, #ffffff 100%)',
+    // 5. Radial center - white center radiating to purple edges
+    'radial-gradient(ellipse at 50% 50%, #ffffff 0%, #f8f9ff 20%, #e8ebf7 40%, #c7d2fe 60%, #a5b4fc 78%, #818cf8 92%, #6466e9 100%)',
+    // 6. Soft diagonal - gentler transition with more white
+    'linear-gradient(160deg, #ffffff 0%, #ffffff 25%, #f5f6ff 40%, #e8ebf7 55%, #c7d2fe 70%, #a5b4fc 85%, #7c7ff2 100%)',
   ];
 
   // ===== PURPLE RADIAL GRADIENTS (3) =====
