@@ -301,18 +301,17 @@ function carouselReducer(state, action) {
           return {
             ...carousel,
             frames: carousel.frames.map((frame, index) => {
-              // Calculate the background position for this frame's slice
               // Each frame shows 1/numFrames of the total gradient
-              const positionPercent = numFrames > 1 
-                ? (index / (numFrames - 1)) * 100 
-                : 0;
+              // background-size makes gradient N times wider than frame
+              // background-position shifts left by (index * 100)% to show correct slice
+              // e.g., for 5 frames: frame 0 = 0%, frame 1 = -100%, frame 2 = -200%, etc.
               
               return {
                 ...frame,
                 backgroundOverride: {
                   gradient: background,
                   size: `${numFrames * 100}% 100%`,
-                  position: `${positionPercent}% 0%`,
+                  position: `${-index * 100}% 0%`,
                   isStretched: true,
                 }
               };
