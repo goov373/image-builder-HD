@@ -1,5 +1,7 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { compressImages, formatFileSize, COMPRESSION_PRESETS } from '../utils';
+import { uploadImage, listImages, deleteImage } from '../lib/storage';
+import { isSupabaseConfigured } from '../lib/supabase';
 
 /**
  * Design & Assets Panel
@@ -43,13 +45,49 @@ const DesignSystemPanel = ({
   const [uploadedFiles, setUploadedFiles] = useState([]); // Compressed uploaded files
   const [uploadedDocs, setUploadedDocs] = useState([]); // Uploaded docs
   const [isUploading, setIsUploading] = useState(false);
+  const [isLoadingImages, setIsLoadingImages] = useState(false);
   const [uploadProgress, setUploadProgress] = useState({ current: 0, total: 0, fileName: '' });
   const [compressionPreset, setCompressionPreset] = useState('highQuality');
   const fileInputRef = useRef(null);
   const MAX_FILES = 50;
   const MAX_DOCS = 20;
 
-  // Handle image upload with compression
+  // Load saved images from Supabase on mount
+  useEffect(() => {
+    const loadSavedImages = async () => {
+      if (!isSupabaseConfigured()) {
+        console.log('Supabase not configured - images will not persist');
+        return;
+      }
+
+      setIsLoadingImages(true);
+      try {
+        const { files, error } = await listImages();
+        if (error) {
+          console.error('Failed to load images:', error);
+        } else if (files.length > 0) {
+          const loadedFiles = files.map(file => ({
+            id: file.id,
+            name: file.name,
+            url: file.url,
+            path: file.path,
+            size: file.size,
+            format: file.name.split('.').pop()?.toUpperCase() || 'IMG',
+            isPersisted: true,
+          }));
+          setUploadedFiles(loadedFiles);
+        }
+      } catch (err) {
+        console.error('Error loading images:', err);
+      } finally {
+        setIsLoadingImages(false);
+      }
+    };
+
+    loadSavedImages();
+  }, []);
+
+  // Handle image upload with compression and Supabase persistence
   const handleImageUpload = async (event) => {
     const files = event.target.files;
     if (!files || files.length === 0) return;
@@ -61,33 +99,58 @@ const DesignSystemPanel = ({
     }
 
     setIsUploading(true);
-    setUploadProgress({ current: 0, total: files.length, fileName: '' });
+    setUploadProgress({ current: 0, total: files.length, fileName: 'Compressing...' });
 
     try {
       const preset = COMPRESSION_PRESETS[compressionPreset];
       
+      // Step 1: Compress images
       const results = await compressImages(
         files,
         { preset },
         (current, total, fileName) => {
-          setUploadProgress({ current, total, fileName });
+          setUploadProgress({ current, total, fileName: `Compressing: ${fileName}` });
         }
       );
 
-      // Create URLs for display and add to state
-      const newFiles = results.map((result) => ({
-        id: Date.now() + Math.random(),
-        name: result.info.newName,
-        originalName: result.info.originalName,
-        url: URL.createObjectURL(result.blob),
-        blob: result.blob,
-        file: result.file,
-        size: result.info.compressedSize,
-        originalSize: result.info.originalSize,
-        savings: result.info.savings,
-        dimensions: result.info.newDimensions,
-        format: result.info.format,
-      }));
+      // Step 2: Upload to Supabase (if configured)
+      const newFiles = [];
+      for (let i = 0; i < results.length; i++) {
+        const result = results[i];
+        setUploadProgress({ 
+          current: i, 
+          total: results.length, 
+          fileName: `Uploading: ${result.info.newName}` 
+        });
+
+        let url = URL.createObjectURL(result.blob);
+        let path = null;
+        let isPersisted = false;
+
+        // Try to upload to Supabase
+        if (isSupabaseConfigured()) {
+          const uploadResult = await uploadImage(result.blob, result.info.newName);
+          if (uploadResult.url && !uploadResult.error) {
+            url = uploadResult.url;
+            path = uploadResult.path;
+            isPersisted = true;
+          }
+        }
+
+        newFiles.push({
+          id: Date.now() + Math.random(),
+          name: result.info.newName,
+          originalName: result.info.originalName,
+          url,
+          path,
+          size: result.info.compressedSize,
+          originalSize: result.info.originalSize,
+          savings: result.info.savings,
+          dimensions: result.info.newDimensions,
+          format: result.info.format.toUpperCase(),
+          isPersisted,
+        });
+      }
 
       setUploadedFiles(prev => [...prev, ...newFiles]);
     } catch (error) {
@@ -103,15 +166,26 @@ const DesignSystemPanel = ({
     }
   };
 
-  // Handle file removal
-  const handleRemoveFile = (fileId) => {
-    setUploadedFiles(prev => {
-      const file = prev.find(f => f.id === fileId);
-      if (file?.url) {
-        URL.revokeObjectURL(file.url);
+  // Handle file removal (also deletes from Supabase if persisted)
+  const handleRemoveFile = async (fileId) => {
+    const file = uploadedFiles.find(f => f.id === fileId);
+    
+    // Remove from state immediately for responsive UI
+    setUploadedFiles(prev => prev.filter(f => f.id !== fileId));
+    
+    // Delete from Supabase if it was persisted
+    if (file?.path && file?.isPersisted) {
+      const { error } = await deleteImage(file.path);
+      if (error) {
+        console.error('Failed to delete from storage:', error);
+        // Optionally re-add to state on error
       }
-      return prev.filter(f => f.id !== fileId);
-    });
+    }
+    
+    // Revoke blob URL if it's a local blob
+    if (file?.url && file.url.startsWith('blob:')) {
+      URL.revokeObjectURL(file.url);
+    }
   };
 
   // Handle drag and drop
@@ -380,7 +454,12 @@ const DesignSystemPanel = ({
           {/* File Browser */}
           <div className="p-4">
             <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-3">Your Images</h3>
-            {uploadedFiles.length === 0 ? (
+            {isLoadingImages ? (
+              <div className="text-center py-8">
+                <div className="w-8 h-8 mx-auto mb-3 border-2 border-gray-600 border-t-gray-400 rounded-full animate-spin" />
+                <p className="text-xs text-gray-500">Loading saved images...</p>
+              </div>
+            ) : uploadedFiles.length === 0 ? (
               <div className="text-center py-8">
                 <svg className="w-12 h-12 mx-auto mb-3 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -394,7 +473,14 @@ const DesignSystemPanel = ({
                   <div key={file.id} className="bg-gray-800 rounded-lg overflow-hidden hover:ring-2 hover:ring-gray-400 transition-all">
                     {/* Header bar */}
                     <div className="flex items-center justify-between px-1.5 py-1 bg-gray-900 border-b border-gray-700">
-                      <span className="px-1 py-0.5 bg-gray-700 rounded text-[8px] text-gray-300 uppercase">{file.format}</span>
+                      <div className="flex items-center gap-1">
+                        <span className="px-1 py-0.5 bg-gray-700 rounded text-[8px] text-gray-300 uppercase">{file.format}</span>
+                        {file.isPersisted && (
+                          <svg className="w-3 h-3 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" title="Saved to cloud">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
+                          </svg>
+                        )}
+                      </div>
                       <button 
                         type="button" 
                         onClick={(e) => { e.stopPropagation(); handleRemoveFile(file.id); }}
