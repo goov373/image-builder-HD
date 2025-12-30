@@ -310,6 +310,7 @@ export const CarouselFrame = ({
         <div className="mt-2 flex items-center gap-2 flex-wrap">
           {/* Zoom Controls */}
           <div className="flex items-center gap-1 bg-gray-800/90 rounded-lg px-2 py-1.5">
+            <span className="text-gray-500 text-[10px] mr-1">Zoom</span>
             <button
               type="button"
               onClick={() => onUpdateImageLayer?.(carouselId, frame.id, { scale: Math.max(0.5, frame.imageLayer.scale - 0.1) })}
@@ -345,6 +346,7 @@ export const CarouselFrame = ({
 
           {/* Opacity Control */}
           <div className="flex items-center gap-1 bg-gray-800/90 rounded-lg px-2 py-1.5">
+            <span className="text-gray-500 text-[10px] mr-1">Opacity</span>
             <button
               type="button"
               onClick={() => onUpdateImageLayer?.(carouselId, frame.id, { opacity: Math.max(0, frame.imageLayer.opacity - 0.1) })}
