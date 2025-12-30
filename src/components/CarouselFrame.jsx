@@ -324,6 +324,8 @@ export const CarouselFrame = ({
         
       </div>
       
+      {/* Controls Area - fixed height to prevent layout snap */}
+      <div className={`${isRowSelected ? 'min-h-[52px]' : 'h-0'}`}>
       {/* Layer Indicators - outside frame, below card */}
       {/* Only visible when row is selected, hidden during editing modes */}
       {isRowSelected && !isImageEditing && !isFillEditing && (
@@ -606,6 +608,7 @@ export const CarouselFrame = ({
           </button>
         </div>
       )}
+      </div>
     </div>
   );
 };
