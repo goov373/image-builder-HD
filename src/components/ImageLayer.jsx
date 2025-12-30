@@ -323,7 +323,7 @@ const ImageLayer = ({
             {/* Tooltip - appears on hover, extends left */}
             <div className="absolute top-8 right-0 bg-black/90 rounded-lg px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none w-max">
               <p className="text-white text-[10px]">
-                Drag • Scroll to zoom • ESC
+                Drag to move • Scroll to zoom • ESC to finish
               </p>
             </div>
           </div>
