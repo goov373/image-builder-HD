@@ -331,6 +331,14 @@ export const CarouselFrame = ({
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
               </svg>
             </button>
+            <button
+              type="button"
+              onClick={() => onUpdateImageLayer?.(carouselId, frame.id, { scale: 1 })}
+              className="ml-1 px-1.5 py-0.5 text-gray-500 hover:text-white text-[9px] hover:bg-white/10 rounded transition-colors"
+              title="Reset zoom to 100%"
+            >
+              Reset
+            </button>
           </div>
 
           {/* Opacity Control */}
@@ -356,17 +364,15 @@ export const CarouselFrame = ({
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
               </svg>
             </button>
+            <button
+              type="button"
+              onClick={() => onUpdateImageLayer?.(carouselId, frame.id, { opacity: 1 })}
+              className="ml-1 px-1.5 py-0.5 text-gray-500 hover:text-white text-[9px] hover:bg-white/10 rounded transition-colors"
+              title="Reset opacity to 100%"
+            >
+              Reset
+            </button>
           </div>
-
-          {/* Reset Button */}
-          <button
-            type="button"
-            onClick={() => onUpdateImageLayer?.(carouselId, frame.id, { x: 0, y: 0, scale: 1, opacity: 1 })}
-            className="bg-gray-800/90 rounded-lg px-2 py-1.5 text-gray-400 hover:text-white text-[10px] transition-colors"
-            title="Reset position"
-          >
-            Reset
-          </button>
 
           {/* Done Button */}
           <button
