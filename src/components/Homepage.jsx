@@ -114,8 +114,8 @@ const Homepage = ({
             </svg>
           </div>
           <div>
-            <h1 className="text-3xl font-bold text-white">Carousel Studio</h1>
-            <p className="text-gray-500 text-sm">Design beautiful social media carousels</p>
+            <h1 className="text-3xl font-bold text-white">Content Builder</h1>
+            <p className="text-gray-500 text-sm">Create social carousels, product images, eblast graphics, animated gifs, and website snippets.</p>
           </div>
         </div>
       </div>
