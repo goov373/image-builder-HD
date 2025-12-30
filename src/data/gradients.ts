@@ -48,7 +48,7 @@ export const purpleLinearGradients: GradientDefinition[] = [
     id: 'pl-corner-bloom',
     name: 'Corner Bloom',
     category: 'purple-linear',
-    css: 'linear-gradient(135deg, #a5b4fc 0%, #a5b4fc 30%, #9ca9f9 45%, #939ff6 55%, #8a96f3 65%, #818cf8 75%, #8a96f3 82%, #939ff6 88%, #9ca9f9 94%, #a5b4fc 100%)',
+    css: 'linear-gradient(140deg, rgba(92,95,219,0.2) 0%, transparent 25%), linear-gradient(130deg, rgba(100,102,233,0.15) 0%, transparent 20%), linear-gradient(135deg, #a5b4fc 0%, #a5b4fc 30%, #9ca9f9 45%, #939ff6 55%, #8a96f3 65%, #818cf8 75%, #8a96f3 82%, #939ff6 88%, #9ca9f9 94%, #a5b4fc 100%)',
   },
   {
     id: 'pl-corner-glow',
