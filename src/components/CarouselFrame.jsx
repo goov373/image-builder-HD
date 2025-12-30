@@ -281,7 +281,7 @@ export const CarouselFrame = ({
           </div>
         )}
         {/* Image Indicator - Click to edit, X to remove */}
-        {frame.imageLayer && (
+        {frame.imageLayer && !isImageEditing && (
           <div 
             className="flex items-center gap-1 px-2 py-1 bg-gray-800/80 rounded-full group cursor-pointer hover:bg-gray-700/80 transition-colors"
             title="Click to edit image position & size"
@@ -304,6 +304,86 @@ export const CarouselFrame = ({
           </div>
         )}
       </div>
+      
+      {/* Image Edit Controls - appears below frame when editing */}
+      {isImageEditing && frame.imageLayer && (
+        <div className="mt-2 flex items-center gap-2 flex-wrap">
+          {/* Zoom Controls */}
+          <div className="flex items-center gap-1 bg-gray-800/90 rounded-lg px-2 py-1.5">
+            <button
+              type="button"
+              onClick={() => onUpdateImageLayer?.(carouselId, frame.id, { scale: Math.max(0.5, frame.imageLayer.scale - 0.1) })}
+              className="w-5 h-5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 rounded transition-colors"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+              </svg>
+            </button>
+            <span className="text-gray-300 text-[10px] font-medium min-w-[32px] text-center">
+              {Math.round(frame.imageLayer.scale * 100)}%
+            </span>
+            <button
+              type="button"
+              onClick={() => onUpdateImageLayer?.(carouselId, frame.id, { scale: Math.min(5, frame.imageLayer.scale + 0.1) })}
+              className="w-5 h-5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 rounded transition-colors"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+            </button>
+          </div>
+
+          {/* Opacity Control */}
+          <div className="flex items-center gap-1.5 bg-gray-800/90 rounded-lg px-2 py-1.5">
+            <svg className="w-3 h-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            <input
+              type="range"
+              min="0"
+              max="100"
+              value={frame.imageLayer.opacity * 100}
+              onChange={(e) => onUpdateImageLayer?.(carouselId, frame.id, { opacity: parseInt(e.target.value) / 100 })}
+              className="w-14 h-1 bg-gray-600 rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-2.5 [&::-webkit-slider-thumb]:h-2.5 [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:rounded-full"
+            />
+            <span className="text-gray-400 text-[10px] min-w-[24px]">
+              {Math.round(frame.imageLayer.opacity * 100)}%
+            </span>
+          </div>
+
+          {/* Reset Button */}
+          <button
+            type="button"
+            onClick={() => onUpdateImageLayer?.(carouselId, frame.id, { x: 0, y: 0, scale: 1, opacity: 1 })}
+            className="bg-gray-800/90 rounded-lg px-2 py-1.5 text-gray-400 hover:text-white text-[10px] transition-colors"
+            title="Reset position"
+          >
+            Reset
+          </button>
+
+          {/* Done Button */}
+          <button
+            type="button"
+            onClick={() => handleImageEditModeChange(false)}
+            className="bg-orange-500/90 hover:bg-orange-500 rounded-lg px-2.5 py-1.5 text-white text-[10px] font-medium transition-colors"
+            title="Done editing"
+          >
+            Done
+          </button>
+
+          {/* Remove Button */}
+          <button
+            type="button"
+            onClick={() => { handleImageEditModeChange(false); onRemoveImageFromFrame?.(carouselId, frame.id); }}
+            className="bg-gray-800/90 hover:bg-red-600 rounded-lg px-2 py-1.5 text-gray-400 hover:text-white transition-colors"
+            title="Remove image"
+          >
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+          </button>
+        </div>
+      )}
     </div>
   );
 };
