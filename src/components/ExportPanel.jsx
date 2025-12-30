@@ -245,27 +245,29 @@ const ExportPanel = ({
   const supportsTransparent = formats.find(f => f.id === format)?.supportsTransparent;
 
   return (
-    <div 
-      className={`fixed top-[56px] h-[calc(100%-56px)] w-72 bg-gray-900 border-r border-t border-gray-800 z-40 flex flex-col ${isOpen ? 'pointer-events-auto' : 'pointer-events-none'}`}
-      style={{ left: isOpen ? 64 : -224, transition: 'left 0.3s ease-out' }}
-    >
-      {/* Decorative Diagonal Lines Pattern */}
+    <>
+      {/* Decorative Diagonal Lines Pattern - In header/tab bar area */}
       <div 
-        className="flex-shrink-0 h-8 opacity-30"
-        style={{
+        className={`fixed top-0 h-[56px] w-72 z-30 pointer-events-none`}
+        style={{ 
+          left: isOpen ? 64 : -224, 
+          transition: 'left 0.3s ease-out',
           backgroundImage: `repeating-linear-gradient(
             -45deg,
             transparent,
-            transparent 4px,
-            rgba(100, 102, 233, 0.3) 4px,
-            rgba(100, 102, 233, 0.3) 5px
+            transparent 6px,
+            rgba(100, 102, 233, 0.15) 6px,
+            rgba(100, 102, 233, 0.15) 7px
           )`,
-          backgroundSize: '100% 100%',
         }}
       />
       
-      {/* Fixed Header */}
-      <div className="flex-shrink-0 px-4 border-b border-gray-800 flex items-center justify-between" style={{ height: 56 }}>
+      <div 
+        className={`fixed top-[56px] h-[calc(100%-56px)] w-72 bg-gray-900 border-r border-t border-gray-800 z-40 flex flex-col ${isOpen ? 'pointer-events-auto' : 'pointer-events-none'}`}
+        style={{ left: isOpen ? 64 : -224, transition: 'left 0.3s ease-out' }}
+      >
+        {/* Fixed Header */}
+        <div className="flex-shrink-0 px-4 border-b border-gray-800 flex items-center justify-between" style={{ height: 64 }}>
         <h2 className="text-sm font-semibold text-white">Export</h2>
         <button type="button" onClick={onClose} className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-500 hover:text-white hover:bg-gray-700 transition-colors">
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -555,6 +557,7 @@ const ExportPanel = ({
         </button>
       </div>
     </div>
+    </>
   );
 };
 
