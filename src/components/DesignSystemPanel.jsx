@@ -285,8 +285,8 @@ const DesignSystemPanel = ({
     'linear-gradient(90deg, #f57c3a 0%, #f78b4a 20%, #f9a066 45%, #fcb88a 70%, #fdd8c2 100%)',
     // 5. Corner sweep - orange from bottom-left
     'linear-gradient(45deg, #e86a2c 0%, #f57c3a 18%, #f9944e 38%, #fcb88a 60%, #fde5d4 85%, #ffffff 100%)',
-    // 6. Radial center - warm glow from center
-    'radial-gradient(ellipse at 50% 50%, #fde5d4 0%, #fcb88a 25%, #f9a066 50%, #f78b4a 75%, #f57c3a 100%)',
+    // 6. Radial center - subtle warm glow from center with light orange blend
+    'radial-gradient(ellipse at 50% 50%, #fccc9e 0%, #fcb88a 20%, #f9a066 40%, #f79455 60%, #f78b4a 80%, #f57c3a 100%)',
   ];
 
   // ===== BLACK/DARK GRADIENTS (6) =====
