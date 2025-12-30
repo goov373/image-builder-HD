@@ -18,10 +18,10 @@ export interface GradientDefinition {
 // Purple fading to clear for overlay effects
 export const purpleTransparentGradients: GradientDefinition[] = [
   {
-    id: 'pt-left-fade',
-    name: 'Left Fade',
+    id: 'pt-subtle-fade',
+    name: 'Subtle Fade',
     category: 'purple-transparent',
-    css: 'linear-gradient(90deg, #6466e9 0%, rgba(100,102,233,0.85) 20%, rgba(129,140,248,0.6) 40%, rgba(165,180,252,0.35) 60%, rgba(165,180,252,0.15) 80%, rgba(165,180,252,0) 100%)',
+    css: 'linear-gradient(160deg, #6466e9 0%, rgba(100,102,233,0.85) 20%, rgba(129,140,248,0.6) 40%, rgba(165,180,252,0.35) 60%, rgba(165,180,252,0.15) 80%, rgba(165,180,252,0) 100%)',
   },
   {
     id: 'pt-top-fade',
