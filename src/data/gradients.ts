@@ -115,12 +115,6 @@ export const blackGradients: GradientDefinition[] = [
     css: 'linear-gradient(135deg, #18191A 0%, #2d2e30 100%)',
   },
   {
-    id: 'bk-vertical-dark',
-    name: 'Vertical Dark',
-    category: 'black',
-    css: 'linear-gradient(180deg, #1f2022 0%, #18191A 100%)',
-  },
-  {
     id: 'bk-deep-charcoal',
     name: 'Deep to Charcoal',
     category: 'black',
@@ -131,18 +125,6 @@ export const blackGradients: GradientDefinition[] = [
     name: 'Horizontal Sweep',
     category: 'black',
     css: 'linear-gradient(90deg, #0a0a0b 0%, #18191A 50%, #252628 100%)',
-  },
-  {
-    id: 'bk-corner-fade',
-    name: 'Corner Fade',
-    category: 'black',
-    css: 'linear-gradient(45deg, #18191A 0%, #1f2022 30%, #2a2b2d 60%, #353638 100%)',
-  },
-  {
-    id: 'bk-radial-vignette',
-    name: 'Radial Vignette',
-    category: 'black',
-    css: 'radial-gradient(ellipse at 50% 50%, #2d2e30 0%, #232425 40%, #18191A 80%, #0f0f10 100%)',
   },
 ];
 
