@@ -44,6 +44,7 @@ const VideoCoverFrame = ({
         background: bgOverride.gradient,
         backgroundSize: bgOverride.size,
         backgroundPosition: bgOverride.position,
+        backgroundRepeat: 'no-repeat',
       };
     }
     return { background: bgOverride };

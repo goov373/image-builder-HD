@@ -83,6 +83,7 @@ export const CarouselFrame = ({
         background: bgOverride.gradient,
         backgroundSize: bgOverride.size,
         backgroundPosition: bgOverride.position,
+        backgroundRepeat: 'no-repeat',
       };
     }
     // Simple string override
