@@ -132,7 +132,7 @@ const DesignSystemPanel = ({
   const [uploadProgress, setUploadProgress] = useState({ current: 0, total: 0, fileName: '' });
   const [compressionPreset, setCompressionPreset] = useState('highQuality');
   const [collapsedSections, setCollapsedSections] = useState({
-    backgrounds: false,
+    backgrounds: true,
     patterns: true,
     productImagery: true,
     photography: true,
