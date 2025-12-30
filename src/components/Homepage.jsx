@@ -16,6 +16,8 @@ const Homepage = ({
   const [renamingId, setRenamingId] = useState(null);
   const [renameValue, setRenameValue] = useState('');
   const [renameError, setRenameError] = useState(null);
+  const [filterType, setFilterType] = useState('all'); // 'all', 'carousel', 'singleImage', 'eblast', 'videoCover'
+  const [sortBy, setSortBy] = useState('updated'); // 'updated', 'created', 'name'
   const menuRef = useRef(null);
   const renameInputRef = useRef(null);
 
@@ -129,7 +131,36 @@ const Homepage = ({
       {/* Projects Section */}
       <div className="max-w-6xl mx-auto">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-semibold text-white">Your Projects</h2>
+          <div className="flex items-center gap-4">
+            <h2 className="text-xl font-semibold text-white">Your Projects</h2>
+            
+            {/* Filter by Type */}
+            <div className="flex items-center gap-2">
+              <select
+                value={filterType}
+                onChange={(e) => setFilterType(e.target.value)}
+                className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-1.5 text-xs text-gray-300 hover:border-gray-600 focus:border-gray-500 focus:outline-none transition-colors cursor-pointer"
+              >
+                <option value="all">All Types</option>
+                <option value="carousel">Carousels</option>
+                <option value="singleImage">Single Images</option>
+                <option value="eblast">Eblast Graphics</option>
+                <option value="videoCover">Video Covers</option>
+              </select>
+              
+              {/* Sort By */}
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-1.5 text-xs text-gray-300 hover:border-gray-600 focus:border-gray-500 focus:outline-none transition-colors cursor-pointer"
+              >
+                <option value="updated">Last Updated</option>
+                <option value="created">Date Created</option>
+                <option value="name">Name (A-Z)</option>
+              </select>
+            </div>
+          </div>
+          
           <button 
             type="button"
             onClick={onCreateNew}
@@ -142,11 +173,17 @@ const Homepage = ({
           </button>
         </div>
         
-        {/* Project Grid - sorted newest to oldest */}
+        {/* Project Grid - filtered and sorted */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[...projects]
             .filter(p => p.hasContent) // Only show completed projects, not drafts
-            .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
+            .filter(p => filterType === 'all' || p.projectType === filterType)
+            .sort((a, b) => {
+              if (sortBy === 'updated') return new Date(b.updatedAt) - new Date(a.updatedAt);
+              if (sortBy === 'created') return new Date(b.createdAt) - new Date(a.createdAt);
+              if (sortBy === 'name') return (a.name || '').localeCompare(b.name || '');
+              return 0;
+            })
             .map(project => (
             <div 
               key={project.id}
