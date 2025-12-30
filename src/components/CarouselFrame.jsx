@@ -270,7 +270,8 @@ export const CarouselFrame = ({
       </div>
       
       {/* Layer Indicators - outside frame, below card */}
-      {/* Always render this row to maintain consistent card heights */}
+      {/* Hidden during image editing to make room for controls */}
+      {!isImageEditing && (
       <div className="h-6 mt-1.5 flex items-center gap-2">
         {/* Gradient Indicator */}
         {frame.backgroundOverride && (
@@ -318,10 +319,11 @@ export const CarouselFrame = ({
           </div>
         )}
       </div>
+      )}
       
       {/* Image Edit Controls - appears below frame when editing */}
       {isImageEditing && frame.imageLayer && (
-        <div className="mt-2 flex items-center gap-2 flex-wrap">
+        <div className="mt-1.5 flex items-center gap-2 flex-wrap">
           {/* Zoom Controls */}
           <div className="flex items-center gap-1 bg-gray-800/90 rounded-lg px-2 py-1.5">
             <span className="text-gray-500 text-[10px] mr-1 min-w-[40px]">Zoom</span>
