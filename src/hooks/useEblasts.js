@@ -279,12 +279,19 @@ function eblastReducer(state, action) {
             sections: eblast.sections.map((section, index) => {
               if (index < startIdx || index > actualEndIdx) return section;
               const relativeIndex = index - startIdx;
+              
+              // CSS background-position percentage when bg > container:
+              // 0% = top aligned, 100% = bottom aligned
+              const positionPercent = selectedCount > 1 
+                ? (relativeIndex / (selectedCount - 1)) * 100 
+                : 0;
+              
               return {
                 ...section,
                 backgroundOverride: {
                   gradient: background,
                   size: `100% ${selectedCount * 100}%`,
-                  position: `0% ${-relativeIndex * 100}%`,
+                  position: `0% ${positionPercent}%`,
                   isStretched: true,
                 }
               };

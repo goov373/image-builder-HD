@@ -325,12 +325,19 @@ function carouselReducer(state, action) {
               // Calculate position relative to the selected range
               const relativeIndex = index - startIdx;
               
+              // CSS background-position percentage when bg > container:
+              // 0% = left aligned, 100% = right aligned
+              // For N frames, frame i should be at position: i/(N-1)*100%
+              const positionPercent = selectedCount > 1 
+                ? (relativeIndex / (selectedCount - 1)) * 100 
+                : 0;
+              
               return {
                 ...frame,
                 backgroundOverride: {
                   gradient: background,
                   size: `${selectedCount * 100}% 100%`,
-                  position: `${-relativeIndex * 100}% 0%`,
+                  position: `${positionPercent}% 0%`,
                   isStretched: true,
                 }
               };
