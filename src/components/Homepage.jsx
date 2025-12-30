@@ -18,6 +18,7 @@ const Homepage = ({
   const [renameError, setRenameError] = useState(null);
   const [filterType, setFilterType] = useState('all'); // 'all', 'carousel', 'singleImage', 'eblast', 'videoCover'
   const [sortBy, setSortBy] = useState('updated'); // 'updated', 'created', 'name'
+  const [searchQuery, setSearchQuery] = useState('');
   const menuRef = useRef(null);
   const renameInputRef = useRef(null);
 
@@ -134,8 +135,23 @@ const Homepage = ({
           <div className="flex items-center gap-4">
             <h2 className="text-xl font-semibold text-white">Your Projects</h2>
             
-            {/* Filter by Type */}
+            {/* Search and Filter Controls */}
             <div className="flex items-center gap-2">
+              {/* Search Bar */}
+              <div className="relative">
+                <svg className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search projects..."
+                  className="w-40 bg-gray-800 border border-gray-700 rounded-lg pl-8 pr-3 py-1.5 text-xs text-gray-300 placeholder-gray-500 hover:border-gray-600 focus:border-gray-500 focus:outline-none transition-colors"
+                />
+              </div>
+              
+              {/* Filter by Type */}
               <select
                 value={filterType}
                 onChange={(e) => setFilterType(e.target.value)}
@@ -178,6 +194,7 @@ const Homepage = ({
           {[...projects]
             .filter(p => p.hasContent) // Only show completed projects, not drafts
             .filter(p => filterType === 'all' || p.projectType === filterType)
+            .filter(p => !searchQuery || (p.name || '').toLowerCase().includes(searchQuery.toLowerCase()))
             .sort((a, b) => {
               if (sortBy === 'updated') return new Date(b.updatedAt) - new Date(a.updatedAt);
               if (sortBy === 'created') return new Date(b.createdAt) - new Date(a.createdAt);
