@@ -115,7 +115,14 @@ const Homepage = ({
           </div>
           <div>
             <h1 className="text-3xl font-bold text-white">Content Builder</h1>
-            <p className="text-gray-500 text-sm">Create social carousels, product images, eblast graphics, animated gifs, and website snippets.</p>
+            <div className="flex flex-wrap items-center gap-2 mt-1">
+              <span className="text-gray-500 text-sm">Create</span>
+              <span className="px-2 py-0.5 bg-gray-800 border border-gray-700 rounded-full text-xs text-gray-300">social carousels</span>
+              <span className="px-2 py-0.5 bg-gray-800 border border-gray-700 rounded-full text-xs text-gray-300">product images</span>
+              <span className="px-2 py-0.5 bg-gray-800 border border-gray-700 rounded-full text-xs text-gray-300">eblast graphics</span>
+              <span className="px-2 py-0.5 bg-gray-800 border border-gray-700 rounded-full text-xs text-gray-300">animated gifs</span>
+              <span className="px-2 py-0.5 bg-gray-800 border border-gray-700 rounded-full text-xs text-gray-300">website snippets</span>
+            </div>
           </div>
         </div>
       </div>
