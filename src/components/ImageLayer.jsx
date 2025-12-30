@@ -5,9 +5,9 @@ import { useState, useRef, useEffect, useCallback } from 'react';
  * Renders an image layer within a frame with pan, zoom, and opacity controls
  * 
  * Features:
- * - Double-click to enter edit mode
+ * - Double-click or click Image tag to enter edit mode
  * - Drag to pan image within frame
- * - Mouse wheel to zoom in/out
+ * - Arrow keys to nudge, +/- to zoom
  * - ESC or click outside to exit edit mode
  * - Cross-frame continuity when image extends beyond frame edges
  */
@@ -122,17 +122,6 @@ const ImageLayer = ({
     setIsDragging(false);
   }, []);
 
-  // Handle mouse wheel for zoom
-  const handleWheel = (e) => {
-    if (!isEditMode) return;
-    e.preventDefault();
-    e.stopPropagation();
-    
-    const delta = e.deltaY > 0 ? -0.1 : 0.1;
-    const newScale = Math.max(0.5, Math.min(5, scale + delta));
-    onUpdate({ scale: newScale });
-  };
-
   // Handle ESC key to exit edit mode
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -235,31 +224,12 @@ const ImageLayer = ({
         style={getTransformStyle(isOverflowFromPrev || isOverflowFromNext)}
         onDoubleClick={handleDoubleClick}
         onMouseDown={handleMouseDown}
-        onWheel={handleWheel}
         draggable={false}
       />
 
-      {/* Edit Mode Overlay */}
+      {/* Edit Mode Overlay - Border indicator */}
       {isEditMode && (
-        <>
-          {/* Border indicator */}
-          <div className="absolute inset-0 border-2 border-dashed border-blue-400 pointer-events-none z-30" />
-          
-          {/* Tips Icon with Hover Tooltip */}
-          <div className="absolute top-2 right-2 z-40 group">
-            <div className="w-6 h-6 bg-black/80 rounded-full flex items-center justify-center cursor-help">
-              <svg className="w-3.5 h-3.5 text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-            {/* Tooltip - appears on hover, extends left */}
-            <div className="absolute top-8 right-0 bg-black/90 rounded-lg px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none w-max">
-              <p className="text-white text-[10px]">
-                Drag to move • Scroll to zoom • ESC to finish
-              </p>
-            </div>
-          </div>
-        </>
+        <div className="absolute inset-0 border-2 border-dashed border-blue-400 pointer-events-none z-30" />
       )}
 
       {/* Hover indicator when not in edit mode */}
