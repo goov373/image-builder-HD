@@ -66,6 +66,8 @@ export const CarouselFrame = ({
   onImageEditModeChange,
   // Whether the row containing this frame is selected
   isRowSelected = false,
+  // Whether this frame is currently being dragged
+  isDragging = false,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isProgressHidden, setIsProgressHidden] = useState(false);
@@ -307,8 +309,8 @@ export const CarouselFrame = ({
           </div>
         )}
         
-        {/* Remove Button - Hidden during image editing */}
-        {totalFrames > 1 && !isImageEditing && (
+        {/* Remove Button - Hidden during image editing and dragging */}
+        {totalFrames > 1 && !isImageEditing && !isDragging && (
           <button 
             type="button"
             onClick={(e) => { e.stopPropagation(); onRemove(frame.id); }} 
@@ -701,6 +703,7 @@ export const SortableFrame = ({
         nextFrameImage={nextFrameImage}
         onImageEditModeChange={setIsImageEditing}
         isRowSelected={isRowSelected}
+        isDragging={isDragging}
       />
     </div>
   );
