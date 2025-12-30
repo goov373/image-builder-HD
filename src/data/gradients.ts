@@ -59,12 +59,6 @@ export const whitePurpleGradients: GradientDefinition[] = [
 // Soft highlight aesthetic with organic glow effects
 export const purpleRadialGradients: GradientDefinition[] = [
   {
-    id: 'pr-lavender-highlight',
-    name: 'Lavender Highlight',
-    category: 'purple-radial',
-    css: 'radial-gradient(ellipse at 25% 25%, rgba(199, 210, 254, 0.5) 0%, rgba(165, 180, 252, 0.25) 30%, rgba(129, 140, 248, 0.1) 50%, transparent 70%), radial-gradient(ellipse at 50% 50%, #7578eb 0%, #6466e9 60%, #5558d9 100%)',
-  },
-  {
     id: 'pr-centered-glow',
     name: 'Centered Glow',
     category: 'purple-radial',
