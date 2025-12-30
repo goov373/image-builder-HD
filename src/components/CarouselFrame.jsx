@@ -270,8 +270,8 @@ export const CarouselFrame = ({
       </div>
       
       {/* Layer Indicators - outside frame, below card */}
-      {/* Hidden during image editing to make room for controls */}
-      {!isImageEditing && (
+      {/* Only visible when row is selected, hidden during image editing */}
+      {isFrameSelected && !isImageEditing && (
       <div className="h-6 mt-1.5 flex items-center gap-2">
         {/* Gradient Indicator */}
         {frame.backgroundOverride && (
