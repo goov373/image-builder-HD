@@ -45,10 +45,10 @@ export const purpleRadialGradients: GradientDefinition[] = [];
 // Smooth gradual fades in different directions
 export const purpleLinearGradients: GradientDefinition[] = [
   {
-    id: 'pl-dual-corner',
-    name: 'Dual Corner',
+    id: 'pl-corner-bloom',
+    name: 'Corner Bloom',
     category: 'purple-linear',
-    css: 'linear-gradient(45deg, #5558d9 0%, #6466e9 15%, #818cf8 35%, rgba(129,140,248,0.6) 50%, transparent 70%), linear-gradient(225deg, #5558d9 0%, #6466e9 15%, #818cf8 35%, rgba(129,140,248,0.6) 50%, transparent 70%), linear-gradient(135deg, #818cf8 0%, #6466e9 50%, #818cf8 100%)',
+    css: 'linear-gradient(135deg, #a5b4fc 0%, #818cf8 20%, #6466e9 50%, #818cf8 80%, #a5b4fc 100%)',
   },
   {
     id: 'pl-corner-glow',
@@ -63,10 +63,10 @@ export const purpleLinearGradients: GradientDefinition[] = [
     css: 'linear-gradient(180deg, #b3bffc 0%, #9098f3 35%, #7276ec 60%, #5c5fdb 100%)',
   },
   {
-    id: 'pl-dual-corner-alt',
-    name: 'Dual Corner Alt',
+    id: 'pl-center-band',
+    name: 'Center Band',
     category: 'purple-linear',
-    css: 'linear-gradient(135deg, #5c5fdb 0%, #6466e9 15%, #818cf8 35%, rgba(129,140,248,0.5) 55%, transparent 75%), linear-gradient(315deg, #5c5fdb 0%, #6466e9 15%, #818cf8 35%, rgba(129,140,248,0.5) 55%, transparent 75%), linear-gradient(180deg, #918df5 0%, #7578eb 50%, #918df5 100%)',
+    css: 'linear-gradient(0deg, #9098f3 0%, #7276ec 30%, #5c5fdb 50%, #7276ec 70%, #9098f3 100%)',
   },
   {
     id: 'pl-diagonal-bottom-left',
