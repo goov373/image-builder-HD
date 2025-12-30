@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 
 /**
  * ImageLayer Component
@@ -34,12 +34,17 @@ const ImageLayer = ({
     onEditModeChange?.(isEditMode);
   }, [isEditMode, onEditModeChange]);
   
-  // Enter edit mode when editTrigger changes (from parent clicking the tag)
+  // Track previous editTrigger to only respond to actual clicks
+  const prevEditTriggerRef = useRef(0);
+  
+  // Enter edit mode when editTrigger increases (from parent clicking the tag)
   useEffect(() => {
-    if (editTrigger > 0 && isFrameSelected) {
+    if (editTrigger > prevEditTriggerRef.current && isFrameSelected) {
       setIsEditMode(true);
     }
+    prevEditTriggerRef.current = editTrigger;
   }, [editTrigger, isFrameSelected]);
+  
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [initialPos, setInitialPos] = useState({ x: 0, y: 0 });
