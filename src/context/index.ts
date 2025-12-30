@@ -10,5 +10,4 @@ export {
   useDropdownsContext,
 } from './AppContext';
 
-export { ThemeProvider, useTheme } from './ThemeContext';
 export { HistoryProvider, useHistory } from './HistoryContext';

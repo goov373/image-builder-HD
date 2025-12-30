@@ -11,49 +11,8 @@ export interface GradientDefinition {
   id: string;
   name: string;
   css: string;
-  category: 'stretch' | 'white-purple' | 'purple-radial' | 'purple-linear' | 'orange' | 'black';
+  category: 'white-purple' | 'purple-radial' | 'purple-linear' | 'orange' | 'black';
 }
-
-// ===== STRETCH-OPTIMIZED GRADIENTS =====
-// Horizontal (90deg) gradients designed for seamless multi-frame stretching
-export const stretchGradients: GradientDefinition[] = [
-  {
-    id: 'stretch-purple-white',
-    name: 'Purple to White',
-    category: 'stretch',
-    css: 'linear-gradient(90deg, #6466e9 0%, #818cf8 20%, #a5b4fc 40%, #c7d2fe 60%, #e8ebf7 80%, #ffffff 100%)',
-  },
-  {
-    id: 'stretch-white-purple',
-    name: 'White to Purple',
-    category: 'stretch',
-    css: 'linear-gradient(90deg, #ffffff 0%, #e8ebf7 20%, #c7d2fe 40%, #a5b4fc 60%, #818cf8 80%, #6466e9 100%)',
-  },
-  {
-    id: 'stretch-purple-peak',
-    name: 'Purple Peak',
-    category: 'stretch',
-    css: 'linear-gradient(90deg, #ffffff 0%, #c7d2fe 25%, #6466e9 50%, #c7d2fe 75%, #ffffff 100%)',
-  },
-  {
-    id: 'stretch-ocean',
-    name: 'Ocean Flow',
-    category: 'stretch',
-    css: 'linear-gradient(90deg, #0f172a 0%, #1e3a5f 20%, #3b82f6 40%, #60a5fa 60%, #93c5fd 80%, #dbeafe 100%)',
-  },
-  {
-    id: 'stretch-sunset',
-    name: 'Sunset Horizon',
-    category: 'stretch',
-    css: 'linear-gradient(90deg, #4c1d95 0%, #7c3aed 15%, #a855f7 30%, #f97316 50%, #fbbf24 70%, #fef3c7 100%)',
-  },
-  {
-    id: 'stretch-dark-purple',
-    name: 'Dark to Purple',
-    category: 'stretch',
-    css: 'linear-gradient(90deg, #18191A 0%, #2d2e30 15%, #3d3e42 30%, #5558d9 50%, #6466e9 70%, #818cf8 100%)',
-  },
-];
 
 // ===== WHITE-PURPLE GRADIENTS =====
 // Light backgrounds with subtle purple transitions
