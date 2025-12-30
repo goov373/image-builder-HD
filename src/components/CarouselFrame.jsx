@@ -327,7 +327,7 @@ export const CarouselFrame = ({
       {/* Layer Indicators - outside frame, below card */}
       {/* Only visible when row is selected, hidden during editing modes */}
       {isRowSelected && !isImageEditing && !isFillEditing && (
-      <div className="h-6 mt-1.5 flex items-center gap-2">
+      <div className="mt-1.5 flex flex-col items-start gap-1">
         {/* Fill Color Indicator - Click to edit */}
         {(frame.backgroundOverride || style.background) && (
           <div 
