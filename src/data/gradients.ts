@@ -11,8 +11,31 @@ export interface GradientDefinition {
   id: string;
   name: string;
   css: string;
-  category: 'white-purple' | 'purple-radial' | 'purple-linear' | 'orange' | 'black';
+  category: 'purple-transparent' | 'white-purple' | 'purple-radial' | 'purple-linear' | 'orange' | 'black';
 }
+
+// ===== PURPLE TO TRANSPARENT GRADIENTS =====
+// Purple fading to clear for overlay effects
+export const purpleTransparentGradients: GradientDefinition[] = [
+  {
+    id: 'pt-diagonal-fade',
+    name: 'Diagonal Fade',
+    category: 'purple-transparent',
+    css: 'linear-gradient(135deg, #6466e9 0%, rgba(100,102,233,0.7) 30%, rgba(129,140,248,0.4) 55%, rgba(165,180,252,0.15) 75%, transparent 100%)',
+  },
+  {
+    id: 'pt-bottom-fade',
+    name: 'Bottom Fade',
+    category: 'purple-transparent',
+    css: 'linear-gradient(0deg, #6466e9 0%, rgba(100,102,233,0.7) 25%, rgba(129,140,248,0.4) 50%, rgba(165,180,252,0.15) 75%, transparent 100%)',
+  },
+  {
+    id: 'pt-corner-fade',
+    name: 'Corner Fade',
+    category: 'purple-transparent',
+    css: 'linear-gradient(225deg, #6466e9 0%, rgba(100,102,233,0.6) 20%, rgba(129,140,248,0.3) 45%, rgba(165,180,252,0.1) 70%, transparent 100%)',
+  },
+];
 
 // ===== WHITE-PURPLE GRADIENTS =====
 // Light backgrounds with subtle purple transitions
@@ -135,6 +158,7 @@ export const solidColors: SolidColorDefinition[] = [
 // ===== COMBINED EXPORTS =====
 // All gradients combined in display order
 export const allGradients: GradientDefinition[] = [
+  ...purpleTransparentGradients,
   ...whitePurpleGradients,
   ...purpleRadialGradients,
   ...purpleLinearGradients,
