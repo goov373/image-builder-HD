@@ -239,9 +239,22 @@ export const CarouselFrame = ({
         
       </div>
       
-      {/* Image Layer Indicator - outside frame, below card */}
+      {/* Layer Indicators - outside frame, below card */}
       {/* Always render this row to maintain consistent card heights */}
-      <div className="h-6 mt-1.5 flex items-center">
+      <div className="h-6 mt-1.5 flex items-center gap-2">
+        {/* Gradient Indicator */}
+        {frame.backgroundOverride && (
+          <div 
+            className="flex items-center gap-1.5 px-2 py-1 bg-gray-800/80 rounded-full"
+            title="This frame has a custom gradient/background"
+          >
+            <svg className="w-3 h-3 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+            </svg>
+            <span className="text-[10px] text-gray-400">Gradient</span>
+          </div>
+        )}
+        {/* Image Indicator */}
         {frame.imageLayer && (
           <div 
             className="flex items-center gap-1.5 px-2 py-1 bg-gray-800/80 rounded-full"

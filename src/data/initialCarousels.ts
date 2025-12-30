@@ -216,34 +216,16 @@ type FrameStyleResult = { background: string; text: string; accent: string };
 export const getFrameStyle = (carouselId: number, frameStyle: string, ds: DesignSystem): FrameStyleResult => {
   // Readable text colors
   const textWhite = '#ffffff';
-  const textLight = '#f1f5f9';
   
-  const styles: Record<string, FrameStyleResult> = {
-    // Opening/Hook frames - Dark neutral base
-    "dark-single-pin": { background: `linear-gradient(135deg, ${ds.neutral1} 0%, #2d2e30 100%)`, text: textWhite, accent: ds.primary },
-    
-    // Problem/Pain frames - Dark tones for tension
-    "dark-chaos": { background: `linear-gradient(135deg, #2d2e30 0%, ${ds.neutral1} 100%)`, text: textWhite, accent: '#ef4444' },
-    "dark-competition": { background: `linear-gradient(135deg, ${ds.neutral1} 0%, #3d3e42 100%)`, text: textWhite, accent: ds.secondary },
-    "static-gray": { background: `linear-gradient(135deg, ${ds.neutral2} 0%, ${ds.neutral1} 100%)`, text: textLight, accent: ds.primary },
-    "cracking": { background: `linear-gradient(135deg, #2d2e30 0%, ${ds.neutral1} 100%)`, text: textWhite, accent: ds.secondary },
-    
-    // Story/Journey frames - Subtle progression
-    "monday": { background: `linear-gradient(135deg, ${ds.neutral1} 0%, #2d2e30 100%)`, text: textWhite, accent: ds.primary },
-    "tuesday": { background: `linear-gradient(135deg, ${ds.neutral1} 0%, ${ds.neutral2} 100%)`, text: textWhite, accent: ds.primary },
-    "wednesday": { background: `linear-gradient(135deg, ${ds.neutral2} 0%, ${ds.neutral1} 100%)`, text: textWhite, accent: ds.primary },
-    "thursday-friday": { background: `linear-gradient(135deg, #2d2e30 0%, ${ds.neutral1} 100%)`, text: textWhite, accent: ds.secondary },
-    
-    // Solution/Product reveal frames - Purple to Light (HelloData signature)
-    "reveal-product": { background: `linear-gradient(135deg, ${ds.primary} 0%, #818cf8 100%)`, text: textWhite, accent: ds.secondary },
-    "product-forecast": { background: `linear-gradient(135deg, ${ds.primary} 0%, ${ds.neutral3} 100%)`, text: textWhite, accent: ds.secondary },
-    "heatmap-transform": { background: `linear-gradient(135deg, ${ds.primary} 0%, ${ds.neutral3} 100%)`, text: textWhite, accent: ds.secondary },
-    
-    // CTA frames - Purple to Orange energy
-    "cta-win": { background: `linear-gradient(135deg, ${ds.primary} 0%, ${ds.secondary} 100%)`, text: textWhite, accent: textWhite },
-    "cta-forecast": { background: `linear-gradient(135deg, ${ds.primary} 0%, #818cf8 100%)`, text: textWhite, accent: ds.secondary },
-    "cta-automated": { background: `linear-gradient(135deg, ${ds.primary} 0%, ${ds.secondary} 100%)`, text: textWhite, accent: textWhite },
+  // Default: solid purple background - users add gradients manually
+  const defaultStyle: FrameStyleResult = { 
+    background: ds.primary, // Solid purple (#6466e9)
+    text: textWhite, 
+    accent: ds.secondary 
   };
-  return styles[frameStyle] || styles["dark-single-pin"];
+  
+  // All frame styles now default to solid purple
+  // Gradients are applied by users via the Design panel
+  return defaultStyle;
 };
 
