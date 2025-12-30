@@ -24,12 +24,6 @@ export const whitePurpleGradients: GradientDefinition[] = [
     css: 'linear-gradient(135deg, #6466e9 0%, #6d70eb 15%, #7a7eed 30%, #8b8ff2 45%, #9ea3f5 58%, #b3b8f8 70%, #c9cdfa 82%, #e0e3fc 92%, #f5f6ff 100%)',
   },
   {
-    id: 'wp-vertical-fade',
-    name: 'Vertical Fade',
-    category: 'white-purple',
-    css: 'linear-gradient(180deg, #6466e9 0%, #7a7ded 15%, #9196f3 30%, #a8adf7 45%, #c0c5fa 58%, #d8dbfc 70%, #edeefd 85%, #ffffff 100%)',
-  },
-  {
     id: 'wp-soft-diagonal',
     name: 'Soft Diagonal',
     category: 'white-purple',
@@ -55,18 +49,6 @@ export const purpleLinearGradients: GradientDefinition[] = [
     name: 'Corner Glow',
     category: 'purple-linear',
     css: 'linear-gradient(135deg, #c7d2fe 0%, #a5b4fc 10%, #818cf8 28%, #6a6eea 50%, #5c5fdb 100%)',
-  },
-  {
-    id: 'pl-vertical-fade',
-    name: 'Vertical Fade',
-    category: 'purple-linear',
-    css: 'linear-gradient(180deg, #b3bffc 0%, #9098f3 35%, #7276ec 60%, #5c5fdb 100%)',
-  },
-  {
-    id: 'pl-center-band',
-    name: 'Center Band',
-    category: 'purple-linear',
-    css: 'linear-gradient(225deg, rgba(165,180,252,0.25) 0%, transparent 35%), linear-gradient(240deg, rgba(148,154,246,0.2) 0%, transparent 28%), linear-gradient(135deg, #5c5fdb 0%, #6669e2 8%, #7074e8 16%, #7b7fee 24%, #8589f2 30%, #7b7fee 36%, #7074e8 44%, #6669e2 55%, #5c5fdb 70%, #5c5fdb 100%)',
   },
   {
     id: 'pl-diagonal-bottom-left',
