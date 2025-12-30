@@ -199,9 +199,13 @@ export const CarouselFrame = ({
         )}
         
         {/* Layer 3: Gradient/Background - above image (z-index: 3) */}
+        {/* When an image is present, apply 70% opacity so photo shows through */}
         <div 
           className="absolute inset-0 z-[3] pointer-events-none"
-          style={backgroundStyle}
+          style={{
+            ...backgroundStyle,
+            opacity: frame.imageLayer ? 0.7 : 1,
+          }}
         />
         
         {/* Text Layout - renders above all layers */}
