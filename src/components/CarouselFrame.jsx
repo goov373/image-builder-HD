@@ -325,7 +325,12 @@ export const CarouselFrame = ({
       
       {/* Image Edit Controls - appears below frame when editing */}
       {isImageEditing && frame.imageLayer && (
-        <div className="mt-1.5 flex items-center gap-2 flex-wrap" data-image-edit-controls>
+        <div 
+          className="mt-1.5 flex items-center gap-2 flex-wrap" 
+          data-image-edit-controls
+          onClick={(e) => e.stopPropagation()}
+          onMouseDown={(e) => e.stopPropagation()}
+        >
           {/* Zoom Controls */}
           <div className="flex items-center gap-1 bg-gray-800/90 rounded-lg px-2 py-1.5">
             <span className="text-gray-500 text-[10px] mr-1 min-w-[40px]">Zoom</span>
