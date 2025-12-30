@@ -237,19 +237,20 @@ export const CarouselFrame = ({
           </button>
         )}
         
-        {/* Image Layer Indicator */}
-        {frame.imageLayer && (
-          <div 
-            className={`absolute bottom-2 left-2 z-20 flex items-center gap-1.5 px-2 py-1 bg-black/70 rounded-full transition-opacity duration-150 ${isHovered || isFrameSelected ? 'opacity-100' : 'opacity-60'}`}
-            title="This frame has an image layer. Double-click image to edit."
-          >
-            <svg className="w-3 h-3 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-            </svg>
-            <span className="text-[10px] text-white/80">Image</span>
-          </div>
-        )}
       </div>
+      
+      {/* Image Layer Indicator - outside frame, below card */}
+      {frame.imageLayer && (
+        <div 
+          className="flex items-center gap-1.5 mt-1.5 px-2 py-1 bg-gray-800/80 rounded-full w-fit"
+          title="This frame has an image layer. Double-click image to edit."
+        >
+          <svg className="w-3 h-3 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          <span className="text-[10px] text-gray-400">Image</span>
+        </div>
+      )}
     </div>
   );
 };
