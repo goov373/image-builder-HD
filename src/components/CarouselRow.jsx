@@ -93,7 +93,7 @@ const CarouselRow = ({ carousel, designSystem, isSelected, hasAnySelection, sele
       <div className="px-4" style={{ minHeight: 300 }}>
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
           <SortableContext items={frameIds} strategy={horizontalListSortingStrategy}>
-            <div className={`flex items-center transition-all duration-150 ease-out`} style={{ width: 'auto', minWidth: 'fit-content', gap: isSelected ? '12px' : '10px' }}>
+            <div className={`flex items-start transition-all duration-150 ease-out`} style={{ width: 'auto', minWidth: 'fit-content', gap: isSelected ? '12px' : '10px' }}>
               {carousel.frames.map((frame, index) => (
                 <React.Fragment key={frame.id}>
                   <SortableFrame
