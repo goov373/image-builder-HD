@@ -282,14 +282,22 @@ export const CarouselFrame = ({
         )}
         
         {/* Layer 3: Gradient/Background - above image (z-index: 3) */}
-        {/* When an image is present, apply 70% opacity so photo shows through */}
+        {/* Uses fillOpacity (defaults to 0.7 with image, 1 without) and fillRotation for user adjustments */}
         <div 
-          className="absolute inset-0 z-[3] pointer-events-none"
-          style={{
-            ...backgroundStyle,
-            opacity: frame.imageLayer ? 0.7 : 1,
-          }}
-        />
+          className="absolute inset-0 z-[3] pointer-events-none overflow-hidden"
+        >
+          <div 
+            className="absolute inset-[-50%] w-[200%] h-[200%]"
+            style={{
+              ...backgroundStyle,
+              opacity: frame.fillOpacity !== undefined 
+                ? frame.fillOpacity 
+                : (frame.imageLayer ? 0.7 : 1),
+              transform: `rotate(${frame.fillRotation || 0}deg)`,
+              transformOrigin: 'center center',
+            }}
+          />
+        </div>
         
         {/* Text Layout - renders above all layers */}
         <div className="absolute inset-0 z-10">
