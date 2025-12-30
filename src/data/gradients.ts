@@ -48,7 +48,7 @@ export const purpleLinearGradients: GradientDefinition[] = [
     id: 'pl-corner-bloom',
     name: 'Corner Bloom',
     category: 'purple-linear',
-    css: 'linear-gradient(135deg, #a5b4fc 0%, #818cf8 20%, #6466e9 50%, #818cf8 80%, #a5b4fc 100%)',
+    css: 'linear-gradient(135deg, #a5b4fc 0%, #9ca9f9 15%, #939ff6 28%, #8a96f3 40%, #818cf8 50%, #8a96f3 60%, #939ff6 72%, #9ca9f9 85%, #a5b4fc 100%)',
   },
   {
     id: 'pl-corner-glow',
@@ -66,7 +66,7 @@ export const purpleLinearGradients: GradientDefinition[] = [
     id: 'pl-center-band',
     name: 'Center Band',
     category: 'purple-linear',
-    css: 'linear-gradient(0deg, #9098f3 0%, #7276ec 30%, #5c5fdb 50%, #7276ec 70%, #9098f3 100%)',
+    css: 'linear-gradient(0deg, #9098f3 0%, #8a90f1 12%, #8488ef 24%, #7e80ed 36%, #787aeb 48%, #7e80ed 52%, #8488ef 64%, #8a90f1 76%, #9098f3 88%, #9098f3 100%)',
   },
   {
     id: 'pl-diagonal-bottom-left',
