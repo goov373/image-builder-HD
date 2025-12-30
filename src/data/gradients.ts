@@ -30,24 +30,6 @@ export const whitePurpleGradients: GradientDefinition[] = [
     css: 'linear-gradient(180deg, #ffffff 0%, #f5f6ff 18%, #e8ebf7 35%, #c7d2fe 52%, #a5b4fc 70%, #818cf8 85%, #6466e9 100%)',
   },
   {
-    id: 'wp-corner-mesh',
-    name: 'Corner Mesh',
-    category: 'white-purple',
-    css: 'linear-gradient(315deg, #6466e9 0%, #818cf8 12%, #a5b4fc 25%, #c7d2fe 40%, #e8ebf7 55%, #f5f6ff 72%, #ffffff 100%)',
-  },
-  {
-    id: 'wp-horizontal-fade',
-    name: 'Horizontal Fade',
-    category: 'white-purple',
-    css: 'linear-gradient(90deg, #6466e9 0%, #818cf8 12%, #a5b4fc 28%, #c7d2fe 45%, #e8ebf7 65%, #f5f6ff 82%, #ffffff 100%)',
-  },
-  {
-    id: 'wp-radial-center',
-    name: 'Radial Center',
-    category: 'white-purple',
-    css: 'radial-gradient(ellipse at 50% 50%, #ffffff 0%, #f8f9ff 20%, #e8ebf7 40%, #c7d2fe 60%, #a5b4fc 78%, #818cf8 92%, #6466e9 100%)',
-  },
-  {
     id: 'wp-soft-diagonal',
     name: 'Soft Diagonal',
     category: 'white-purple',
