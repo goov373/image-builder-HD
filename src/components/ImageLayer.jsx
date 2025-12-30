@@ -198,7 +198,15 @@ const ImageLayer = ({
   // Click outside to exit edit mode
   useEffect(() => {
     const handleClickOutside = (e) => {
-      if (isEditMode && containerRef.current && !containerRef.current.contains(e.target)) {
+      // Don't close if clicking within the image layer container
+      if (containerRef.current && containerRef.current.contains(e.target)) {
+        return;
+      }
+      // Don't close if clicking on the edit controls (which are outside this component)
+      if (e.target.closest('[data-image-edit-controls]')) {
+        return;
+      }
+      if (isEditMode) {
         setIsEditMode(false);
       }
     };
