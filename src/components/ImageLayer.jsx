@@ -18,12 +18,21 @@ const ImageLayer = ({
   isFrameSelected,
   onUpdate,
   onRemove,
+  // Edit mode trigger from parent (e.g., clicking the Image tag)
+  editTrigger = 0,
   // Cross-frame props (for future seamless image transitions)
   isOverflowFromPrev = false, // True if this is showing overflow from previous frame
   isOverflowFromNext = false, // True if this is showing overflow from next frame
   overflowImage = null,       // The overflow image data from adjacent frame
 }) => {
   const [isEditMode, setIsEditMode] = useState(false);
+  
+  // Enter edit mode when editTrigger changes (from parent clicking the tag)
+  useEffect(() => {
+    if (editTrigger > 0 && isFrameSelected) {
+      setIsEditMode(true);
+    }
+  }, [editTrigger, isFrameSelected]);
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [initialPos, setInitialPos] = useState({ x: 0, y: 0 });

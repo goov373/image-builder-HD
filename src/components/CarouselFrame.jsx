@@ -64,6 +64,7 @@ export const CarouselFrame = ({
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isProgressHidden, setIsProgressHidden] = useState(false);
+  const [imageEditTrigger, setImageEditTrigger] = useState(0);
   
   const style = getFrameStyle(carouselId, frame.style, designSystem);
   const content = frame.variants[frame.currentVariant];
@@ -164,6 +165,7 @@ export const CarouselFrame = ({
               isFrameSelected={isFrameSelected}
               onUpdate={(updates) => onUpdateImageLayer?.(carouselId, frame.id, updates)}
               onRemove={() => onRemoveImageFromFrame?.(carouselId, frame.id)}
+              editTrigger={imageEditTrigger}
             />
           </div>
         )}
@@ -266,16 +268,17 @@ export const CarouselFrame = ({
             </button>
           </div>
         )}
-        {/* Image Indicator */}
+        {/* Image Indicator - Click to edit, X to remove */}
         {frame.imageLayer && (
           <div 
-            className="flex items-center gap-1 px-2 py-1 bg-gray-800/80 rounded-full group"
-            title="This frame has an image layer. Double-click image to edit."
+            className="flex items-center gap-1 px-2 py-1 bg-gray-800/80 rounded-full group cursor-pointer hover:bg-gray-700/80 transition-colors"
+            title="Click to edit image position & size"
+            onClick={(e) => { e.stopPropagation(); setImageEditTrigger(prev => prev + 1); }}
           >
             <svg className="w-3 h-3 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
-            <span className="text-[10px] text-gray-400">Image</span>
+            <span className="text-[10px] text-gray-400 group-hover:text-white transition-colors">Image</span>
             <button
               type="button"
               onClick={(e) => { e.stopPropagation(); onRemoveImageFromFrame?.(carouselId, frame.id); }}
