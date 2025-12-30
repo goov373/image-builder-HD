@@ -227,16 +227,18 @@ export const CarouselFrame = ({
           {renderLayout()}
         </div>
         
-        {/* Progress Dots Overlay */}
-        <div className="absolute top-2 right-2 z-10">
-          <ProgressDotsOverlay 
-            frameId={frame.id}
-            isFrameSelected={isFrameSelected}
-            isHovered={isHovered}
-            isProgressHidden={isProgressHidden}
-            onToggleHidden={() => setIsProgressHidden(!isProgressHidden)}
-          />
-        </div>
+        {/* Progress Dots Overlay - Hidden during image editing */}
+        {!isImageEditing && (
+          <div className="absolute top-2 right-2 z-10">
+            <ProgressDotsOverlay 
+              frameId={frame.id}
+              isFrameSelected={isFrameSelected}
+              isHovered={isHovered}
+              isProgressHidden={isProgressHidden}
+              onToggleHidden={() => setIsProgressHidden(!isProgressHidden)}
+            />
+          </div>
+        )}
         
         {/* Remove Button - Hidden during image editing */}
         {totalFrames > 1 && !isImageEditing && (
