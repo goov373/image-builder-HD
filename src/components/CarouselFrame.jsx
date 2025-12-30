@@ -56,8 +56,9 @@ export const CarouselFrame = ({
   // Image layer props
   onUpdateImageLayer,
   onRemoveImageFromFrame,
-  // Background props
+  // Background/Fill props
   onClearBackground,
+  onUpdateFillLayer,
   // Cross-frame overflow
   prevFrameImage = null,
   nextFrameImage = null,
@@ -72,6 +73,10 @@ export const CarouselFrame = ({
   const [imageCloseTrigger, setImageCloseTrigger] = useState(0);
   const [isImageEditing, setIsImageEditing] = useState(false);
   const [initialImageState, setInitialImageState] = useState(null);
+  
+  // Fill color editing state
+  const [isFillEditing, setIsFillEditing] = useState(false);
+  const [initialFillState, setInitialFillState] = useState(null);
   
   // Notify parent (SortableFrame) when image edit mode changes
   const handleImageEditModeChange = (editing) => {
@@ -98,6 +103,42 @@ export const CarouselFrame = ({
     setImageCloseTrigger(prev => prev + 1);
     handleImageEditModeChange(false);
     setInitialImageState(null);
+  };
+  
+  // Fill color editing handlers
+  const handleStartFillEdit = () => {
+    if (!isFillEditing) {
+      setInitialFillState({
+        backgroundOverride: frame.backgroundOverride,
+        fillOpacity: frame.fillOpacity || 1,
+        fillRotation: frame.fillRotation || 0,
+      });
+    }
+    setIsFillEditing(true);
+  };
+  
+  const handleCancelFillEdit = () => {
+    if (initialFillState) {
+      // Restore initial fill state
+      onUpdateFillLayer?.(carouselId, frame.id, {
+        backgroundOverride: initialFillState.backgroundOverride,
+        fillOpacity: initialFillState.fillOpacity,
+        fillRotation: initialFillState.fillRotation,
+      });
+    }
+    setIsFillEditing(false);
+    setInitialFillState(null);
+  };
+  
+  const handleDoneFillEdit = () => {
+    setIsFillEditing(false);
+    setInitialFillState(null);
+  };
+  
+  const handleDeleteFill = () => {
+    onClearBackground?.(carouselId, frame.id);
+    setIsFillEditing(false);
+    setInitialFillState(null);
   };
   
   const style = getFrameStyle(carouselId, frame.style, designSystem);
@@ -282,29 +323,32 @@ export const CarouselFrame = ({
       </div>
       
       {/* Layer Indicators - outside frame, below card */}
-      {/* Only visible when row is selected, hidden during image editing */}
-      {isRowSelected && !isImageEditing && (
+      {/* Only visible when row is selected, hidden during editing modes */}
+      {isRowSelected && !isImageEditing && !isFillEditing && (
       <div className="h-6 mt-1.5 flex items-center gap-2">
-        {/* Gradient Indicator */}
-        {frame.backgroundOverride && (
+        {/* Fill Color Indicator - Click to edit */}
+        {(frame.backgroundOverride || style.background) && (
           <div 
-            className="flex items-center gap-1 px-2 py-1 bg-gray-800/80 rounded-full group"
-            title="This frame has a custom gradient/background"
+            className="flex items-center gap-1 px-2 py-1 bg-gray-800/80 rounded-full group cursor-pointer hover:bg-gray-700/80 transition-colors"
+            title="Click to edit fill color"
+            onClick={(e) => { e.stopPropagation(); if (isFrameSelected) handleStartFillEdit(); }}
           >
             <svg className="w-3 h-3 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
             </svg>
-            <span className="text-[10px] text-gray-400">Gradient</span>
-            <button
-              type="button"
-              onClick={(e) => { e.stopPropagation(); onClearBackground?.(carouselId, frame.id); }}
-              className="w-3.5 h-3.5 flex items-center justify-center rounded-full hover:bg-gray-600 transition-colors ml-0.5"
-              title="Remove gradient"
-            >
-              <svg className="w-2.5 h-2.5 text-gray-400 hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
+            <span className="text-[10px] text-gray-400 group-hover:text-white transition-colors">{isFrameSelected ? 'Edit Fill' : 'Fill Color'}</span>
+            {frame.backgroundOverride && (
+              <button
+                type="button"
+                onClick={(e) => { e.stopPropagation(); onClearBackground?.(carouselId, frame.id); }}
+                className="w-3.5 h-3.5 flex items-center justify-center rounded-full hover:bg-gray-600 transition-colors ml-0.5"
+                title="Remove fill"
+              >
+                <svg className="w-2.5 h-2.5 text-gray-400 hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            )}
           </div>
         )}
         {/* Image Indicator - Click to edit, X to remove */}
@@ -446,6 +490,122 @@ export const CarouselFrame = ({
           </button>
         </div>
       )}
+      
+      {/* Fill Color Edit Controls - appears below frame when editing fill */}
+      {isFillEditing && (
+        <div 
+          className="mt-1.5 flex items-center gap-2 flex-wrap" 
+          data-fill-edit-controls
+          onClick={(e) => e.stopPropagation()}
+          onMouseDown={(e) => e.stopPropagation()}
+        >
+          {/* Opacity Control */}
+          <div className="flex items-center gap-1 bg-gray-800/90 rounded-lg px-2 py-1.5">
+            <span className="text-gray-500 text-[10px] mr-1 min-w-[40px]">Opacity</span>
+            <button
+              type="button"
+              onClick={() => onUpdateFillLayer?.(carouselId, frame.id, { fillOpacity: Math.max(0, (frame.fillOpacity || 1) - 0.1) })}
+              className="w-5 h-5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 rounded transition-colors"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+              </svg>
+            </button>
+            <span className="text-gray-300 text-[10px] font-medium min-w-[32px] text-center">
+              {Math.round((frame.fillOpacity || 1) * 100)}%
+            </span>
+            <button
+              type="button"
+              onClick={() => onUpdateFillLayer?.(carouselId, frame.id, { fillOpacity: Math.min(1, (frame.fillOpacity || 1) + 0.1) })}
+              className="w-5 h-5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 rounded transition-colors"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              onClick={() => onUpdateFillLayer?.(carouselId, frame.id, { fillOpacity: 1 })}
+              className="w-5 h-5 flex items-center justify-center text-gray-500 hover:text-white hover:bg-white/10 rounded transition-colors"
+              title="Reset opacity to 100%"
+            >
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+            </button>
+          </div>
+
+          {/* Rotation Control */}
+          <div className="flex items-center gap-1 bg-gray-800/90 rounded-lg px-2 py-1.5">
+            <span className="text-gray-500 text-[10px] mr-1 min-w-[40px]">Rotate</span>
+            <button
+              type="button"
+              onClick={() => onUpdateFillLayer?.(carouselId, frame.id, { fillRotation: ((frame.fillRotation || 0) - 90 + 360) % 360 })}
+              className="w-5 h-5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 rounded transition-colors"
+              title="Rotate -90°"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+              </svg>
+            </button>
+            <span className="text-gray-300 text-[10px] font-medium min-w-[32px] text-center">
+              {frame.fillRotation || 0}°
+            </span>
+            <button
+              type="button"
+              onClick={() => onUpdateFillLayer?.(carouselId, frame.id, { fillRotation: ((frame.fillRotation || 0) + 90) % 360 })}
+              className="w-5 h-5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 rounded transition-colors"
+              title="Rotate +90°"
+            >
+              <svg className="w-3.5 h-3.5 transform scale-x-[-1]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              onClick={() => onUpdateFillLayer?.(carouselId, frame.id, { fillRotation: 0 })}
+              className="w-5 h-5 flex items-center justify-center text-gray-500 hover:text-white hover:bg-white/10 rounded transition-colors"
+              title="Reset rotation to 0°"
+            >
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+            </button>
+          </div>
+
+          {/* Cancel Button */}
+          <button
+            type="button"
+            onClick={handleCancelFillEdit}
+            className="bg-gray-700/90 hover:bg-gray-600 rounded-lg px-2.5 py-1.5 text-gray-300 hover:text-white text-[10px] font-medium transition-colors"
+            title="Cancel and revert changes"
+          >
+            Cancel
+          </button>
+
+          {/* Done Button */}
+          <button
+            type="button"
+            onClick={handleDoneFillEdit}
+            className="bg-orange-500/90 hover:bg-orange-500 rounded-lg px-2.5 py-1.5 text-white text-[10px] font-medium transition-colors"
+            title="Done editing"
+          >
+            Done
+          </button>
+
+          {/* Delete Button */}
+          <button
+            type="button"
+            onClick={handleDeleteFill}
+            className="bg-gray-800/90 hover:bg-red-600 rounded-lg px-2 py-1.5 text-gray-400 hover:text-white transition-colors"
+            title="Remove fill color"
+          >
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+          </button>
+        </div>
+      )}
     </div>
   );
 };
@@ -473,8 +633,9 @@ export const SortableFrame = ({
   // Image layer props
   onUpdateImageLayer,
   onRemoveImageFromFrame,
-  // Background props
+  // Background/Fill props
   onClearBackground,
+  onUpdateFillLayer,
   // Cross-frame overflow
   prevFrameImage,
   nextFrameImage,
@@ -535,6 +696,7 @@ export const SortableFrame = ({
         onUpdateImageLayer={onUpdateImageLayer}
         onRemoveImageFromFrame={onRemoveImageFromFrame}
         onClearBackground={onClearBackground}
+        onUpdateFillLayer={onUpdateFillLayer}
         prevFrameImage={prevFrameImage}
         nextFrameImage={nextFrameImage}
         onImageEditModeChange={setIsImageEditing}
