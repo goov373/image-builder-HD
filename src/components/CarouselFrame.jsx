@@ -138,59 +138,73 @@ export const CarouselFrame = ({
         className={`relative overflow-hidden shadow-lg cursor-pointer transition-all border ${isFrameSelected ? 'border-gray-400 ring-2 ring-gray-400/50' : 'border-gray-600 hover:border-gray-500'}`}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        style={{ ...backgroundStyle, width: size.width, height: size.height }}
+        style={{ width: size.width, height: size.height, backgroundColor: '#18191A' }}
         onClick={(e) => { e.stopPropagation(); onSelectFrame(frame.id); }}
       >
-        {/* Pattern Layer - absolute backmost layer (z-index: -2) */}
+        {/* Layer 1: Pattern - backmost (z-index: 1) */}
         {frame.patternLayer && (
-          <PatternLayer
-            patternLayer={frame.patternLayer}
-            frameWidth={size.width}
-            frameHeight={size.height}
-          />
+          <div className="absolute inset-0 z-[1]">
+            <PatternLayer
+              patternLayer={frame.patternLayer}
+              frameWidth={size.width}
+              frameHeight={size.height}
+            />
+          </div>
         )}
         
-        {/* Image Layer - renders behind text */}
+        {/* Layer 2: Image - behind gradient (z-index: 2) */}
         {frame.imageLayer && (
-          <ImageLayer
-            imageLayer={frame.imageLayer}
-            frameWidth={size.width}
-            frameHeight={size.height}
-            isFrameSelected={isFrameSelected}
-            onUpdate={(updates) => onUpdateImageLayer?.(carouselId, frame.id, updates)}
-            onRemove={() => onRemoveImageFromFrame?.(carouselId, frame.id)}
-          />
+          <div className="absolute inset-0 z-[2]">
+            <ImageLayer
+              imageLayer={frame.imageLayer}
+              frameWidth={size.width}
+              frameHeight={size.height}
+              isFrameSelected={isFrameSelected}
+              onUpdate={(updates) => onUpdateImageLayer?.(carouselId, frame.id, updates)}
+              onRemove={() => onRemoveImageFromFrame?.(carouselId, frame.id)}
+            />
+          </div>
         )}
         
         {/* Overflow from previous frame's image (appears on left side) */}
         {!frame.imageLayer && prevFrameImage && prevFrameImage.x > 0.3 && prevFrameImage.scale > 1 && (
-          <ImageLayer
-            imageLayer={prevFrameImage}
-            frameWidth={size.width}
-            frameHeight={size.height}
-            isFrameSelected={false}
-            onUpdate={() => {}}
-            onRemove={() => {}}
-            isOverflowFromPrev={true}
-            overflowImage={prevFrameImage}
-          />
+          <div className="absolute inset-0 z-[2]">
+            <ImageLayer
+              imageLayer={prevFrameImage}
+              frameWidth={size.width}
+              frameHeight={size.height}
+              isFrameSelected={false}
+              onUpdate={() => {}}
+              onRemove={() => {}}
+              isOverflowFromPrev={true}
+              overflowImage={prevFrameImage}
+            />
+          </div>
         )}
         
         {/* Overflow from next frame's image (appears on right side) */}
         {!frame.imageLayer && nextFrameImage && nextFrameImage.x < -0.3 && nextFrameImage.scale > 1 && (
-          <ImageLayer
-            imageLayer={nextFrameImage}
-            frameWidth={size.width}
-            frameHeight={size.height}
-            isFrameSelected={false}
-            onUpdate={() => {}}
-            onRemove={() => {}}
-            isOverflowFromNext={true}
-            overflowImage={nextFrameImage}
-          />
+          <div className="absolute inset-0 z-[2]">
+            <ImageLayer
+              imageLayer={nextFrameImage}
+              frameWidth={size.width}
+              frameHeight={size.height}
+              isFrameSelected={false}
+              onUpdate={() => {}}
+              onRemove={() => {}}
+              isOverflowFromNext={true}
+              overflowImage={nextFrameImage}
+            />
+          </div>
         )}
         
-        {/* Text Layout - renders above image */}
+        {/* Layer 3: Gradient/Background - above image (z-index: 3) */}
+        <div 
+          className="absolute inset-0 z-[3] pointer-events-none"
+          style={backgroundStyle}
+        />
+        
+        {/* Text Layout - renders above all layers */}
         <div className="absolute inset-0 z-10">
           {renderLayout()}
         </div>

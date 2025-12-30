@@ -205,7 +205,7 @@ const ImageLayer = ({
   return (
     <div
       ref={containerRef}
-      className={`absolute inset-0 overflow-hidden ${isEditMode ? 'z-20' : 'z-0'}`}
+      className={`absolute inset-0 overflow-hidden ${isEditMode ? 'z-50' : ''}`}
       style={{ pointerEvents: isEditMode ? 'auto' : 'none' }}
     >
       {/* Image - Main or Overflow */}
