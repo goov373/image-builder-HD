@@ -61,11 +61,19 @@ export const CarouselFrame = ({
   // Cross-frame overflow
   prevFrameImage = null,
   nextFrameImage = null,
+  // Callback for image edit mode (to disable drag during edit)
+  onImageEditModeChange,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isProgressHidden, setIsProgressHidden] = useState(false);
   const [imageEditTrigger, setImageEditTrigger] = useState(0);
   const [isImageEditing, setIsImageEditing] = useState(false);
+  
+  // Notify parent (SortableFrame) when image edit mode changes
+  const handleImageEditModeChange = (editing) => {
+    setIsImageEditing(editing);
+    onImageEditModeChange?.(editing);
+  };
   
   const style = getFrameStyle(carouselId, frame.style, designSystem);
   const content = frame.variants[frame.currentVariant];
@@ -167,7 +175,7 @@ export const CarouselFrame = ({
               onUpdate={(updates) => onUpdateImageLayer?.(carouselId, frame.id, updates)}
               onRemove={() => onRemoveImageFromFrame?.(carouselId, frame.id)}
               editTrigger={imageEditTrigger}
-              onEditModeChange={setIsImageEditing}
+              onEditModeChange={handleImageEditModeChange}
             />
           </div>
         )}
@@ -327,6 +335,8 @@ export const SortableFrame = ({
   prevFrameImage,
   nextFrameImage,
 }) => {
+  const [isImageEditing, setIsImageEditing] = useState(false);
+  
   const {
     attributes,
     listeners,
@@ -335,7 +345,7 @@ export const SortableFrame = ({
     isDragging,
   } = useSortable({ 
     id,
-    disabled: !isRowSelected,
+    disabled: !isRowSelected || isImageEditing, // Disable drag when editing image
   });
 
   // Calculate transform - non-dragged items move by exactly one card slot
@@ -383,6 +393,7 @@ export const SortableFrame = ({
         onClearBackground={onClearBackground}
         prevFrameImage={prevFrameImage}
         nextFrameImage={nextFrameImage}
+        onImageEditModeChange={setIsImageEditing}
       />
     </div>
   );
