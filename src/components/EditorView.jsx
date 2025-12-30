@@ -74,18 +74,40 @@ export default function EditorView({
     handleReorderFrames,
     handleAddRow,
     handleRemoveRow,
+    // Image layer methods
+    handleAddImageToFrame,
+    handleUpdateImageLayer,
+    handleRemoveImageFromFrame,
     // Eblast methods
     eblasts,
     handleEblastUpdateText,
     handleAddSection,
     handleRemoveSection,
     handleReorderSections,
+    // Eblast layer methods
+    handleSetSectionBackground,
+    handleSetStretchedBackground,
+    handleAddPatternToSection,
+    handleUpdatePatternLayer,
+    handleRemovePatternFromSection,
+    handleSetStretchedPattern,
+    handleAddImageToSection,
+    handleUpdateImageLayerEblast,
+    handleRemoveImageFromSection,
     // Video Cover methods
     videoCovers,
     handleVideoCoverUpdateText,
     handleVideoCoverChangeFrameSize,
     handleTogglePlayButton,
     handleUpdateEpisodeNumber,
+    // Video Cover layer methods
+    handleVideoCoverSetBackground,
+    handleVideoCoverAddPattern,
+    handleVideoCoverUpdatePattern,
+    handleVideoCoverRemovePattern,
+    handleVideoCoverAddImage,
+    handleVideoCoverUpdateImage,
+    handleVideoCoverRemoveImage,
     // Single Image methods
     singleImages,
     handleUpdateLayer,
@@ -162,6 +184,8 @@ export default function EditorView({
                       onUpdateText={handleUpdateText}
                       activeTextField={activeTextField}
                       onActivateTextField={setActiveTextField}
+                      onUpdateImageLayer={handleUpdateImageLayer}
+                      onRemoveImageFromFrame={handleRemoveImageFromFrame}
                     />
                     {/* Add Row Button - only after last row */}
                     {index === carousels.length - 1 && (
@@ -201,6 +225,8 @@ export default function EditorView({
                       onUpdateText={handleEblastUpdateText}
                       activeTextField={activeTextField}
                       onActivateTextField={setActiveTextField}
+                      onUpdateImageLayer={handleUpdateImageLayerEblast}
+                      onRemoveImageFromSection={handleRemoveImageFromSection}
                     />
                   </React.Fragment>
                 ))}
@@ -219,6 +245,8 @@ export default function EditorView({
                       onChangeFrameSize={handleVideoCoverChangeFrameSize}
                       activeTextField={activeTextField}
                       onActivateTextField={setActiveTextField}
+                      onUpdateImage={handleVideoCoverUpdateImage}
+                      onRemoveImage={handleVideoCoverRemoveImage}
                     />
                   </React.Fragment>
                 ))}

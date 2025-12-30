@@ -4,6 +4,7 @@ import StyleEditor from './StyleEditor';
 import { DataChip, StatCard, Tooltip, Sparkline, AvatarGroup, ProgressRing } from './decorators';
 import { CANVAS_SIZES, DEFAULT_MOCKUP_STYLE } from '../types/singleImage';
 import { MOCKUP_TEMPLATES, DECORATOR_PRESETS } from '../data/initialSingleImages';
+import PatternLayer from './PatternLayer';
 
 /**
  * Layer Item in sidebar
@@ -94,8 +95,13 @@ const SingleImageEditor = ({
   // Calculate preview scale
   const previewScale = zoom / 100;
   
-  // Background style
+  // Background style - use backgroundGradient CSS string if available
   const getBackgroundStyle = () => {
+    // Direct gradient CSS string takes priority
+    if (singleImage.backgroundGradient) {
+      return { background: singleImage.backgroundGradient };
+    }
+    // Fall back to background object
     const bg = singleImage.background;
     if (bg.type === 'gradient' && bg.gradient) {
       return {
@@ -199,6 +205,15 @@ const SingleImageEditor = ({
             }}
             onClick={(e) => { e.stopPropagation(); setSelectedLayerId(null); }}
           >
+            {/* Pattern Layer - backmost layer */}
+            {singleImage.patternLayer && (
+              <PatternLayer
+                patternLayer={singleImage.patternLayer}
+                frameWidth={canvasSize.width * previewScale}
+                frameHeight={canvasSize.height * previewScale}
+              />
+            )}
+            
             {/* Layers */}
             {singleImage.layers
               .filter(l => l.visible)

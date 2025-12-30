@@ -19,7 +19,7 @@ import { SortableFrame } from './CarouselFrame';
  * Carousel Row Component
  * Displays a row of frames with drag-and-drop reordering
  */
-const CarouselRow = ({ carousel, designSystem, isSelected, hasAnySelection, selectedFrameId, onSelect, onSelectFrame, onAddFrame, onRemoveFrame, onRemoveRow, onUpdateText, activeTextField, onActivateTextField, onReorderFrames }) => {
+const CarouselRow = ({ carousel, designSystem, isSelected, hasAnySelection, selectedFrameId, onSelect, onSelectFrame, onAddFrame, onRemoveFrame, onRemoveRow, onUpdateText, activeTextField, onActivateTextField, onReorderFrames, onUpdateImageLayer, onRemoveImageFromFrame }) => {
   const totalFrames = carousel.frames.length;
   const isFaded = hasAnySelection && !isSelected;
   
@@ -112,6 +112,10 @@ const CarouselRow = ({ carousel, designSystem, isSelected, hasAnySelection, sele
                     onActivateTextField={onActivateTextField}
                     isRowSelected={isSelected}
                     cardWidth={frameSizes[carousel.frameSize]?.width || 192}
+                    onUpdateImageLayer={onUpdateImageLayer}
+                    onRemoveImageFromFrame={onRemoveImageFromFrame}
+                    prevFrameImage={index > 0 ? carousel.frames[index - 1]?.imageLayer : null}
+                    nextFrameImage={index < totalFrames - 1 ? carousel.frames[index + 1]?.imageLayer : null}
                   />
               
                   {/* Add Button After Each Frame */}

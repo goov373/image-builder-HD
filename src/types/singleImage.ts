@@ -156,6 +156,16 @@ export interface ShapeLayer extends BaseLayer {
 // Union type for all layers
 export type Layer = MockupLayer | DecoratorLayer | TextLayer | ShapeLayer;
 
+// Pattern layer for canvas background (imported from main types)
+export interface SingleImagePatternLayer {
+  id: string;
+  patternId: string;
+  scale: number;
+  rotation: number;
+  opacity: number;
+  blendMode: 'normal' | 'multiply' | 'overlay' | 'soft-light' | 'screen';
+}
+
 // Main Single Image document
 export interface SingleImage {
   id: number;
@@ -165,6 +175,10 @@ export interface SingleImage {
   canvasWidth: number;
   canvasHeight: number;
   background: Background;
+  // Optional direct gradient CSS string (overrides background.gradient)
+  backgroundGradient?: string;
+  // Optional pattern layer for canvas
+  patternLayer?: SingleImagePatternLayer;
   layers: Layer[];
   // Metadata
   createdAt: string;

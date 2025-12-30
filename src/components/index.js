@@ -10,6 +10,8 @@ export { default as Homepage } from './Homepage';
 export { default as ProjectHeader } from './ProjectHeader';
 export { default as NewProjectView } from './NewProjectView';
 export { CarouselFrame, SortableFrame } from './CarouselFrame';
+export { default as ImageLayer } from './ImageLayer';
+export { default as PatternLayer } from './PatternLayer';
 export { default as CarouselRow } from './CarouselRow';
 export { default as Toolbar } from './Toolbar';
 export { default as TabBar } from './TabBar';
@@ -50,7 +52,7 @@ export {
   ToolbarToggleGroup,
 } from './toolbar/index.js';
 
-// Design Panel Components - Image upload, gradients
+// Design Panel Components - Image upload, gradients, patterns
 export { 
   ImageUploader, 
   ImageGrid, 
@@ -60,4 +62,5 @@ export {
   FrameRangeSlider,
   GradientSwatch,
   ColorSwatch,
+  PatternPicker,
 } from './design-panel/index.js';

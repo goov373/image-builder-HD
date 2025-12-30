@@ -1,5 +1,6 @@
 import { useReducer, useEffect, useState, useCallback } from 'react';
 import { DEFAULT_MOCKUP_STYLE } from '../types/singleImage';
+import { createPatternLayer } from '../data';
 
 const STORAGE_KEY = 'carousel-tool-singleimages';
 
@@ -17,6 +18,11 @@ export const SINGLEIMAGE_ACTIONS = {
   UPDATE_CANVAS_SIZE: 'UPDATE_CANVAS_SIZE',
   ADD_IMAGE: 'ADD_IMAGE',
   REMOVE_IMAGE: 'REMOVE_IMAGE',
+  // New gradient/pattern actions
+  SET_BACKGROUND_GRADIENT: 'SET_BACKGROUND_GRADIENT',
+  ADD_PATTERN: 'ADD_PATTERN',
+  UPDATE_PATTERN: 'UPDATE_PATTERN',
+  REMOVE_PATTERN: 'REMOVE_PATTERN',
 };
 
 // Initial state
@@ -173,6 +179,62 @@ function singleImageReducer(state, action) {
       };
     }
 
+    // ===== Gradient/Pattern Actions =====
+    
+    case SINGLEIMAGE_ACTIONS.SET_BACKGROUND_GRADIENT: {
+      const { imageId, gradient } = action;
+      return {
+        ...state,
+        singleImages: state.singleImages.map(img =>
+          img.id === imageId
+            ? { ...img, backgroundGradient: gradient, updatedAt: new Date().toISOString().split('T')[0] }
+            : img
+        )
+      };
+    }
+
+    case SINGLEIMAGE_ACTIONS.ADD_PATTERN: {
+      const { imageId, patternId } = action;
+      const newPatternLayer = createPatternLayer(patternId);
+      if (!newPatternLayer) return state;
+      
+      return {
+        ...state,
+        singleImages: state.singleImages.map(img =>
+          img.id === imageId
+            ? { ...img, patternLayer: newPatternLayer, updatedAt: new Date().toISOString().split('T')[0] }
+            : img
+        )
+      };
+    }
+
+    case SINGLEIMAGE_ACTIONS.UPDATE_PATTERN: {
+      const { imageId, updates } = action;
+      return {
+        ...state,
+        singleImages: state.singleImages.map(img => {
+          if (img.id !== imageId || !img.patternLayer) return img;
+          return { 
+            ...img, 
+            patternLayer: { ...img.patternLayer, ...updates },
+            updatedAt: new Date().toISOString().split('T')[0] 
+          };
+        })
+      };
+    }
+
+    case SINGLEIMAGE_ACTIONS.REMOVE_PATTERN: {
+      const { imageId } = action;
+      return {
+        ...state,
+        singleImages: state.singleImages.map(img => {
+          if (img.id !== imageId) return img;
+          const { patternLayer, ...rest } = img;
+          return { ...rest, updatedAt: new Date().toISOString().split('T')[0] };
+        })
+      };
+    }
+
     default:
       return state;
   }
@@ -305,6 +367,19 @@ export default function useSingleImages(initialData) {
     
     handleRemoveImage: useCallback((imageId) =>
       dispatch({ type: SINGLEIMAGE_ACTIONS.REMOVE_IMAGE, imageId }), []),
+    
+    // Gradient/Pattern Actions
+    handleSetBackgroundGradient: useCallback((imageId, gradient) =>
+      dispatch({ type: SINGLEIMAGE_ACTIONS.SET_BACKGROUND_GRADIENT, imageId, gradient }), []),
+    
+    handleAddPattern: useCallback((imageId, patternId) =>
+      dispatch({ type: SINGLEIMAGE_ACTIONS.ADD_PATTERN, imageId, patternId }), []),
+    
+    handleUpdatePattern: useCallback((imageId, updates) =>
+      dispatch({ type: SINGLEIMAGE_ACTIONS.UPDATE_PATTERN, imageId, updates }), []),
+    
+    handleRemovePattern: useCallback((imageId) =>
+      dispatch({ type: SINGLEIMAGE_ACTIONS.REMOVE_PATTERN, imageId }), []),
   };
 
   return {

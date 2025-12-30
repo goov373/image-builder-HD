@@ -35,6 +35,8 @@ export default function Toolbar({ totalOffset, activeTab }) {
     handleUpdateFormatting,
     handleChangeFrameSize,
     handleSmoothBackgrounds,
+    handleUpdateImageLayer,
+    handleRemoveImageFromFrame,
   } = carouselsCtx;
 
   const {
@@ -63,6 +65,10 @@ export default function Toolbar({ totalOffset, activeTab }) {
 
   // Smooth backgrounds state
   const [showSmoothPicker, setShowSmoothPicker] = useState(false);
+  
+  // Image controls state
+  const [showImageControls, setShowImageControls] = useState(false);
+  const imageControlsRef = useRef(null);
   const [smoothIntensity, setSmoothIntensity] = useState(2); // 1=Light(25%), 2=Medium(50%), 3=Strong(75%), 4=Full(100%)
   const [smoothDirection, setSmoothDirection] = useState('horizontal'); // horizontal, vertical, radial, diagonal
   const [originalBackgrounds, setOriginalBackgrounds] = useState(null); // Store originals for cancel
@@ -205,6 +211,19 @@ export default function Toolbar({ totalOffset, activeTab }) {
     }
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [showSmoothPicker, previewApplied, originalBackgrounds]);
+
+  // Image controls click-outside handler
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (imageControlsRef.current && !imageControlsRef.current.contains(e.target)) {
+        setShowImageControls(false);
+      }
+    };
+    if (showImageControls) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showImageControls]);
 
   if (!activeTab?.hasContent) return null;
 
@@ -367,6 +386,128 @@ export default function Toolbar({ totalOffset, activeTab }) {
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" /></svg>
             </button>
           </ToolbarButtonGroup>
+
+          {/* Image Controls Group - Only shows when frame has image */}
+          {selectedFrame?.imageLayer && (
+            <ToolbarButtonGroup>
+              <div ref={imageControlsRef} className="relative">
+                <button
+                  onClick={() => { 
+                    const wasOpen = showImageControls; 
+                    closeAllDropdowns(); 
+                    setShowImageControls(false);
+                    if (!wasOpen) setShowImageControls(true); 
+                  }}
+                  className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 border ${
+                    showImageControls ? 'bg-blue-600 border-blue-500' : 'bg-gray-800/50 border-gray-700 hover:bg-gray-700 hover:border-gray-600'
+                  }`}
+                >
+                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  <span className="text-xs font-medium text-white">Image</span>
+                  <svg className={`w-3 h-3 text-gray-400 transition-transform duration-200 ${showImageControls ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                
+                {showImageControls && (
+                  <div className="absolute top-full left-0 mt-2 p-3 bg-gray-900 border border-gray-700 rounded-xl shadow-xl z-[200] min-w-[200px]">
+                    {/* Zoom Control */}
+                    <div className="mb-3">
+                      <div className="text-[10px] text-gray-500 uppercase tracking-wide mb-2">Zoom</div>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => handleUpdateImageLayer?.(selectedCarouselId, selectedFrameId, { scale: Math.max(0.5, (selectedFrame?.imageLayer?.scale || 1) - 0.2) })}
+                          className="w-7 h-7 flex items-center justify-center bg-gray-800 hover:bg-gray-700 rounded-lg border border-gray-700 text-gray-400 hover:text-white transition-colors"
+                        >
+                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" /></svg>
+                        </button>
+                        <div className="flex-1 text-center">
+                          <span className="text-xs text-white font-medium">{Math.round((selectedFrame?.imageLayer?.scale || 1) * 100)}%</span>
+                        </div>
+                        <button
+                          onClick={() => handleUpdateImageLayer?.(selectedCarouselId, selectedFrameId, { scale: Math.min(5, (selectedFrame?.imageLayer?.scale || 1) + 0.2) })}
+                          className="w-7 h-7 flex items-center justify-center bg-gray-800 hover:bg-gray-700 rounded-lg border border-gray-700 text-gray-400 hover:text-white transition-colors"
+                        >
+                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
+                        </button>
+                      </div>
+                    </div>
+                    
+                    {/* Opacity Control */}
+                    <div className="mb-3">
+                      <div className="text-[10px] text-gray-500 uppercase tracking-wide mb-2">Opacity</div>
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="range"
+                          min="0"
+                          max="100"
+                          value={(selectedFrame?.imageLayer?.opacity || 1) * 100}
+                          onChange={(e) => handleUpdateImageLayer?.(selectedCarouselId, selectedFrameId, { opacity: parseInt(e.target.value) / 100 })}
+                          className="flex-1 h-1.5 bg-gray-700 rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:bg-blue-500 [&::-webkit-slider-thumb]:rounded-full"
+                        />
+                        <span className="text-xs text-gray-400 w-10 text-right">{Math.round((selectedFrame?.imageLayer?.opacity || 1) * 100)}%</span>
+                      </div>
+                    </div>
+                    
+                    {/* Fit Mode */}
+                    <div className="mb-3">
+                      <div className="text-[10px] text-gray-500 uppercase tracking-wide mb-2">Fit Mode</div>
+                      <div className="flex gap-1.5">
+                        <button
+                          onClick={() => handleUpdateImageLayer?.(selectedCarouselId, selectedFrameId, { fit: 'cover' })}
+                          className={`flex-1 px-2 py-1.5 rounded-lg text-[11px] font-medium transition-all border ${
+                            selectedFrame?.imageLayer?.fit === 'cover' || !selectedFrame?.imageLayer?.fit
+                              ? 'bg-gray-700 border-gray-500 text-white'
+                              : 'bg-gray-800/50 border-gray-700 text-gray-500 hover:bg-gray-800 hover:text-gray-300'
+                          }`}
+                        >
+                          Cover
+                        </button>
+                        <button
+                          onClick={() => handleUpdateImageLayer?.(selectedCarouselId, selectedFrameId, { fit: 'contain' })}
+                          className={`flex-1 px-2 py-1.5 rounded-lg text-[11px] font-medium transition-all border ${
+                            selectedFrame?.imageLayer?.fit === 'contain'
+                              ? 'bg-gray-700 border-gray-500 text-white'
+                              : 'bg-gray-800/50 border-gray-700 text-gray-500 hover:bg-gray-800 hover:text-gray-300'
+                          }`}
+                        >
+                          Contain
+                        </button>
+                      </div>
+                    </div>
+                    
+                    {/* Action Buttons */}
+                    <div className="flex gap-2 pt-2 border-t border-gray-700">
+                      <button
+                        onClick={() => handleUpdateImageLayer?.(selectedCarouselId, selectedFrameId, { x: 0, y: 0, scale: 1, opacity: 1 })}
+                        className="flex-1 px-3 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg text-xs text-gray-300 transition-colors"
+                      >
+                        Reset
+                      </button>
+                      <button
+                        onClick={() => { 
+                          handleRemoveImageFromFrame?.(selectedCarouselId, selectedFrameId); 
+                          setShowImageControls(false); 
+                        }}
+                        className="flex-1 px-3 py-2 bg-red-900/50 hover:bg-red-600 rounded-lg text-xs text-red-300 hover:text-white transition-colors"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                    
+                    {/* Tip */}
+                    <div className="mt-3 pt-2 border-t border-gray-800">
+                      <p className="text-[10px] text-gray-500 text-center">
+                        Double-click image to drag • Scroll to zoom
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </ToolbarButtonGroup>
+          )}
 
           {/* Snippets Group - Using extracted ToolbarButtonGroup */}
           <ToolbarButtonGroup disabled={!activeTextField}>

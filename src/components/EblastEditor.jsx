@@ -33,6 +33,9 @@ const SortableSection = ({
   activeTextField, 
   onActivateTextField,
   isEblastSelected,
+  // Layer handlers
+  onUpdateImageLayer,
+  onRemoveImageFromSection,
 }) => {
   const {
     attributes,
@@ -67,6 +70,8 @@ const SortableSection = ({
         onUpdateText={onUpdateText}
         activeTextField={activeTextField}
         onActivateTextField={onActivateTextField}
+        onUpdateImageLayer={onUpdateImageLayer}
+        onRemoveImageFromSection={onRemoveImageFromSection}
       />
     </div>
   );
@@ -107,6 +112,9 @@ const EblastEditor = ({
   onUpdateText,
   activeTextField,
   onActivateTextField,
+  // Layer handlers
+  onUpdateImageLayer,
+  onRemoveImageFromSection,
 }) => {
   const totalSections = eblast.sections.length;
   
@@ -209,6 +217,8 @@ const EblastEditor = ({
                   activeTextField={isSelected && selectedSectionId === section.id ? activeTextField : null}
                   onActivateTextField={onActivateTextField}
                   isEblastSelected={isSelected}
+                  onUpdateImageLayer={onUpdateImageLayer}
+                  onRemoveImageFromSection={onRemoveImageFromSection}
                 />
                 
                 {/* Add Section Button (between sections and after last) */}

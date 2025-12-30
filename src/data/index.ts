@@ -32,4 +32,17 @@ export {
   getDevicesByType,
   type DeviceFrame,
 } from './deviceFrames';
+export {
+  geometricPatterns,
+  organicPatterns,
+  minimalPatterns,
+  brandPatterns,
+  allPatterns,
+  patternCategories,
+  findPatternById,
+  getPatternsByCategory,
+  createPatternLayer,
+  type PatternDefinition,
+  type PatternLayer,
+} from './patterns';
 

@@ -41,6 +41,31 @@ export interface Variant {
   formatting: VariantFormatting;
 }
 
+// ===== Pattern Layer Types =====
+export interface PatternLayer {
+  id: string;                     // Unique ID for this pattern layer
+  patternId: string;              // Reference to PatternDefinition.id
+  scale: number;                  // 0.5 to 5
+  rotation: number;               // 0-360 degrees
+  opacity: number;                // 0-1
+  blendMode: 'normal' | 'multiply' | 'overlay' | 'soft-light' | 'screen';
+  color?: string;                 // Optional tint color
+}
+
+// ===== Image Layer Types =====
+export interface ImageLayer {
+  id: string;                     // Unique ID for this image layer
+  src: string;                    // Image URL (from uploaded assets or external)
+  x: number;                      // Pan X offset as percentage (-1 to 1, 0 = centered)
+  y: number;                      // Pan Y offset as percentage (-1 to 1, 0 = centered)
+  scale: number;                  // Zoom level (1 = fit frame, 2 = 200%)
+  opacity: number;                // 0 to 1
+  rotation: number;               // Degrees (0-360)
+  zIndex: number;                 // Layer order (0 = behind text, 10+ = above text)
+  linkedGroupId?: string;         // For cross-frame image sync
+  fit: 'cover' | 'contain';       // How image fits in frame
+}
+
 export interface Frame {
   id: number;
   variants: Variant[];
@@ -49,6 +74,9 @@ export interface Frame {
   layoutVariant: number;
   style: string;
   hideProgress?: boolean;
+  backgroundOverride?: string | { isStretched: boolean; gradient: string; size: string; position: string };
+  patternLayer?: PatternLayer;    // Optional pattern layer (backmost layer)
+  imageLayer?: ImageLayer;        // Optional image layer for frame
 }
 
 export interface Carousel {
@@ -92,6 +120,10 @@ export interface EblastSection {
   size: string;
   ctaText?: string;
   ctaUrl?: string;
+  // Layer overrides (same as Frame)
+  backgroundOverride?: string | { isStretched: boolean; gradient: string; size: string; position: string };
+  patternLayer?: PatternLayer;
+  imageLayer?: ImageLayer;
 }
 
 export interface Eblast {
@@ -137,7 +169,12 @@ export type CarouselAction =
   | { type: 'CHANGE_FRAME_SIZE'; carouselId: number; newSize: FrameSizeKey }
   | { type: 'REORDER_FRAMES'; carouselId: number; oldIndex: number; newIndex: number }
   | { type: 'ADD_ROW'; afterIndex: number }
-  | { type: 'REMOVE_ROW'; carouselId: number };
+  | { type: 'REMOVE_ROW'; carouselId: number }
+  // Image Layer Actions
+  | { type: 'ADD_IMAGE_TO_FRAME'; carouselId: number; frameId: number; imageSrc: string }
+  | { type: 'UPDATE_IMAGE_LAYER'; carouselId: number; frameId: number; updates: Partial<ImageLayer> }
+  | { type: 'REMOVE_IMAGE_FROM_FRAME'; carouselId: number; frameId: number }
+  | { type: 'SYNC_LINKED_IMAGES'; linkedGroupId: string; updates: Partial<ImageLayer> };
 
 export interface CarouselState {
   carousels: Carousel[];
@@ -177,6 +214,10 @@ export interface CarouselsContextValue {
   handleReorderFrames: (carouselId: number, oldIndex: number, newIndex: number) => void;
   handleAddRow: (afterIndex: number) => void;
   handleRemoveRow: (carouselId: number) => void;
+  // Image Layer handlers
+  handleAddImageToFrame: (carouselId: number, frameId: number, imageSrc: string) => void;
+  handleUpdateImageLayer: (carouselId: number, frameId: number, updates: Partial<ImageLayer>) => void;
+  handleRemoveImageFromFrame: (carouselId: number, frameId: number) => void;
 }
 
 // ===== Component Props Types =====

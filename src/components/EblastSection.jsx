@@ -3,6 +3,8 @@ import { frameSizes, getFontSizes } from '../data';
 import { getEblastSectionStyle } from '../data/initialEblasts';
 import { LayoutBottomStack, LayoutCenterDrama, LayoutEditorialLeft } from './Layouts';
 import { EblastHeroOverlay, EblastSplit5050, EblastCTABanner, EblastTextBlock } from './layouts/EblastLayouts';
+import PatternLayer from './PatternLayer';
+import ImageLayer from './ImageLayer';
 
 /**
  * Section Type Badge
@@ -39,15 +41,38 @@ const EblastSection = ({
   onUpdateText,
   activeTextField,
   onActivateTextField,
+  // Layer handlers
+  onUpdateImageLayer,
+  onRemoveImageFromSection,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   
-  const style = getEblastSectionStyle(section.style, designSystem);
+  const defaultStyle = getEblastSectionStyle(section.style, designSystem);
   const content = section.variants[section.currentVariant];
   const layoutIndex = section.currentLayout || 0;
   const size = frameSizes[section.size] || frameSizes.emailHero;
   const formatting = section.variants[section.currentVariant]?.formatting || {};
   const layoutVariant = section.layoutVariant || 0;
+  
+  // Compute background style - handles both simple string and stretched gradient objects
+  const getBackgroundStyle = () => {
+    const bgOverride = section.backgroundOverride;
+    if (!bgOverride) {
+      return { background: defaultStyle.background };
+    }
+    if (typeof bgOverride === 'object' && bgOverride.isStretched) {
+      return {
+        background: bgOverride.gradient,
+        backgroundSize: bgOverride.size,
+        backgroundPosition: bgOverride.position,
+      };
+    }
+    return { background: bgOverride };
+  };
+  const backgroundStyle = getBackgroundStyle();
+  
+  // Use default style for text colors
+  const style = { ...defaultStyle, ...backgroundStyle };
   
   const handleUpdateText = (field, value) => onUpdateText?.(eblastId, section.id, field, value);
   const handleActivateField = (field) => onActivateTextField?.(field);
@@ -112,13 +137,37 @@ const EblastSection = ({
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         style={{ 
-          background: style.background, 
+          ...backgroundStyle, 
           width: size.width, 
           height: size.height 
         }}
         onClick={(e) => { e.stopPropagation(); onSelectSection?.(section.id); }}
       >
-        {renderLayout()}
+        {/* Pattern Layer - absolute backmost (z-index: -2) */}
+        {section.patternLayer && (
+          <PatternLayer
+            patternLayer={section.patternLayer}
+            frameWidth={size.width}
+            frameHeight={size.height}
+          />
+        )}
+        
+        {/* Image Layer - behind text (z-index: 0) */}
+        {section.imageLayer && (
+          <ImageLayer
+            imageLayer={section.imageLayer}
+            frameWidth={size.width}
+            frameHeight={size.height}
+            isFrameSelected={isSectionSelected}
+            onUpdate={(updates) => onUpdateImageLayer?.(eblastId, section.id, updates)}
+            onRemove={() => onRemoveImageFromSection?.(eblastId, section.id)}
+          />
+        )}
+        
+        {/* Text Layout - z-index: 10 */}
+        <div className="relative z-10">
+          {renderLayout()}
+        </div>
         
         {/* Remove Button */}
         {totalSections > 1 && (

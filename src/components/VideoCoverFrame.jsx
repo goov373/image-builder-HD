@@ -4,6 +4,8 @@ import { getVideoCoverStyle } from '../data/initialVideoCovers';
 import { LayoutBottomStack, LayoutCenterDrama, LayoutEditorialLeft } from './Layouts';
 import { VideoFaceText, VideoBoldStatement, VideoEpisodeCard, VideoPlayOverlay } from './layouts/VideoCoverLayouts';
 import { PlayButtonOverlay, EpisodeNumber } from './overlays';
+import PatternLayer from './PatternLayer';
+import ImageLayer from './ImageLayer';
 
 /**
  * Video Cover Frame Component
@@ -17,16 +19,39 @@ const VideoCoverFrame = ({
   onUpdateText,
   activeTextField,
   onActivateTextField,
+  // Layer handlers
+  onUpdateImage,
+  onRemoveImage,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   
   const frame = videoCover.frame;
-  const style = getVideoCoverStyle(frame.style, designSystem);
+  const defaultStyle = getVideoCoverStyle(frame.style, designSystem);
   const content = frame.variants[frame.currentVariant];
   const layoutIndex = frame.currentLayout || 0;
   const size = frameSizes[videoCover.frameSize] || frameSizes.youtube;
   const formatting = frame.variants[frame.currentVariant]?.formatting || {};
   const layoutVariant = frame.layoutVariant || 0;
+  
+  // Compute background style - handles both simple string and stretched gradient objects
+  const getBackgroundStyle = () => {
+    const bgOverride = frame.backgroundOverride;
+    if (!bgOverride) {
+      return { background: defaultStyle.background };
+    }
+    if (typeof bgOverride === 'object' && bgOverride.isStretched) {
+      return {
+        background: bgOverride.gradient,
+        backgroundSize: bgOverride.size,
+        backgroundPosition: bgOverride.position,
+      };
+    }
+    return { background: bgOverride };
+  };
+  const backgroundStyle = getBackgroundStyle();
+  
+  // Use default style for text colors
+  const style = { ...defaultStyle, ...backgroundStyle };
   
   const handleUpdateText = (field, value) => onUpdateText?.(videoCover.id, frame.id, field, value);
   const handleActivateField = (field) => onActivateTextField?.(field);
@@ -82,14 +107,37 @@ const VideoCoverFrame = ({
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         style={{ 
-          background: style.background, 
+          ...backgroundStyle, 
           width: size.width, 
           height: size.height 
         }}
         onClick={(e) => { e.stopPropagation(); onSelect?.(); }}
       >
-        {/* Layout Content */}
-        {renderLayout()}
+        {/* Pattern Layer - absolute backmost (z-index: -2) */}
+        {frame.patternLayer && (
+          <PatternLayer
+            patternLayer={frame.patternLayer}
+            frameWidth={size.width}
+            frameHeight={size.height}
+          />
+        )}
+        
+        {/* Image Layer - behind text (z-index: 0) */}
+        {frame.imageLayer && (
+          <ImageLayer
+            imageLayer={frame.imageLayer}
+            frameWidth={size.width}
+            frameHeight={size.height}
+            isFrameSelected={isSelected}
+            onUpdate={(updates) => onUpdateImage?.(videoCover.id, updates)}
+            onRemove={() => onRemoveImage?.(videoCover.id)}
+          />
+        )}
+        
+        {/* Layout Content (z-index: 10) */}
+        <div className="relative z-10">
+          {renderLayout()}
+        </div>
         
         {/* Play Button Overlay (if not using PlayOverlay layout) */}
         {videoCover.showPlayButton && layoutIndex !== 10 && (

@@ -17,6 +17,9 @@ const VideoCoverEditor = ({
   onChangeFrameSize,
   activeTextField,
   onActivateTextField,
+  // Layer handlers
+  onUpdateImage,
+  onRemoveImage,
 }) => {
   const currentSize = frameSizes[videoCover.frameSize] || frameSizes.youtube;
   
@@ -131,6 +134,8 @@ const VideoCoverEditor = ({
           onUpdateText={onUpdateText}
           activeTextField={activeTextField}
           onActivateTextField={onActivateTextField}
+          onUpdateImage={onUpdateImage}
+          onRemoveImage={onRemoveImage}
         />
       </div>
     </div>

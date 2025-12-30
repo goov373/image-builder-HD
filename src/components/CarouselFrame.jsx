@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { frameSizes, getFontSizes, getFrameStyle } from '../data';
 import { LayoutBottomStack, LayoutCenterDrama, LayoutEditorialLeft } from './Layouts';
+import ImageLayer from './ImageLayer';
+import PatternLayer from './PatternLayer';
 
 /**
  * Progress Dots Overlay
@@ -50,7 +52,13 @@ export const CarouselFrame = ({
   onRemove, 
   onUpdateText, 
   activeTextField, 
-  onActivateTextField 
+  onActivateTextField,
+  // Image layer props
+  onUpdateImageLayer,
+  onRemoveImageFromFrame,
+  // Cross-frame overflow
+  prevFrameImage = null,
+  nextFrameImage = null,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isProgressHidden, setIsProgressHidden] = useState(false);
@@ -131,7 +139,59 @@ export const CarouselFrame = ({
         style={{ ...backgroundStyle, width: size.width, height: size.height }}
         onClick={(e) => { e.stopPropagation(); onSelectFrame(frame.id); }}
       >
-        {renderLayout()}
+        {/* Pattern Layer - absolute backmost layer (z-index: -2) */}
+        {frame.patternLayer && (
+          <PatternLayer
+            patternLayer={frame.patternLayer}
+            frameWidth={size.width}
+            frameHeight={size.height}
+          />
+        )}
+        
+        {/* Image Layer - renders behind text */}
+        {frame.imageLayer && (
+          <ImageLayer
+            imageLayer={frame.imageLayer}
+            frameWidth={size.width}
+            frameHeight={size.height}
+            isFrameSelected={isFrameSelected}
+            onUpdate={(updates) => onUpdateImageLayer?.(carouselId, frame.id, updates)}
+            onRemove={() => onRemoveImageFromFrame?.(carouselId, frame.id)}
+          />
+        )}
+        
+        {/* Overflow from previous frame's image (appears on left side) */}
+        {!frame.imageLayer && prevFrameImage && prevFrameImage.x > 0.3 && prevFrameImage.scale > 1 && (
+          <ImageLayer
+            imageLayer={prevFrameImage}
+            frameWidth={size.width}
+            frameHeight={size.height}
+            isFrameSelected={false}
+            onUpdate={() => {}}
+            onRemove={() => {}}
+            isOverflowFromPrev={true}
+            overflowImage={prevFrameImage}
+          />
+        )}
+        
+        {/* Overflow from next frame's image (appears on right side) */}
+        {!frame.imageLayer && nextFrameImage && nextFrameImage.x < -0.3 && nextFrameImage.scale > 1 && (
+          <ImageLayer
+            imageLayer={nextFrameImage}
+            frameWidth={size.width}
+            frameHeight={size.height}
+            isFrameSelected={false}
+            onUpdate={() => {}}
+            onRemove={() => {}}
+            isOverflowFromNext={true}
+            overflowImage={nextFrameImage}
+          />
+        )}
+        
+        {/* Text Layout - renders above image */}
+        <div className="relative z-10">
+          {renderLayout()}
+        </div>
         
         {/* Progress Dots Overlay */}
         <div className="absolute top-2 right-2 z-10">
@@ -155,6 +215,19 @@ export const CarouselFrame = ({
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
+        )}
+        
+        {/* Image Layer Indicator */}
+        {frame.imageLayer && (
+          <div 
+            className={`absolute bottom-2 left-2 z-20 flex items-center gap-1.5 px-2 py-1 bg-black/70 rounded-full transition-opacity duration-150 ${isHovered || isFrameSelected ? 'opacity-100' : 'opacity-60'}`}
+            title="This frame has an image layer. Double-click image to edit."
+          >
+            <svg className="w-3 h-3 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            <span className="text-[10px] text-white/80">Image</span>
+          </div>
         )}
       </div>
     </div>
@@ -180,7 +253,13 @@ export const SortableFrame = ({
   activeTextField, 
   onActivateTextField, 
   isRowSelected, 
-  cardWidth 
+  cardWidth,
+  // Image layer props
+  onUpdateImageLayer,
+  onRemoveImageFromFrame,
+  // Cross-frame overflow
+  prevFrameImage,
+  nextFrameImage,
 }) => {
   const {
     attributes,
@@ -233,6 +312,10 @@ export const SortableFrame = ({
         onUpdateText={onUpdateText}
         activeTextField={activeTextField}
         onActivateTextField={onActivateTextField}
+        onUpdateImageLayer={onUpdateImageLayer}
+        onRemoveImageFromFrame={onRemoveImageFromFrame}
+        prevFrameImage={prevFrameImage}
+        nextFrameImage={nextFrameImage}
       />
     </div>
   );

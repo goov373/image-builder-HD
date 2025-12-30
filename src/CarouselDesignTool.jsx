@@ -201,6 +201,15 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
     handleRemoveRow: carousels.handleRemoveRow,
     handleSetFrameBackground: carousels.handleSetFrameBackground,
     handleSmoothBackgrounds: carousels.handleSmoothBackgrounds,
+    // Image layer methods
+    handleAddImageToFrame: carousels.handleAddImageToFrame,
+    handleUpdateImageLayer: carousels.handleUpdateImageLayer,
+    handleRemoveImageFromFrame: carousels.handleRemoveImageFromFrame,
+    // Pattern layer methods
+    handleAddPatternToFrame: carousels.handleAddPatternToFrame,
+    handleUpdatePatternLayer: carousels.handleUpdatePatternLayer,
+    handleRemovePatternFromFrame: carousels.handleRemovePatternFromFrame,
+    handleSetRowStretchedPattern: carousels.handleSetRowStretchedPattern,
     // Eblast methods
     eblasts: eblasts.eblasts,
     handleEblastSetVariant: eblasts.handleSetVariant,
@@ -213,6 +222,16 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
     handleReorderSections: eblasts.handleReorderSections,
     handleAddEblast: eblasts.handleAddEblast,
     handleRemoveEblast: eblasts.handleRemoveEblast,
+    // Eblast layer methods
+    handleSetSectionBackground: eblasts.handleSetSectionBackground,
+    handleSetStretchedBackground: eblasts.handleSetStretchedBackground,
+    handleAddPatternToSection: eblasts.handleAddPatternToSection,
+    handleUpdatePatternLayerEblast: eblasts.handleUpdatePatternLayer,
+    handleRemovePatternFromSection: eblasts.handleRemovePatternFromSection,
+    handleSetStretchedPattern: eblasts.handleSetStretchedPattern,
+    handleAddImageToSection: eblasts.handleAddImageToSection,
+    handleUpdateImageLayerEblast: eblasts.handleUpdateImageLayer,
+    handleRemoveImageFromSection: eblasts.handleRemoveImageFromSection,
     // Video Cover methods
     videoCovers: videoCovers.videoCovers,
     handleVideoCoverSetVariant: videoCovers.handleSetVariant,
@@ -225,6 +244,14 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
     handleUpdateEpisodeNumber: videoCovers.handleUpdateEpisodeNumber,
     handleAddVideoCover: videoCovers.handleAddVideoCover,
     handleRemoveVideoCover: videoCovers.handleRemoveVideoCover,
+    // Video Cover layer methods
+    handleVideoCoverSetBackground: videoCovers.handleSetBackground,
+    handleVideoCoverAddPattern: videoCovers.handleAddPattern,
+    handleVideoCoverUpdatePattern: videoCovers.handleUpdatePattern,
+    handleVideoCoverRemovePattern: videoCovers.handleRemovePattern,
+    handleVideoCoverAddImage: videoCovers.handleAddImage,
+    handleVideoCoverUpdateImage: videoCovers.handleUpdateImage,
+    handleVideoCoverRemoveImage: videoCovers.handleRemoveImage,
     // Single Image methods
     singleImages: singleImages.singleImages,
     handleUpdateLayer: singleImages.handleUpdateLayer,
@@ -235,6 +262,11 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
     handleUpdateCanvasSize: singleImages.handleUpdateCanvasSize,
     handleAddImage: singleImages.handleAddImage,
     handleRemoveImage: singleImages.handleRemoveImage,
+    // Single Image gradient/pattern methods
+    handleSingleImageSetBackgroundGradient: singleImages.handleSetBackgroundGradient,
+    handleSingleImageAddPattern: singleImages.handleAddPattern,
+    handleSingleImageUpdatePattern: singleImages.handleUpdatePattern,
+    handleSingleImageRemovePattern: singleImages.handleRemovePattern,
   };
 
   return (
@@ -298,11 +330,42 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
           onUpdate={setDesignSystem} 
           onClose={() => setActivePanel(null)} 
           isOpen={activePanel === 'design'}
+          projectType={currentProjectType}
+          // Carousel-specific props
           selectedCarouselId={carousels.selectedCarouselId}
           selectedFrameId={carousels.selectedFrameId}
           selectedCarouselFrames={carousels.selectedCarousel?.frames || []}
           onSetFrameBackground={carousels.handleSetFrameBackground}
           onSetRowStretchedBackground={carousels.handleSetRowStretchedBackground}
+          onAddImageToFrame={carousels.handleAddImageToFrame}
+          onAddPatternToFrame={carousels.handleAddPatternToFrame}
+          onUpdatePatternLayer={carousels.handleUpdatePatternLayer}
+          onRemovePatternFromFrame={carousels.handleRemovePatternFromFrame}
+          onSetRowStretchedPattern={carousels.handleSetRowStretchedPattern}
+          // Eblast-specific props
+          selectedEblastId={eblasts.selectedEblastId}
+          selectedSectionId={eblasts.selectedSectionId}
+          selectedEblastSections={eblasts.selectedEblast?.sections || []}
+          onSetSectionBackground={eblasts.handleSetSectionBackground}
+          onSetStretchedBackground={eblasts.handleSetStretchedBackground}
+          onAddImageToSection={eblasts.handleAddImageToSection}
+          onAddPatternToSection={eblasts.handleAddPatternToSection}
+          onUpdatePatternLayerEblast={eblasts.handleUpdatePatternLayer}
+          onRemovePatternFromSection={eblasts.handleRemovePatternFromSection}
+          onSetStretchedPattern={eblasts.handleSetStretchedPattern}
+          // Video Cover-specific props
+          selectedVideoCoverId={videoCovers.selectedVideoCoverId}
+          onSetVideoCoverBackground={videoCovers.handleSetBackground}
+          onAddVideoCoverPattern={videoCovers.handleAddPattern}
+          onUpdateVideoCoverPattern={videoCovers.handleUpdatePattern}
+          onRemoveVideoCoverPattern={videoCovers.handleRemovePattern}
+          onAddVideoCoverImage={videoCovers.handleAddImage}
+          // Single Image-specific props
+          selectedSingleImageId={singleImages.selectedImageId}
+          onSetSingleImageBackgroundGradient={singleImages.handleSetBackgroundGradient}
+          onAddSingleImagePattern={singleImages.handleAddPattern}
+          onUpdateSingleImagePattern={singleImages.handleUpdatePattern}
+          onRemoveSingleImagePattern={singleImages.handleRemovePattern}
         />
         <ExportPanel 
           onClose={() => setActivePanel(null)} 

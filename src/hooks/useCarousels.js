@@ -1,6 +1,7 @@
 import { useReducer, useEffect, useState, useCallback } from 'react';
 import { arrayMove } from '@dnd-kit/sortable';
 import { STORAGE_KEYS } from '../config';
+import { createPatternLayer, findPatternById } from '../data';
 
 const STORAGE_KEY = STORAGE_KEYS.CAROUSELS;
 
@@ -26,6 +27,16 @@ export const CAROUSEL_ACTIONS = {
   SET_FRAME_BACKGROUND: 'SET_FRAME_BACKGROUND',
   SET_ROW_STRETCHED_BACKGROUND: 'SET_ROW_STRETCHED_BACKGROUND',
   SMOOTH_BACKGROUNDS: 'SMOOTH_BACKGROUNDS',
+  // Image Layer Actions
+  ADD_IMAGE_TO_FRAME: 'ADD_IMAGE_TO_FRAME',
+  UPDATE_IMAGE_LAYER: 'UPDATE_IMAGE_LAYER',
+  REMOVE_IMAGE_FROM_FRAME: 'REMOVE_IMAGE_FROM_FRAME',
+  SYNC_LINKED_IMAGES: 'SYNC_LINKED_IMAGES',
+  // Pattern Layer Actions
+  ADD_PATTERN_TO_FRAME: 'ADD_PATTERN_TO_FRAME',
+  UPDATE_PATTERN_LAYER: 'UPDATE_PATTERN_LAYER',
+  REMOVE_PATTERN_FROM_FRAME: 'REMOVE_PATTERN_FROM_FRAME',
+  SET_ROW_STRETCHED_PATTERN: 'SET_ROW_STRETCHED_PATTERN',
 };
 
 // Initial state shape
@@ -360,6 +371,194 @@ function carouselReducer(state, action) {
       };
     }
 
+    // ===== Image Layer Actions =====
+    
+    case CAROUSEL_ACTIONS.ADD_IMAGE_TO_FRAME: {
+      const { carouselId, frameId, imageSrc } = action;
+      const newImageLayer = {
+        id: `img-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        src: imageSrc,
+        x: 0,           // Centered
+        y: 0,           // Centered
+        scale: 1,       // Fit to frame
+        opacity: 1,     // Fully visible
+        rotation: 0,    // No rotation
+        zIndex: 0,      // Behind text
+        fit: 'cover',   // Cover the frame
+      };
+      
+      return {
+        ...state,
+        carousels: state.carousels.map(carousel => {
+          if (carousel.id !== carouselId) return carousel;
+          return {
+            ...carousel,
+            frames: carousel.frames.map(frame =>
+              frame.id === frameId ? { ...frame, imageLayer: newImageLayer } : frame
+            )
+          };
+        })
+      };
+    }
+
+    case CAROUSEL_ACTIONS.UPDATE_IMAGE_LAYER: {
+      const { carouselId, frameId, updates } = action;
+      return {
+        ...state,
+        carousels: state.carousels.map(carousel => {
+          if (carousel.id !== carouselId) return carousel;
+          return {
+            ...carousel,
+            frames: carousel.frames.map(frame => {
+              if (frame.id !== frameId || !frame.imageLayer) return frame;
+              return {
+                ...frame,
+                imageLayer: { ...frame.imageLayer, ...updates }
+              };
+            })
+          };
+        })
+      };
+    }
+
+    case CAROUSEL_ACTIONS.REMOVE_IMAGE_FROM_FRAME: {
+      const { carouselId, frameId } = action;
+      return {
+        ...state,
+        carousels: state.carousels.map(carousel => {
+          if (carousel.id !== carouselId) return carousel;
+          return {
+            ...carousel,
+            frames: carousel.frames.map(frame => {
+              if (frame.id !== frameId) return frame;
+              const { imageLayer, ...rest } = frame;
+              return rest;
+            })
+          };
+        })
+      };
+    }
+
+    case CAROUSEL_ACTIONS.SYNC_LINKED_IMAGES: {
+      // Sync all images with the same linkedGroupId across all carousels/frames
+      const { linkedGroupId, updates } = action;
+      if (!linkedGroupId) return state;
+      
+      return {
+        ...state,
+        carousels: state.carousels.map(carousel => ({
+          ...carousel,
+          frames: carousel.frames.map(frame => {
+            if (!frame.imageLayer || frame.imageLayer.linkedGroupId !== linkedGroupId) return frame;
+            return {
+              ...frame,
+              imageLayer: { ...frame.imageLayer, ...updates }
+            };
+          })
+        }))
+      };
+    }
+
+    // ===== Pattern Layer Actions =====
+    
+    case CAROUSEL_ACTIONS.ADD_PATTERN_TO_FRAME: {
+      const { carouselId, frameId, patternId } = action;
+      const newPatternLayer = createPatternLayer(patternId);
+      if (!newPatternLayer) return state;
+      
+      return {
+        ...state,
+        carousels: state.carousels.map(carousel => {
+          if (carousel.id !== carouselId) return carousel;
+          return {
+            ...carousel,
+            frames: carousel.frames.map(frame =>
+              frame.id === frameId ? { ...frame, patternLayer: newPatternLayer } : frame
+            )
+          };
+        })
+      };
+    }
+
+    case CAROUSEL_ACTIONS.UPDATE_PATTERN_LAYER: {
+      const { carouselId, frameId, updates } = action;
+      return {
+        ...state,
+        carousels: state.carousels.map(carousel => {
+          if (carousel.id !== carouselId) return carousel;
+          return {
+            ...carousel,
+            frames: carousel.frames.map(frame => {
+              if (frame.id !== frameId || !frame.patternLayer) return frame;
+              return {
+                ...frame,
+                patternLayer: { ...frame.patternLayer, ...updates }
+              };
+            })
+          };
+        })
+      };
+    }
+
+    case CAROUSEL_ACTIONS.REMOVE_PATTERN_FROM_FRAME: {
+      const { carouselId, frameId } = action;
+      return {
+        ...state,
+        carousels: state.carousels.map(carousel => {
+          if (carousel.id !== carouselId) return carousel;
+          return {
+            ...carousel,
+            frames: carousel.frames.map(frame => {
+              if (frame.id !== frameId) return frame;
+              const { patternLayer, ...rest } = frame;
+              return rest;
+            })
+          };
+        })
+      };
+    }
+
+    case CAROUSEL_ACTIONS.SET_ROW_STRETCHED_PATTERN: {
+      // Apply a pattern stretched across selected frames in a carousel row
+      const { carouselId, patternId, startIdx = 0, endIdx } = action;
+      const basePatternLayer = createPatternLayer(patternId);
+      if (!basePatternLayer) return state;
+      
+      return {
+        ...state,
+        carousels: state.carousels.map(carousel => {
+          if (carousel.id !== carouselId) return carousel;
+          const numFrames = carousel.frames.length;
+          if (numFrames === 0) return carousel;
+          
+          const actualEndIdx = endIdx !== undefined ? endIdx : numFrames - 1;
+          const selectedCount = actualEndIdx - startIdx + 1;
+          
+          return {
+            ...carousel,
+            frames: carousel.frames.map((frame, index) => {
+              if (index < startIdx || index > actualEndIdx) {
+                return frame;
+              }
+              
+              const relativeIndex = index - startIdx;
+              
+              return {
+                ...frame,
+                patternLayer: {
+                  ...basePatternLayer,
+                  // Store stretch info for rendering
+                  isStretched: true,
+                  stretchSize: `${selectedCount * 100}% 100%`,
+                  stretchPosition: `${-relativeIndex * 100}% 0%`,
+                }
+              };
+            })
+          };
+        })
+      };
+    }
+
     default:
       return state;
   }
@@ -471,6 +670,32 @@ export default function useCarousels(initialData) {
     
     handleSmoothBackgrounds: useCallback((carouselId, smoothedFrames) =>
       dispatch({ type: CAROUSEL_ACTIONS.SMOOTH_BACKGROUNDS, carouselId, smoothedFrames }), []),
+    
+    // Image Layer Actions
+    handleAddImageToFrame: useCallback((carouselId, frameId, imageSrc) =>
+      dispatch({ type: CAROUSEL_ACTIONS.ADD_IMAGE_TO_FRAME, carouselId, frameId, imageSrc }), []),
+    
+    handleUpdateImageLayer: useCallback((carouselId, frameId, updates) =>
+      dispatch({ type: CAROUSEL_ACTIONS.UPDATE_IMAGE_LAYER, carouselId, frameId, updates }), []),
+    
+    handleRemoveImageFromFrame: useCallback((carouselId, frameId) =>
+      dispatch({ type: CAROUSEL_ACTIONS.REMOVE_IMAGE_FROM_FRAME, carouselId, frameId }), []),
+    
+    handleSyncLinkedImages: useCallback((linkedGroupId, updates) =>
+      dispatch({ type: CAROUSEL_ACTIONS.SYNC_LINKED_IMAGES, linkedGroupId, updates }), []),
+    
+    // Pattern Layer Actions
+    handleAddPatternToFrame: useCallback((carouselId, frameId, patternId) =>
+      dispatch({ type: CAROUSEL_ACTIONS.ADD_PATTERN_TO_FRAME, carouselId, frameId, patternId }), []),
+    
+    handleUpdatePatternLayer: useCallback((carouselId, frameId, updates) =>
+      dispatch({ type: CAROUSEL_ACTIONS.UPDATE_PATTERN_LAYER, carouselId, frameId, updates }), []),
+    
+    handleRemovePatternFromFrame: useCallback((carouselId, frameId) =>
+      dispatch({ type: CAROUSEL_ACTIONS.REMOVE_PATTERN_FROM_FRAME, carouselId, frameId }), []),
+    
+    handleSetRowStretchedPattern: useCallback((carouselId, patternId, startIdx, endIdx) =>
+      dispatch({ type: CAROUSEL_ACTIONS.SET_ROW_STRETCHED_PATTERN, carouselId, patternId, startIdx, endIdx }), []),
   };
 
   return {

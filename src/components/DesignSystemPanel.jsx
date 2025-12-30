@@ -7,6 +7,7 @@ import { LIMITS } from '../config';
 import ImageUploader from './design-panel/ImageUploader';
 import ImageGrid from './design-panel/ImageGrid';
 import { ApplyModeToggle, FrameRangeSlider } from './design-panel/GradientPicker';
+import PatternPicker from './design-panel/PatternPicker';
 
 /**
  * Design & Assets Panel
@@ -17,33 +18,114 @@ const DesignSystemPanel = ({
   onUpdate, 
   onClose, 
   isOpen,
+  projectType = 'carousel', // 'carousel', 'eblast', 'videoCover', or 'singleImage'
+  // Carousel-specific props
   selectedCarouselId,
   selectedFrameId,
   selectedCarouselFrames = [], // Array of frames in the selected carousel
   onSetFrameBackground,
-  onSetRowStretchedBackground 
+  onSetRowStretchedBackground,
+  onAddImageToFrame,
+  // Pattern layer handlers (carousel)
+  onAddPatternToFrame,
+  onUpdatePatternLayer,
+  onRemovePatternFromFrame,
+  onSetRowStretchedPattern,
+  // Eblast-specific props
+  selectedEblastId,
+  selectedSectionId,
+  selectedEblastSections = [], // Array of sections in the selected eblast
+  onSetSectionBackground,
+  onSetStretchedBackground,
+  onAddImageToSection,
+  // Pattern layer handlers (eblast)
+  onAddPatternToSection,
+  onUpdatePatternLayerEblast,
+  onRemovePatternFromSection,
+  onSetStretchedPattern,
+  // Video Cover-specific props
+  selectedVideoCoverId,
+  onSetVideoCoverBackground,
+  onAddVideoCoverPattern,
+  onUpdateVideoCoverPattern,
+  onRemoveVideoCoverPattern,
+  onAddVideoCoverImage,
+  // Single Image-specific props
+  selectedSingleImageId,
+  onSetSingleImageBackgroundGradient,
+  onAddSingleImagePattern,
+  onUpdateSingleImagePattern,
+  onRemoveSingleImagePattern,
 }) => {
-  const hasFrameSelected = selectedCarouselId !== null && selectedFrameId !== null;
-  const hasRowSelected = selectedCarouselId !== null;
-  const [applyMode, setApplyMode] = useState('frame'); // 'frame' or 'row'
+  // Normalize selection based on project type
+  const isCarousel = projectType === 'carousel' || !projectType;
+  const isEblast = projectType === 'eblast';
+  const isVideoCover = projectType === 'videoCover';
+  const isSingleImage = projectType === 'singleImage';
   
-  // Frame range selection for stretched gradients
+  // Unified selection state
+  const hasFrameSelected = isCarousel 
+    ? (selectedCarouselId !== null && selectedFrameId !== null)
+    : isEblast
+    ? (selectedEblastId !== null && selectedSectionId !== null)
+    : isVideoCover
+    ? selectedVideoCoverId !== null
+    : isSingleImage
+    ? selectedSingleImageId !== null
+    : false;
+    
+  const hasRowSelected = isCarousel 
+    ? selectedCarouselId !== null 
+    : isEblast
+    ? selectedEblastId !== null
+    : false; // Video cover and single image don't have "row" concept
+  
+  // Unified items array (only carousel and eblast have multiple items)
+  const items = isCarousel ? selectedCarouselFrames : isEblast ? selectedEblastSections : [];
+  const totalFrames = items.length;
+  
+  const [applyMode, setApplyMode] = useState('frame'); // 'frame' or 'row'
+  const [patternApplyMode, setPatternApplyMode] = useState('frame'); // 'frame' or 'row'
+  
+  // Frame range selection for stretched gradients/patterns
   const [stretchRange, setStretchRange] = useState({ start: 0, end: null }); // null end means "all"
-  const totalFrames = selectedCarouselFrames.length;
+  const [patternStretchRange, setPatternStretchRange] = useState({ start: 0, end: null });
+  
+  // Get selected item's pattern layer
+  const selectedItem = isCarousel 
+    ? items.find(f => f.id === selectedFrameId)
+    : items.find(s => s.id === selectedSectionId);
+  const selectedPatternLayer = selectedItem?.patternLayer;
   
   // Calculate effective end (default to last frame if not set)
   const effectiveEnd = stretchRange.end !== null ? Math.min(stretchRange.end, totalFrames - 1) : totalFrames - 1;
   const selectedFrameCount = Math.max(0, effectiveEnd - stretchRange.start + 1);
   
   const handleBackgroundClick = (background) => {
-    if (applyMode === 'row' && hasRowSelected && onSetRowStretchedBackground) {
-      // Apply stretched across selected frame range
-      const startIdx = stretchRange.start;
-      const endIdx = stretchRange.end !== null ? stretchRange.end : totalFrames - 1;
-      onSetRowStretchedBackground(selectedCarouselId, background, startIdx, endIdx);
-    } else if (hasFrameSelected && onSetFrameBackground) {
-      // Apply to single frame
-      onSetFrameBackground(selectedCarouselId, selectedFrameId, background);
+    if (isCarousel) {
+      if (applyMode === 'row' && hasRowSelected && onSetRowStretchedBackground) {
+        const startIdx = stretchRange.start;
+        const endIdx = stretchRange.end !== null ? stretchRange.end : totalFrames - 1;
+        onSetRowStretchedBackground(selectedCarouselId, background, startIdx, endIdx);
+      } else if (hasFrameSelected && onSetFrameBackground) {
+        onSetFrameBackground(selectedCarouselId, selectedFrameId, background);
+      }
+    } else if (isEblast) {
+      if (applyMode === 'row' && hasRowSelected && onSetStretchedBackground) {
+        const startIdx = stretchRange.start;
+        const endIdx = stretchRange.end !== null ? stretchRange.end : totalFrames - 1;
+        onSetStretchedBackground(selectedEblastId, background, startIdx, endIdx);
+      } else if (hasFrameSelected && onSetSectionBackground) {
+        onSetSectionBackground(selectedEblastId, selectedSectionId, background);
+      }
+    } else if (isVideoCover) {
+      if (hasFrameSelected && onSetVideoCoverBackground) {
+        onSetVideoCoverBackground(selectedVideoCoverId, background);
+      }
+    } else if (isSingleImage) {
+      if (hasFrameSelected && onSetSingleImageBackgroundGradient) {
+        onSetSingleImageBackgroundGradient(selectedSingleImageId, background);
+      }
     }
   };
   const [activeTab, setActiveTab] = useState('design'); // 'design' or 'assets'
@@ -515,6 +597,61 @@ const DesignSystemPanel = ({
           </div>
         </div>
         
+        {/* Patterns Section */}
+        <div className="p-4 border-b border-gray-800">
+          <PatternPicker
+            hasSelection={hasFrameSelected}
+            selectedPatternLayer={selectedPatternLayer}
+            applyMode={patternApplyMode}
+            onApplyModeChange={setPatternApplyMode}
+            onSelect={(patternId) => {
+              if (isCarousel) {
+                if (patternApplyMode === 'row' && hasRowSelected && onSetRowStretchedPattern) {
+                  const startIdx = patternStretchRange.start;
+                  const endIdx = patternStretchRange.end !== null ? patternStretchRange.end : totalFrames - 1;
+                  onSetRowStretchedPattern(selectedCarouselId, patternId, startIdx, endIdx);
+                } else if (hasFrameSelected && onAddPatternToFrame) {
+                  onAddPatternToFrame(selectedCarouselId, selectedFrameId, patternId);
+                }
+              } else if (isEblast) {
+                if (patternApplyMode === 'row' && hasRowSelected && onSetStretchedPattern) {
+                  const startIdx = patternStretchRange.start;
+                  const endIdx = patternStretchRange.end !== null ? patternStretchRange.end : totalFrames - 1;
+                  onSetStretchedPattern(selectedEblastId, patternId, startIdx, endIdx);
+                } else if (hasFrameSelected && onAddPatternToSection) {
+                  onAddPatternToSection(selectedEblastId, selectedSectionId, patternId);
+                }
+              } else if (isVideoCover && hasFrameSelected && onAddVideoCoverPattern) {
+                onAddVideoCoverPattern(selectedVideoCoverId, patternId);
+              } else if (isSingleImage && hasFrameSelected && onAddSingleImagePattern) {
+                onAddSingleImagePattern(selectedSingleImageId, patternId);
+              }
+            }}
+            onUpdate={(updates) => {
+              if (isCarousel && hasFrameSelected && onUpdatePatternLayer) {
+                onUpdatePatternLayer(selectedCarouselId, selectedFrameId, updates);
+              } else if (isEblast && hasFrameSelected && onUpdatePatternLayerEblast) {
+                onUpdatePatternLayerEblast(selectedEblastId, selectedSectionId, updates);
+              } else if (isVideoCover && hasFrameSelected && onUpdateVideoCoverPattern) {
+                onUpdateVideoCoverPattern(selectedVideoCoverId, updates);
+              } else if (isSingleImage && hasFrameSelected && onUpdateSingleImagePattern) {
+                onUpdateSingleImagePattern(selectedSingleImageId, updates);
+              }
+            }}
+            onRemove={() => {
+              if (isCarousel && hasFrameSelected && onRemovePatternFromFrame) {
+                onRemovePatternFromFrame(selectedCarouselId, selectedFrameId);
+              } else if (isEblast && hasFrameSelected && onRemovePatternFromSection) {
+                onRemovePatternFromSection(selectedEblastId, selectedSectionId);
+              } else if (isVideoCover && hasFrameSelected && onRemoveVideoCoverPattern) {
+                onRemoveVideoCoverPattern(selectedVideoCoverId);
+              } else if (isSingleImage && hasFrameSelected && onRemoveSingleImagePattern) {
+                onRemoveSingleImagePattern(selectedSingleImageId);
+              }
+            }}
+          />
+        </div>
+        
         {/* Product Imagery Section */}
         <div className="p-4 border-b border-gray-800">
           <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-3">Product Imagery</h3>
@@ -534,9 +671,14 @@ const DesignSystemPanel = ({
         <div className="p-4 border-b border-gray-800">
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Photography</h3>
-            {uploadedFiles.length > 0 && (
-              <span className="text-[10px] text-gray-500">{uploadedFiles.length} images</span>
-            )}
+            {hasFrameSelected ? (
+              <span className="text-[10px] text-green-400 flex items-center gap-1">
+                <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse" />
+                Click to add to frame
+              </span>
+            ) : uploadedFiles.length > 0 ? (
+              <span className="text-[10px] text-gray-500">Select a frame first</span>
+            ) : null}
           </div>
           
           {/* Display uploaded images from Assets tab */}
@@ -560,9 +702,23 @@ const DesignSystemPanel = ({
                 <button
                   key={file.id}
                   type="button"
-                  className="bg-gray-800 rounded-lg overflow-hidden hover:ring-2 hover:ring-gray-400 transition-all text-left"
-                  onClick={() => {/* TODO: Use image in design */}}
-                  title={`Click to use ${file.name}`}
+                  disabled={!hasFrameSelected}
+                  className={`bg-gray-800 rounded-lg overflow-hidden transition-all text-left ${
+                    hasFrameSelected 
+                      ? 'hover:ring-2 hover:ring-blue-400 hover:scale-[1.02] cursor-pointer' 
+                      : 'opacity-60 cursor-not-allowed'
+                  }`}
+                  onClick={() => {
+                    if (isCarousel && hasFrameSelected && onAddImageToFrame) {
+                      onAddImageToFrame(selectedCarouselId, selectedFrameId, file.url);
+                    } else if (isEblast && hasFrameSelected && onAddImageToSection) {
+                      onAddImageToSection(selectedEblastId, selectedSectionId, file.url);
+                    } else if (isVideoCover && hasFrameSelected && onAddVideoCoverImage) {
+                      onAddVideoCoverImage(selectedVideoCoverId, file.url);
+                    }
+                    // Note: Single Image uses its own layer system for images
+                  }}
+                  title={hasFrameSelected ? `Click to add "${file.name}" to selected frame` : 'Select a frame first'}
                 >
                   {/* Header bar */}
                   <div className="flex items-center justify-between px-2 py-1.5 bg-gray-900 border-b border-gray-700">
@@ -574,6 +730,14 @@ const DesignSystemPanel = ({
                         </svg>
                       )}
                     </div>
+                    {/* Add indicator when frame selected */}
+                    {hasFrameSelected && (
+                      <div className="w-5 h-5 rounded-full bg-blue-500/20 flex items-center justify-center">
+                        <svg className="w-3 h-3 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                        </svg>
+                      </div>
+                    )}
                   </div>
                   {/* Image */}
                   <div className="aspect-square">
