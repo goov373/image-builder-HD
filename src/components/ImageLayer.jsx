@@ -20,12 +20,19 @@ const ImageLayer = ({
   onRemove,
   // Edit mode trigger from parent (e.g., clicking the Image tag)
   editTrigger = 0,
+  // Callback to notify parent of edit mode changes (for z-index management)
+  onEditModeChange,
   // Cross-frame props (for future seamless image transitions)
   isOverflowFromPrev = false, // True if this is showing overflow from previous frame
   isOverflowFromNext = false, // True if this is showing overflow from next frame
   overflowImage = null,       // The overflow image data from adjacent frame
 }) => {
   const [isEditMode, setIsEditMode] = useState(false);
+  
+  // Notify parent when edit mode changes
+  useEffect(() => {
+    onEditModeChange?.(isEditMode);
+  }, [isEditMode, onEditModeChange]);
   
   // Enter edit mode when editTrigger changes (from parent clicking the tag)
   useEffect(() => {

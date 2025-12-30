@@ -65,6 +65,7 @@ export const CarouselFrame = ({
   const [isHovered, setIsHovered] = useState(false);
   const [isProgressHidden, setIsProgressHidden] = useState(false);
   const [imageEditTrigger, setImageEditTrigger] = useState(0);
+  const [isImageEditing, setIsImageEditing] = useState(false);
   
   const style = getFrameStyle(carouselId, frame.style, designSystem);
   const content = frame.variants[frame.currentVariant];
@@ -155,9 +156,9 @@ export const CarouselFrame = ({
           </div>
         )}
         
-        {/* Layer 2: Image - behind gradient (z-index: 2) */}
+        {/* Layer 2: Image - behind gradient (z-index: 2), raises to z-50 when editing */}
         {frame.imageLayer && (
-          <div className="absolute inset-0 z-[2]">
+          <div className={`absolute inset-0 ${isImageEditing ? 'z-[50]' : 'z-[2]'}`}>
             <ImageLayer
               imageLayer={frame.imageLayer}
               frameWidth={size.width}
@@ -166,6 +167,7 @@ export const CarouselFrame = ({
               onUpdate={(updates) => onUpdateImageLayer?.(carouselId, frame.id, updates)}
               onRemove={() => onRemoveImageFromFrame?.(carouselId, frame.id)}
               editTrigger={imageEditTrigger}
+              onEditModeChange={setIsImageEditing}
             />
           </div>
         )}
