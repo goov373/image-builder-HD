@@ -20,6 +20,8 @@ const ImageLayer = ({
   onRemove,
   // Edit mode trigger from parent (e.g., clicking the Image tag)
   editTrigger = 0,
+  // Close trigger from parent (e.g., clicking Done/Cancel buttons)
+  closeTrigger = 0,
   // Callback to notify parent of edit mode changes (for z-index management)
   onEditModeChange,
   // Cross-frame props (for future seamless image transitions)
@@ -44,6 +46,17 @@ const ImageLayer = ({
     }
     prevEditTriggerRef.current = editTrigger;
   }, [editTrigger, isFrameSelected]);
+  
+  // Track previous closeTrigger to respond to parent close requests
+  const prevCloseTriggerRef = useRef(0);
+  
+  // Exit edit mode when closeTrigger increases (from parent clicking Done/Cancel)
+  useEffect(() => {
+    if (closeTrigger > prevCloseTriggerRef.current) {
+      setIsEditMode(false);
+    }
+    prevCloseTriggerRef.current = closeTrigger;
+  }, [closeTrigger]);
   
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });

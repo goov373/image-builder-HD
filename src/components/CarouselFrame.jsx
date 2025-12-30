@@ -69,6 +69,7 @@ export const CarouselFrame = ({
   const [isHovered, setIsHovered] = useState(false);
   const [isProgressHidden, setIsProgressHidden] = useState(false);
   const [imageEditTrigger, setImageEditTrigger] = useState(0);
+  const [imageCloseTrigger, setImageCloseTrigger] = useState(0);
   const [isImageEditing, setIsImageEditing] = useState(false);
   const [initialImageState, setInitialImageState] = useState(null);
   
@@ -87,6 +88,14 @@ export const CarouselFrame = ({
     if (initialImageState) {
       onUpdateImageLayer?.(carouselId, frame.id, initialImageState);
     }
+    setImageCloseTrigger(prev => prev + 1);
+    handleImageEditModeChange(false);
+    setInitialImageState(null);
+  };
+  
+  // Done editing - keep changes and close
+  const handleDoneEdit = () => {
+    setImageCloseTrigger(prev => prev + 1);
     handleImageEditModeChange(false);
     setInitialImageState(null);
   };
@@ -191,6 +200,7 @@ export const CarouselFrame = ({
               onUpdate={(updates) => onUpdateImageLayer?.(carouselId, frame.id, updates)}
               onRemove={() => onRemoveImageFromFrame?.(carouselId, frame.id)}
               editTrigger={imageEditTrigger}
+              closeTrigger={imageCloseTrigger}
               onEditModeChange={handleImageEditModeChange}
             />
           </div>
@@ -416,7 +426,7 @@ export const CarouselFrame = ({
           {/* Done Button */}
           <button
             type="button"
-            onClick={() => { handleImageEditModeChange(false); setInitialImageState(null); }}
+            onClick={handleDoneEdit}
             className="bg-orange-500/90 hover:bg-orange-500 rounded-lg px-2.5 py-1.5 text-white text-[10px] font-medium transition-colors"
             title="Done editing"
           >
@@ -426,7 +436,7 @@ export const CarouselFrame = ({
           {/* Remove Button */}
           <button
             type="button"
-            onClick={() => { handleImageEditModeChange(false); onRemoveImageFromFrame?.(carouselId, frame.id); }}
+            onClick={() => { setImageCloseTrigger(prev => prev + 1); handleImageEditModeChange(false); onRemoveImageFromFrame?.(carouselId, frame.id); }}
             className="bg-gray-800/90 hover:bg-red-600 rounded-lg px-2 py-1.5 text-gray-400 hover:text-white transition-colors"
             title="Remove image"
           >
