@@ -21,19 +21,19 @@ export const purpleTransparentGradients: GradientDefinition[] = [
     id: 'pt-diagonal-fade',
     name: 'Diagonal Fade',
     category: 'purple-transparent',
-    css: 'linear-gradient(135deg, #6466e9 0%, rgba(100,102,233,0.7) 30%, rgba(129,140,248,0.4) 55%, rgba(165,180,252,0.15) 75%, transparent 100%)',
+    css: 'linear-gradient(135deg, #6466e9 0%, #818cf8 25%, #a5b4fc 45%, #d4d9fc 65%, rgba(255,255,255,0.5) 82%, rgba(255,255,255,0) 100%)',
   },
   {
     id: 'pt-bottom-fade',
     name: 'Bottom Fade',
     category: 'purple-transparent',
-    css: 'linear-gradient(0deg, #6466e9 0%, rgba(100,102,233,0.7) 25%, rgba(129,140,248,0.4) 50%, rgba(165,180,252,0.15) 75%, transparent 100%)',
+    css: 'linear-gradient(0deg, #6466e9 0%, #818cf8 20%, #a5b4fc 40%, #d4d9fc 60%, rgba(255,255,255,0.5) 80%, rgba(255,255,255,0) 100%)',
   },
   {
     id: 'pt-corner-fade',
     name: 'Corner Fade',
     category: 'purple-transparent',
-    css: 'linear-gradient(225deg, #6466e9 0%, rgba(100,102,233,0.6) 20%, rgba(129,140,248,0.3) 45%, rgba(165,180,252,0.1) 70%, transparent 100%)',
+    css: 'linear-gradient(225deg, #6466e9 0%, #818cf8 18%, #a5b4fc 38%, #d4d9fc 58%, rgba(255,255,255,0.5) 78%, rgba(255,255,255,0) 100%)',
   },
 ];
 
