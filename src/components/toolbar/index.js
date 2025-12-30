@@ -17,3 +17,5 @@ export {
   ToolbarToggleGroup,
 } from './ToolbarButtonGroup';
 
+export { default as HistoryControls } from './HistoryControls';
+

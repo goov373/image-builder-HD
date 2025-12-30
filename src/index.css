@@ -2,6 +2,60 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ===== THEME CSS VARIABLES ===== */
+:root {
+  /* Dark theme (default) */
+  --color-bg-primary: #18191A;
+  --color-bg-secondary: #1f2022;
+  --color-bg-tertiary: #27282a;
+  --color-bg-elevated: #2d2e30;
+  
+  --color-border: #374151;
+  --color-border-light: #4b5563;
+  
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #9ca3af;
+  --color-text-muted: #6b7280;
+  --color-text-disabled: #4b5563;
+  
+  --color-accent: #6466e9;
+  --color-accent-hover: #818cf8;
+  
+  /* Scrollbar */
+  --scrollbar-thumb: rgba(75, 85, 99, 0.5);
+  --scrollbar-thumb-hover: rgba(107, 114, 128, 0.7);
+}
+
+/* Light theme */
+:root.light {
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: #f9fafb;
+  --color-bg-tertiary: #f3f4f6;
+  --color-bg-elevated: #e5e7eb;
+  
+  --color-border: #d1d5db;
+  --color-border-light: #e5e7eb;
+  
+  --color-text-primary: #111827;
+  --color-text-secondary: #4b5563;
+  --color-text-muted: #6b7280;
+  --color-text-disabled: #9ca3af;
+  
+  --color-accent: #6466e9;
+  --color-accent-hover: #4f46e5;
+  
+  /* Scrollbar */
+  --scrollbar-thumb: rgba(156, 163, 175, 0.5);
+  --scrollbar-thumb-hover: rgba(107, 114, 128, 0.7);
+}
+
+/* Apply theme background to body */
+body {
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
 html, body, #root {
   height: 100%;
   overflow: hidden;

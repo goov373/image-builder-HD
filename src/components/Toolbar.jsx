@@ -6,8 +6,10 @@ import {
   useDesignSystemContext, 
   useSelectionContext, 
   useCarouselsContext,
-  useDropdownsContext 
+  useDropdownsContext,
+  useHistory,
 } from '../context';
+import { HistoryControls, ToolbarButtonGroup } from './toolbar/index.js';
 
 export default function Toolbar({ totalOffset, activeTab }) {
   // Get state from context
@@ -211,8 +213,14 @@ export default function Toolbar({ totalOffset, activeTab }) {
       <div className="flex items-center justify-between text-sm text-gray-400 w-full">
         <div className="flex items-center gap-3">
           
-          {/* Frame Group */}
-          <div className={`flex items-center gap-2 px-2 py-1.5 bg-gray-800/60 rounded-xl transition-opacity duration-200 ${selectedCarouselId ? 'opacity-100' : 'opacity-40 pointer-events-none'}`}>
+          {/* Undo/Redo Controls */}
+          <HistoryControls />
+          
+          {/* Separator */}
+          <div className="w-px h-6 bg-gray-700" />
+          
+          {/* Frame Group - Using extracted ToolbarButtonGroup */}
+          <ToolbarButtonGroup disabled={!selectedCarouselId} className="gap-2">
             {/* Format dropdown */}
             <div ref={formatPickerRef} className="relative">
               <button onClick={() => { const wasOpen = showFormatPicker; closeAllDropdowns(); if (!wasOpen) setShowFormatPicker(true); }} className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 border ${showFormatPicker ? 'bg-gray-700 border-gray-500' : 'bg-gray-800/50 border-gray-700 hover:bg-gray-700 hover:border-gray-600'}`}>
@@ -325,10 +333,10 @@ export default function Toolbar({ totalOffset, activeTab }) {
                 </div>
               )}
             </div>
-          </div>
+          </ToolbarButtonGroup>
 
-          {/* Layout Group */}
-          <div className={`flex items-center gap-1.5 px-2 py-1.5 bg-gray-800/60 rounded-xl transition-opacity duration-200 ${selectedFrame ? 'opacity-100' : 'opacity-40 pointer-events-none'}`}>
+          {/* Layout Group - Using extracted ToolbarButtonGroup */}
+          <ToolbarButtonGroup disabled={!selectedFrame}>
             <div ref={layoutPickerRef} className="relative">
               <button onClick={() => { const wasOpen = showLayoutPicker; closeAllDropdowns(); if (!wasOpen) setShowLayoutPicker(true); }} className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 border ${showLayoutPicker ? 'bg-gray-700 border-gray-500' : 'bg-gray-800/50 border-gray-700 hover:bg-gray-700 hover:border-gray-600'}`}>
                 <span className="text-xs font-medium text-gray-300">Layout</span>
@@ -358,10 +366,10 @@ export default function Toolbar({ totalOffset, activeTab }) {
             <button onClick={() => { closeAllDropdowns(); selectedFrame && handleShuffleLayoutVariant(selectedCarouselId, selectedFrameId); }} className="p-2 rounded-lg border border-transparent hover:bg-gray-700 hover:border-gray-600 text-gray-500 hover:text-gray-300 transition-all duration-200" title="Shuffle variant">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" /></svg>
             </button>
-          </div>
+          </ToolbarButtonGroup>
 
-          {/* Snippets Group */}
-          <div className={`flex items-center gap-1.5 px-2 py-1.5 bg-gray-800/60 rounded-xl transition-opacity duration-200 ${activeTextField ? 'opacity-100' : 'opacity-40 pointer-events-none'}`}>
+          {/* Snippets Group - Using extracted ToolbarButtonGroup */}
+          <ToolbarButtonGroup disabled={!activeTextField}>
             <div ref={snippetsPickerRef} className="relative">
               <button onClick={() => { const wasOpen = showSnippetsPicker; closeAllDropdowns(); if (!wasOpen) setShowSnippetsPicker(true); }} className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 border ${showSnippetsPicker ? 'bg-gray-700 border-gray-500' : 'bg-gray-800/50 border-gray-700 hover:bg-gray-700 hover:border-gray-600'}`}>
                 <span className="text-xs font-medium text-gray-300">Snippets</span>
@@ -381,10 +389,10 @@ export default function Toolbar({ totalOffset, activeTab }) {
             <button className="p-2 rounded-lg border border-transparent text-gray-500 hover:text-gray-300 hover:bg-gray-700 hover:border-gray-600 transition-all duration-200" title="Rewrite with AI">
               <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L14.09 8.26L20 9.27L15.55 13.97L16.91 20L12 16.9L7.09 20L8.45 13.97L4 9.27L9.91 8.26L12 2Z" /></svg>
             </button>
-          </div>
+          </ToolbarButtonGroup>
           
-          {/* Typography Group */}
-          <div className={`flex items-center gap-1.5 px-2 py-1.5 bg-gray-800/60 rounded-xl transition-opacity duration-200 ${activeTextField ? 'opacity-100' : 'opacity-40 pointer-events-none'}`}>
+          {/* Typography Group - Using extracted ToolbarButtonGroup */}
+          <ToolbarButtonGroup disabled={!activeTextField}>
             {/* Font Weight dropdown */}
             <div ref={fontPickerRef} className="relative">
               <button onClick={() => { if (!activeTextField) return; const wasOpen = showFontPicker; closeAllDropdowns(); if (!wasOpen) setShowFontPicker(true); }} className="flex items-center gap-1.5 px-3 py-2 bg-gray-700/50 rounded-lg text-xs font-medium text-gray-300 hover:bg-gray-700 transition-colors duration-200">
@@ -468,10 +476,10 @@ export default function Toolbar({ totalOffset, activeTab }) {
                 </div>
               )}
             </div>
-          </div>
+          </ToolbarButtonGroup>
             
-          {/* Style Group */}
-          <div className={`flex items-center gap-1 px-2 py-1.5 bg-gray-800/60 rounded-xl transition-opacity duration-200 ${activeTextField ? 'opacity-100' : 'opacity-40 pointer-events-none'}`}>
+          {/* Style Group - Using extracted ToolbarButtonGroup */}
+          <ToolbarButtonGroup disabled={!activeTextField} className="gap-1">
             {/* Bold */}
             <button onClick={() => { 
               if (!activeTextField) return; 
@@ -523,10 +531,10 @@ export default function Toolbar({ totalOffset, activeTab }) {
                 </div>
               )}
             </div>
-          </div>
+          </ToolbarButtonGroup>
 
-          {/* Alignment & Spacing Group */}
-          <div className={`flex items-center gap-1 px-2 py-1.5 bg-gray-800/60 rounded-xl transition-opacity duration-200 ${activeTextField ? 'opacity-100' : 'opacity-40 pointer-events-none'}`}>
+          {/* Alignment & Spacing Group - Using extracted ToolbarButtonGroup */}
+          <ToolbarButtonGroup disabled={!activeTextField} className="gap-1">
             {/* Text Alignment */}
             <div ref={textAlignRef} className="relative">
               <button onClick={() => { if (!activeTextField) return; const wasOpen = showTextAlign; closeAllDropdowns(); if (!wasOpen) setShowTextAlign(true); }} className={`flex items-center justify-center gap-1 w-[52px] h-9 rounded-lg transition-all duration-200 border ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.textAlign && selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.textAlign !== 'left' ? 'bg-gray-700 border-gray-500 text-white' : 'bg-gray-800/50 border-gray-700 text-gray-400 hover:bg-gray-700 hover:border-gray-600 hover:text-gray-300'}`} title="Text alignment">
@@ -575,7 +583,7 @@ export default function Toolbar({ totalOffset, activeTab }) {
                 </div>
               )}
             </div>
-          </div>
+          </ToolbarButtonGroup>
         
         </div>
 

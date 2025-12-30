@@ -4,6 +4,9 @@ import { uploadImage, listImages, deleteImage } from '../lib/storage';
 import { isSupabaseConfigured } from '../lib/supabase';
 import { getAllGradientCSSValues, getSolidColorHexValues } from '../data';
 import { LIMITS } from '../config';
+import ImageUploader from './design-panel/ImageUploader';
+import ImageGrid from './design-panel/ImageGrid';
+import { ApplyModeToggle, FrameRangeSlider } from './design-panel/GradientPicker';
 
 /**
  * Design & Assets Panel
@@ -266,76 +269,22 @@ const DesignSystemPanel = ({
       <div className="flex-1 overflow-y-auto overflow-x-hidden">
       {activeTab === 'assets' ? (
         <>
-          {/* Upload Section */}
-          <div className="p-4 border-b border-gray-800">
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Upload Images</h3>
-              <span className="text-[10px] text-gray-500">{uploadedFiles.length}/{MAX_FILES}</span>
-            </div>
-            
-            {/* Quality Preset Selector */}
-            <div className="flex items-center gap-2 mb-3">
-              <span className="text-[10px] text-gray-500">Quality:</span>
-              <select
-                value={compressionPreset}
-                onChange={(e) => setCompressionPreset(e.target.value)}
-                className="flex-1 bg-gray-800 border border-gray-700 rounded px-2 py-1 text-[10px] text-white focus:outline-none focus:border-gray-600"
-              >
-                <option value="highQuality">High (2K) - Best for hero images</option>
-                <option value="standard">Standard (1080p) - Web/social</option>
-                <option value="optimized">Optimized (720p) - Fast loading</option>
-              </select>
-            </div>
-            
-            {/* Drop Zone */}
-            <div 
-              className={`border-2 border-dashed rounded-lg p-4 text-center transition-colors cursor-pointer ${
-                isUploading 
-                  ? 'border-gray-600 bg-gray-800/50' 
-                  : 'border-gray-700 hover:border-gray-500'
-              }`}
-              onDrop={handleDrop}
-              onDragOver={handleDragOver}
-              onClick={() => !isUploading && fileInputRef.current?.click()}
-            >
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                multiple
-                onChange={handleImageUpload}
-                className="hidden"
-              />
-              
-              {isUploading ? (
-                <>
-                  <div className="w-8 h-8 mx-auto mb-2 border-2 border-gray-500 border-t-white rounded-full animate-spin" />
-                  <p className="text-xs text-white mb-1">
-                    Compressing {uploadProgress.current + 1} of {uploadProgress.total}...
-                  </p>
-                  <p className="text-[10px] text-gray-500">{uploadProgress.fileName}</p>
-                  <div className="mt-2 h-1 bg-gray-700 rounded-full overflow-hidden">
-                    <div 
-                      className="h-full bg-gray-500 transition-all duration-300"
-                      style={{ width: `${((uploadProgress.current + 1) / uploadProgress.total) * 100}%` }}
-                    />
-                  </div>
-                </>
-              ) : (
-                <>
-                  <svg className="w-8 h-8 mx-auto mb-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
-                  <p className="text-xs text-gray-400 mb-1">Drop images here</p>
-                  <p className="text-[10px] text-gray-600 mb-2">or click to browse</p>
-                  <p className="text-[10px] text-gray-600">Auto-compressed to WebP for crisp, fast loading</p>
-                </>
-              )}
-            </div>
-            
-            {/* Storage Stats */}
-            {uploadedFiles.length > 0 && (
-              <div className="mt-3 p-2 bg-gray-800/50 rounded-lg">
+          {/* Upload Section - Using extracted ImageUploader component */}
+          <ImageUploader
+            onUpload={handleImageUpload}
+            onDrop={handleDrop}
+            isUploading={isUploading}
+            uploadProgress={uploadProgress}
+            compressionPreset={compressionPreset}
+            onPresetChange={setCompressionPreset}
+            currentCount={uploadedFiles.length}
+            maxCount={MAX_FILES}
+          />
+          
+          {/* Storage Stats */}
+          {uploadedFiles.length > 0 && (
+            <div className="px-4 pb-4 -mt-2">
+              <div className="p-2 bg-gray-800/50 rounded-lg">
                 <div className="flex items-center justify-between text-[10px]">
                   <span className="text-gray-500">Storage used:</span>
                   <span className="text-white">{formatFileSize(totalStorageUsed)}</span>
@@ -347,68 +296,15 @@ const DesignSystemPanel = ({
                   </div>
                 )}
               </div>
-            )}
-          </div>
+            </div>
+          )}
           
-          {/* File Browser */}
-          <div className="p-4">
-            <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-3">Your Images</h3>
-            {isLoadingImages ? (
-              <div className="text-center py-8">
-                <div className="w-8 h-8 mx-auto mb-3 border-2 border-gray-600 border-t-gray-400 rounded-full animate-spin" />
-                <p className="text-xs text-gray-500">Loading saved images...</p>
-              </div>
-            ) : uploadedFiles.length === 0 ? (
-              <div className="text-center py-8">
-                <svg className="w-12 h-12 mx-auto mb-3 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-                <p className="text-xs text-gray-500">No images uploaded yet</p>
-                <p className="text-[10px] text-gray-600 mt-1">Upload images to use in your designs</p>
-              </div>
-            ) : (
-              <div className="grid grid-cols-2 gap-3">
-                {uploadedFiles.map((file) => (
-                  <div key={file.id} className="bg-gray-800 rounded-lg overflow-hidden hover:ring-2 hover:ring-gray-400 transition-all">
-                    {/* Header bar */}
-                    <div className="flex items-center justify-between px-2 py-1.5 bg-gray-900 border-b border-gray-700">
-                      <div className="flex items-center gap-1.5">
-                        <span className="px-1.5 py-0.5 bg-gray-700 rounded text-[10px] text-gray-300 uppercase font-medium">{file.format}</span>
-                        {file.isPersisted && (
-                          <svg className="w-3.5 h-3.5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" title="Saved to cloud">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
-                          </svg>
-                        )}
-                      </div>
-                      <button 
-                        type="button" 
-                        onClick={(e) => { e.stopPropagation(); handleRemoveFile(file.id); }}
-                        className="p-1.5 hover:bg-red-500 rounded transition-colors group"
-                      >
-                        <svg className="w-3 h-3 text-gray-500 group-hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                      </button>
-                    </div>
-                    {/* Image */}
-                    <div className="aspect-square">
-                      <img src={file.url} alt={file.name} className="w-full h-full object-cover" />
-                    </div>
-                    {/* Footer bar */}
-                    <div className="px-2 py-2 bg-gray-900 border-t border-gray-700">
-                      <p className="text-[11px] text-gray-300 truncate font-medium" title={file.name}>{file.name}</p>
-                      <div className="flex items-center justify-between mt-1">
-                        <span className="text-[10px] text-gray-500">{formatFileSize(file.size)}</span>
-                        {file.savings > 0 && (
-                          <span className="text-[10px] text-green-400 font-medium">-{file.savings}%</span>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+          {/* File Browser - Using extracted ImageGrid component */}
+          <ImageGrid
+            images={uploadedFiles}
+            isLoading={isLoadingImages}
+            onRemove={handleRemoveFile}
+          />
           
           {/* Upload Docs Section */}
           <div className="p-4 border-t border-gray-800">
@@ -549,115 +445,27 @@ const DesignSystemPanel = ({
             )}
           </div>
           
-          {/* Apply Mode Toggle */}
+          {/* Apply Mode Toggle - Using extracted component */}
           {hasRowSelected && (
-            <div className="flex items-center gap-2 mb-3 p-2 bg-gray-800/50 rounded-lg">
-              <span className="text-[10px] text-gray-400">Apply to:</span>
-              <div className="flex rounded-md overflow-hidden border border-gray-700">
-                <button
-                  type="button"
-                  onClick={() => setApplyMode('frame')}
-                  className={`px-3 py-1 text-[10px] font-medium transition-colors duration-150 ${
-                    applyMode === 'frame' 
-                      ? 'bg-gray-700 text-white' 
-                      : 'bg-transparent text-gray-400 hover:text-gray-300'
-                  }`}
-                >
-                  Frame
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setApplyMode('row')}
-                  className={`px-3 py-1 text-[10px] font-medium transition-colors duration-150 ${
-                    applyMode === 'row' 
-                      ? 'bg-gray-700 text-white' 
-                      : 'bg-transparent text-gray-400 hover:text-gray-300'
-                  }`}
-                >
-                  Row (Stretch)
-                </button>
-              </div>
-            </div>
+            <ApplyModeToggle 
+              mode={applyMode} 
+              onChange={setApplyMode} 
+            />
           )}
           
-          {/* Frame Range Selector - only show when in Row mode */}
+          {/* Frame Range Selector - Using extracted component */}
           {applyMode === 'row' && hasRowSelected && totalFrames > 1 && (
-            <div className="mb-3 p-3 bg-gray-800/50 rounded-lg">
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-[10px] text-gray-400">Frame range:</span>
-                <span className="text-[10px] text-white font-medium">
-                  {stretchRange.start + 1} – {effectiveEnd + 1}
-                </span>
-              </div>
-              
-              {/* Dual Range Slider */}
-              <div className="relative h-6 mb-2">
-                {/* Track background */}
-                <div className="absolute top-1/2 -translate-y-1/2 left-0 right-0 h-1.5 bg-gray-700 rounded-full" />
-                
-                {/* Selected range highlight */}
-                <div 
-                  className="absolute top-1/2 -translate-y-1/2 h-1.5 bg-gray-500 rounded-full"
-                  style={{
-                    left: `${(stretchRange.start / (totalFrames - 1)) * 100}%`,
-                    right: `${100 - (effectiveEnd / (totalFrames - 1)) * 100}%`,
-                  }}
-                />
-                
-                {/* Start slider */}
-                <input
-                  type="range"
-                  min={0}
-                  max={totalFrames - 1}
-                  value={stretchRange.start}
-                  onChange={(e) => {
-                    const val = parseInt(e.target.value);
-                    if (val <= effectiveEnd) {
-                      setStretchRange(prev => ({ ...prev, start: val }));
-                    }
-                  }}
-                  className="absolute w-full h-6 appearance-none bg-transparent cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-gray-400 [&::-webkit-slider-thumb]:cursor-grab [&::-webkit-slider-thumb]:hover:border-gray-300 [&::-webkit-slider-thumb]:shadow-md"
-                  style={{ zIndex: stretchRange.start > totalFrames - 2 ? 5 : 3 }}
-                />
-                
-                {/* End slider */}
-                <input
-                  type="range"
-                  min={0}
-                  max={totalFrames - 1}
-                  value={effectiveEnd}
-                  onChange={(e) => {
-                    const val = parseInt(e.target.value);
-                    if (val >= stretchRange.start) {
-                      setStretchRange(prev => ({ ...prev, end: val }));
-                    }
-                  }}
-                  className="absolute w-full h-6 appearance-none bg-transparent cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-gray-400 [&::-webkit-slider-thumb]:cursor-grab [&::-webkit-slider-thumb]:hover:border-gray-300 [&::-webkit-slider-thumb]:shadow-md"
-                  style={{ zIndex: 4 }}
-                />
-              </div>
-              
-              {/* Frame number labels */}
-              <div className="flex justify-between px-1">
-                {selectedCarouselFrames.map((_, index) => (
-                  <span 
-                    key={index} 
-                    className={`text-[9px] ${
-                      index >= stretchRange.start && index <= effectiveEnd 
-                        ? 'text-white font-medium' 
-                        : 'text-gray-600'
-                    }`}
-                  >
-                    {index + 1}
-                  </span>
-                ))}
-              </div>
-              
-              {/* Selection info */}
-              <div className="mt-2 text-[10px] text-gray-500 text-center">
+            <>
+              <FrameRangeSlider
+                start={stretchRange.start}
+                end={effectiveEnd}
+                total={totalFrames}
+                onChange={({ start, end }) => setStretchRange({ start, end })}
+              />
+              <div className="mb-3 -mt-1 text-[10px] text-gray-500 text-center">
                 Stretching across {selectedFrameCount} frame{selectedFrameCount > 1 ? 's' : ''}
               </div>
-            </div>
+            </>
           )}
           
           {/* Single frame message */}

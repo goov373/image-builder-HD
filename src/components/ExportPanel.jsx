@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import html2canvas from 'html2canvas';
+import { exportPresets } from '../data/exportPresets';
 
 /**
  * Export Panel
@@ -23,6 +24,7 @@ const ExportPanel = ({
   const [isExporting, setIsExporting] = useState(false);
   const [exportSuccess, setExportSuccess] = useState(false);
   const [isProjectDropdownOpen, setIsProjectDropdownOpen] = useState(false);
+  const [selectedPreset, setSelectedPreset] = useState(null);
 
   // Combine all projects into a unified list with unique keys
   const allProjects = [
@@ -128,6 +130,16 @@ const ExportPanel = ({
   // Deselect all
   const deselectAll = () => {
     setSelectedItems({});
+  };
+
+  // Apply preset settings
+  const applyPreset = (preset) => {
+    setSelectedPreset(preset.id);
+    setFormat(preset.format);
+    setResolution(preset.resolution);
+    setBackground('original');
+    // Select all items when applying a preset
+    selectAll();
   };
 
   // Get resolution multiplier
@@ -250,6 +262,39 @@ const ExportPanel = ({
       {/* Scrollable Content Area */}
       <div className="flex-1 overflow-y-auto overflow-x-hidden">
         <div className="p-4 space-y-5">
+          
+          {/* Quick Export Presets */}
+          <div>
+            <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">Quick Export</h3>
+            <div className="flex gap-2 overflow-x-auto pb-2 -mx-1 px-1 hide-scrollbar">
+              {exportPresets.map((preset) => (
+                <button
+                  key={preset.id}
+                  type="button"
+                  onClick={() => applyPreset(preset)}
+                  className={`flex-shrink-0 flex items-center gap-2 px-3 py-2 rounded-lg border transition-all ${
+                    selectedPreset === preset.id
+                      ? 'bg-gray-700 border-gray-500 text-white'
+                      : 'bg-gray-800/50 border-gray-700 text-gray-400 hover:bg-gray-700 hover:border-gray-600 hover:text-gray-300'
+                  }`}
+                  title={preset.description}
+                >
+                  <svg className="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                    <path d={preset.icon} />
+                  </svg>
+                  <span className="text-xs font-medium whitespace-nowrap">{preset.name}</span>
+                </button>
+              ))}
+            </div>
+            {selectedPreset && (
+              <p className="text-[10px] text-gray-500 mt-2">
+                {exportPresets.find(p => p.id === selectedPreset)?.description}
+              </p>
+            )}
+          </div>
+
+          {/* Divider */}
+          <div className="border-t border-gray-800" />
           
           {/* Project & Frame Selection */}
           <div>

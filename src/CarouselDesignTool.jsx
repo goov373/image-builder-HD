@@ -10,10 +10,10 @@ import {
 } from './data';
 
 // Import custom hooks
-import { useDropdowns, useTabs, useCarousels, useEblasts, useVideoCovers, useSingleImages, useDesignSystem } from './hooks';
+import { useDropdowns, useTabs, useCarousels, useEblasts, useVideoCovers, useSingleImages, useDesignSystem, useKeyboardShortcuts } from './hooks';
 
 // Import context providers
-import { AppProvider } from './context';
+import { AppProvider, HistoryProvider } from './context';
 
 // Import components
 import { 
@@ -25,6 +25,7 @@ import {
   TabBar,
   EditorView
 } from './components';
+import KeyboardShortcutsModal from './components/KeyboardShortcutsModal';
 
 // Initial project tabs
 const INITIAL_TABS = [
@@ -37,6 +38,8 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
   const [zoom, setZoom] = useState(120);
   const [activePanel, setActivePanel] = useState(null);
   const [isAccountOpen, setIsAccountOpen] = useState(false);
+  const [showShortcutsModal, setShowShortcutsModal] = useState(false);
+  const [selectedDevice, setSelectedDevice] = useState('none');
   
   // Design system with persistence
   const [designSystem, setDesignSystem] = useDesignSystem(defaultDesignSystem);
@@ -48,6 +51,30 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
   const videoCovers = useVideoCovers(initialVideoCovers);
   const singleImages = useSingleImages(initialSingleImages);
   const dropdowns = useDropdowns();
+
+  // Global keyboard shortcuts
+  useKeyboardShortcuts({
+    onShowShortcuts: () => setShowShortcutsModal(true),
+    onDeselect: () => {
+      if (showShortcutsModal) {
+        setShowShortcutsModal(false);
+      } else if (activePanel) {
+        setActivePanel(null);
+      } else {
+        carousels.clearSelection();
+        eblasts.clearSelection();
+        videoCovers.clearSelection();
+        singleImages.clearSelection();
+      }
+    },
+    onZoomIn: () => setZoom(z => Math.min(250, z + 10)),
+    onZoomOut: () => setZoom(z => Math.max(50, z - 10)),
+    onZoomReset: () => setZoom(100),
+    onOpenExport: () => setActivePanel(activePanel === 'export' ? null : 'export'),
+    // Undo/redo will be added in Phase 5
+    onUndo: () => console.log('Undo - coming in Phase 5'),
+    onRedo: () => console.log('Redo - coming in Phase 5'),
+  }, !showShortcutsModal); // Disable some shortcuts when modal is open
 
   // Get current project type from active tab
   const currentProjectType = tabs.activeTab?.projectType || 'carousel';
@@ -211,13 +238,14 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
   };
 
   return (
-    <AppProvider
-      designSystem={designSystemContextValue}
-      selection={selectionContextValue}
-      carousels={carouselsContextValue}
-      dropdowns={dropdowns}
-    >
-      <div className="h-screen text-white overflow-hidden" style={{ backgroundColor: '#0d1321' }}>
+    <HistoryProvider>
+      <AppProvider
+        designSystem={designSystemContextValue}
+        selection={selectionContextValue}
+        carousels={carouselsContextValue}
+        dropdowns={dropdowns}
+      >
+        <div className="h-screen text-white overflow-hidden" style={{ backgroundColor: '#0d1321' }}>
         {/* Browser-style Tab Bar */}
         <TabBar
           tabs={tabs.tabs}
@@ -238,8 +266,10 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
         {/* Fixed Home Button - above sidebar */}
         <div className="fixed top-0 left-0 z-[120] flex items-center justify-center border-b border-r border-gray-800" style={{ width: 64, height: 56, backgroundColor: '#0d1321' }}>
           <button 
+            type="button"
             onClick={handleGoHome}
             className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all ${tabs.currentView === 'home' ? 'text-white bg-gray-800' : 'text-gray-400 hover:text-white hover:bg-gray-800'}`}
+            title="Go to Homepage"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
@@ -257,6 +287,9 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
           onAccountClick={() => { setActivePanel(null); setIsAccountOpen(!isAccountOpen); }}
           isAccountOpen={isAccountOpen}
           onCloseAccount={() => setIsAccountOpen(false)}
+          onShowShortcuts={() => setShowShortcutsModal(true)}
+          selectedDevice={selectedDevice}
+          onDeviceChange={setSelectedDevice}
         />
         
         {/* Panels */}
@@ -310,9 +343,17 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
             onUpdateProjectName={tabs.handleUpdateProjectName}
             onCreateProject={tabs.handleCreateProject}
             projectType={currentProjectType}
+            selectedDevice={selectedDevice}
           />
         )}
-      </div>
-    </AppProvider>
+        </div>
+        
+        {/* Keyboard Shortcuts Modal */}
+        <KeyboardShortcutsModal 
+          isOpen={showShortcutsModal} 
+          onClose={() => setShowShortcutsModal(false)} 
+        />
+      </AppProvider>
+    </HistoryProvider>
   );
 }

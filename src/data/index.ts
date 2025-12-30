@@ -4,15 +4,6 @@ export { initialCarousels, getFrameStyle } from './initialCarousels';
 export { initialEblasts, createEmptyEblast, getEblastSectionStyle } from './initialEblasts';
 export { initialVideoCovers, createEmptyVideoCover, getVideoCoverStyle } from './initialVideoCovers';
 export { initialSingleImages, createEmptySingleImage, MOCKUP_TEMPLATES, DECORATOR_PRESETS } from './initialSingleImages';
-export { 
-  PROJECT_CONFIGS, 
-  getProjectConfig, 
-  getFrameSizesForType, 
-  getLayoutsForType, 
-  hasFeature,
-  type ProjectType,
-  type ProjectConfig,
-} from './projectConfigs';
 export {
   whitePurpleGradients,
   purpleRadialGradients,
@@ -28,4 +19,17 @@ export {
   type GradientDefinition,
   type SolidColorDefinition,
 } from './gradients';
+export {
+  exportPresets,
+  platformColors,
+  getPresetById,
+  getPresetsByPlatform,
+  type ExportPreset,
+} from './exportPresets';
+export {
+  deviceFrames,
+  getDeviceById,
+  getDevicesByType,
+  type DeviceFrame,
+} from './deviceFrames';
 

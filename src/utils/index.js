@@ -1,50 +1,36 @@
 /**
  * Utils Index
  * Centralized exports for all utility modules
+ * 
+ * Note: Only exports functions that are used externally.
+ * Internal utility functions remain in their modules but are not re-exported.
  */
 
-// Color utilities
+// Color utilities - only commonly used ones
 export {
   hexToRgb,
   rgbToHex,
-  rgbToHsl,
-  hslToRgb,
   interpolateColor,
-  parseRgba,
-  getColorBrightness,
-  isLightColor,
-  darkenColor,
-  lightenColor
 } from './colorUtils';
 
-// Gradient utilities
+// Gradient utilities - only commonly used ones
 export {
   isSolidColor,
   isGradient,
   extractColors,
-  parseLinearGradient,
   getStartColor,
   getEndColor,
   getDominantColor,
-  splitGradientLayers,
-  generateLinearGradient,
-  modifyStartColor,
-  modifyEndColor
 } from './gradientParser';
 
-// Smooth backgrounds
+// Smooth backgrounds - main function
 export {
   smoothCarouselBackgrounds,
-  analyzeColorHarmony,
-  calculateColorDistance
 } from './smoothBackgrounds';
 
-// Image compression
+// Image compression - main functions
 export {
-  compressImage,
   compressImages,
   formatFileSize,
-  getTotalSize,
-  supportsWebP,
-  COMPRESSION_PRESETS
+  COMPRESSION_PRESETS,
 } from './imageCompression';
