@@ -51,16 +51,16 @@ export const purpleLinearGradients: GradientDefinition[] = [
     css: 'linear-gradient(45deg, #5558d9 0%, #6466e9 15%, #818cf8 35%, rgba(129,140,248,0.6) 50%, transparent 70%), linear-gradient(225deg, #5558d9 0%, #6466e9 15%, #818cf8 35%, rgba(129,140,248,0.6) 50%, transparent 70%), linear-gradient(135deg, #818cf8 0%, #6466e9 50%, #818cf8 100%)',
   },
   {
-    id: 'pl-soft-corner',
-    name: 'Soft Corner',
+    id: 'pl-corner-glow',
+    name: 'Corner Glow',
     category: 'purple-linear',
-    css: 'linear-gradient(155deg, #c7d2fe 0%, #b3bffc 15%, #8a92f5 40%, #6f73ed 65%, #5c5fdb 100%)',
+    css: 'linear-gradient(135deg, #c7d2fe 0%, #a5b4fc 10%, #818cf8 28%, #6a6eea 50%, #5c5fdb 100%)',
   },
   {
-    id: 'pl-horizon-sweep',
-    name: 'Horizon Sweep',
+    id: 'pl-vertical-fade',
+    name: 'Vertical Fade',
     category: 'purple-linear',
-    css: 'linear-gradient(115deg, #b8c4fc 0%, #9aa8f7 22%, #7a82f0 50%, #6466e9 78%, #5558d9 100%)',
+    css: 'linear-gradient(180deg, #b3bffc 0%, #9098f3 35%, #7276ec 60%, #5c5fdb 100%)',
   },
   {
     id: 'pl-dual-corner-alt',
