@@ -57,14 +57,7 @@ export const whitePurpleGradients: GradientDefinition[] = [
 
 // ===== PURPLE RADIAL GRADIENTS =====
 // Soft highlight aesthetic with organic glow effects
-export const purpleRadialGradients: GradientDefinition[] = [
-  {
-    id: 'pr-centered-glow',
-    name: 'Centered Glow',
-    category: 'purple-radial',
-    css: 'radial-gradient(ellipse at 50% 45%, rgba(165, 180, 252, 0.35) 0%, rgba(129, 140, 248, 0.25) 25%, rgba(100, 102, 233, 0.12) 45%, transparent 65%), linear-gradient(180deg, #7578eb 0%, #6466e9 50%, #5c5fdb 100%)',
-  },
-];
+export const purpleRadialGradients: GradientDefinition[] = [];
 
 // ===== PURPLE LINEAR GRADIENTS =====
 // Smooth gradual fades in different directions
