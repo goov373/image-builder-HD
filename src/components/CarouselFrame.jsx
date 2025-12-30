@@ -334,10 +334,12 @@ export const CarouselFrame = ({
             <button
               type="button"
               onClick={() => onUpdateImageLayer?.(carouselId, frame.id, { scale: 1 })}
-              className="ml-1 px-1.5 py-0.5 text-gray-500 hover:text-white text-[9px] hover:bg-white/10 rounded transition-colors"
+              className="w-5 h-5 flex items-center justify-center text-gray-500 hover:text-white hover:bg-white/10 rounded transition-colors"
               title="Reset zoom to 100%"
             >
-              Reset
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
             </button>
           </div>
 
@@ -367,10 +369,12 @@ export const CarouselFrame = ({
             <button
               type="button"
               onClick={() => onUpdateImageLayer?.(carouselId, frame.id, { opacity: 1 })}
-              className="ml-1 px-1.5 py-0.5 text-gray-500 hover:text-white text-[9px] hover:bg-white/10 rounded transition-colors"
+              className="w-5 h-5 flex items-center justify-center text-gray-500 hover:text-white hover:bg-white/10 rounded transition-colors"
               title="Reset opacity to 100%"
             >
-              Reset
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
             </button>
           </div>
 
