@@ -37,7 +37,7 @@ export {
   PanelSection, 
   PanelTabs, 
   PanelEmptyState 
-} from './ui';
+} from './ui/index.js';
 
 // Toolbar Components - Dropdowns, buttons, toggles
 export { 
@@ -49,7 +49,7 @@ export {
   ToolbarIconButton,
   ToolbarColorSwatch,
   ToolbarToggleGroup,
-} from './toolbar';
+} from './toolbar/index.js';
 
 // Design Panel Components - Image upload, gradients
 export { 
@@ -61,4 +61,4 @@ export {
   FrameRangeSlider,
   GradientSwatch,
   ColorSwatch,
-} from './design-panel';
+} from './design-panel/index.js';
