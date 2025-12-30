@@ -32,7 +32,7 @@ const ImageUploader = ({
   };
 
   return (
-    <div className="p-4 border-b border-gray-800">
+    <div className="p-4">
       <div className="flex items-center justify-between mb-3">
         <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Upload Images</h3>
         <span className="text-[10px] text-gray-500">{currentCount}/{maxCount}</span>
