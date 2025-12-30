@@ -70,12 +70,6 @@ export const purpleRadialGradients: GradientDefinition[] = [
     category: 'purple-radial',
     css: 'radial-gradient(ellipse at 50% 45%, rgba(165, 180, 252, 0.35) 0%, rgba(129, 140, 248, 0.25) 25%, rgba(100, 102, 233, 0.12) 45%, transparent 65%), linear-gradient(180deg, #7578eb 0%, #6466e9 50%, #5c5fdb 100%)',
   },
-  {
-    id: 'pr-muted-periwinkle',
-    name: 'Muted Periwinkle',
-    category: 'purple-radial',
-    css: 'radial-gradient(ellipse at 60% 40%, rgba(255, 255, 255, 0.25) 0%, transparent 50%), linear-gradient(160deg, #a5b4fc 0%, #8b8fef 35%, #7578eb 70%, #6c6fe5 100%)',
-  },
 ];
 
 // ===== PURPLE LINEAR GRADIENTS =====
