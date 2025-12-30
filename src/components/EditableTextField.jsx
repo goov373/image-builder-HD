@@ -72,6 +72,20 @@ const EditableTextField = ({ children, field, isFrameSelected, isActive, onActiv
     WebkitBoxDecorationBreak: 'clone',
   } : {};
   
+  // Handle keyboard events when editing
+  const handleKeyDown = (e) => {
+    if (isActive) {
+      // Stop propagation for all keys when editing to prevent parent handlers from intercepting
+      e.stopPropagation();
+      
+      // Explicitly allow space key - some browsers may block it in contentEditable spans
+      if (e.key === ' ' || e.code === 'Space') {
+        // Don't prevent default - let the space character be inserted
+        return;
+      }
+    }
+  };
+
   return (
     <span
       className={`${className} ${isFrameSelected && !isActive ? 'cursor-pointer' : ''}`}
@@ -79,6 +93,7 @@ const EditableTextField = ({ children, field, isFrameSelected, isActive, onActiv
       contentEditable={isActive}
       suppressContentEditableWarning
       onClick={(e) => { if (isFrameSelected) { e.stopPropagation(); onActivate?.(field); } }}
+      onKeyDown={handleKeyDown}
       onBlur={(e) => { if (isActive) onUpdateText?.(field, e.target.innerText); }}
     >
       {isHighlight ? <span style={highlightStyle}>{cleanChildren}</span> : cleanChildren}
