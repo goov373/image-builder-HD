@@ -210,6 +210,8 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
     handleUpdatePatternLayer: carousels.handleUpdatePatternLayer,
     handleRemovePatternFromFrame: carousels.handleRemovePatternFromFrame,
     handleSetRowStretchedPattern: carousels.handleSetRowStretchedPattern,
+    // Fill layer methods
+    handleUpdateFillLayer: carousels.handleUpdateFillLayer,
     // Eblast methods
     eblasts: eblasts.eblasts,
     handleEblastSetVariant: eblasts.handleSetVariant,

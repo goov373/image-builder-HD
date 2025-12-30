@@ -79,6 +79,8 @@ export default function EditorView({
     handleAddImageToFrame,
     handleUpdateImageLayer,
     handleRemoveImageFromFrame,
+    // Fill layer methods
+    handleUpdateFillLayer,
     // Eblast methods
     eblasts,
     handleEblastUpdateText,
@@ -187,6 +189,7 @@ export default function EditorView({
                       onActivateTextField={setActiveTextField}
                       onUpdateImageLayer={handleUpdateImageLayer}
                       onRemoveImageFromFrame={handleRemoveImageFromFrame}
+                      onUpdateFillLayer={handleUpdateFillLayer}
                       onClearBackground={(carouselId, frameId) => handleSetFrameBackground(carouselId, frameId, null)}
                     />
                     {/* Add Row Button - only after last row */}

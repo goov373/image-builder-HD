@@ -37,6 +37,8 @@ export const CAROUSEL_ACTIONS = {
   UPDATE_PATTERN_LAYER: 'UPDATE_PATTERN_LAYER',
   REMOVE_PATTERN_FROM_FRAME: 'REMOVE_PATTERN_FROM_FRAME',
   SET_ROW_STRETCHED_PATTERN: 'SET_ROW_STRETCHED_PATTERN',
+  // Fill Layer Actions
+  UPDATE_FILL_LAYER: 'UPDATE_FILL_LAYER',
 };
 
 // Initial state shape
@@ -566,6 +568,27 @@ function carouselReducer(state, action) {
       };
     }
 
+    case CAROUSEL_ACTIONS.UPDATE_FILL_LAYER: {
+      const { carouselId, frameId, updates } = action;
+      return {
+        ...state,
+        carousels: state.carousels.map(carousel => {
+          if (carousel.id !== carouselId) return carousel;
+          return {
+            ...carousel,
+            frames: carousel.frames.map(frame => {
+              if (frame.id !== frameId) return frame;
+              return {
+                ...frame,
+                fillOpacity: updates.fillOpacity !== undefined ? updates.fillOpacity : frame.fillOpacity,
+                fillRotation: updates.fillRotation !== undefined ? updates.fillRotation : frame.fillRotation,
+              };
+            })
+          };
+        })
+      };
+    }
+
     default:
       return state;
   }
@@ -573,10 +596,17 @@ function carouselReducer(state, action) {
 
 // Load from localStorage
 function loadFromStorage(initialData) {
-  // ONE-TIME RESET: Clear all carousel data to start fresh with flat purple backgrounds
-  // TODO: Remove this block after one refresh
-  localStorage.removeItem(STORAGE_KEY);
-  console.log('🔄 Carousel data reset! All frames now have flat purple backgrounds.');
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed;
+      }
+    }
+  } catch (e) {
+    console.warn('Failed to load carousels from localStorage:', e);
+  }
   return initialData;
 }
 
@@ -696,6 +726,10 @@ export default function useCarousels(initialData) {
     
     handleSetRowStretchedPattern: useCallback((carouselId, patternId, startIdx, endIdx) =>
       dispatch({ type: CAROUSEL_ACTIONS.SET_ROW_STRETCHED_PATTERN, carouselId, patternId, startIdx, endIdx }), []),
+    
+    // Fill Layer Actions
+    handleUpdateFillLayer: useCallback((carouselId, frameId, updates) =>
+      dispatch({ type: CAROUSEL_ACTIONS.UPDATE_FILL_LAYER, carouselId, frameId, updates }), []),
   };
 
   return {
