@@ -226,7 +226,6 @@ export const solidColors: SolidColorDefinition[] = [
 // ===== COMBINED EXPORTS =====
 // All gradients combined in display order
 export const allGradients: GradientDefinition[] = [
-  ...stretchGradients,
   ...whitePurpleGradients,
   ...purpleRadialGradients,
   ...purpleLinearGradients,
