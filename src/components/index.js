@@ -62,5 +62,4 @@ export {
   FrameRangeSlider,
   GradientSwatch,
   ColorSwatch,
-  PatternPicker,
 } from './design-panel/index.js';

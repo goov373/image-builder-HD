@@ -7,7 +7,6 @@ import { LIMITS } from '../config';
 import ImageUploader from './design-panel/ImageUploader';
 import ImageGrid from './design-panel/ImageGrid';
 import { ApplyModeToggle, FrameRangeSlider } from './design-panel/GradientPicker';
-import PatternPicker from './design-panel/PatternPicker';
 
 /**
  * Design & Assets Panel
@@ -85,17 +84,14 @@ const DesignSystemPanel = ({
   const totalFrames = items.length;
   
   const [applyMode, setApplyMode] = useState('frame'); // 'frame' or 'row'
-  const [patternApplyMode, setPatternApplyMode] = useState('frame'); // 'frame' or 'row'
   
-  // Frame range selection for stretched gradients/patterns
+  // Frame range selection for stretched gradients
   const [stretchRange, setStretchRange] = useState({ start: 0, end: null }); // null end means "all"
-  const [patternStretchRange, setPatternStretchRange] = useState({ start: 0, end: null });
   
   // Get selected item's pattern layer
   const selectedItem = isCarousel 
     ? items.find(f => f.id === selectedFrameId)
     : items.find(s => s.id === selectedSectionId);
-  const selectedPatternLayer = selectedItem?.patternLayer;
   
   // Calculate effective end (default to last frame if not set)
   const effectiveEnd = stretchRange.end !== null ? Math.min(stretchRange.end, totalFrames - 1) : totalFrames - 1;
@@ -595,61 +591,6 @@ const DesignSystemPanel = ({
               </div>
             ))}
           </div>
-        </div>
-        
-        {/* Patterns Section */}
-        <div className="p-4 border-b border-gray-800">
-          <PatternPicker
-            hasSelection={hasFrameSelected}
-            selectedPatternLayer={selectedPatternLayer}
-            applyMode={patternApplyMode}
-            onApplyModeChange={setPatternApplyMode}
-            onSelect={(patternId) => {
-              if (isCarousel) {
-                if (patternApplyMode === 'row' && hasRowSelected && onSetRowStretchedPattern) {
-                  const startIdx = patternStretchRange.start;
-                  const endIdx = patternStretchRange.end !== null ? patternStretchRange.end : totalFrames - 1;
-                  onSetRowStretchedPattern(selectedCarouselId, patternId, startIdx, endIdx);
-                } else if (hasFrameSelected && onAddPatternToFrame) {
-                  onAddPatternToFrame(selectedCarouselId, selectedFrameId, patternId);
-                }
-              } else if (isEblast) {
-                if (patternApplyMode === 'row' && hasRowSelected && onSetStretchedPattern) {
-                  const startIdx = patternStretchRange.start;
-                  const endIdx = patternStretchRange.end !== null ? patternStretchRange.end : totalFrames - 1;
-                  onSetStretchedPattern(selectedEblastId, patternId, startIdx, endIdx);
-                } else if (hasFrameSelected && onAddPatternToSection) {
-                  onAddPatternToSection(selectedEblastId, selectedSectionId, patternId);
-                }
-              } else if (isVideoCover && hasFrameSelected && onAddVideoCoverPattern) {
-                onAddVideoCoverPattern(selectedVideoCoverId, patternId);
-              } else if (isSingleImage && hasFrameSelected && onAddSingleImagePattern) {
-                onAddSingleImagePattern(selectedSingleImageId, patternId);
-              }
-            }}
-            onUpdate={(updates) => {
-              if (isCarousel && hasFrameSelected && onUpdatePatternLayer) {
-                onUpdatePatternLayer(selectedCarouselId, selectedFrameId, updates);
-              } else if (isEblast && hasFrameSelected && onUpdatePatternLayerEblast) {
-                onUpdatePatternLayerEblast(selectedEblastId, selectedSectionId, updates);
-              } else if (isVideoCover && hasFrameSelected && onUpdateVideoCoverPattern) {
-                onUpdateVideoCoverPattern(selectedVideoCoverId, updates);
-              } else if (isSingleImage && hasFrameSelected && onUpdateSingleImagePattern) {
-                onUpdateSingleImagePattern(selectedSingleImageId, updates);
-              }
-            }}
-            onRemove={() => {
-              if (isCarousel && hasFrameSelected && onRemovePatternFromFrame) {
-                onRemovePatternFromFrame(selectedCarouselId, selectedFrameId);
-              } else if (isEblast && hasFrameSelected && onRemovePatternFromSection) {
-                onRemovePatternFromSection(selectedEblastId, selectedSectionId);
-              } else if (isVideoCover && hasFrameSelected && onRemoveVideoCoverPattern) {
-                onRemoveVideoCoverPattern(selectedVideoCoverId);
-              } else if (isSingleImage && hasFrameSelected && onRemoveSingleImagePattern) {
-                onRemoveSingleImagePattern(selectedSingleImageId);
-              }
-            }}
-          />
         </div>
         
         {/* Product Imagery Section */}

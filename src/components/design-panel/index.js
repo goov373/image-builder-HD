@@ -12,5 +12,4 @@ export {
   GradientSwatch, 
   ColorSwatch 
 } from './GradientPicker';
-export { default as PatternPicker } from './PatternPicker';
 
