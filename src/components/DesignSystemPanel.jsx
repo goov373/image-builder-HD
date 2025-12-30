@@ -318,9 +318,9 @@ const DesignSystemPanel = ({
           backgroundImage: `repeating-linear-gradient(
             -45deg,
             transparent,
-            transparent 6px,
-            rgba(100, 102, 233, 0.15) 6px,
-            rgba(100, 102, 233, 0.15) 7px
+            transparent 10px,
+            rgba(100, 102, 233, 0.1) 10px,
+            rgba(100, 102, 233, 0.1) 11px
           )`,
         }}
       />
