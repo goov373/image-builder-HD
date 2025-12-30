@@ -312,8 +312,23 @@ const DesignSystemPanel = ({
       className={`fixed top-[56px] h-[calc(100%-56px)] w-72 bg-gray-900 border-r border-t border-gray-800 z-40 flex flex-col ${isOpen ? 'pointer-events-auto' : 'pointer-events-none'}`}
       style={{ left: isOpen ? 64 : -224, transition: 'left 0.3s ease-out' }}
     >
+      {/* Decorative Diagonal Lines Pattern */}
+      <div 
+        className="flex-shrink-0 h-8 opacity-30"
+        style={{
+          backgroundImage: `repeating-linear-gradient(
+            -45deg,
+            transparent,
+            transparent 4px,
+            rgba(100, 102, 233, 0.3) 4px,
+            rgba(100, 102, 233, 0.3) 5px
+          )`,
+          backgroundSize: '100% 100%',
+        }}
+      />
+      
       {/* Fixed Header */}
-      <div className="flex-shrink-0 px-4 border-b border-gray-800 flex items-center justify-between" style={{ height: 64 }}>
+      <div className="flex-shrink-0 px-4 border-b border-gray-800 flex items-center justify-between" style={{ height: 56 }}>
         <h2 className="text-sm font-semibold text-white">Design & Assets</h2>
         <button type="button" onClick={onClose} className="text-gray-400 hover:text-white">
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
