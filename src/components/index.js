@@ -27,3 +27,38 @@ export { default as MockupFrame } from './MockupFrame';
 export { default as StyleEditor } from './StyleEditor';
 export { default as SingleImageEditor } from './SingleImageEditor';
 export { DataChip, StatCard, Tooltip, Sparkline, AvatarGroup, ProgressRing } from './decorators';
+
+// ===== REUSABLE COMPONENT LIBRARIES =====
+
+// UI Primitives - Panels, sections, empty states
+export { 
+  Panel, 
+  PanelHeader, 
+  PanelSection, 
+  PanelTabs, 
+  PanelEmptyState 
+} from './ui';
+
+// Toolbar Components - Dropdowns, buttons, toggles
+export { 
+  ToolbarDropdown, 
+  ToolbarDropdownItem, 
+  ChevronIcon,
+  ToolbarButtonGroup,
+  ToolbarButton,
+  ToolbarIconButton,
+  ToolbarColorSwatch,
+  ToolbarToggleGroup,
+} from './toolbar';
+
+// Design Panel Components - Image upload, gradients
+export { 
+  ImageUploader, 
+  ImageGrid, 
+  ImageCard,
+  GradientPicker,
+  ApplyModeToggle,
+  FrameRangeSlider,
+  GradientSwatch,
+  ColorSwatch,
+} from './design-panel';
