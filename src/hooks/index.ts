@@ -8,3 +8,16 @@ export { default as useDesignSystem } from './useDesignSystem';
 export { default as useAuth } from './useAuth';
 export { default as useProjects } from './useProjects';
 
+// Base hook utilities for creating new editor hooks
+export {
+  createBaseActionTypes,
+  createBaseReducerCases,
+  usePersistence,
+  loadFromStorage,
+  combineReducers,
+  createBaseHandlers,
+  createInitialState,
+  useLoadState,
+  getSelectedEntity,
+} from './useEditorBase';
+

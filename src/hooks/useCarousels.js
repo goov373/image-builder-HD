@@ -1,7 +1,8 @@
 import { useReducer, useEffect, useState, useCallback } from 'react';
 import { arrayMove } from '@dnd-kit/sortable';
+import { STORAGE_KEYS } from '../config';
 
-const STORAGE_KEY = 'carousel-tool-carousels';
+const STORAGE_KEY = STORAGE_KEYS.CAROUSELS;
 
 // Action types
 export const CAROUSEL_ACTIONS = {

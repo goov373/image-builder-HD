@@ -1,17 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { frameSizes, layoutNames, layoutVariantNames, getFrameStyle } from '../data';
-
-// Nunito Sans font weight options
-const FONT_WEIGHTS = [
-  { name: 'ExtraLight', value: '200', weight: 200 },
-  { name: 'Light', value: '300', weight: 300 },
-  { name: 'Regular', value: '400', weight: 400 },
-  { name: 'Medium', value: '500', weight: 500 },
-  { name: 'SemiBold', value: '600', weight: 600 },
-  { name: 'Bold', value: '700', weight: 700 },
-  { name: 'ExtraBold', value: '800', weight: 800 },
-  { name: 'Black', value: '900', weight: 900 },
-];
+import { FONT_WEIGHTS, SMOOTH_SETTINGS } from '../config';
 import { smoothCarouselBackgrounds } from '../utils';
 import { 
   useDesignSystemContext, 
@@ -78,17 +67,9 @@ export default function Toolbar({ totalOffset, activeTab }) {
   const [previewApplied, setPreviewApplied] = useState(false);
   const smoothPickerRef = useRef(null);
 
-  const SMOOTH_NOTCHES = [
-    { step: 1, label: 'Light', value: 25 },
-    { step: 2, label: 'Medium', value: 50 },
-    { step: 3, label: 'Strong', value: 75 },
-    { step: 4, label: 'Full', value: 100 },
-  ];
-
-  const SMOOTH_DIRECTIONS = [
-    { id: 'diagonal', label: 'Diagonal', icon: '↘' },
-    { id: 'diagonal-mirror', label: 'Mirror', icon: '↙' },
-  ];
+  // Use centralized smooth settings
+  const SMOOTH_NOTCHES = SMOOTH_SETTINGS.INTENSITY_NOTCHES;
+  const SMOOTH_DIRECTIONS = SMOOTH_SETTINGS.DIRECTIONS;
 
   const currentNotch = SMOOTH_NOTCHES.find(n => n.step === smoothIntensity) || SMOOTH_NOTCHES[1];
   const currentDirection = SMOOTH_DIRECTIONS.find(d => d.id === smoothDirection) || SMOOTH_DIRECTIONS[0];
@@ -141,9 +122,13 @@ export default function Toolbar({ totalOffset, activeTab }) {
     console.log('Smooth Preview:', notch.label, `(${notch.value}%)`, 'Direction:', direction);
     
     // Calculate smoothed backgrounds from originals
+    // Use extractGradientString to handle stretched gradient objects
     const smoothedFrames = smoothCarouselBackgrounds(
       selectedCarousel.frames,
-      (frame) => originalBackgrounds[frame.id],
+      (frame) => {
+        const bg = originalBackgrounds[frame.id];
+        return extractGradientString(bg) || bg;
+      },
       { intensity: notch.value / 100, direction }
     );
     

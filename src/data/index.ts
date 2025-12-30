@@ -13,4 +13,19 @@ export {
   type ProjectType,
   type ProjectConfig,
 } from './projectConfigs';
+export {
+  whitePurpleGradients,
+  purpleRadialGradients,
+  purpleLinearGradients,
+  orangeGradients,
+  blackGradients,
+  solidColors,
+  allGradients,
+  getAllGradientCSSValues,
+  getSolidColorHexValues,
+  findGradientById,
+  getGradientsByCategory,
+  type GradientDefinition,
+  type SolidColorDefinition,
+} from './gradients';
 

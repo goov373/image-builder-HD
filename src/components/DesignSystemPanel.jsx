@@ -2,6 +2,8 @@ import { useState, useRef, useEffect } from 'react';
 import { compressImages, formatFileSize, COMPRESSION_PRESETS } from '../utils';
 import { uploadImage, listImages, deleteImage } from '../lib/storage';
 import { isSupabaseConfigured } from '../lib/supabase';
+import { getAllGradientCSSValues, getSolidColorHexValues } from '../data';
+import { LIMITS } from '../config';
 
 /**
  * Design & Assets Panel
@@ -49,8 +51,8 @@ const DesignSystemPanel = ({
   const [uploadProgress, setUploadProgress] = useState({ current: 0, total: 0, fileName: '' });
   const [compressionPreset, setCompressionPreset] = useState('highQuality');
   const fileInputRef = useRef(null);
-  const MAX_FILES = 50;
-  const MAX_DOCS = 20;
+  const MAX_FILES = LIMITS.MAX_UPLOADED_FILES;
+  const MAX_DOCS = LIMITS.MAX_UPLOADED_DOCS;
 
   // Load saved images from Supabase on mount
   useEffect(() => {
@@ -220,112 +222,9 @@ const DesignSystemPanel = ({
     { key: 'neutral3', label: 'Light' },
   ];
 
-  // HelloData brand-aligned gradients
-  // ===== WHITE-DOMINANT PURPLE GRADIENTS (3) =====
-  // For pages that feel primarily white with purple stretched/blended in
-  const whitePurpleGradients = [
-    // Row 1: Primary white-purple fades
-    // 1. Diagonal mesh - purple stretched further with smooth blend
-    'linear-gradient(135deg, #ffffff 0%, #f5f6ff 15%, #e8ebf7 30%, #d4d9fc 45%, #b8c0f5 60%, #a5b4fc 75%, #818cf8 90%, #6466e9 100%)',
-    // 2. Vertical fade - purple blending up smoothly
-    'linear-gradient(180deg, #ffffff 0%, #f5f6ff 18%, #e8ebf7 35%, #c7d2fe 52%, #a5b4fc 70%, #818cf8 85%, #6466e9 100%)',
-    // 3. Corner mesh - white upper-left with purple sweeping from bottom-right corner
-    'linear-gradient(315deg, #6466e9 0%, #818cf8 12%, #a5b4fc 25%, #c7d2fe 40%, #e8ebf7 55%, #f5f6ff 72%, #ffffff 100%)',
-    
-    // Row 2: Additional light variants
-    // 4. Horizontal fade - purple on left, white on right
-    'linear-gradient(90deg, #6466e9 0%, #818cf8 12%, #a5b4fc 28%, #c7d2fe 45%, #e8ebf7 65%, #f5f6ff 82%, #ffffff 100%)',
-    // 5. Radial center - white center radiating to purple edges
-    'radial-gradient(ellipse at 50% 50%, #ffffff 0%, #f8f9ff 20%, #e8ebf7 40%, #c7d2fe 60%, #a5b4fc 78%, #818cf8 92%, #6466e9 100%)',
-    // 6. Soft diagonal - gentler transition with more white
-    'linear-gradient(160deg, #ffffff 0%, #ffffff 25%, #f5f6ff 40%, #e8ebf7 55%, #c7d2fe 70%, #a5b4fc 85%, #7c7ff2 100%)',
-  ];
-
-  // ===== PURPLE RADIAL GRADIENTS (3) =====
-  // Soft highlight aesthetic with organic glow effects
-  const purpleConicals = [
-    // Gradient 1: Upper-left soft lavender highlight on medium purple base (stretched, blended)
-    'radial-gradient(ellipse at 25% 25%, rgba(199, 210, 254, 0.5) 0%, rgba(165, 180, 252, 0.25) 30%, rgba(129, 140, 248, 0.1) 50%, transparent 70%), radial-gradient(ellipse at 50% 50%, #7578eb 0%, #6466e9 60%, #5558d9 100%)',
-    // Gradient 2: Centered subtle glow, blended into uniform purple
-    'radial-gradient(ellipse at 50% 45%, rgba(165, 180, 252, 0.35) 0%, rgba(129, 140, 248, 0.25) 25%, rgba(100, 102, 233, 0.12) 45%, transparent 65%), linear-gradient(180deg, #7578eb 0%, #6466e9 50%, #5c5fdb 100%)',
-    // Gradient 3: Lighter/muted periwinkle, washed soft aesthetic
-    'radial-gradient(ellipse at 60% 40%, rgba(255, 255, 255, 0.25) 0%, transparent 50%), linear-gradient(160deg, #a5b4fc 0%, #8b8fef 35%, #7578eb 70%, #6c6fe5 100%)',
-  ];
-
-  // ===== PURPLE LINEAR FADE GRADIENTS (6) =====
-  // Smooth gradual fades in different directions - light to purple transitions
-  const purpleMeshes = [
-    // 1. Layered linear: Purple from lower-left + upper-right, darker blended center
-    'linear-gradient(45deg, #5558d9 0%, #6466e9 15%, #818cf8 35%, rgba(129,140,248,0.6) 50%, transparent 70%), linear-gradient(225deg, #5558d9 0%, #6466e9 15%, #818cf8 35%, rgba(129,140,248,0.6) 50%, transparent 70%), linear-gradient(135deg, #818cf8 0%, #6466e9 50%, #818cf8 100%)',
-    // 2. Diagonal top-left: Light corner fading to purple
-    'linear-gradient(135deg, #c7d2fe 0%, #a5b4fc 25%, #818cf8 50%, #6466e9 75%, #5558d9 100%)',
-    // 3. Diagonal: Light top-right → Deep purple bottom-left (225deg mirrored)
-    'linear-gradient(225deg, #c7d2fe 0%, #a5b4fc 25%, #818cf8 50%, #6466e9 75%, #5c5fdb 100%)',
-    // 4. Layered linear: Purple from upper-left + lower-right, darker seamless blend
-    'linear-gradient(135deg, #5c5fdb 0%, #6466e9 15%, #818cf8 35%, rgba(129,140,248,0.5) 55%, transparent 75%), linear-gradient(315deg, #5c5fdb 0%, #6466e9 15%, #818cf8 35%, rgba(129,140,248,0.5) 55%, transparent 75%), linear-gradient(180deg, #918df5 0%, #7578eb 50%, #918df5 100%)',
-    // 5. Diagonal bottom-left: Light corner fading to purple top-right
-    'linear-gradient(45deg, #c7d2fe 0%, #a5b4fc 25%, #818cf8 50%, #6466e9 75%, #5558d9 100%)',
-    // 6. Subtle angle: Soft transition with extended mid-tones
-    'linear-gradient(160deg, #d4d9fc 0%, #b8c0f0 15%, #a5b4fc 30%, #8b8fef 50%, #7578eb 70%, #6466e9 85%, #5c5fdb 100%)',
-  ];
-
-  // ===== ORANGE GRADIENTS (3) =====
-  // ===== ORANGE GRADIENTS (3) - Light & Airy =====
-  const orangeGradients = [
-    // Row 1: Light & airy orange
-    // 1. Soft peach-orange diagonal - light to warm orange
-    'linear-gradient(135deg, #fdd8c2 0%, #fcb88a 25%, #f9a066 50%, #f78b4a 75%, #f57c3a 100%)',
-    // 2. Warm vertical - cream orange fading to rich orange
-    'linear-gradient(180deg, #fee0cc 0%, #fcb98c 30%, #f9944e 60%, #f7843c 100%)',
-    // 3. Subtle radial glow - soft highlight like purple R1C3
-    'radial-gradient(ellipse at 60% 40%, rgba(255, 255, 255, 0.25) 0%, transparent 50%), linear-gradient(160deg, #fcb88a 0%, #f9a066 35%, #f78b4a 70%, #f57c3a 100%)',
-    
-    // Row 2: Additional orange variants
-    // 4. Horizontal fade - rich orange left to peach right
-    'linear-gradient(90deg, #f57c3a 0%, #f78b4a 20%, #f9a066 45%, #fcb88a 70%, #fdd8c2 100%)',
-    // 5. Corner sweep - orange from bottom-left
-    'linear-gradient(45deg, #e86a2c 0%, #f57c3a 18%, #f9944e 38%, #fcb88a 60%, #fde5d4 85%, #ffffff 100%)',
-    // 6. Radial center - subtle warm glow from center with light orange blend
-    'radial-gradient(ellipse at 50% 50%, #fccc9e 0%, #fcb88a 20%, #f9a066 40%, #f79455 60%, #f78b4a 80%, #f57c3a 100%)',
-  ];
-
-  // ===== BLACK/DARK GRADIENTS (6) =====
-  const blackGradients = [
-    // Row 1: Subtle dark fades
-    'linear-gradient(135deg, #18191A 0%, #2d2e30 100%)',   // Shadow to Charcoal
-    'linear-gradient(180deg, #1f2022 0%, #18191A 100%)',   // Vertical dark fade
-    'linear-gradient(135deg, #0f0f10 0%, #18191A 50%, #27282a 100%)', // Deep black to charcoal
-    
-    // Row 2: Additional dark variants
-    'linear-gradient(90deg, #0a0a0b 0%, #18191A 50%, #252628 100%)',   // Horizontal dark sweep
-    'linear-gradient(45deg, #18191A 0%, #1f2022 30%, #2a2b2d 60%, #353638 100%)', // Corner charcoal fade
-    'radial-gradient(ellipse at 50% 50%, #2d2e30 0%, #232425 40%, #18191A 80%, #0f0f10 100%)', // Radial dark vignette
-  ];
-
-  // Combined gradients array
-  const gradients = [
-    ...whitePurpleGradients,
-    ...purpleConicals,
-    ...purpleMeshes,
-    ...orangeGradients,
-    ...blackGradients,
-  ];
-
-  // HelloData brand palette - solid colors
-  const solidColors = [
-    '#6466e9',  // Purple (Primary)
-    '#818cf8',  // Light Purple
-    '#F97316',  // Orange (Accent)
-    '#fbbf24',  // Gold
-    '#18191A',  // Shadow (Dark)
-    '#2d2e30',  // Charcoal
-    '#6B7280',  // Medium Grey
-    '#9CA3AF',  // Light Medium Grey
-    '#eef1f9',  // Light Grey (Secondary)
-    '#EEF2FF',  // Purple Light
-    '#ffffff',  // White
-    '#000000',  // Black
-  ];
+  // Use centralized gradient and color definitions from data layer
+  const gradients = getAllGradientCSSValues();
+  const solidColors = getSolidColorHexValues();
   
   return (
     <div 
