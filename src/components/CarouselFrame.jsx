@@ -238,8 +238,8 @@ export const CarouselFrame = ({
           />
         </div>
         
-        {/* Remove Button */}
-        {totalFrames > 1 && (
+        {/* Remove Button - Hidden during image editing */}
+        {totalFrames > 1 && !isImageEditing && (
           <button 
             type="button"
             onClick={(e) => { e.stopPropagation(); onRemove(frame.id); }} 
