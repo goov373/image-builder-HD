@@ -136,6 +136,7 @@ const DesignSystemPanel = ({
     patterns: true,
     productImagery: true,
     photography: true,
+    yourImages: true,
   });
   const toggleSection = (section) => {
     setCollapsedSections(prev => ({ ...prev, [section]: !prev[section] }));
@@ -405,12 +406,32 @@ const DesignSystemPanel = ({
             )}
           </div>
           
-          {/* File Browser - Using extracted ImageGrid component */}
-          <ImageGrid
-            images={uploadedFiles}
-            isLoading={isLoadingImages}
-            onRemove={handleRemoveFile}
-          />
+          {/* File Browser - Collapsible Your Images section */}
+          <div className="border-b border-gray-800">
+            <button
+              type="button"
+              onClick={() => toggleSection('yourImages')}
+              className="w-full p-4 flex items-center justify-between hover:bg-gray-800/50 transition-colors"
+            >
+              <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Your Images</h3>
+              <div className="flex items-center gap-2">
+                {uploadedFiles.length > 0 && (
+                  <span className="px-1.5 py-0.5 bg-gray-700 rounded text-[10px] text-gray-300">{uploadedFiles.length}</span>
+                )}
+                <svg className={`w-4 h-4 text-gray-500 transition-transform ${collapsedSections.yourImages ? '' : 'rotate-180'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+            </button>
+            
+            {!collapsedSections.yourImages && (
+              <ImageGrid
+                images={uploadedFiles}
+                isLoading={isLoadingImages}
+                onRemove={handleRemoveFile}
+              />
+            )}
+          </div>
           
           {/* Product Imagery Upload Section */}
           <div className="p-4 border-t border-gray-800">
