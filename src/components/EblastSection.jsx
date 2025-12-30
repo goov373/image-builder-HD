@@ -61,8 +61,9 @@ const EblastSection = ({
       return { background: defaultStyle.background };
     }
     if (typeof bgOverride === 'object' && bgOverride.isStretched) {
+      // IMPORTANT: Use backgroundImage (not background shorthand) to prevent it from resetting size/position
       return {
-        background: bgOverride.gradient,
+        backgroundImage: bgOverride.gradient,
         backgroundSize: bgOverride.size,
         backgroundPosition: bgOverride.position,
         backgroundRepeat: 'no-repeat',

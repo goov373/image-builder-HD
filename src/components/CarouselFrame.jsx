@@ -78,9 +78,10 @@ export const CarouselFrame = ({
       return { background: style.background };
     }
     // Check if it's a stretched gradient object
+    // IMPORTANT: Use backgroundImage (not background shorthand) to prevent it from resetting size/position
     if (typeof bgOverride === 'object' && bgOverride.isStretched) {
       return {
-        background: bgOverride.gradient,
+        backgroundImage: bgOverride.gradient,
         backgroundSize: bgOverride.size,
         backgroundPosition: bgOverride.position,
         backgroundRepeat: 'no-repeat',
