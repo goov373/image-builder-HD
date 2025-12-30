@@ -66,7 +66,7 @@ export const purpleLinearGradients: GradientDefinition[] = [
     id: 'pl-center-band',
     name: 'Center Band',
     category: 'purple-linear',
-    css: 'linear-gradient(135deg, #5c5fdb 0%, #6a6de5 8%, #787bee 16%, #868af3 24%, #949af6 30%, #868af3 36%, #787bee 44%, #6a6de5 55%, #5c5fdb 70%, #5c5fdb 100%)',
+    css: 'linear-gradient(225deg, rgba(165,180,252,0.25) 0%, transparent 35%), linear-gradient(240deg, rgba(148,154,246,0.2) 0%, transparent 28%), linear-gradient(135deg, #5c5fdb 0%, #6a6de5 8%, #787bee 16%, #868af3 24%, #949af6 30%, #868af3 36%, #787bee 44%, #6a6de5 55%, #5c5fdb 70%, #5c5fdb 100%)',
   },
   {
     id: 'pl-diagonal-bottom-left',
