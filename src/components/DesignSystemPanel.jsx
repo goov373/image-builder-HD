@@ -401,6 +401,23 @@ const DesignSystemPanel = ({
             onRemove={handleRemoveFile}
           />
           
+          {/* Product Imagery Upload Section */}
+          <div className="p-4 border-t border-gray-800">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Product Imagery</h3>
+            </div>
+            <div className="border-2 border-dashed border-gray-700 rounded-lg p-4 text-center hover:border-gray-600 transition-colors cursor-pointer">
+              <svg className="w-8 h-8 mx-auto mb-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+              </svg>
+              <p className="text-xs text-gray-400 mb-1">Product shots & mockups</p>
+              <button type="button" className="px-3 py-1.5 bg-gray-700 hover:bg-gray-600 text-xs text-white rounded-lg transition-colors">
+                Upload imagery
+              </button>
+              <p className="text-[10px] text-gray-600 mt-2">PNG with transparent background</p>
+            </div>
+          </div>
+          
           {/* Upload Docs Section */}
           <div className="p-4 border-t border-gray-800">
             <div className="flex items-center justify-between mb-3">
@@ -610,16 +627,30 @@ const DesignSystemPanel = ({
           </div>
         </div>
         
-        {/* Product Imagery Section */}
+        {/* Product Imagery Section - Display only, upload in Assets tab */}
         <div className="p-4 border-b border-gray-800">
-          <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-3">Product Imagery</h3>
-          <div className="border-2 border-dashed border-gray-700 rounded-lg p-4 text-center hover:border-gray-600 transition-colors cursor-pointer">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Product Imagery</h3>
+            {hasFrameSelected && (
+              <span className="text-[10px] text-green-400 flex items-center gap-1">
+                <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse" />
+                Click to add to frame
+              </span>
+            )}
+          </div>
+          
+          {/* Placeholder - no product images uploaded yet */}
+          <div className="text-center py-6 border-2 border-dashed border-gray-700 rounded-lg">
             <svg className="w-8 h-8 mx-auto mb-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
             </svg>
-            <p className="text-xs text-gray-400 mb-1">Product shots & mockups</p>
-            <button type="button" className="px-3 py-1.5 bg-gray-700 hover:bg-gray-600 text-xs text-white rounded-lg transition-colors">
-              Upload imagery
+            <p className="text-[10px] text-gray-500 mb-2">No product images uploaded yet</p>
+            <button 
+              type="button" 
+              onClick={() => setActiveTab('assets')}
+              className="px-3 py-1.5 bg-gray-700 hover:bg-gray-600 text-xs text-white rounded-lg transition-colors"
+            >
+              Go to Assets to upload
             </button>
             <p className="text-[10px] text-gray-600 mt-2">PNG with transparent background</p>
           </div>
