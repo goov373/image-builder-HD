@@ -131,6 +131,15 @@ const DesignSystemPanel = ({
   const [isLoadingImages, setIsLoadingImages] = useState(false);
   const [uploadProgress, setUploadProgress] = useState({ current: 0, total: 0, fileName: '' });
   const [compressionPreset, setCompressionPreset] = useState('highQuality');
+  const [collapsedSections, setCollapsedSections] = useState({
+    backgrounds: false,
+    patterns: true,
+    productImagery: true,
+    photography: true,
+  });
+  const toggleSection = (section) => {
+    setCollapsedSections(prev => ({ ...prev, [section]: !prev[section] }));
+  };
   const fileInputRef = useRef(null);
   const MAX_FILES = LIMITS.MAX_UPLOADED_FILES;
   const MAX_DOCS = LIMITS.MAX_UPLOADED_DOCS;
@@ -544,19 +553,28 @@ const DesignSystemPanel = ({
         </div>
       
         {/* Backgrounds Section */}
-        <div className="p-4 border-b border-gray-800">
-          <div className="flex items-center justify-between mb-3">
+        <div className="border-b border-gray-800">
+          <button
+            type="button"
+            onClick={() => toggleSection('backgrounds')}
+            className="w-full p-4 flex items-center justify-between hover:bg-gray-800/50 transition-colors"
+          >
             <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Backgrounds</h3>
-            {hasRowSelected ? (
-              <span className="text-[10px] text-green-400 flex items-center gap-1">
-                <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse" />
-                {applyMode === 'row' ? 'Apply to row' : 'Click to apply'}
-              </span>
-            ) : (
-              <span className="text-[10px] text-gray-500">Select a frame first</span>
-            )}
-          </div>
+            <div className="flex items-center gap-2">
+              {!collapsedSections.backgrounds && hasRowSelected && (
+                <span className="text-[10px] text-green-400 flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse" />
+                  {applyMode === 'row' ? 'Apply to row' : 'Click to apply'}
+                </span>
+              )}
+              <svg className={`w-4 h-4 text-gray-500 transition-transform ${collapsedSections.backgrounds ? '' : 'rotate-180'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </div>
+          </button>
           
+          {!collapsedSections.backgrounds && (
+          <div className="px-4 pb-4">
           {/* Apply Mode Toggle - Using extracted component */}
           {hasRowSelected && (
             <ApplyModeToggle 
@@ -625,51 +643,64 @@ const DesignSystemPanel = ({
               </div>
             ))}
           </div>
+          </div>
+          )}
         </div>
         
         {/* Product Imagery Section - Display only, upload in Assets tab */}
-        <div className="p-4 border-b border-gray-800">
-          <div className="flex items-center justify-between mb-3">
+        <div className="border-b border-gray-800">
+          <button
+            type="button"
+            onClick={() => toggleSection('productImagery')}
+            className="w-full p-4 flex items-center justify-between hover:bg-gray-800/50 transition-colors"
+          >
             <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Product Imagery</h3>
-            {hasFrameSelected && (
-              <span className="text-[10px] text-green-400 flex items-center gap-1">
-                <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse" />
-                Click to add to frame
-              </span>
-            )}
-          </div>
-          
-          {/* Placeholder - no product images uploaded yet */}
-          <div className="text-center py-6 border-2 border-dashed border-gray-700 rounded-lg">
-            <svg className="w-8 h-8 mx-auto mb-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+            <svg className={`w-4 h-4 text-gray-500 transition-transform ${collapsedSections.productImagery ? '' : 'rotate-180'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
             </svg>
-            <p className="text-[10px] text-gray-500 mb-2">No product images uploaded yet</p>
-            <button 
-              type="button" 
-              onClick={() => setActiveTab('assets')}
-              className="px-3 py-1.5 bg-gray-700 hover:bg-gray-600 text-xs text-white rounded-lg transition-colors"
-            >
-              Go to Assets to upload
-            </button>
-            <p className="text-[10px] text-gray-600 mt-2">PNG with transparent background</p>
+          </button>
+          
+          {!collapsedSections.productImagery && (
+          <div className="px-4 pb-4">
+            {/* Placeholder - no product images uploaded yet */}
+            <div className="text-center py-6 border-2 border-dashed border-gray-700 rounded-lg">
+              <svg className="w-8 h-8 mx-auto mb-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+              </svg>
+              <p className="text-[10px] text-gray-500 mb-2">No product images uploaded yet</p>
+              <button 
+                type="button" 
+                onClick={() => setActiveTab('assets')}
+                className="px-3 py-1.5 bg-gray-700 hover:bg-gray-600 text-xs text-white rounded-lg transition-colors"
+              >
+                Go to Assets to upload
+              </button>
+              <p className="text-[10px] text-gray-600 mt-2">PNG with transparent background</p>
+            </div>
           </div>
+          )}
         </div>
         
         {/* Photography Section - Displays images from Assets tab */}
-        <div className="p-4 border-b border-gray-800">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Photography</h3>
-            {hasFrameSelected ? (
-              <span className="text-[10px] text-green-400 flex items-center gap-1">
-                <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse" />
-                Click to add to frame
-              </span>
-            ) : uploadedFiles.length > 0 ? (
-              <span className="text-[10px] text-gray-500">Select a frame first</span>
-            ) : null}
-          </div>
+        <div className="border-b border-gray-800">
+          <button
+            type="button"
+            onClick={() => toggleSection('photography')}
+            className="w-full p-4 flex items-center justify-between hover:bg-gray-800/50 transition-colors"
+          >
+            <div className="flex items-center gap-2">
+              <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Photography</h3>
+              {uploadedFiles.length > 0 && (
+                <span className="px-1.5 py-0.5 bg-gray-700 rounded text-[10px] text-gray-400">{uploadedFiles.length}</span>
+              )}
+            </div>
+            <svg className={`w-4 h-4 text-gray-500 transition-transform ${collapsedSections.photography ? '' : 'rotate-180'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
           
+          {!collapsedSections.photography && (
+          <div className="px-4 pb-4">
           {/* Display uploaded images from Assets tab */}
           {uploadedFiles.length === 0 ? (
             <div className="text-center py-6 border-2 border-dashed border-gray-700 rounded-lg">
@@ -803,11 +834,25 @@ const DesignSystemPanel = ({
             </a>
           </div>
           <p className="text-[9px] text-gray-600 mt-2 text-center">All free for commercial use</p>
+          </div>
+          )}
         </div>
         
         {/* Brand Patterns Section */}
-        <div className="p-4">
-          <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-3">Brand Patterns</h3>
+        <div className="">
+          <button
+            type="button"
+            onClick={() => toggleSection('patterns')}
+            className="w-full p-4 flex items-center justify-between hover:bg-gray-800/50 transition-colors"
+          >
+            <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Brand Patterns</h3>
+            <svg className={`w-4 h-4 text-gray-500 transition-transform ${collapsedSections.patterns ? '' : 'rotate-180'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+          
+          {!collapsedSections.patterns && (
+          <div className="px-4 pb-4">
           <p className="text-[10px] text-gray-500 mb-3">Data-driven visuals that tell the HelloData story</p>
           
           {/* Pattern Grid - Data Visualizations */}
@@ -902,6 +947,8 @@ const DesignSystemPanel = ({
             <p className="text-[10px] text-gray-500 mb-1">Upload custom pattern</p>
             <p className="text-[9px] text-gray-600">SVG, PNG (tileable)</p>
           </div>
+          </div>
+          )}
         </div>
         </>
       )}
