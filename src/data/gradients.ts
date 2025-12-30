@@ -21,19 +21,19 @@ export const whitePurpleGradients: GradientDefinition[] = [
     id: 'wp-diagonal-mesh',
     name: 'Diagonal Mesh',
     category: 'white-purple',
-    css: 'linear-gradient(135deg, #ffffff 0%, #f5f6ff 15%, #e8ebf7 30%, #d4d9fc 45%, #b8c0f5 60%, #a5b4fc 75%, #818cf8 90%, #6466e9 100%)',
+    css: 'linear-gradient(135deg, #6466e9 0%, #7578eb 12%, #8a8ef2 25%, #a0a6f6 38%, #b8bef9 50%, #d0d5fb 62%, #e5e8fd 75%, #f5f6ff 88%, #ffffff 100%)',
   },
   {
     id: 'wp-vertical-fade',
     name: 'Vertical Fade',
     category: 'white-purple',
-    css: 'linear-gradient(180deg, #ffffff 0%, #f5f6ff 18%, #e8ebf7 35%, #c7d2fe 52%, #a5b4fc 70%, #818cf8 85%, #6466e9 100%)',
+    css: 'linear-gradient(180deg, #6466e9 0%, #7a7ded 15%, #9196f3 30%, #a8adf7 45%, #c0c5fa 58%, #d8dbfc 70%, #edeefd 85%, #ffffff 100%)',
   },
   {
     id: 'wp-soft-diagonal',
     name: 'Soft Diagonal',
     category: 'white-purple',
-    css: 'linear-gradient(160deg, #ffffff 0%, #ffffff 25%, #f5f6ff 40%, #e8ebf7 55%, #c7d2fe 70%, #a5b4fc 85%, #7c7ff2 100%)',
+    css: 'linear-gradient(160deg, #7c7ff2 0%, #8d90f4 15%, #9ea2f6 28%, #b0b5f8 42%, #c3c7fa 55%, #d6d9fc 68%, #e9ebfe 82%, #ffffff 100%)',
   },
 ];
 
