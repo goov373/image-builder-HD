@@ -139,6 +139,7 @@ const Homepage = ({
         {/* Project Grid - sorted newest to oldest */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[...projects]
+            .filter(p => p.hasContent) // Only show completed projects, not drafts
             .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
             .map(project => (
             <div 

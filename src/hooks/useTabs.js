@@ -123,9 +123,19 @@ export default function useTabs(initialTabs = [], user = null) {
 
   const handleCloseTab = (tabId, e) => {
     e.stopPropagation();
-    // Remove from open tabs (project stays saved)
+    
+    // Check if this is an incomplete/draft project (hasn't completed Create New Project form)
+    const project = projects.find(p => p.id === tabId);
+    const isDraft = project && !project.hasContent;
+    
+    // Remove from open tabs
     const newOpenIds = openTabIds.filter(id => id !== tabId);
     setOpenTabIds(newOpenIds);
+    
+    // If it's a draft project, delete it entirely (don't save to homepage)
+    if (isDraft) {
+      setProjects(prev => prev.filter(p => p.id !== tabId));
+    }
     
     // If closing the last open tab, go to homepage
     if (newOpenIds.length === 0) {
