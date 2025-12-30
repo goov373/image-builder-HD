@@ -314,9 +314,9 @@ const ImageLayer = ({
           </div>
 
           {/* Instructions */}
-          <div className="absolute top-2 left-1/2 -translate-x-1/2 bg-black/80 rounded-lg px-4 py-1.5 z-40">
-            <p className="text-white text-[10px] text-center whitespace-nowrap">
-              Drag to move&nbsp;•&nbsp;Scroll to zoom&nbsp;•&nbsp;ESC to finish
+          <div className="absolute top-2 left-1/2 -translate-x-1/2 bg-black/80 rounded-lg px-3 py-1.5 z-40 max-w-[calc(100%-1rem)]">
+            <p className="text-white text-[10px] text-center leading-relaxed">
+              Drag to move • Scroll to zoom • ESC to finish
             </p>
           </div>
         </>
