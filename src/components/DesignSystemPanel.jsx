@@ -774,10 +774,10 @@ const DesignSystemPanel = ({
                 key={idx}
                 onClick={() => handleBackgroundClick(gradient)}
                 disabled={!hasFrameSelected}
-                className={`w-full aspect-square rounded-lg border-2 transition-colors ${
+                className={`w-full aspect-square rounded-lg transition-colors overflow-hidden ${
                   hasFrameSelected 
-                    ? 'border-gray-700 hover:border-gray-400 hover:scale-105 cursor-pointer' 
-                    : 'border-gray-700/50 opacity-60 cursor-not-allowed'
+                    ? 'ring-1 ring-gray-700 hover:ring-gray-400 hover:scale-105 cursor-pointer' 
+                    : 'ring-1 ring-gray-700/50 opacity-50 cursor-not-allowed'
                 }`}
                 style={{ background: gradient }}
                 title={hasFrameSelected ? 'Click to apply this background' : 'Select a frame first'}
