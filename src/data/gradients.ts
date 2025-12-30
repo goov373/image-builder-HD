@@ -18,22 +18,22 @@ export interface GradientDefinition {
 // Purple fading to clear for overlay effects
 export const purpleTransparentGradients: GradientDefinition[] = [
   {
-    id: 'pt-diagonal-fade',
-    name: 'Diagonal Fade',
+    id: 'pt-left-fade',
+    name: 'Left Fade',
     category: 'purple-transparent',
-    css: 'linear-gradient(135deg, #6466e9 0%, rgba(100,102,233,0.85) 20%, rgba(129,140,248,0.6) 40%, rgba(165,180,252,0.35) 60%, rgba(165,180,252,0.15) 80%, rgba(165,180,252,0) 100%)',
+    css: 'linear-gradient(90deg, #6466e9 0%, rgba(100,102,233,0.85) 20%, rgba(129,140,248,0.6) 40%, rgba(165,180,252,0.35) 60%, rgba(165,180,252,0.15) 80%, rgba(165,180,252,0) 100%)',
   },
   {
-    id: 'pt-bottom-fade',
-    name: 'Bottom Fade',
+    id: 'pt-top-fade',
+    name: 'Top Fade',
     category: 'purple-transparent',
-    css: 'linear-gradient(0deg, #6466e9 0%, rgba(100,102,233,0.85) 18%, rgba(129,140,248,0.6) 38%, rgba(165,180,252,0.35) 58%, rgba(165,180,252,0.15) 78%, rgba(165,180,252,0) 100%)',
+    css: 'linear-gradient(180deg, #6466e9 0%, rgba(100,102,233,0.85) 18%, rgba(129,140,248,0.6) 38%, rgba(165,180,252,0.35) 58%, rgba(165,180,252,0.15) 78%, rgba(165,180,252,0) 100%)',
   },
   {
     id: 'pt-corner-fade',
     name: 'Corner Fade',
     category: 'purple-transparent',
-    css: 'linear-gradient(225deg, #6466e9 0%, rgba(100,102,233,0.85) 18%, rgba(129,140,248,0.6) 38%, rgba(165,180,252,0.35) 58%, rgba(165,180,252,0.15) 78%, rgba(165,180,252,0) 100%)',
+    css: 'linear-gradient(135deg, #6466e9 0%, rgba(100,102,233,0.85) 18%, rgba(129,140,248,0.6) 38%, rgba(165,180,252,0.35) 58%, rgba(165,180,252,0.15) 78%, rgba(165,180,252,0) 100%)',
   },
 ];
 
