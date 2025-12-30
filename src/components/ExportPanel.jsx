@@ -248,7 +248,7 @@ const ExportPanel = ({
     <>
       {/* Decorative Diagonal Lines Pattern - In header/tab bar area */}
       <div 
-        className={`fixed top-0 h-[56px] w-72 z-30 pointer-events-none`}
+        className={`fixed top-0 h-[56px] w-72 z-30 border-r border-gray-800 pointer-events-none`}
         style={{ 
           left: isOpen ? 64 : -224, 
           transition: 'left 0.3s ease-out',

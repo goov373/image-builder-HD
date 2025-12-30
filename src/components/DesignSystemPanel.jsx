@@ -320,7 +320,7 @@ const DesignSystemPanel = ({
     <>
       {/* Decorative Diagonal Lines Pattern - In header/tab bar area */}
       <div 
-        className={`fixed top-0 h-[56px] w-72 z-30 ${isOpen ? 'pointer-events-none' : 'pointer-events-none'}`}
+        className={`fixed top-0 h-[56px] w-72 z-30 border-r border-gray-800 ${isOpen ? 'pointer-events-none' : 'pointer-events-none'}`}
         style={{ 
           left: isOpen ? 64 : -224, 
           transition: 'left 0.3s ease-out',
