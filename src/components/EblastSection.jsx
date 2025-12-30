@@ -165,7 +165,7 @@ const EblastSection = ({
         )}
         
         {/* Text Layout - z-index: 10 */}
-        <div className="relative z-10">
+        <div className="absolute inset-0 z-10">
           {renderLayout()}
         </div>
         
