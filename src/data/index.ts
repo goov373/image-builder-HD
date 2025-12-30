@@ -27,12 +27,6 @@ export {
   type ExportPreset,
 } from './exportPresets';
 export {
-  deviceFrames,
-  getDeviceById,
-  getDevicesByType,
-  type DeviceFrame,
-} from './deviceFrames';
-export {
   geometricPatterns,
   organicPatterns,
   minimalPatterns,

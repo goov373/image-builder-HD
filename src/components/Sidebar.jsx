@@ -1,10 +1,8 @@
-import { deviceFrames } from '../data/deviceFrames';
-
 /**
  * Sidebar Component
  * Main navigation sidebar with panel buttons and zoom controls
  */
-const Sidebar = ({ activePanel, onPanelChange, zoom, onZoomChange, isHomePage, onAccountClick, isAccountOpen, onCloseAccount, onShowShortcuts, selectedDevice, onDeviceChange }) => {
+const Sidebar = ({ activePanel, onPanelChange, zoom, onZoomChange, isHomePage, onAccountClick, isAccountOpen, onCloseAccount, onShowShortcuts }) => {
   const panels = [
     { id: 'design', icon: 'M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01', label: 'Design & Assets' },
     { id: 'export', icon: 'M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12', label: 'Export' },
@@ -61,38 +59,8 @@ const Sidebar = ({ activePanel, onPanelChange, zoom, onZoomChange, isHomePage, o
             </svg>
           </button>
         ) : (
-          /* Device Preview & Zoom Controls in Editor */
+          /* Zoom Controls in Editor */
           <>
-            {/* Device Preview Selector */}
-            <div className="relative mb-3">
-              <select
-                value={selectedDevice || 'none'}
-                onChange={(e) => onDeviceChange?.(e.target.value)}
-                className="w-10 h-10 appearance-none bg-gray-800 border border-gray-700 rounded-lg text-transparent cursor-pointer hover:bg-gray-700 hover:border-gray-600 transition-colors focus:outline-none"
-                title="Device preview"
-                style={{ backgroundImage: 'none' }}
-              >
-                {deviceFrames.map(device => (
-                  <option key={device.id} value={device.id} className="text-white bg-gray-800">
-                    {device.shortName}
-                  </option>
-                ))}
-              </select>
-              {/* Phone Icon Overlay */}
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <svg 
-                  className={`w-5 h-5 transition-colors ${selectedDevice && selectedDevice !== 'none' ? 'text-white' : 'text-gray-500'}`} 
-                  fill="none" 
-                  stroke="currentColor" 
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                </svg>
-              </div>
-            </div>
-            
-            {/* Divider */}
-            <div className="w-6 h-px bg-gray-800 mb-2" />
             <button 
               type="button"
               onClick={() => onZoomChange(Math.min(250, zoom + 10))} 
