@@ -21,7 +21,7 @@ export const whitePurpleGradients: GradientDefinition[] = [
     id: 'wp-diagonal-mesh',
     name: 'Diagonal Mesh',
     category: 'white-purple',
-    css: 'linear-gradient(135deg, #6466e9 0%, #7578eb 12%, #8a8ef2 25%, #a0a6f6 38%, #b8bef9 50%, #d0d5fb 62%, #e5e8fd 75%, #f5f6ff 88%, #ffffff 100%)',
+    css: 'linear-gradient(135deg, #6466e9 0%, #6d70eb 15%, #7a7eed 30%, #8b8ff2 45%, #9ea3f5 58%, #b3b8f8 70%, #c9cdfa 82%, #e0e3fc 92%, #f5f6ff 100%)',
   },
   {
     id: 'wp-vertical-fade',
