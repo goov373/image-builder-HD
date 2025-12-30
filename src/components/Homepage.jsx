@@ -116,7 +116,6 @@ const Homepage = ({
           <div>
             <h1 className="text-3xl font-bold text-white">Content Builder</h1>
             <div className="flex flex-wrap items-center gap-2 mt-1">
-              <span className="text-gray-500 text-sm">Create</span>
               <span className="px-2 py-0.5 bg-gray-800 border border-gray-700 rounded-full text-xs text-gray-300">social carousels</span>
               <span className="px-2 py-0.5 bg-gray-800 border border-gray-700 rounded-full text-xs text-gray-300">product images</span>
               <span className="px-2 py-0.5 bg-gray-800 border border-gray-700 rounded-full text-xs text-gray-300">eblast graphics</span>
