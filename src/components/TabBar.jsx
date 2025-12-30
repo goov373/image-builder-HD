@@ -23,6 +23,20 @@ export default function TabBar({
       <div className="flex items-end h-full pl-5">
         {/* Tabs */}
         <div className="flex items-end">
+          {/* Ghost Tab - shown when no tabs are open */}
+          {tabs.length === 0 && (
+            <button
+              type="button"
+              onClick={() => { closeAllDropdowns(); setShowNewTabMenu(true); }}
+              className="flex items-center gap-2 px-4 py-2 mb-1 bg-gray-800/50 border border-dashed border-gray-700 rounded-lg text-gray-500 hover:text-gray-300 hover:border-gray-600 hover:bg-gray-800 transition-colors"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+              <span className="text-xs font-medium">Open Project</span>
+            </button>
+          )}
+          
           {tabs.map((tab, index) => {
             const isTabActive = tab.id === activeTabId && currentView !== 'home';
             return (
@@ -61,8 +75,8 @@ export default function TabBar({
             );
           })}
           
-          {/* Add Tab Button with Dropdown */}
-          <div ref={newTabMenuRef} className="relative mb-1 ml-2">
+          {/* Add Tab Button with Dropdown - hidden when no tabs (ghost tab handles it) */}
+          <div ref={newTabMenuRef} className={`relative mb-1 ml-2 ${tabs.length === 0 ? 'hidden' : ''}`}>
             <button 
               onClick={() => { const wasOpen = showNewTabMenu; closeAllDropdowns(); if (!wasOpen && tabs.length < maxTabs) setShowNewTabMenu(true); }}
               disabled={tabs.length >= maxTabs}
@@ -134,14 +148,16 @@ export default function TabBar({
           </div>
         </div>
         
-        {/* Tab Counter */}
-        <div className="flex items-center px-4 pb-2 ml-auto">
-          <span className="text-xs text-gray-500">
-            <span className={tabs.length >= maxTabs ? 'text-red-400' : 'text-gray-400'}>{tabs.length}</span>
-            <span className="mx-0.5">/</span>
-            <span>{maxTabs}</span>
-          </span>
-        </div>
+        {/* Tab Counter - hidden when no tabs */}
+        {tabs.length > 0 && (
+          <div className="flex items-center px-4 pb-2 ml-auto">
+            <span className="text-xs text-gray-500">
+              <span className={tabs.length >= maxTabs ? 'text-red-400' : 'text-gray-400'}>{tabs.length}</span>
+              <span className="mx-0.5">/</span>
+              <span>{maxTabs}</span>
+            </span>
+          </div>
+        )}
       </div>
     </div>
   );
