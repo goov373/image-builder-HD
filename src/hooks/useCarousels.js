@@ -573,17 +573,10 @@ function carouselReducer(state, action) {
 
 // Load from localStorage
 function loadFromStorage(initialData) {
-  try {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      if (Array.isArray(parsed) && parsed.length > 0) {
-        return parsed;
-      }
-    }
-  } catch (e) {
-    console.warn('Failed to load carousels from localStorage:', e);
-  }
+  // ONE-TIME RESET: Clear all carousel data to start fresh with flat purple backgrounds
+  // TODO: Remove this block after one refresh
+  localStorage.removeItem(STORAGE_KEY);
+  console.log('🔄 Carousel data reset! All frames now have flat purple backgrounds.');
   return initialData;
 }
 

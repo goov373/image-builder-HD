@@ -74,6 +74,7 @@ export default function EditorView({
     handleReorderFrames,
     handleAddRow,
     handleRemoveRow,
+    handleSetFrameBackground,
     // Image layer methods
     handleAddImageToFrame,
     handleUpdateImageLayer,
@@ -186,6 +187,7 @@ export default function EditorView({
                       onActivateTextField={setActiveTextField}
                       onUpdateImageLayer={handleUpdateImageLayer}
                       onRemoveImageFromFrame={handleRemoveImageFromFrame}
+                      onClearBackground={(carouselId, frameId) => handleSetFrameBackground(carouselId, frameId, null)}
                     />
                     {/* Add Row Button - only after last row */}
                     {index === carousels.length - 1 && (
