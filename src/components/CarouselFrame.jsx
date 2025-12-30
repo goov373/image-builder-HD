@@ -63,6 +63,8 @@ export const CarouselFrame = ({
   nextFrameImage = null,
   // Callback for image edit mode (to disable drag during edit)
   onImageEditModeChange,
+  // Whether the row containing this frame is selected
+  isRowSelected = false,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isProgressHidden, setIsProgressHidden] = useState(false);
@@ -271,7 +273,7 @@ export const CarouselFrame = ({
       
       {/* Layer Indicators - outside frame, below card */}
       {/* Only visible when row is selected, hidden during image editing */}
-      {isFrameSelected && !isImageEditing && (
+      {isRowSelected && !isImageEditing && (
       <div className="h-6 mt-1.5 flex items-center gap-2">
         {/* Gradient Indicator */}
         {frame.backgroundOverride && (
@@ -521,6 +523,7 @@ export const SortableFrame = ({
         prevFrameImage={prevFrameImage}
         nextFrameImage={nextFrameImage}
         onImageEditModeChange={setIsImageEditing}
+        isRowSelected={isRowSelected}
       />
     </div>
   );
