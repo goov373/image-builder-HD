@@ -334,21 +334,28 @@ export const CarouselFrame = ({
           </div>
 
           {/* Opacity Control */}
-          <div className="flex items-center gap-1.5 bg-gray-800/90 rounded-lg px-2 py-1.5">
-            <svg className="w-3 h-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
-            <input
-              type="range"
-              min="0"
-              max="100"
-              value={frame.imageLayer.opacity * 100}
-              onChange={(e) => onUpdateImageLayer?.(carouselId, frame.id, { opacity: parseInt(e.target.value) / 100 })}
-              className="w-14 h-1 bg-gray-600 rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-2.5 [&::-webkit-slider-thumb]:h-2.5 [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:rounded-full"
-            />
-            <span className="text-gray-400 text-[10px] min-w-[24px]">
+          <div className="flex items-center gap-1 bg-gray-800/90 rounded-lg px-2 py-1.5">
+            <button
+              type="button"
+              onClick={() => onUpdateImageLayer?.(carouselId, frame.id, { opacity: Math.max(0, frame.imageLayer.opacity - 0.1) })}
+              className="w-5 h-5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 rounded transition-colors"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+              </svg>
+            </button>
+            <span className="text-gray-300 text-[10px] font-medium min-w-[32px] text-center">
               {Math.round(frame.imageLayer.opacity * 100)}%
             </span>
+            <button
+              type="button"
+              onClick={() => onUpdateImageLayer?.(carouselId, frame.id, { opacity: Math.min(1, frame.imageLayer.opacity + 0.1) })}
+              className="w-5 h-5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 rounded transition-colors"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+            </button>
           </div>
 
           {/* Reset Button */}
