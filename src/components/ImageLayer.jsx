@@ -313,11 +313,19 @@ const ImageLayer = ({
             </button>
           </div>
 
-          {/* Instructions */}
-          <div className="absolute top-2 left-1/2 -translate-x-1/2 bg-black/80 rounded-lg px-4 py-1.5 z-40 max-w-[calc(100%-8px)]">
-            <p className="text-white text-[10px] text-center leading-relaxed">
-              Drag to move • Scroll to zoom • ESC to finish
-            </p>
+          {/* Tips Icon with Hover Tooltip */}
+          <div className="absolute top-2 right-2 z-40 group">
+            <div className="w-6 h-6 bg-black/80 rounded-full flex items-center justify-center cursor-help">
+              <svg className="w-3.5 h-3.5 text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            {/* Tooltip - appears on hover, extends left */}
+            <div className="absolute top-8 right-0 bg-black/90 rounded-lg px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none w-max">
+              <p className="text-white text-[10px]">
+                Drag • Scroll to zoom • ESC
+              </p>
+            </div>
           </div>
         </>
       )}
