@@ -86,22 +86,10 @@ export const purpleLinearGradients: GradientDefinition[] = [
 // Light & airy orange variations
 export const orangeGradients: GradientDefinition[] = [
   {
-    id: 'or-peach-diagonal',
-    name: 'Peach Diagonal',
-    category: 'orange',
-    css: 'linear-gradient(135deg, #fdd8c2 0%, #fcb88a 25%, #f9a066 50%, #f78b4a 75%, #f57c3a 100%)',
-  },
-  {
     id: 'or-warm-vertical',
     name: 'Warm Vertical',
     category: 'orange',
     css: 'linear-gradient(180deg, #fee0cc 0%, #fcb98c 30%, #f9944e 60%, #f7843c 100%)',
-  },
-  {
-    id: 'or-subtle-radial',
-    name: 'Subtle Radial',
-    category: 'orange',
-    css: 'radial-gradient(ellipse at 60% 40%, rgba(255, 255, 255, 0.25) 0%, transparent 50%), linear-gradient(160deg, #fcb88a 0%, #f9a066 35%, #f78b4a 70%, #f57c3a 100%)',
   },
   {
     id: 'or-horizontal-fade',
@@ -114,12 +102,6 @@ export const orangeGradients: GradientDefinition[] = [
     name: 'Corner Sweep',
     category: 'orange',
     css: 'linear-gradient(45deg, #e86a2c 0%, #f57c3a 18%, #f9944e 38%, #fcb88a 60%, #fde5d4 85%, #ffffff 100%)',
-  },
-  {
-    id: 'or-radial-center',
-    name: 'Radial Center',
-    category: 'orange',
-    css: 'radial-gradient(ellipse at 50% 50%, #fccc9e 0%, #fcb88a 20%, #f9a066 40%, #f79455 60%, #f78b4a 80%, #f57c3a 100%)',
   },
 ];
 
