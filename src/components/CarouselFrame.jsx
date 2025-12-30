@@ -68,11 +68,25 @@ export const CarouselFrame = ({
   const [isProgressHidden, setIsProgressHidden] = useState(false);
   const [imageEditTrigger, setImageEditTrigger] = useState(0);
   const [isImageEditing, setIsImageEditing] = useState(false);
+  const [initialImageState, setInitialImageState] = useState(null);
   
   // Notify parent (SortableFrame) when image edit mode changes
   const handleImageEditModeChange = (editing) => {
+    // Store initial state when entering edit mode
+    if (editing && frame.imageLayer && !isImageEditing) {
+      setInitialImageState({ ...frame.imageLayer });
+    }
     setIsImageEditing(editing);
     onImageEditModeChange?.(editing);
+  };
+  
+  // Cancel editing and restore initial state
+  const handleCancelEdit = () => {
+    if (initialImageState) {
+      onUpdateImageLayer?.(carouselId, frame.id, initialImageState);
+    }
+    handleImageEditModeChange(false);
+    setInitialImageState(null);
   };
   
   const style = getFrameStyle(carouselId, frame.style, designSystem);
@@ -380,10 +394,20 @@ export const CarouselFrame = ({
             </button>
           </div>
 
+          {/* Cancel Button */}
+          <button
+            type="button"
+            onClick={handleCancelEdit}
+            className="bg-gray-700/90 hover:bg-gray-600 rounded-lg px-2.5 py-1.5 text-gray-300 hover:text-white text-[10px] font-medium transition-colors"
+            title="Cancel and revert changes"
+          >
+            Cancel
+          </button>
+
           {/* Done Button */}
           <button
             type="button"
-            onClick={() => handleImageEditModeChange(false)}
+            onClick={() => { handleImageEditModeChange(false); setInitialImageState(null); }}
             className="bg-orange-500/90 hover:bg-orange-500 rounded-lg px-2.5 py-1.5 text-white text-[10px] font-medium transition-colors"
             title="Done editing"
           >
