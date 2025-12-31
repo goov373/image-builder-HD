@@ -925,16 +925,24 @@ export const CarouselFrame = ({
                 <span className="text-[10px] text-gray-500 group-hover:text-gray-300 transition-colors">Product</span>
               </div>
             )}
-            {/* Progress Indicator - always available, shown as solid chip */}
+            {/* Progress Indicator - ghost style when hidden, solid when visible */}
             <div 
-              className="flex items-center gap-1 px-2 py-1 bg-gray-800/80 rounded-full group cursor-pointer hover:bg-gray-700/80 transition-colors"
+              className={`flex items-center gap-1 px-2 py-1 rounded-full group cursor-pointer transition-colors ${
+                frame.progressIndicator?.isHidden 
+                  ? 'bg-gray-800/50 border border-dashed border-gray-600 hover:bg-gray-700/80' 
+                  : 'bg-gray-800/80 hover:bg-gray-700/80'
+              }`}
               title="Edit progress indicator"
               onClick={(e) => { e.stopPropagation(); setIsProgressEditing(true); }}
             >
-              <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className={`w-3 h-3 ${frame.progressIndicator?.isHidden ? 'text-gray-500' : 'text-gray-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
               </svg>
-              <span className="text-[10px] text-gray-400 group-hover:text-white transition-colors">Progress</span>
+              <span className={`text-[10px] transition-colors ${
+                frame.progressIndicator?.isHidden 
+                  ? 'text-gray-500 group-hover:text-gray-300' 
+                  : 'text-gray-400 group-hover:text-white'
+              }`}>Progress</span>
             </div>
           </div>
         )}
