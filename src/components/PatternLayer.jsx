@@ -22,10 +22,16 @@ const PatternLayer = ({
   
   const { scale, rotation, opacity, blendMode, color, isStretched, stretchSize, stretchPosition } = patternLayer;
   
+  // Check if this is a static file pattern (starts with /) vs data URI
+  const isStaticFile = pattern.svg.startsWith('/');
+  
   // Calculate background size based on scale and tile size
   const tileSize = pattern.tileSize * scale;
-  const backgroundSize = isStretched ? stretchSize : `${tileSize}px ${tileSize}px`;
-  const backgroundPosition = isStretched ? stretchPosition : '0 0';
+  // Static file patterns use 'cover' sizing, data URI patterns tile
+  const backgroundSize = isStretched 
+    ? stretchSize 
+    : (isStaticFile ? 'cover' : `${tileSize}px ${tileSize}px`);
+  const backgroundPosition = isStretched ? stretchPosition : 'center';
   
   // Apply rotation via a wrapper transform if needed
   const hasRotation = rotation && rotation !== 0;
@@ -35,7 +41,7 @@ const PatternLayer = ({
     backgroundImage: `url("${pattern.svg}")`,
     backgroundSize,
     backgroundPosition,
-    backgroundRepeat: 'repeat',
+    backgroundRepeat: isStaticFile ? 'no-repeat' : 'repeat',
     opacity,
     mixBlendMode: blendMode || 'normal',
     // If we have rotation, we need to scale up to cover corners

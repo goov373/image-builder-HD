@@ -239,6 +239,32 @@ export const brandPatterns: PatternDefinition[] = [
   },
 ];
 
+// ===== STATIC FILE PATTERNS =====
+// These patterns use static SVG files from /patterns/ folder
+export const staticFilePatterns: PatternDefinition[] = [
+  // Data Visualizations
+  { id: 'pattern-street-grid', name: 'Market Map', category: 'brand', defaultScale: 1, defaultOpacity: 0.3, tileSize: 300, svg: '/patterns/street-grid.svg' },
+  { id: 'pattern-comp-radius', name: 'Comp Radius', category: 'brand', defaultScale: 1, defaultOpacity: 0.3, tileSize: 300, svg: '/patterns/comp-radius-new.svg' },
+  { id: 'pattern-rent-trends', name: 'Rent Trends', category: 'brand', defaultScale: 1, defaultOpacity: 0.3, tileSize: 300, svg: '/patterns/rent-trends.svg' },
+  { id: 'pattern-apartment-units', name: 'Unit Grid', category: 'brand', defaultScale: 1, defaultOpacity: 0.3, tileSize: 300, svg: '/patterns/apartment-units.svg' },
+  { id: 'pattern-market-heat', name: 'Market Heat', category: 'brand', defaultScale: 1, defaultOpacity: 0.3, tileSize: 300, svg: '/patterns/market-heat.svg' },
+  { id: 'pattern-property-network', name: 'Data Network', category: 'brand', defaultScale: 1, defaultOpacity: 0.3, tileSize: 300, svg: '/patterns/property-network.svg' },
+  // Neighborhood
+  { id: 'pattern-city-blocks-1', name: 'Grid City', category: 'brand', defaultScale: 1, defaultOpacity: 0.3, tileSize: 300, svg: '/patterns/city-blocks-1.svg' },
+  { id: 'pattern-city-blocks-2', name: 'Diagonal Ave', category: 'brand', defaultScale: 1, defaultOpacity: 0.3, tileSize: 300, svg: '/patterns/city-blocks-2.svg' },
+  { id: 'pattern-city-blocks-3', name: 'Dense Urban', category: 'brand', defaultScale: 1, defaultOpacity: 0.3, tileSize: 300, svg: '/patterns/city-blocks-3.svg' },
+  { id: 'pattern-city-blocks-4', name: 'River City', category: 'brand', defaultScale: 1, defaultOpacity: 0.3, tileSize: 300, svg: '/patterns/city-blocks-4.svg' },
+  { id: 'pattern-city-blocks-5', name: 'Highway', category: 'brand', defaultScale: 1, defaultOpacity: 0.3, tileSize: 300, svg: '/patterns/city-blocks-5.svg' },
+  { id: 'pattern-city-blocks-6', name: 'Roundabout', category: 'brand', defaultScale: 1, defaultOpacity: 0.3, tileSize: 300, svg: '/patterns/city-blocks-6.svg' },
+  // Metro / Submarket
+  { id: 'pattern-metro-1', name: 'Beltway', category: 'brand', defaultScale: 1, defaultOpacity: 0.3, tileSize: 300, svg: '/patterns/metro-1.svg' },
+  { id: 'pattern-metro-2', name: 'River Metro', category: 'brand', defaultScale: 1, defaultOpacity: 0.3, tileSize: 300, svg: '/patterns/metro-2.svg' },
+  { id: 'pattern-metro-3', name: 'Coastal', category: 'brand', defaultScale: 1, defaultOpacity: 0.3, tileSize: 300, svg: '/patterns/metro-3.svg' },
+  { id: 'pattern-metro-4', name: 'Lakefront', category: 'brand', defaultScale: 1, defaultOpacity: 0.3, tileSize: 300, svg: '/patterns/metro-4.svg' },
+  { id: 'pattern-metro-5', name: 'Airport Hub', category: 'brand', defaultScale: 1, defaultOpacity: 0.3, tileSize: 300, svg: '/patterns/metro-5.svg' },
+  { id: 'pattern-metro-6', name: 'Multi-Core', category: 'brand', defaultScale: 1, defaultOpacity: 0.3, tileSize: 300, svg: '/patterns/metro-6.svg' },
+];
+
 // ===== EXPORTS =====
 
 export const allPatterns: PatternDefinition[] = [
@@ -246,6 +272,7 @@ export const allPatterns: PatternDefinition[] = [
   ...organicPatterns,
   ...minimalPatterns,
   ...brandPatterns,
+  ...staticFilePatterns,
 ];
 
 export const patternCategories = [
