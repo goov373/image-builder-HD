@@ -990,21 +990,15 @@ export const CarouselFrame = ({
             <button 
               type="button"
               onClick={(e) => { e.stopPropagation(); if (isFrameSelected) onRequestAddIcon?.(); }}
-              className={`w-full h-full rounded-lg border-2 border-dashed flex items-center justify-center transition-colors ${
-                isFrameSelected 
-                  ? 'border-orange-500 bg-orange-500/10 cursor-pointer hover:bg-orange-500/20' 
-                  : isRowSelected 
-                    ? 'border-orange-500/40 bg-transparent cursor-default'
-                    : 'border-gray-600/50 bg-transparent cursor-default'
-              }`}
-              title={isFrameSelected ? "Click to add icon" : "Icon placeholder"}
-              disabled={!isFrameSelected}
+              className="w-full h-full rounded flex items-center justify-center cursor-pointer transition-colors hover:bg-orange-500/10"
+              style={{
+                border: '1px dashed rgba(249, 115, 22, 0.5)',
+              }}
+              title="Click to add icon"
             >
-              {isFrameSelected && (
-                <svg className="w-4 h-4 text-orange-500/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                </svg>
-              )}
+              <svg className="w-3.5 h-3.5 text-orange-500/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
             </button>
           </div>
         )}
