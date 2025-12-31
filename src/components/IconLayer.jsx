@@ -37,8 +37,13 @@ const IconLayer = ({
   };
   
   const handleClick = (e) => {
-    e.stopPropagation();
-    onClick?.();
+    // Only open tool panel if frame is already selected
+    // This enforces a two-step selection: first select frame, then select layer
+    if (isFrameSelected) {
+      e.stopPropagation();
+      onClick?.();
+    }
+    // If frame not selected, let click bubble up to select the frame
   };
   
   return (

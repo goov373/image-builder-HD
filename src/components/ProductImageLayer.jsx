@@ -144,9 +144,14 @@ const ProductImageLayer = ({
   };
   
   // Handle click to open tool panel
+  // Only open tool panel if frame is already selected
+  // This enforces a two-step selection: first select frame, then select layer
   const handleClick = (e) => {
-    e.stopPropagation();
-    onClick?.();
+    if (isFrameSelected) {
+      e.stopPropagation();
+      onClick?.();
+    }
+    // If frame not selected, let click bubble up to select the frame
   };
 
   return (
