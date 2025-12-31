@@ -597,24 +597,31 @@ function carouselReducer(state, action) {
     
     case CAROUSEL_ACTIONS.ADD_PRODUCT_IMAGE_TO_FRAME: {
       const { carouselId, frameId, imageSrc, layoutIndex, layoutVariant } = action;
-      // Calculate position based on layout
-      // Bottom Stack (layout 0, variant 0): product at top
-      // Top Stack (layout 0, variant 1): product at bottom
-      // Upper Drama (layout 1, variant 2): product at center
-      let yPosition = 0.2; // Default: upper portion
-      if (layoutIndex === 0 && layoutVariant === 1) {
-        yPosition = 0.6; // Top Stack: product at bottom
+      
+      // Determine position based on layout
+      // 'top' = product image above text (text at bottom)
+      // 'bottom' = product image below text (text at top)
+      let position = 'top';
+      
+      if (layoutIndex === 0 && layoutVariant === 0) {
+        // Bottom Stack: text at bottom, product at top
+        position = 'top';
+      } else if (layoutIndex === 0 && layoutVariant === 1) {
+        // Top Stack: text at top, product at bottom
+        position = 'bottom';
       } else if (layoutIndex === 1 && layoutVariant === 2) {
-        yPosition = 0.35; // Upper Drama: center
+        // Upper Drama: text in upper area, product below
+        position = 'bottom';
       }
       
       const newProductImageLayer = {
         id: `product-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
         src: imageSrc,
-        x: 0.5,           // Centered horizontally (0-1 range, 0.5 = center)
-        y: yPosition,     // Vertical position based on layout
-        width: 0.6,       // 60% of frame width
-        opacity: 1,       // Fully visible
+        position,          // 'top' or 'bottom' - which area of the layout
+        scale: 1,          // Zoom level (1 = 100%)
+        borderRadius: 8,   // Corner rounding in pixels
+        offsetX: 0,        // Horizontal offset for positioning
+        offsetY: 0,        // Vertical offset for positioning
       };
       
       return {

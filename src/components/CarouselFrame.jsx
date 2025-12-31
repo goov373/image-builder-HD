@@ -67,6 +67,7 @@ export const CarouselFrame = ({
   onUpdateProductImageLayer,
   onRemoveProductImageFromFrame,
   onRequestAddProductImage, // Callback to open design panel with product imagery section
+  onProductImageDragChange, // Callback when product image drag state changes
   // Cross-frame overflow
   prevFrameImage = null,
   nextFrameImage = null,
@@ -79,6 +80,7 @@ export const CarouselFrame = ({
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isProgressHidden, setIsProgressHidden] = useState(false);
+  const [isIconPlaceholderHidden, setIsIconPlaceholderHidden] = useState(false);
   const [imageEditTrigger, setImageEditTrigger] = useState(0);
   const [imageCloseTrigger, setImageCloseTrigger] = useState(0);
   const [isImageEditing, setIsImageEditing] = useState(false);
@@ -380,15 +382,71 @@ export const CarouselFrame = ({
           {renderLayout()}
         </div>
         
-        {/* Layer 5: Product Image - above text (z-index: 20) */}
-        {frame.productImageLayer && (
-          <ProductImageLayer
-            productImageLayer={frame.productImageLayer}
-            frameWidth={size.width}
-            frameHeight={size.height}
-            isEditing={isProductImageEditing}
-          />
+        {/* Icon Placeholder - appears on Bottom Stack layouts without a product image */}
+        {layoutIndex === 0 && layoutVariant === 0 && !frame.productImageLayer && !isIconPlaceholderHidden && (
+          <div 
+            className="absolute z-15"
+            style={{
+              left: '7.5%',
+              bottom: '52%', // Position above text area
+              width: '36px',
+              height: '36px',
+            }}
+          >
+            <div 
+              className={`w-full h-full rounded-lg border-2 border-dashed flex items-center justify-center transition-colors ${
+                isFrameSelected 
+                  ? 'border-orange-500 bg-orange-500/10 cursor-pointer hover:bg-orange-500/20' 
+                  : isRowSelected 
+                    ? 'border-orange-500/40 bg-transparent'
+                    : 'border-gray-600/50 bg-transparent'
+              }`}
+              title={isFrameSelected ? "Click to add icon" : "Icon placeholder"}
+            >
+              {isFrameSelected && (
+                <>
+                  <svg className="w-4 h-4 text-orange-500/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  </svg>
+                  {/* Toggle visibility button */}
+                  <button
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); setIsIconPlaceholderHidden(true); }}
+                    className="absolute -top-2 -right-2 w-4 h-4 bg-gray-800 hover:bg-red-500 rounded-full flex items-center justify-center transition-colors"
+                    title="Hide icon placeholder"
+                  >
+                    <svg className="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
         )}
+        
+        {/* Layer 5: Product Image - above text (z-index: 20) */}
+        {frame.productImageLayer && (() => {
+          const headline = frame.variants?.[frame.currentVariant]?.headline || '';
+          const subhead = frame.variants?.[frame.currentVariant]?.subhead || '';
+          // Key forces re-render when text content changes
+          const textKey = `${headline.length}-${subhead.length}`;
+          return (
+            <ProductImageLayer
+              key={textKey}
+              productImageLayer={frame.productImageLayer}
+              frameWidth={size.width}
+              frameHeight={size.height}
+              isEditing={isProductImageEditing}
+              position={frame.productImageLayer.position || 'top'}
+              textContent={{ headline, subhead }}
+              isRowSelected={isRowSelected}
+              isFrameSelected={isFrameSelected}
+              onUpdateLayer={(updates) => onUpdateProductImageLayer?.(carouselId, frame.id, updates)}
+              onDragStateChange={onProductImageDragChange}
+            />
+          );
+        })()}
         
         {/* Progress Dots Overlay - Hidden during image editing */}
         {!isImageEditing && (
@@ -436,6 +494,21 @@ export const CarouselFrame = ({
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
             </svg>
             <span className="text-[10px] text-white font-medium">Add Product Image</span>
+          </button>
+        )}
+        {/* Show Icon Placeholder - Only for Bottom Stack without product image, when hidden */}
+        {layoutIndex === 0 && layoutVariant === 0 && !frame.productImageLayer && isIconPlaceholderHidden && isFrameSelected && (
+          <button 
+            type="button"
+            className="flex items-center gap-1 px-2 py-1 bg-gray-700/80 hover:bg-gray-600/80 rounded-full transition-colors"
+            title="Show icon placeholder"
+            onClick={(e) => { e.stopPropagation(); setIsIconPlaceholderHidden(false); }}
+          >
+            <svg className="w-3 h-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+            </svg>
+            <span className="text-[10px] text-gray-300 font-medium">Show Icon</span>
           </button>
         )}
         {/* Edit Product Image - When a product image exists */}
@@ -887,12 +960,12 @@ export const CarouselFrame = ({
           onClick={(e) => e.stopPropagation()}
           onMouseDown={(e) => e.stopPropagation()}
         >
-          {/* Opacity Control */}
+          {/* Zoom Control */}
           <div className="flex items-center gap-1 bg-gray-800/90 rounded-lg px-2 py-1.5">
-            <span className="text-gray-500 text-[10px] mr-1 min-w-[40px]">Opacity</span>
+            <span className="text-gray-500 text-[10px] mr-1 min-w-[40px]">Zoom</span>
             <button
               type="button"
-              onClick={() => onUpdateProductImageLayer?.(carouselId, frame.id, { opacity: Math.max(0, (frame.productImageLayer.opacity || 1) - 0.1) })}
+              onClick={() => onUpdateProductImageLayer?.(carouselId, frame.id, { scale: Math.max(0.5, (frame.productImageLayer.scale || 1) - 0.1) })}
               className="w-5 h-5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 rounded transition-colors"
             >
               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -900,11 +973,11 @@ export const CarouselFrame = ({
               </svg>
             </button>
             <span className="text-gray-300 text-[10px] font-medium min-w-[32px] text-center">
-              {Math.round((frame.productImageLayer.opacity || 1) * 100)}%
+              {Math.round((frame.productImageLayer.scale || 1) * 100)}%
             </span>
             <button
               type="button"
-              onClick={() => onUpdateProductImageLayer?.(carouselId, frame.id, { opacity: Math.min(1, (frame.productImageLayer.opacity || 1) + 0.1) })}
+              onClick={() => onUpdateProductImageLayer?.(carouselId, frame.id, { scale: Math.min(2, (frame.productImageLayer.scale || 1) + 0.1) })}
               className="w-5 h-5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 rounded transition-colors"
             >
               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -913,9 +986,45 @@ export const CarouselFrame = ({
             </button>
             <button
               type="button"
-              onClick={() => onUpdateProductImageLayer?.(carouselId, frame.id, { opacity: 1 })}
+              onClick={() => onUpdateProductImageLayer?.(carouselId, frame.id, { scale: 1 })}
               className="w-5 h-5 flex items-center justify-center text-gray-500 hover:text-white hover:bg-white/10 rounded transition-colors"
-              title="Reset opacity to 100%"
+              title="Reset zoom to 100%"
+            >
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+            </button>
+          </div>
+
+          {/* Corner Rounding Control */}
+          <div className="flex items-center gap-1 bg-gray-800/90 rounded-lg px-2 py-1.5">
+            <span className="text-gray-500 text-[10px] mr-1 min-w-[40px]">Corners</span>
+            <button
+              type="button"
+              onClick={() => onUpdateProductImageLayer?.(carouselId, frame.id, { borderRadius: Math.max(0, (frame.productImageLayer.borderRadius ?? 8) - 4) })}
+              className="w-5 h-5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 rounded transition-colors"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+              </svg>
+            </button>
+            <span className="text-gray-300 text-[10px] font-medium min-w-[32px] text-center">
+              {frame.productImageLayer.borderRadius ?? 8}px
+            </span>
+            <button
+              type="button"
+              onClick={() => onUpdateProductImageLayer?.(carouselId, frame.id, { borderRadius: Math.min(48, (frame.productImageLayer.borderRadius ?? 8) + 4) })}
+              className="w-5 h-5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 rounded transition-colors"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              onClick={() => onUpdateProductImageLayer?.(carouselId, frame.id, { borderRadius: 8 })}
+              className="w-5 h-5 flex items-center justify-center text-gray-500 hover:text-white hover:bg-white/10 rounded transition-colors"
+              title="Reset corners to 8px"
             >
               <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -999,7 +1108,8 @@ export const SortableFrame = ({
   nextFrameImage,
 }) => {
   const [isImageEditing, setIsImageEditing] = useState(false);
-  
+  const [isProductImageDragging, setIsProductImageDragging] = useState(false);
+
   const {
     attributes,
     listeners,
@@ -1008,7 +1118,7 @@ export const SortableFrame = ({
     isDragging,
   } = useSortable({ 
     id,
-    disabled: !isRowSelected || isImageEditing, // Disable drag when editing image
+    disabled: !isRowSelected || isImageEditing || isProductImageDragging, // Disable drag when editing image or dragging product
   });
 
   // Calculate transform - non-dragged items move by exactly one card slot
@@ -1060,6 +1170,7 @@ export const SortableFrame = ({
         onUpdateProductImageLayer={onUpdateProductImageLayer}
         onRemoveProductImageFromFrame={onRemoveProductImageFromFrame}
         onRequestAddProductImage={onRequestAddProductImage}
+        onProductImageDragChange={setIsProductImageDragging}
         prevFrameImage={prevFrameImage}
         nextFrameImage={nextFrameImage}
         onImageEditModeChange={setIsImageEditing}

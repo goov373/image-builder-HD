@@ -150,7 +150,7 @@ const DesignSystemPanel = ({
     brandIcons: true,
   });
   // Expand a specific section when the panel opens with expandSectionOnOpen
-  React.useEffect(() => {
+  useEffect(() => {
     if (expandSectionOnOpen && collapsedSections[expandSectionOnOpen]) {
       setCollapsedSections(prev => ({ ...prev, [expandSectionOnOpen]: false }));
     }
