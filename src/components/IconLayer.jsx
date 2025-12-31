@@ -24,7 +24,7 @@ const IconLayer = ({
       return `2px solid ${borderColor}`;
     }
     if (isFrameSelected) {
-      return '1px dashed #f97316';
+      return '1px dashed rgba(249, 115, 22, 0.5)';
     }
     // No border when only row is selected or nothing is selected
     return 'none';
@@ -42,7 +42,7 @@ const IconLayer = ({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: '8px',
+        borderRadius: '4px', // Match placeholder frame rounding
         border: getBorderStyle(),
         backgroundColor: backgroundColor || 'transparent',
       }}
