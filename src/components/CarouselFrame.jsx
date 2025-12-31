@@ -864,157 +864,126 @@ export const CarouselFrame = ({
       {/* Only visible when row is selected, hidden during editing modes */}
       {isRowSelected && !isImageEditing && !isFillEditing && !isPatternEditing && !isProductImageEditing && !isIconEditing && !isProgressEditing && (
       <div className="mt-1.5 flex flex-col items-start gap-1">
-        {/* Layer chips - show when frame is selected, arranged vertically */}
+        {/* Layer chips - show when frame is selected, organized into table sections */}
         {isFrameSelected && (
-          <div className="flex flex-col items-start gap-1">
-            {/* 1. Progress Indicator - ghost style when hidden, solid when visible */}
-            <div 
-              className={`flex items-center gap-1 px-2 py-1 rounded-full group cursor-pointer transition-colors ${
-                frame.progressIndicator?.isHidden 
-                  ? 'bg-gray-800/50 border border-dashed border-gray-600 hover:bg-gray-700/80' 
-                  : 'bg-gray-800/80 hover:bg-gray-700/80'
-              }`}
-              title="Edit progress indicator"
-              onClick={(e) => { e.stopPropagation(); setIsProgressEditing(true); }}
-            >
-              <svg className={`w-3 h-3 ${frame.progressIndicator?.isHidden ? 'text-gray-500' : 'text-gray-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
-              </svg>
-              <span className={`text-[10px] transition-colors ${
-                frame.progressIndicator?.isHidden 
-                  ? 'text-gray-500 group-hover:text-gray-300' 
-                  : 'text-gray-400 group-hover:text-white'
-              }`}>Progress</span>
+          <div className="flex flex-col items-stretch w-full max-w-[180px]">
+            {/* Foreground Layers Section */}
+            <div className="text-[9px] text-gray-500 uppercase tracking-wider px-1 pb-1">Foreground Layers</div>
+            <div className="border-t border-gray-600/50">
+              {/* 1. Progress Indicator */}
+              <div 
+                className={`flex items-center gap-1.5 px-2 py-1.5 border-b border-gray-600/50 group cursor-pointer transition-colors hover:bg-gray-700/50 ${
+                  frame.progressIndicator?.isHidden ? 'opacity-60' : ''
+                }`}
+                title="Edit progress indicator"
+                onClick={(e) => { e.stopPropagation(); setIsProgressEditing(true); }}
+              >
+                <svg className={`w-3 h-3 ${frame.progressIndicator?.isHidden ? 'text-gray-500' : 'text-gray-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
+                </svg>
+                <span className={`text-[10px] transition-colors ${
+                  frame.progressIndicator?.isHidden 
+                    ? 'text-gray-500 group-hover:text-gray-300' 
+                    : 'text-gray-400 group-hover:text-white'
+                }`}>Progress</span>
+                {frame.progressIndicator?.isHidden && (
+                  <span className="ml-auto text-[8px] text-gray-600 italic">hidden</span>
+                )}
+              </div>
+              
+              {/* 2. Icon - only for eligible layouts */}
+              {layoutIndex === 0 && layoutVariant === 0 && !frame.productImageLayer && (
+                <div 
+                  className={`flex items-center gap-1.5 px-2 py-1.5 border-b border-gray-600/50 group cursor-pointer transition-colors hover:bg-gray-700/50 ${
+                    !frame.iconLayer ? 'opacity-60' : ''
+                  }`}
+                  title={frame.iconLayer ? "Edit icon" : "Add an icon"}
+                  onClick={(e) => { e.stopPropagation(); frame.iconLayer ? handleStartIconEdit() : onRequestAddIcon?.(); }}
+                >
+                  <svg className={`w-3 h-3 ${frame.iconLayer ? 'text-gray-400' : 'text-gray-500'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span className={`text-[10px] transition-colors ${frame.iconLayer ? 'text-gray-400 group-hover:text-white' : 'text-gray-500 group-hover:text-gray-300'}`}>Icon / Stat</span>
+                  {!frame.iconLayer && (
+                    <span className="ml-auto text-[8px] text-gray-600 italic">empty</span>
+                  )}
+                </div>
+              )}
+              
+              {/* 3. Product Image - only for eligible layouts */}
+              {isProductImageEligible && (
+                <div 
+                  className={`flex items-center gap-1.5 px-2 py-1.5 border-b border-gray-600/50 group cursor-pointer transition-colors hover:bg-gray-700/50 ${
+                    !frame.productImageLayer ? 'opacity-60' : ''
+                  }`}
+                  title={frame.productImageLayer ? "Edit product image" : "Add a product image"}
+                  onClick={(e) => { e.stopPropagation(); frame.productImageLayer ? handleStartProductImageEdit() : onRequestAddProductImage?.(); }}
+                >
+                  <svg className={`w-3 h-3 ${frame.productImageLayer ? 'text-gray-400' : 'text-gray-500'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                  </svg>
+                  <span className={`text-[10px] transition-colors ${frame.productImageLayer ? 'text-gray-400 group-hover:text-white' : 'text-gray-500 group-hover:text-gray-300'}`}>Product Image</span>
+                  {!frame.productImageLayer && (
+                    <span className="ml-auto text-[8px] text-gray-600 italic">empty</span>
+                  )}
+                </div>
+              )}
             </div>
             
-            {/* 2. Icon - only for eligible layouts */}
-            {layoutIndex === 0 && layoutVariant === 0 && !frame.productImageLayer && (
-              frame.iconLayer ? (
-                <div 
-                  className="flex items-center gap-1 px-2 py-1 bg-gray-800/80 rounded-full group cursor-pointer hover:bg-gray-700/80 transition-colors"
-                  title="Edit icon"
-                  onClick={(e) => { e.stopPropagation(); handleStartIconEdit(); }}
-                >
-                  <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <span className="text-[10px] text-gray-400 group-hover:text-white transition-colors">Icon / Stat</span>
-                </div>
-              ) : (
-                <div 
-                  className="flex items-center gap-1 px-2 py-1 bg-gray-800/50 rounded-full group cursor-pointer hover:bg-gray-700/80 transition-colors border border-dashed border-gray-600"
-                  title="Add an icon"
-                  onClick={(e) => { e.stopPropagation(); onRequestAddIcon?.(); }}
-                >
-                  <svg className="w-3 h-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <span className="text-[10px] text-gray-500 group-hover:text-gray-300 transition-colors">Icon / Stat</span>
-                </div>
-              )
-            )}
-            
-            {/* 3. Product Image - only for eligible layouts */}
-            {isProductImageEligible && (
-              frame.productImageLayer ? (
-                <div 
-                  className="flex items-center gap-1 px-2 py-1 bg-gray-800/80 rounded-full group cursor-pointer hover:bg-gray-700/80 transition-colors"
-                  title="Edit product image"
-                  onClick={(e) => { e.stopPropagation(); handleStartProductImageEdit(); }}
-                >
-                  <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                  </svg>
-                  <span className="text-[10px] text-gray-400 group-hover:text-white transition-colors">Product Image</span>
-                </div>
-              ) : (
-                <div 
-                  className="flex items-center gap-1 px-2 py-1 bg-gray-800/50 rounded-full group cursor-pointer hover:bg-gray-700/80 transition-colors border border-dashed border-gray-600"
-                  title="Add a product image"
-                  onClick={(e) => { e.stopPropagation(); onRequestAddProductImage?.(); }}
-                >
-                  <svg className="w-3 h-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                  </svg>
-                  <span className="text-[10px] text-gray-500 group-hover:text-gray-300 transition-colors">Product Image</span>
-                </div>
-              )
-            )}
-            
-            {/* 4. Fill Color */}
-            {frame.backgroundOverride ? (
+            {/* Background Layers Section */}
+            <div className="text-[9px] text-gray-500 uppercase tracking-wider px-1 pb-1 pt-2">Background Layers</div>
+            <div className="border-t border-gray-600/50">
+              {/* 4. Fill Color */}
               <div 
-                className="flex items-center gap-1 px-2 py-1 bg-gray-800/80 rounded-full group cursor-pointer hover:bg-gray-700/80 transition-colors"
-                title="Edit fill color"
-                onClick={(e) => { e.stopPropagation(); handleStartFillEdit(); }}
+                className={`flex items-center gap-1.5 px-2 py-1.5 border-b border-gray-600/50 group cursor-pointer transition-colors hover:bg-gray-700/50 ${
+                  !frame.backgroundOverride ? 'opacity-60' : ''
+                }`}
+                title={frame.backgroundOverride ? "Edit fill color" : "Add a fill color"}
+                onClick={(e) => { e.stopPropagation(); frame.backgroundOverride ? handleStartFillEdit() : onRequestAddFill?.(); }}
               >
-                <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className={`w-3 h-3 ${frame.backgroundOverride ? 'text-gray-400' : 'text-gray-500'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
                 </svg>
-                <span className="text-[10px] text-gray-400 group-hover:text-white transition-colors">Fill Color</span>
+                <span className={`text-[10px] transition-colors ${frame.backgroundOverride ? 'text-gray-400 group-hover:text-white' : 'text-gray-500 group-hover:text-gray-300'}`}>Fill Color</span>
+                {!frame.backgroundOverride && (
+                  <span className="ml-auto text-[8px] text-gray-600 italic">empty</span>
+                )}
               </div>
-            ) : (
+              
+              {/* 5. Background Photo */}
               <div 
-                className="flex items-center gap-1 px-2 py-1 bg-gray-800/50 rounded-full group cursor-pointer hover:bg-gray-700/80 transition-colors border border-dashed border-gray-600"
-                title="Add a fill color"
-                onClick={(e) => { e.stopPropagation(); onRequestAddFill?.(); }}
+                className={`flex items-center gap-1.5 px-2 py-1.5 border-b border-gray-600/50 group cursor-pointer transition-colors hover:bg-gray-700/50 ${
+                  !frame.imageLayer ? 'opacity-60' : ''
+                }`}
+                title={frame.imageLayer ? "Edit image" : "Add an image"}
+                onClick={(e) => { e.stopPropagation(); frame.imageLayer ? handleStartImageEdit() : onRequestAddPhoto?.(); }}
               >
-                <svg className="w-3 h-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
-                </svg>
-                <span className="text-[10px] text-gray-500 group-hover:text-gray-300 transition-colors">Fill Color</span>
-              </div>
-            )}
-            
-            {/* 5. Image */}
-            {frame.imageLayer ? (
-              <div 
-                className="flex items-center gap-1 px-2 py-1 bg-gray-800/80 rounded-full group cursor-pointer hover:bg-gray-700/80 transition-colors"
-                title="Edit image"
-                onClick={(e) => { e.stopPropagation(); handleStartImageEdit(); }}
-              >
-                <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className={`w-3 h-3 ${frame.imageLayer ? 'text-gray-400' : 'text-gray-500'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
-                <span className="text-[10px] text-gray-400 group-hover:text-white transition-colors">Background Photo</span>
+                <span className={`text-[10px] transition-colors ${frame.imageLayer ? 'text-gray-400 group-hover:text-white' : 'text-gray-500 group-hover:text-gray-300'}`}>Background Photo</span>
+                {!frame.imageLayer && (
+                  <span className="ml-auto text-[8px] text-gray-600 italic">empty</span>
+                )}
               </div>
-            ) : (
+              
+              {/* 6. Brand Pattern */}
               <div 
-                className="flex items-center gap-1 px-2 py-1 bg-gray-800/50 rounded-full group cursor-pointer hover:bg-gray-700/80 transition-colors border border-dashed border-gray-600"
-                title="Add an image"
-                onClick={(e) => { e.stopPropagation(); onRequestAddPhoto?.(); }}
+                className={`flex items-center gap-1.5 px-2 py-1.5 border-b border-gray-600/50 group cursor-pointer transition-colors hover:bg-gray-700/50 ${
+                  !frame.patternLayer ? 'opacity-60' : ''
+                }`}
+                title={frame.patternLayer ? "Edit pattern" : "Add a pattern"}
+                onClick={(e) => { e.stopPropagation(); frame.patternLayer ? handleStartPatternEdit() : onRequestAddPattern?.(); }}
               >
-                <svg className="w-3 h-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-                <span className="text-[10px] text-gray-500 group-hover:text-gray-300 transition-colors">Background Photo</span>
-              </div>
-            )}
-            
-            {/* 6. Pattern */}
-            {frame.patternLayer ? (
-              <div 
-                className="flex items-center gap-1 px-2 py-1 bg-gray-800/80 rounded-full group cursor-pointer hover:bg-gray-700/80 transition-colors"
-                title="Edit pattern"
-                onClick={(e) => { e.stopPropagation(); handleStartPatternEdit(); }}
-              >
-                <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className={`w-3 h-3 ${frame.patternLayer ? 'text-gray-400' : 'text-gray-500'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
                 </svg>
-                <span className="text-[10px] text-gray-400 group-hover:text-white transition-colors">Brand Pattern</span>
+                <span className={`text-[10px] transition-colors ${frame.patternLayer ? 'text-gray-400 group-hover:text-white' : 'text-gray-500 group-hover:text-gray-300'}`}>Brand Pattern</span>
+                {!frame.patternLayer && (
+                  <span className="ml-auto text-[8px] text-gray-600 italic">empty</span>
+                )}
               </div>
-            ) : (
-              <div 
-                className="flex items-center gap-1 px-2 py-1 bg-gray-800/50 rounded-full group cursor-pointer hover:bg-gray-700/80 transition-colors border border-dashed border-gray-600"
-                title="Add a pattern"
-                onClick={(e) => { e.stopPropagation(); onRequestAddPattern?.(); }}
-              >
-                <svg className="w-3 h-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
-                </svg>
-                <span className="text-[10px] text-gray-500 group-hover:text-gray-300 transition-colors">Brand Pattern</span>
-              </div>
-            )}
+            </div>
           </div>
         )}
         
