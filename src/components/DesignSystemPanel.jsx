@@ -912,28 +912,41 @@ const DesignSystemPanel = ({
             className="w-full p-4 flex items-center justify-between hover:bg-gray-800/50 transition-colors"
           >
             <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Product Imagery</h3>
-            <svg className={`w-4 h-4 text-gray-500 transition-transform ${collapsedSections.productImagery ? '' : 'rotate-180'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-            </svg>
+            <div className="flex items-center gap-2">
+              {uploadedProductImages.length > 0 && (
+                <span className="px-1.5 py-0.5 bg-gray-700 rounded text-[10px] text-gray-300">{uploadedProductImages.length}</span>
+              )}
+              <svg className={`w-4 h-4 text-gray-500 transition-transform ${collapsedSections.productImagery ? '' : 'rotate-180'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </div>
           </button>
           
           {!collapsedSections.productImagery && (
           <div className="px-4 pb-4">
-            {/* Placeholder - no product images uploaded yet */}
-            <div className="text-center py-6 border-2 border-dashed border-gray-700 rounded-lg">
-              <svg className="w-8 h-8 mx-auto mb-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-              </svg>
-              <p className="text-[10px] text-gray-500 mb-2">No product images uploaded yet</p>
-              <button 
-                type="button" 
-                onClick={() => setActiveTab('assets')}
-                className="px-3 py-1.5 bg-gray-700 hover:bg-gray-600 text-xs text-white rounded-lg transition-colors"
-              >
-                Go to Assets to upload
-              </button>
-              <p className="text-[10px] text-gray-600 mt-2">PNG with transparent background</p>
-            </div>
+            {uploadedProductImages.length === 0 ? (
+              <div className="text-center py-6">
+                <svg className="w-10 h-10 mx-auto mb-2 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                </svg>
+                <p className="text-xs text-gray-500">No product images yet</p>
+                <button 
+                  type="button" 
+                  onClick={() => setActiveTab('assets')}
+                  className="mt-2 text-[10px] text-purple-400 hover:text-purple-300 transition-colors"
+                >
+                  Upload in Assets →
+                </button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-3 gap-2">
+                {uploadedProductImages.map((img) => (
+                  <div key={img.id} className="relative group aspect-square rounded-lg overflow-hidden bg-gray-800 ring-1 ring-gray-700 hover:ring-gray-400 transition-colors cursor-pointer">
+                    <img src={img.url} alt={img.name} className="w-full h-full object-contain" />
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
           )}
         </div>
