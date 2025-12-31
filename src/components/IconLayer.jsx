@@ -18,16 +18,15 @@ const IconLayer = ({
   const horizontalPadding = frameWidth * 0.075;
   
   // Determine border style - user-defined border takes precedence over selection indicators
+  // Only show selection-based borders when frame is selected, not just row
   const getBorderStyle = () => {
     if (borderColor) {
       return `2px solid ${borderColor}`;
     }
     if (isFrameSelected) {
-      return '2px solid #f97316';
+      return '1px dashed #f97316';
     }
-    if (isRowSelected) {
-      return '2px dashed rgba(249, 115, 22, 0.4)';
-    }
+    // No border when only row is selected or nothing is selected
     return 'none';
   };
   
