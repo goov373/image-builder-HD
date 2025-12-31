@@ -533,7 +533,7 @@ const DesignSystemPanel = ({
       </div>
       
       {/* Scrollable Content Area */}
-      <div className="flex-1 overflow-y-auto overflow-x-hidden">
+      <div className="flex-1 overflow-y-scroll overflow-x-hidden">
       {activeTab === 'assets' ? (
         <>
           {/* Upload Section - Using extracted ImageUploader component */}
