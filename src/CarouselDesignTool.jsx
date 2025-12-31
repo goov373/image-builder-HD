@@ -267,6 +267,8 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
     handleRemoveIconFromFrame: carousels.handleRemoveIconFromFrame,
     // Progress indicator methods
     handleUpdateProgressIndicator: carousels.handleUpdateProgressIndicator,
+    // Background layer order methods
+    handleReorderBackgroundLayers: carousels.handleReorderBackgroundLayers,
     // Eblast methods
     eblasts: eblasts.eblasts,
     handleEblastSetVariant: eblasts.handleSetVariant,
