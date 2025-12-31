@@ -389,24 +389,6 @@ const DesignSystemPanel = ({
               currentCount={uploadedFiles.length}
               maxCount={MAX_FILES}
             />
-            
-            {/* Storage Stats */}
-            {uploadedFiles.length > 0 && (
-              <div className="px-4 pb-4">
-                <div className="p-2 bg-gray-800/50 rounded-lg">
-                  <div className="flex items-center justify-between text-[10px]">
-                    <span className="text-gray-500">Storage used:</span>
-                    <span className="text-white">{formatFileSize(totalStorageUsed)}</span>
-                  </div>
-                  {totalSavings > 0 && (
-                    <div className="flex items-center justify-between text-[10px] mt-1">
-                      <span className="text-gray-500">Space saved:</span>
-                      <span className="text-green-400">{totalSavings}% ({formatFileSize(totalOriginalSize - totalStorageUsed)})</span>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
           </div>
           
           {/* File Browser - Collapsible Your Images section */}
