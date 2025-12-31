@@ -627,9 +627,11 @@ const DesignSystemPanel = ({
               <div className="px-4 pb-4">
                 {uploadedProductImages.length === 0 ? (
                   <div className="text-center py-6">
-                    <svg className="w-10 h-10 mx-auto mb-2 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                    </svg>
+                    <img 
+                      src="/placeholders/product-placeholder.svg" 
+                      alt="Product placeholder" 
+                      className="w-20 h-20 mx-auto mb-2 opacity-50"
+                    />
                     <p className="text-xs text-gray-500">No product images yet</p>
                     <p className="text-[10px] text-gray-600 mt-1">Upload product shots above</p>
                   </div>
@@ -931,9 +933,11 @@ const DesignSystemPanel = ({
           <div className="px-4 pb-4">
             {uploadedProductImages.length === 0 ? (
               <div className="text-center py-6">
-                <svg className="w-10 h-10 mx-auto mb-2 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                </svg>
+                <img 
+                  src="/placeholders/product-placeholder.svg" 
+                  alt="Product placeholder" 
+                  className="w-24 h-24 mx-auto mb-3 opacity-60"
+                />
                 <p className="text-xs text-gray-500">No product images yet</p>
                 <button 
                   type="button" 
