@@ -201,7 +201,8 @@ function carouselReducer(state, action) {
             currentVariant: 0,
             currentLayout: 0,
             layoutVariant: 0,
-            style: adjacentFrame?.style || "dark-single-pin"
+            style: adjacentFrame?.style || "dark-single-pin",
+            backgroundOverride: '#6466e9' // Default to primary purple
           };
           const newFrames = [...carousel.frames];
           newFrames.splice(insertIndex, 0, newFrame);
@@ -790,14 +791,13 @@ function loadFromStorage(initialData) {
     if (saved) {
       const parsed = JSON.parse(saved);
       if (Array.isArray(parsed) && parsed.length > 0) {
-        // Migration: Clear all backgroundOverride values so frames default to white
+        // Migration: Set all frames to default primary purple background
         const migrated = parsed.map(carousel => ({
           ...carousel,
-          frames: carousel.frames?.map(frame => {
-            // Remove backgroundOverride completely
-            const { backgroundOverride, fillOpacity, fillRotation, ...rest } = frame;
-            return rest; // Remove all fill-related properties
-          }) || []
+          frames: carousel.frames?.map(frame => ({
+            ...frame,
+            backgroundOverride: frame.backgroundOverride || '#6466e9' // Default to primary purple if not set
+          })) || []
         }));
         // Force save the migrated data immediately
         localStorage.setItem(STORAGE_KEY, JSON.stringify(migrated));

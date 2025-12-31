@@ -18,7 +18,8 @@ export const initialCarousels: Carousel[] = [
         currentVariant: 0,
         currentLayout: 0,
         layoutVariant: 0,
-        style: "dark-single-pin"
+        style: "dark-single-pin",
+        backgroundOverride: '#6466e9'
       },
       {
         id: 2,
@@ -30,7 +31,8 @@ export const initialCarousels: Carousel[] = [
         currentVariant: 0,
         currentLayout: 0,
         layoutVariant: 0,
-        style: "dark-chaos"
+        style: "dark-chaos",
+        backgroundOverride: '#6466e9'
       },
       {
         id: 3,
@@ -42,7 +44,8 @@ export const initialCarousels: Carousel[] = [
         currentVariant: 0,
         currentLayout: 0,
         layoutVariant: 0,
-        style: "dark-competition"
+        style: "dark-competition",
+        backgroundOverride: '#6466e9'
       },
       {
         id: 4,
@@ -54,7 +57,8 @@ export const initialCarousels: Carousel[] = [
         currentVariant: 0,
         currentLayout: 0,
         layoutVariant: 0,
-        style: "reveal-product"
+        style: "reveal-product",
+        backgroundOverride: '#6466e9'
       },
       {
         id: 5,
@@ -66,7 +70,8 @@ export const initialCarousels: Carousel[] = [
         currentVariant: 0,
         currentLayout: 0,
         layoutVariant: 0,
-        style: "cta-win"
+        style: "cta-win",
+        backgroundOverride: '#6466e9'
       }
     ]
   },
@@ -86,7 +91,8 @@ export const initialCarousels: Carousel[] = [
         currentVariant: 0,
         currentLayout: 0,
         layoutVariant: 0,
-        style: "static-gray"
+        style: "static-gray",
+        backgroundOverride: '#6466e9'
       },
       {
         id: 2,
@@ -98,7 +104,8 @@ export const initialCarousels: Carousel[] = [
         currentVariant: 0,
         currentLayout: 0,
         layoutVariant: 0,
-        style: "cracking"
+        style: "cracking",
+        backgroundOverride: '#6466e9'
       },
       {
         id: 3,
@@ -110,7 +117,8 @@ export const initialCarousels: Carousel[] = [
         currentVariant: 0,
         currentLayout: 0,
         layoutVariant: 0,
-        style: "heatmap-transform"
+        style: "heatmap-transform",
+        backgroundOverride: '#6466e9'
       },
       {
         id: 4,
@@ -122,7 +130,8 @@ export const initialCarousels: Carousel[] = [
         currentVariant: 0,
         currentLayout: 0,
         layoutVariant: 0,
-        style: "product-forecast"
+        style: "product-forecast",
+        backgroundOverride: '#6466e9'
       },
       {
         id: 5,
@@ -134,7 +143,8 @@ export const initialCarousels: Carousel[] = [
         currentVariant: 0,
         currentLayout: 0,
         layoutVariant: 0,
-        style: "cta-forecast"
+        style: "cta-forecast",
+        backgroundOverride: '#6466e9'
       }
     ]
   },
@@ -154,7 +164,8 @@ export const initialCarousels: Carousel[] = [
         currentVariant: 0,
         currentLayout: 0,
         layoutVariant: 0,
-        style: "monday"
+        style: "monday",
+        backgroundOverride: '#6466e9'
       },
       {
         id: 2,
@@ -166,7 +177,8 @@ export const initialCarousels: Carousel[] = [
         currentVariant: 0,
         currentLayout: 0,
         layoutVariant: 0,
-        style: "tuesday"
+        style: "tuesday",
+        backgroundOverride: '#6466e9'
       },
       {
         id: 3,
@@ -178,7 +190,8 @@ export const initialCarousels: Carousel[] = [
         currentVariant: 0,
         currentLayout: 0,
         layoutVariant: 0,
-        style: "wednesday"
+        style: "wednesday",
+        backgroundOverride: '#6466e9'
       },
       {
         id: 4,
@@ -190,7 +203,8 @@ export const initialCarousels: Carousel[] = [
         currentVariant: 0,
         currentLayout: 0,
         layoutVariant: 0,
-        style: "thursday-friday"
+        style: "thursday-friday",
+        backgroundOverride: '#6466e9'
       },
       {
         id: 5,
@@ -202,7 +216,8 @@ export const initialCarousels: Carousel[] = [
         currentVariant: 0,
         currentLayout: 0,
         layoutVariant: 0,
-        style: "cta-automated"
+        style: "cta-automated",
+        backgroundOverride: '#6466e9'
       }
     ]
   }
