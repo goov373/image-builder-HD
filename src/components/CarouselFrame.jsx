@@ -970,16 +970,21 @@ export const CarouselFrame = ({
         style={{ width: size.width, height: size.height, backgroundColor: '#ffffff' }}
         onClick={(e) => { e.stopPropagation(); onSelectFrame(frame.id); setSelectedLayer(null); }}
       >
-        {/* Layer 1: Pattern - backmost (z-index: 1) */}
-        {frame.patternLayer && (
-          <div className="absolute inset-0 z-[1]">
-            <PatternLayer
-              patternLayer={frame.patternLayer}
-              frameWidth={size.width}
-              frameHeight={size.height}
-            />
-          </div>
-        )}
+        {/* Layer 1: Fill/Gradient - backmost base color (z-index: 1) */}
+        {/* Uses fillOpacity (defaults to 0.7 with image, 1 without) and fillRotation for user adjustments */}
+        <div 
+          className="absolute inset-0 z-[1] pointer-events-none overflow-hidden"
+        >
+          <div 
+            className="absolute inset-[-50%] w-[200%] h-[200%]"
+            style={{
+              ...backgroundStyle,
+              opacity: frame.fillOpacity !== undefined ? frame.fillOpacity : (frame.imageLayer ? 0.7 : 1),
+              transform: `rotate(${frame.fillRotation || 0}deg)`,
+              transformOrigin: 'center center',
+            }}
+          />
+        </div>
         
         {/* Layer 2: Image - behind gradient (z-index: 2), raises to z-50 when editing */}
         {frame.imageLayer && (
@@ -1030,23 +1035,16 @@ export const CarouselFrame = ({
           </div>
         )}
         
-        {/* Layer 3: Gradient/Background - above image (z-index: 3) */}
-        {/* Uses fillOpacity (defaults to 0.7 with image, 1 without) and fillRotation for user adjustments */}
-        <div 
-          className="absolute inset-0 z-[3] pointer-events-none overflow-hidden"
-        >
-          <div 
-            className="absolute inset-[-50%] w-[200%] h-[200%]"
-            style={{
-              ...backgroundStyle,
-              opacity: frame.fillOpacity !== undefined 
-                ? frame.fillOpacity 
-                : (frame.imageLayer ? 0.7 : 1),
-              transform: `rotate(${frame.fillRotation || 0}deg)`,
-              transformOrigin: 'center center',
-            }}
-          />
-        </div>
+        {/* Layer 3: Pattern - above image, decorative overlay (z-index: 3) */}
+        {frame.patternLayer && (
+          <div className="absolute inset-0 z-[3]">
+            <PatternLayer
+              patternLayer={frame.patternLayer}
+              frameWidth={size.width}
+              frameHeight={size.height}
+            />
+          </div>
+        )}
         
         {/* Text Layout - renders above all layers */}
         <div className="absolute inset-0 z-10">
