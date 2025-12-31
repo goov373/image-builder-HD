@@ -886,8 +886,18 @@ export const CarouselFrame = ({
                     ? 'text-gray-500 group-hover:text-gray-300' 
                     : 'text-gray-400 group-hover:text-white'
                 }`}>Progress</span>
-                {frame.progressIndicator?.isHidden && (
-                  <span className="ml-auto text-[8px] text-gray-600 italic">hidden</span>
+                {frame.progressIndicator?.isHidden ? (
+                  <span 
+                    className="ml-auto text-[8px] text-gray-500 hover:text-green-400 transition-colors"
+                    onClick={(e) => { e.stopPropagation(); onUpdateProgressIndicator?.(carouselId, frame.id, { isHidden: false }); }}
+                    title="Show progress indicator"
+                  >show</span>
+                ) : (
+                  <span 
+                    className="ml-auto text-[8px] text-gray-600 hover:text-red-400 transition-colors"
+                    onClick={(e) => { e.stopPropagation(); onUpdateProgressIndicator?.(carouselId, frame.id, { isHidden: true }); }}
+                    title="Hide progress indicator"
+                  >hide</span>
                 )}
               </div>
               
@@ -904,7 +914,13 @@ export const CarouselFrame = ({
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                   <span className={`text-[10px] transition-colors ${frame.iconLayer ? 'text-gray-400 group-hover:text-white' : 'text-gray-500 group-hover:text-gray-300'}`}>Icon / Stat</span>
-                  {!frame.iconLayer && (
+                  {frame.iconLayer ? (
+                    <span 
+                      className="ml-auto text-[8px] text-gray-600 hover:text-red-400 transition-colors"
+                      onClick={(e) => { e.stopPropagation(); onRemoveIconFromFrame?.(carouselId, frame.id); }}
+                      title="Clear icon"
+                    >clear</span>
+                  ) : (
                     <span className="ml-auto text-[8px] text-gray-600 italic">empty</span>
                   )}
                 </div>
@@ -923,7 +939,13 @@ export const CarouselFrame = ({
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                   </svg>
                   <span className={`text-[10px] transition-colors ${frame.productImageLayer ? 'text-gray-400 group-hover:text-white' : 'text-gray-500 group-hover:text-gray-300'}`}>Product Image</span>
-                  {!frame.productImageLayer && (
+                  {frame.productImageLayer ? (
+                    <span 
+                      className="ml-auto text-[8px] text-gray-600 hover:text-red-400 transition-colors"
+                      onClick={(e) => { e.stopPropagation(); onRemoveProductImageFromFrame?.(carouselId, frame.id); }}
+                      title="Clear product image"
+                    >clear</span>
+                  ) : (
                     <span className="ml-auto text-[8px] text-gray-600 italic">empty</span>
                   )}
                 </div>
@@ -945,7 +967,13 @@ export const CarouselFrame = ({
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
                 </svg>
                 <span className={`text-[10px] transition-colors ${frame.backgroundOverride ? 'text-gray-400 group-hover:text-white' : 'text-gray-500 group-hover:text-gray-300'}`}>Fill Color</span>
-                {!frame.backgroundOverride && (
+                {frame.backgroundOverride ? (
+                  <span 
+                    className="ml-auto text-[8px] text-gray-600 hover:text-red-400 transition-colors"
+                    onClick={(e) => { e.stopPropagation(); onClearBackground?.(carouselId, frame.id); }}
+                    title="Clear fill color"
+                  >clear</span>
+                ) : (
                   <span className="ml-auto text-[8px] text-gray-600 italic">empty</span>
                 )}
               </div>
@@ -962,7 +990,13 @@ export const CarouselFrame = ({
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
                 <span className={`text-[10px] transition-colors ${frame.imageLayer ? 'text-gray-400 group-hover:text-white' : 'text-gray-500 group-hover:text-gray-300'}`}>Background Photo</span>
-                {!frame.imageLayer && (
+                {frame.imageLayer ? (
+                  <span 
+                    className="ml-auto text-[8px] text-gray-600 hover:text-red-400 transition-colors"
+                    onClick={(e) => { e.stopPropagation(); onRemoveImageFromFrame?.(carouselId, frame.id); }}
+                    title="Clear background photo"
+                  >clear</span>
+                ) : (
                   <span className="ml-auto text-[8px] text-gray-600 italic">empty</span>
                 )}
               </div>
@@ -979,7 +1013,13 @@ export const CarouselFrame = ({
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
                 </svg>
                 <span className={`text-[10px] transition-colors ${frame.patternLayer ? 'text-gray-400 group-hover:text-white' : 'text-gray-500 group-hover:text-gray-300'}`}>Brand Pattern</span>
-                {!frame.patternLayer && (
+                {frame.patternLayer ? (
+                  <span 
+                    className="ml-auto text-[8px] text-gray-600 hover:text-red-400 transition-colors"
+                    onClick={(e) => { e.stopPropagation(); onRemovePatternFromFrame?.(carouselId, frame.id); }}
+                    title="Clear brand pattern"
+                  >clear</span>
+                ) : (
                   <span className="ml-auto text-[8px] text-gray-600 italic">empty</span>
                 )}
               </div>
