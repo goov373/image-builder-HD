@@ -876,7 +876,7 @@ const DesignSystemPanel = ({
               />
             ))}
           </div>
-          <div className="grid grid-cols-6 gap-1.5">
+          <div className="grid grid-cols-3 gap-1.5">
             {solidColors.map(color => (
               <div key={color} className="relative group">
                 <button
