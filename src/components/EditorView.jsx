@@ -96,6 +96,8 @@ export default function EditorView({
     handleAddIconToFrame,
     handleUpdateIconLayer,
     handleRemoveIconFromFrame,
+    // Progress indicator methods (carousels)
+    handleUpdateProgressIndicator,
     // Eblast methods
     eblasts,
     handleEblastUpdateText,
@@ -214,6 +216,7 @@ export default function EditorView({
                       onUpdateIconLayer={handleUpdateIconLayer}
                       onRemoveIconFromFrame={handleRemoveIconFromFrame}
                       onRequestAddIcon={onRequestAddIcon}
+                      onUpdateProgressIndicator={handleUpdateProgressIndicator}
                     />
                     {/* Add Row Button - only after last row */}
                     {index === carousels.length - 1 && (

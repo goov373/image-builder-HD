@@ -237,6 +237,8 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
     handleAddIconToFrame: carousels.handleAddIconToFrame,
     handleUpdateIconLayer: carousels.handleUpdateIconLayer,
     handleRemoveIconFromFrame: carousels.handleRemoveIconFromFrame,
+    // Progress indicator methods
+    handleUpdateProgressIndicator: carousels.handleUpdateProgressIndicator,
     // Eblast methods
     eblasts: eblasts.eblasts,
     handleEblastSetVariant: eblasts.handleSetVariant,

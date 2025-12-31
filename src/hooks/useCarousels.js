@@ -47,6 +47,8 @@ export const CAROUSEL_ACTIONS = {
   ADD_ICON_TO_FRAME: 'ADD_ICON_TO_FRAME',
   UPDATE_ICON_LAYER: 'UPDATE_ICON_LAYER',
   REMOVE_ICON_FROM_FRAME: 'REMOVE_ICON_FROM_FRAME',
+  // Progress Indicator Actions
+  UPDATE_PROGRESS_INDICATOR: 'UPDATE_PROGRESS_INDICATOR',
 };
 
 // Initial state shape
@@ -748,6 +750,34 @@ function carouselReducer(state, action) {
       };
     }
 
+    // ===== Progress Indicator Actions =====
+    
+    case CAROUSEL_ACTIONS.UPDATE_PROGRESS_INDICATOR: {
+      const { carouselId, frameId, updates } = action;
+      return {
+        ...state,
+        carousels: state.carousels.map(carousel => {
+          if (carousel.id !== carouselId) return carousel;
+          return {
+            ...carousel,
+            frames: carousel.frames.map(frame => {
+              if (frame.id !== frameId) return frame;
+              return {
+                ...frame,
+                progressIndicator: { 
+                  type: 'dots', // default
+                  color: '#ffffff', // default white
+                  isHidden: false, // default visible
+                  ...(frame.progressIndicator || {}),
+                  ...updates 
+                }
+              };
+            })
+          };
+        })
+      };
+    }
+
     default:
       return state;
   }
@@ -909,6 +939,10 @@ export default function useCarousels(initialData) {
     
     handleRemoveIconFromFrame: useCallback((carouselId, frameId) =>
       dispatch({ type: CAROUSEL_ACTIONS.REMOVE_ICON_FROM_FRAME, carouselId, frameId }), []),
+    
+    // Progress Indicator Actions
+    handleUpdateProgressIndicator: useCallback((carouselId, frameId, updates) =>
+      dispatch({ type: CAROUSEL_ACTIONS.UPDATE_PROGRESS_INDICATOR, carouselId, frameId, updates }), []),
   };
 
   return {

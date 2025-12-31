@@ -8,34 +8,70 @@ import ProductImageLayer from './ProductImageLayer';
 import IconLayer from './IconLayer';
 
 /**
- * Progress Dots Overlay
- * Shows current frame position in carousel
+ * Progress Indicator Overlay
+ * Shows current frame position in carousel with different styles
  */
-const ProgressDotsOverlay = ({ frameId, isFrameSelected, isHovered, isProgressHidden, onToggleHidden }) => {
-  const [isProgressHovered, setIsProgressHovered] = useState(false);
+const ProgressIndicatorOverlay = ({ 
+  frameId, 
+  totalFrames = 5,
+  type = 'dots', // 'dots', 'arrows', 'bar'
+  color = '#ffffff',
+  isHidden = false,
+}) => {
+  if (isHidden) return null;
   
-  return (
-    <div 
-      className="flex items-center gap-1 cursor-pointer min-w-[40px] min-h-[20px] justify-end"
-      onMouseEnter={() => setIsProgressHovered(true)}
-      onMouseLeave={() => setIsProgressHovered(false)}
-      onClick={(e) => { if (isFrameSelected) { e.stopPropagation(); onToggleHidden(); } }}
-    >
-      {isFrameSelected && (isProgressHovered || (isProgressHidden && isHovered)) ? (
-        <div className="flex items-center justify-center w-5 h-5 bg-black/50 rounded-full hover:bg-black/70 transition-colors">
-          <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            {isProgressHidden ? (
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-            ) : (
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
-            )}
-          </svg>
+  // Dots style (original)
+  if (type === 'dots') {
+    return (
+      <div className="flex items-center gap-1 min-w-[40px] min-h-[20px] justify-end">
+        {[1,2,3,4,5].map(i => (
+          <div 
+            key={i} 
+            className="w-1.5 h-1.5 rounded-full"
+            style={{ 
+              backgroundColor: i === frameId ? color : color,
+              opacity: i === frameId ? 1 : 0.3 
+            }} 
+          />
+        ))}
+      </div>
+    );
+  }
+  
+  // Arrows style
+  if (type === 'arrows') {
+    return (
+      <div className="flex items-center gap-2 min-w-[40px] min-h-[20px] justify-end">
+        <svg className="w-4 h-4" fill="none" stroke={color} strokeOpacity={0.5} viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+        </svg>
+        <span className="text-[10px] font-medium" style={{ color }}>{frameId}/{totalFrames}</span>
+        <svg className="w-4 h-4" fill="none" stroke={color} viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+        </svg>
+      </div>
+    );
+  }
+  
+  // Bar style (loading bar)
+  if (type === 'bar') {
+    const progress = (frameId / totalFrames) * 100;
+    return (
+      <div className="flex items-center min-w-[60px] min-h-[20px] justify-end">
+        <div 
+          className="w-16 h-1 rounded-full overflow-hidden"
+          style={{ backgroundColor: color, opacity: 0.2 }}
+        >
+          <div 
+            className="h-full rounded-full transition-all"
+            style={{ width: `${progress}%`, backgroundColor: color }}
+          />
         </div>
-      ) : !isProgressHidden ? (
-        [1,2,3,4,5].map(i => <div key={i} className={`w-1.5 h-1.5 rounded-full ${i === frameId ? 'bg-white' : 'bg-white/30'}`} />)
-      ) : null}
-    </div>
-  );
+      </div>
+    );
+  }
+  
+  return null;
 };
 
 /**
@@ -232,6 +268,113 @@ const IconEditPanel = ({
 };
 
 /**
+ * Progress Edit Panel Component
+ * Controls for editing progress indicator properties
+ */
+const ProgressEditPanel = ({
+  frame,
+  carouselId,
+  designSystem,
+  onUpdateProgressIndicator,
+  handleDoneProgressEdit,
+}) => {
+  // Get current progress indicator settings (with defaults)
+  const progressIndicator = frame.progressIndicator || { type: 'dots', color: '#ffffff', isHidden: false };
+  
+  // Brand colors array
+  const brandColors = [
+    { name: 'Primary', color: designSystem.primary },
+    { name: 'Secondary', color: designSystem.secondary },
+    { name: 'Accent', color: designSystem.accent },
+    { name: 'Dark', color: designSystem.neutral1 },
+    { name: 'Mid Grey', color: designSystem.neutral2 },
+    { name: 'Light Grey', color: designSystem.neutral4 },
+    { name: 'Primary 2', color: designSystem.primary2 },
+    { name: 'Accent 2', color: designSystem.accent2 },
+    { name: 'White', color: designSystem.neutral3 },
+  ];
+
+  const progressTypes = [
+    { key: 'dots', label: 'Dots' },
+    { key: 'arrows', label: 'Arrows' },
+    { key: 'bar', label: 'Bar' },
+  ];
+
+  return (
+    <div 
+      className="mt-1.5 flex flex-col gap-1.5" 
+      data-progress-edit-controls
+      onClick={(e) => e.stopPropagation()}
+      onMouseDown={(e) => e.stopPropagation()}
+    >
+      {/* Row 1: Type selector and Color dropdown */}
+      <div className="flex items-center gap-2 flex-wrap">
+        {/* Type Selector */}
+        <div className="flex items-center gap-1 bg-gray-800/90 rounded-lg px-2 py-1.5">
+          <span className="text-gray-400 text-[10px] mr-1">Type</span>
+          {progressTypes.map(({ key, label }) => (
+            <button
+              key={key}
+              type="button"
+              onClick={() => onUpdateProgressIndicator?.(carouselId, frame.id, { type: key })}
+              className={`px-2 py-0.5 rounded text-[10px] transition-colors ${
+                progressIndicator.type === key 
+                  ? 'bg-gray-600 text-white' 
+                  : 'text-gray-400 hover:text-white hover:bg-gray-700'
+              }`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+
+        {/* Color Dropdown */}
+        <ColorDropdown
+          label="Color"
+          value={progressIndicator.color || '#ffffff'}
+          onChange={(color) => onUpdateProgressIndicator?.(carouselId, frame.id, { color: color || '#ffffff' })}
+          colors={brandColors}
+        />
+
+        {/* Hide/Show Toggle */}
+        <button
+          type="button"
+          onClick={() => onUpdateProgressIndicator?.(carouselId, frame.id, { isHidden: !progressIndicator.isHidden })}
+          className={`flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[10px] font-medium transition-colors ${
+            progressIndicator.isHidden 
+              ? 'bg-gray-700/90 text-gray-400 hover:bg-gray-600/90 hover:text-white' 
+              : 'bg-gray-700/90 text-white hover:bg-gray-600/90'
+          }`}
+          title={progressIndicator.isHidden ? 'Show indicator' : 'Hide indicator'}
+        >
+          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            {progressIndicator.isHidden ? (
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+            ) : (
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+            )}
+          </svg>
+          {progressIndicator.isHidden ? 'Show' : 'Hide'}
+        </button>
+      </div>
+
+      {/* Row 2: Done button */}
+      <div className="flex items-center gap-2">
+        {/* Done Button */}
+        <button
+          type="button"
+          onClick={handleDoneProgressEdit}
+          className="bg-gray-600/90 hover:bg-gray-500 rounded-lg px-2.5 py-1.5 text-white text-[10px] font-medium transition-colors"
+          title="Done editing"
+        >
+          Done
+        </button>
+      </div>
+    </div>
+  );
+};
+
+/**
  * Single Frame Component
  * Displays a single carousel frame with layout and content
  */
@@ -266,6 +409,8 @@ export const CarouselFrame = ({
   onUpdateIconLayer,
   onRemoveIconFromFrame,
   onRequestAddIcon, // Callback to open design panel with brand icons section
+  // Progress indicator props
+  onUpdateProgressIndicator,
   // Cross-frame overflow
   prevFrameImage = null,
   nextFrameImage = null,
@@ -277,7 +422,7 @@ export const CarouselFrame = ({
   isDragging = false,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
-  const [isProgressHidden, setIsProgressHidden] = useState(false);
+  const [isProgressEditing, setIsProgressEditing] = useState(false);
   const [imageEditTrigger, setImageEditTrigger] = useState(0);
   const [imageCloseTrigger, setImageCloseTrigger] = useState(0);
   const [isImageEditing, setIsImageEditing] = useState(false);
@@ -681,12 +826,12 @@ export const CarouselFrame = ({
         {/* Progress Dots Overlay - Hidden during image editing */}
         {!isImageEditing && (
           <div className="absolute top-2 right-2 z-10">
-            <ProgressDotsOverlay 
+            <ProgressIndicatorOverlay 
               frameId={frame.id}
-              isFrameSelected={isFrameSelected}
-              isHovered={isHovered}
-              isProgressHidden={isProgressHidden}
-              onToggleHidden={() => setIsProgressHidden(!isProgressHidden)}
+              totalFrames={totalFrames}
+              type={frame.progressIndicator?.type || 'dots'}
+              color={frame.progressIndicator?.color || '#ffffff'}
+              isHidden={frame.progressIndicator?.isHidden || false}
             />
           </div>
         )}
@@ -710,7 +855,7 @@ export const CarouselFrame = ({
       <div className={`${isRowSelected ? 'min-h-[52px]' : 'h-0'}`}>
       {/* Layer Indicators - outside frame, below card */}
       {/* Only visible when row is selected, hidden during editing modes */}
-      {isRowSelected && !isImageEditing && !isFillEditing && !isPatternEditing && !isProductImageEditing && !isIconEditing && (
+      {isRowSelected && !isImageEditing && !isFillEditing && !isPatternEditing && !isProductImageEditing && !isIconEditing && !isProgressEditing && (
       <div className="mt-1.5 flex flex-col items-start gap-1">
         {/* Add Product Image - Only for eligible layouts without a product image */}
         {isProductImageEligible && !frame.productImageLayer && isFrameSelected && (
@@ -772,6 +917,17 @@ export const CarouselFrame = ({
             </button>
           </div>
         )}
+        {/* Progress Indicator - Click to edit */}
+        <div 
+          className="flex items-center gap-1 px-2 py-1 bg-gray-800/80 rounded-full group cursor-pointer hover:bg-gray-700/80 transition-colors"
+          title="Click to edit progress indicator"
+          onClick={(e) => { e.stopPropagation(); if (isFrameSelected) setIsProgressEditing(true); }}
+        >
+          <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
+          </svg>
+          <span className="text-[10px] text-gray-400 group-hover:text-white transition-colors">{isFrameSelected ? 'Edit Progress' : 'Progress'}</span>
+        </div>
         {/* Pattern Indicator - Click to edit */}
         {frame.patternLayer && (
           <div 
@@ -1317,6 +1473,17 @@ export const CarouselFrame = ({
           handleDoneIconEdit={handleDoneIconEdit}
         />
       )}
+      
+      {/* Progress Edit Controls - appears below frame when editing progress indicator */}
+      {isProgressEditing && (
+        <ProgressEditPanel
+          frame={frame}
+          carouselId={carouselId}
+          designSystem={designSystem}
+          onUpdateProgressIndicator={onUpdateProgressIndicator}
+          handleDoneProgressEdit={() => setIsProgressEditing(false)}
+        />
+      )}
       </div>
     </div>
   );
@@ -1359,6 +1526,8 @@ export const SortableFrame = ({
   onUpdateIconLayer,
   onRemoveIconFromFrame,
   onRequestAddIcon,
+  // Progress indicator props
+  onUpdateProgressIndicator,
   // Cross-frame overflow
   prevFrameImage,
   nextFrameImage,
@@ -1430,6 +1599,7 @@ export const SortableFrame = ({
         onUpdateIconLayer={onUpdateIconLayer}
         onRemoveIconFromFrame={onRemoveIconFromFrame}
         onRequestAddIcon={onRequestAddIcon}
+        onUpdateProgressIndicator={onUpdateProgressIndicator}
         prevFrameImage={prevFrameImage}
         nextFrameImage={nextFrameImage}
         onImageEditModeChange={setIsImageEditing}
