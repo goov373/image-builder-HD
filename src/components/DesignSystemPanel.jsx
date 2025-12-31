@@ -970,7 +970,7 @@ const DesignSystemPanel = ({
           </button>
           
           {!collapsedSections.photography && (
-          <div className="px-4 pb-4">
+          <div className="px-4 pt-2 pb-4">
           {/* Display uploaded images from Assets tab */}
           {uploadedFiles.length === 0 ? (
             <div className="text-center py-6 border-2 border-dashed border-gray-700 rounded-lg">
@@ -1122,7 +1122,7 @@ const DesignSystemPanel = ({
           </button>
           
           {!collapsedSections.patterns && (
-          <div className="px-4 pb-4">
+          <div className="px-4 pt-2 pb-4">
           <p className="text-[10px] text-gray-500 mb-3">Data-driven visuals that tell the HelloData story</p>
           
           {/* Pattern Grid - Data Visualizations */}
