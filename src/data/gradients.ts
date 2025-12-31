@@ -141,18 +141,12 @@ export interface SolidColorDefinition {
 }
 
 export const solidColors: SolidColorDefinition[] = [
-  { id: 'sc-purple-primary', name: 'Purple Primary', hex: '#6466e9' },
-  { id: 'sc-purple-light', name: 'Purple Light', hex: '#818cf8' },
-  { id: 'sc-orange-accent', name: 'Orange Accent', hex: '#F97316' },
-  { id: 'sc-gold', name: 'Gold', hex: '#fbbf24' },
-  { id: 'sc-shadow-dark', name: 'Shadow Dark', hex: '#18191A' },
-  { id: 'sc-charcoal', name: 'Charcoal', hex: '#2d2e30' },
-  { id: 'sc-medium-grey', name: 'Medium Grey', hex: '#6B7280' },
-  { id: 'sc-light-medium-grey', name: 'Light Medium Grey', hex: '#9CA3AF' },
-  { id: 'sc-light-grey', name: 'Light Grey', hex: '#eef1f9' },
-  { id: 'sc-purple-bg', name: 'Purple Background', hex: '#EEF2FF' },
-  { id: 'sc-white', name: 'White', hex: '#ffffff' },
-  { id: 'sc-black', name: 'Black', hex: '#000000' },
+  { id: 'sc-primary', name: 'Primary', hex: '#6466e9' },
+  { id: 'sc-secondary', name: 'Secondary', hex: '#eef1f9' },
+  { id: 'sc-accent', name: 'Accent', hex: '#F97316' },
+  { id: 'sc-dark', name: 'Dark', hex: '#18191A' },
+  { id: 'sc-mid', name: 'Mid', hex: '#ACACAC' },
+  { id: 'sc-light', name: 'Light', hex: '#ffffff' },
 ];
 
 // ===== COMBINED EXPORTS =====
