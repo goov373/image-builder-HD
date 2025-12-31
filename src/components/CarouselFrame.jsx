@@ -837,12 +837,13 @@ export const CarouselFrame = ({
   const handleStartImageEdit = () => {
     // Close other tool panels first
     closeAllToolPanels();
-    // Store initial state when entering edit mode
+    // Store initial state
     if (frame.imageLayer) {
       setInitialImageState({ ...frame.imageLayer });
     }
-    setIsImageEditing(true);
-    onImageEditModeChange?.(true);
+    // Use the editTrigger mechanism to tell ImageLayer to enter edit mode
+    // ImageLayer will then notify us via onEditModeChange, which sets isImageEditing
+    setImageEditTrigger(prev => prev + 1);
   };
   
   // Fill color editing handlers
@@ -1393,10 +1394,13 @@ export const CarouselFrame = ({
                             }`}
                             title={frame.imageLayer ? "Edit image" : "Add an image"}
                             onClick={(e) => { 
-                              e.stopPropagation(); 
-                              onRequestAddPhoto?.();
+                              e.stopPropagation();
                               if (frame.imageLayer) {
+                                // If image exists, open tool panel (don't open sidebar)
                                 handleStartImageEdit();
+                              } else {
+                                // If no image, open sidebar to add one
+                                onRequestAddPhoto?.();
                               }
                             }}
                           >
