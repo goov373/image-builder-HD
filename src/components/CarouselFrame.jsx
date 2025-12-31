@@ -52,27 +52,26 @@ const ColorDropdown = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   
-  const selectedColor = colors.find(c => c.color === value);
-  
   return (
     <div className="relative">
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 bg-gray-800/90 hover:bg-gray-700/90 rounded-lg px-2.5 py-1.5 transition-colors min-w-[120px]"
+        className="flex items-center gap-2 bg-gray-800/90 hover:bg-gray-700/90 rounded-lg px-2.5 py-1.5 transition-colors"
       >
         <span className="text-gray-400 text-[10px]">{label}</span>
-        <div className="flex items-center gap-1.5 ml-auto">
+        <div className="flex items-center gap-1.5">
           {value ? (
-            <>
-              <div 
-                className="w-4 h-4 rounded border border-gray-500"
-                style={{ backgroundColor: value }}
-              />
-              <span className="text-gray-300 text-[10px]">{selectedColor?.name || 'Custom'}</span>
-            </>
+            <div 
+              className="w-4 h-4 rounded border border-gray-500"
+              style={{ backgroundColor: value }}
+            />
           ) : (
-            <span className="text-gray-500 text-[10px]">{noneLabel}</span>
+            <div className="w-4 h-4 rounded border border-gray-500 bg-gray-600 flex items-center justify-center">
+              <svg className="w-2.5 h-2.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </div>
           )}
           <svg className={`w-3 h-3 text-gray-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -82,37 +81,34 @@ const ColorDropdown = ({
       
       {isOpen && (
         <div 
-          className="absolute top-full left-0 mt-1 bg-gray-800 rounded-lg shadow-xl border border-gray-700 p-2 z-50 min-w-[140px]"
+          className="absolute top-full left-0 mt-1 bg-gray-800 rounded-lg shadow-xl border border-gray-700 p-1.5 z-50"
           onClick={(e) => e.stopPropagation()}
         >
-          {allowNone && (
-            <button
-              type="button"
-              onClick={() => { onChange(null); setIsOpen(false); }}
-              className={`w-full flex items-center gap-2 px-2 py-1.5 rounded hover:bg-gray-700 transition-colors ${!value ? 'bg-gray-700' : ''}`}
-            >
-              <div className="w-4 h-4 rounded border border-gray-500 bg-gray-600 flex items-center justify-center">
-                <svg className="w-2.5 h-2.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="flex flex-wrap gap-1" style={{ width: '82px' }}>
+            {allowNone && (
+              <button
+                type="button"
+                onClick={() => { onChange(null); setIsOpen(false); }}
+                className={`w-6 h-6 rounded border-2 transition-all flex items-center justify-center ${!value ? 'border-white scale-110' : 'border-gray-600 hover:border-gray-400'}`}
+                style={{ backgroundColor: '#374151' }}
+                title={noneLabel}
+              >
+                <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
-              </div>
-              <span className="text-gray-300 text-[10px]">{noneLabel}</span>
-            </button>
-          )}
-          {colors.map(({ name, color }) => (
-            <button
-              key={name}
-              type="button"
-              onClick={() => { onChange(color); setIsOpen(false); }}
-              className={`w-full flex items-center gap-2 px-2 py-1.5 rounded hover:bg-gray-700 transition-colors ${value === color ? 'bg-gray-700' : ''}`}
-            >
-              <div 
-                className="w-4 h-4 rounded border border-gray-500"
+              </button>
+            )}
+            {colors.map(({ name, color }) => (
+              <button
+                key={name}
+                type="button"
+                onClick={() => { onChange(color); setIsOpen(false); }}
+                className={`w-6 h-6 rounded border-2 transition-all ${value === color ? 'border-white scale-110' : 'border-gray-600 hover:border-gray-400'}`}
                 style={{ backgroundColor: color }}
+                title={name}
               />
-              <span className="text-gray-300 text-[10px]">{name}</span>
-            </button>
-          ))}
+            ))}
+          </div>
         </div>
       )}
     </div>
