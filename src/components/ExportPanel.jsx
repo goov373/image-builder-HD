@@ -261,7 +261,7 @@ const ExportPanel = ({
       </div>
       
       {/* Scrollable Content Area */}
-      <div className="flex-1 overflow-y-scroll overflow-x-hidden">
+      <div className="flex-1 overflow-y-scroll overflow-x-hidden pl-2">
         <div className="p-4 space-y-5">
           
           {/* Quick Export Presets */}
