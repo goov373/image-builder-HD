@@ -26,7 +26,7 @@ export const defaultDesignSystem: DesignSystem = {
   secondary: '#eef1f9',    // Light Grey - Secondary color
   accent: '#F97316',       // Orange - CTAs, highlights, energy
   neutral1: '#18191A',     // Shadow - Deep backgrounds, text
-  neutral2: '#6B7280',     // Medium Grey - Secondary text, borders
+  neutral2: '#ACACAC',     // Medium Grey - Secondary text, borders
   neutral3: '#FFFFFF',     // White - Light backgrounds, cards
   headingFont: '"Nunito Sans", sans-serif',
   bodyFont: '"Nunito Sans", sans-serif',
