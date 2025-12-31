@@ -28,6 +28,8 @@ export const defaultDesignSystem: DesignSystem = {
   neutral1: '#18191A',     // Shadow - Deep backgrounds, text
   neutral2: '#ACACAC',     // Medium Grey - Secondary text, borders
   neutral4: '#CBCBCB',     // Light Grey - Subtle backgrounds, dividers
+  primary2: '#8D97F3',     // Primary 2 - Secondary purple shade
+  accent2: '#FFA257',      // Accent 2 - Secondary orange shade
   neutral3: '#FFFFFF',     // White - Light backgrounds, cards
   headingFont: '"Nunito Sans", sans-serif',
   bodyFont: '"Nunito Sans", sans-serif',

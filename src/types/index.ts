@@ -9,6 +9,8 @@ export interface DesignSystem {
   neutral1: string;
   neutral2: string;
   neutral4: string;
+  primary2: string;
+  accent2: string;
   neutral3: string;
   headingFont: string;
   bodyFont: string;
