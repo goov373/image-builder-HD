@@ -1,6 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
 import { compressImages, formatFileSize, COMPRESSION_PRESETS } from '../utils';
-import { uploadImage, listImages, deleteImage } from '../lib/storage';
+import { 
+  uploadImage, listImages, deleteImage,
+  uploadProductImage, listProductImages, deleteProductImage,
+  uploadDoc, listDocs, deleteDoc 
+} from '../lib/storage';
 import { isSupabaseConfigured } from '../lib/supabase';
 import { getAllGradientCSSValues, getSolidColorHexValues } from '../data';
 import { LIMITS } from '../config';
@@ -148,21 +152,22 @@ const DesignSystemPanel = ({
   const MAX_FILES = LIMITS.MAX_UPLOADED_FILES;
   const MAX_DOCS = LIMITS.MAX_UPLOADED_DOCS;
 
-  // Load saved images from Supabase on mount
+  // Load saved assets from Supabase on mount
   useEffect(() => {
-    const loadSavedImages = async () => {
+    const loadSavedAssets = async () => {
       if (!isSupabaseConfigured()) {
-        console.log('Supabase not configured - images will not persist');
+        console.log('Supabase not configured - assets will not persist');
         return;
       }
 
       setIsLoadingImages(true);
       try {
-        const { files, error } = await listImages();
-        if (error) {
-          console.error('Failed to load images:', error);
-        } else if (files.length > 0) {
-          const loadedFiles = files.map(file => ({
+        // Load images
+        const { files: imageFiles, error: imageError } = await listImages();
+        if (imageError) {
+          console.error('Failed to load images:', imageError);
+        } else if (imageFiles.length > 0) {
+          const loadedFiles = imageFiles.map(file => ({
             id: file.id,
             name: file.name,
             url: file.url,
@@ -173,14 +178,46 @@ const DesignSystemPanel = ({
           }));
           setUploadedFiles(loadedFiles);
         }
+
+        // Load product images
+        const { files: productFiles, error: productError } = await listProductImages();
+        if (productError) {
+          console.error('Failed to load product images:', productError);
+        } else if (productFiles.length > 0) {
+          const loadedProductImages = productFiles.map(file => ({
+            id: file.id,
+            name: file.name,
+            url: file.url,
+            path: file.path,
+            size: file.size,
+            isPersisted: true,
+          }));
+          setUploadedProductImages(loadedProductImages);
+        }
+
+        // Load docs
+        const { files: docFiles, error: docError } = await listDocs();
+        if (docError) {
+          console.error('Failed to load docs:', docError);
+        } else if (docFiles.length > 0) {
+          const loadedDocs = docFiles.map(file => ({
+            id: file.id,
+            name: file.name,
+            url: file.url,
+            path: file.path,
+            size: file.size,
+            isPersisted: true,
+          }));
+          setUploadedDocs(loadedDocs);
+        }
       } catch (err) {
-        console.error('Error loading images:', err);
+        console.error('Error loading assets:', err);
       } finally {
         setIsLoadingImages(false);
       }
     };
 
-    loadSavedImages();
+    loadSavedAssets();
   }, []);
 
   // Handle image upload with compression and Supabase persistence
@@ -299,6 +336,129 @@ const DesignSystemPanel = ({
   const handleDragOver = (event) => {
     event.preventDefault();
     event.stopPropagation();
+  };
+
+  // Handle product imagery upload
+  const handleProductImageUpload = async (event) => {
+    const files = event.target.files;
+    if (!files || files.length === 0) return;
+
+    for (const file of files) {
+      // Validate file type (prefer PNG for transparency)
+      if (!file.type.startsWith('image/')) {
+        alert('Please upload image files only (PNG recommended for transparency)');
+        continue;
+      }
+
+      try {
+        let url = URL.createObjectURL(file);
+        let path = null;
+        let isPersisted = false;
+
+        // Upload to Supabase
+        if (isSupabaseConfigured()) {
+          const uploadResult = await uploadProductImage(file, file.name);
+          if (uploadResult.url && !uploadResult.error) {
+            url = uploadResult.url;
+            path = uploadResult.path;
+            isPersisted = true;
+          }
+        }
+
+        setUploadedProductImages(prev => [...prev, {
+          id: Date.now() + Math.random(),
+          name: file.name,
+          url,
+          path,
+          size: file.size,
+          isPersisted,
+        }]);
+      } catch (error) {
+        console.error('Product image upload failed:', error);
+      }
+    }
+  };
+
+  // Handle product image removal
+  const handleRemoveProductImage = async (imageId) => {
+    const image = uploadedProductImages.find(img => img.id === imageId);
+    
+    setUploadedProductImages(prev => prev.filter(img => img.id !== imageId));
+    
+    if (image?.path && image?.isPersisted) {
+      await deleteProductImage(image.path);
+    }
+    
+    if (image?.url && image.url.startsWith('blob:')) {
+      URL.revokeObjectURL(image.url);
+    }
+  };
+
+  // Handle doc upload
+  const handleDocUpload = async (event) => {
+    const files = event.target.files;
+    if (!files || files.length === 0) return;
+
+    if (uploadedDocs.length + files.length > MAX_DOCS) {
+      alert(`Maximum ${MAX_DOCS} documents allowed. You have ${uploadedDocs.length} documents.`);
+      return;
+    }
+
+    for (const file of files) {
+      // Validate file type
+      const validTypes = ['application/pdf', 'application/msword', 
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'text/plain', 'text/markdown'];
+      const validExtensions = ['pdf', 'doc', 'docx', 'txt', 'md'];
+      const ext = file.name.split('.').pop()?.toLowerCase();
+      
+      if (!validTypes.includes(file.type) && !validExtensions.includes(ext)) {
+        alert('Please upload PDF, DOCX, TXT, or MD files only');
+        continue;
+      }
+
+      try {
+        let url = URL.createObjectURL(file);
+        let path = null;
+        let isPersisted = false;
+
+        // Upload to Supabase
+        if (isSupabaseConfigured()) {
+          const uploadResult = await uploadDoc(file, file.name);
+          if (uploadResult.url && !uploadResult.error) {
+            url = uploadResult.url;
+            path = uploadResult.path;
+            isPersisted = true;
+          }
+        }
+
+        setUploadedDocs(prev => [...prev, {
+          id: Date.now() + Math.random(),
+          name: file.name,
+          url,
+          path,
+          size: file.size,
+          isPersisted,
+        }]);
+      } catch (error) {
+        console.error('Doc upload failed:', error);
+      }
+    }
+  };
+
+  // Handle doc removal
+  const handleRemoveDoc = async (docId) => {
+    const doc = uploadedDocs.find(d => d.id === docId);
+    
+    setUploadedDocs(prev => prev.filter(d => d.id !== docId));
+    
+    if (doc?.path && doc?.isPersisted) {
+      await deleteDoc(doc.path);
+    }
+    
+    if (doc?.url && doc.url.startsWith('blob:')) {
+      URL.revokeObjectURL(doc.url);
+    }
   };
 
   // Calculate total storage used
@@ -423,7 +583,18 @@ const DesignSystemPanel = ({
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Product Imagery</h3>
             </div>
-            <div className="border-2 border-dashed border-gray-700 rounded-lg p-4 text-center hover:border-gray-600 transition-colors cursor-pointer">
+            <div 
+              className="border-2 border-dashed border-gray-700 rounded-lg p-4 text-center hover:border-gray-600 transition-colors cursor-pointer"
+              onClick={() => document.getElementById('product-imagery-input')?.click()}
+            >
+              <input
+                id="product-imagery-input"
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={handleProductImageUpload}
+                className="hidden"
+              />
               <svg className="w-8 h-8 mx-auto mb-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
               </svg>
@@ -465,12 +636,12 @@ const DesignSystemPanel = ({
                   </div>
                 ) : (
                   <div className="grid grid-cols-2 gap-2">
-                    {uploadedProductImages.map((img, idx) => (
-                      <div key={idx} className="relative group aspect-square rounded-lg overflow-hidden bg-gray-800">
+                    {uploadedProductImages.map((img) => (
+                      <div key={img.id} className="relative group aspect-square rounded-lg overflow-hidden bg-gray-800">
                         <img src={img.url} alt={img.name} className="w-full h-full object-contain" />
                         <button 
                           type="button"
-                          onClick={() => setUploadedProductImages(prev => prev.filter((_, i) => i !== idx))}
+                          onClick={() => handleRemoveProductImage(img.id)}
                           className="absolute top-1 right-1 p-1 bg-black/70 hover:bg-red-500 rounded-full opacity-0 group-hover:opacity-100 transition-all"
                         >
                           <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -491,7 +662,18 @@ const DesignSystemPanel = ({
               <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Upload Docs</h3>
               <span className="text-[10px] text-gray-500">{uploadedDocs.length}/{MAX_DOCS}</span>
             </div>
-            <div className="border-2 border-dashed border-gray-700 rounded-lg p-4 text-center hover:border-gray-600 transition-colors cursor-pointer">
+            <div 
+              className="border-2 border-dashed border-gray-700 rounded-lg p-4 text-center hover:border-gray-600 transition-colors cursor-pointer"
+              onClick={() => document.getElementById('docs-input')?.click()}
+            >
+              <input
+                id="docs-input"
+                type="file"
+                accept=".pdf,.doc,.docx,.txt,.md"
+                multiple
+                onChange={handleDocUpload}
+                className="hidden"
+              />
               <svg className="w-8 h-8 mx-auto mb-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
@@ -533,13 +715,17 @@ const DesignSystemPanel = ({
                   </div>
                 ) : (
                   <div className="space-y-1.5">
-                    {uploadedDocs.map((doc, idx) => (
-                      <div key={idx} className="flex items-center gap-2 px-2.5 py-2 bg-gray-800/50 rounded-lg group hover:bg-gray-800 transition-colors">
+                    {uploadedDocs.map((doc) => (
+                      <div key={doc.id} className="flex items-center gap-2 px-2.5 py-2 bg-gray-800/50 rounded-lg group hover:bg-gray-800 transition-colors">
                         <svg className="w-4 h-4 text-purple-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                         </svg>
                         <span className="text-[11px] text-gray-300 flex-1 truncate">{doc.name}</span>
-                        <button type="button" className="p-1 text-gray-600 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all">
+                        <button 
+                          type="button" 
+                          onClick={() => handleRemoveDoc(doc.id)}
+                          className="p-1 text-gray-600 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all"
+                        >
                           <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                           </svg>
