@@ -708,15 +708,25 @@ export const CarouselFrame = ({
   // Handle drag end for background layer reordering
   const handleLayerDragEnd = (event) => {
     const { active, over } = event;
-    if (!over || active.id === over.id) return;
+    console.log('handleLayerDragEnd called', { active: active?.id, over: over?.id });
+    if (!over || active.id === over.id) {
+      console.log('Early return: no over or same id');
+      return;
+    }
     
     const currentOrder = frame.backgroundLayerOrder || ['fill', 'pattern', 'image'];
     const oldIndex = currentOrder.indexOf(active.id);
     const newIndex = currentOrder.indexOf(over.id);
     
+    console.log('Calculating new order:', { currentOrder, oldIndex, newIndex });
+    
     if (oldIndex !== -1 && newIndex !== -1) {
       const newOrder = arrayMove(currentOrder, oldIndex, newIndex);
+      console.log('Calling onReorderBackgroundLayers with newOrder:', newOrder);
+      console.log('onReorderBackgroundLayers exists:', !!onReorderBackgroundLayers);
       onReorderBackgroundLayers?.(carouselId, frame.id, newOrder);
+    } else {
+      console.log('Indices not found, not reordering');
     }
   };
   
@@ -2010,6 +2020,8 @@ export const SortableFrame = ({
   onRequestAddIcon,
   // Progress indicator props
   onUpdateProgressIndicator,
+  // Background layer order props
+  onReorderBackgroundLayers,
   // Additional callbacks
   onRequestAddFill,
   onRequestAddPhoto,
@@ -2087,6 +2099,7 @@ export const SortableFrame = ({
         onRemoveIconFromFrame={onRemoveIconFromFrame}
         onRequestAddIcon={onRequestAddIcon}
         onUpdateProgressIndicator={onUpdateProgressIndicator}
+        onReorderBackgroundLayers={onReorderBackgroundLayers}
         onRequestAddFill={onRequestAddFill}
         onRequestAddPhoto={onRequestAddPhoto}
         onRequestAddPattern={onRequestAddPattern}
