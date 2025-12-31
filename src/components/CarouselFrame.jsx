@@ -1011,6 +1011,7 @@ export const CarouselFrame = ({
             frameHeight={size.height}
             isRowSelected={isRowSelected}
             isFrameSelected={isFrameSelected}
+            onClick={handleStartIconEdit}
           />
         )}
         

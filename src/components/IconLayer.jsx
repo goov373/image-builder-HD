@@ -8,6 +8,7 @@ const IconLayer = ({
   frameHeight,
   isRowSelected = false,
   isFrameSelected = false,
+  onClick,
 }) => {
   if (!iconLayer) return null;
   
@@ -30,9 +31,15 @@ const IconLayer = ({
     return 'none';
   };
   
+  const handleClick = (e) => {
+    e.stopPropagation();
+    onClick?.();
+  };
+  
   return (
     <div 
-      className="absolute"
+      className="absolute cursor-pointer"
+      onClick={handleClick}
       style={{
         left: horizontalPadding,
         bottom: '52%', // Same position as icon placeholder
