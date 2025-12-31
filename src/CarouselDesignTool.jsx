@@ -37,6 +37,7 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
   // UI state
   const [zoom, setZoom] = useState(120);
   const [activePanel, setActivePanel] = useState(null);
+  const [expandSectionOnOpen, setExpandSectionOnOpen] = useState(null);
   const [isAccountOpen, setIsAccountOpen] = useState(false);
   const [showShortcutsModal, setShowShortcutsModal] = useState(false);
   const [selectedDevice, setSelectedDevice] = useState('none');
@@ -75,6 +76,14 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
     onUndo: () => console.log('Undo - coming in Phase 5'),
     onRedo: () => console.log('Redo - coming in Phase 5'),
   }, !showShortcutsModal); // Disable some shortcuts when modal is open
+
+  // Handler to open Design panel and expand Product Imagery section
+  const handleRequestAddProductImage = () => {
+    setExpandSectionOnOpen('productImagery');
+    setActivePanel('design');
+    // Clear the expand trigger after a short delay so it can be triggered again
+    setTimeout(() => setExpandSectionOnOpen(null), 100);
+  };
 
   // Get current project type from active tab
   const currentProjectType = tabs.activeTab?.projectType || 'carousel';
@@ -212,6 +221,10 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
     handleSetRowStretchedPattern: carousels.handleSetRowStretchedPattern,
     // Fill layer methods
     handleUpdateFillLayer: carousels.handleUpdateFillLayer,
+    // Product image layer methods
+    handleAddProductImageToFrame: carousels.handleAddProductImageToFrame,
+    handleUpdateProductImageLayer: carousels.handleUpdateProductImageLayer,
+    handleRemoveProductImageFromFrame: carousels.handleRemoveProductImageFromFrame,
     // Eblast methods
     eblasts: eblasts.eblasts,
     handleEblastSetVariant: eblasts.handleSetVariant,
@@ -356,10 +369,12 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
           onSetFrameBackground={carousels.handleSetFrameBackground}
           onSetRowStretchedBackground={carousels.handleSetRowStretchedBackground}
           onAddImageToFrame={carousels.handleAddImageToFrame}
+          onAddProductImageToFrame={carousels.handleAddProductImageToFrame}
           onAddPatternToFrame={carousels.handleAddPatternToFrame}
           onUpdatePatternLayer={carousels.handleUpdatePatternLayer}
           onRemovePatternFromFrame={carousels.handleRemovePatternFromFrame}
           onSetRowStretchedPattern={carousels.handleSetRowStretchedPattern}
+          expandSectionOnOpen={expandSectionOnOpen}
           // Eblast-specific props
           selectedEblastId={eblasts.selectedEblastId}
           selectedSectionId={eblasts.selectedSectionId}
@@ -425,6 +440,7 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
             onCreateProject={tabs.handleCreateProject}
             projectType={currentProjectType}
             selectedDevice={selectedDevice}
+            onRequestAddProductImage={handleRequestAddProductImage}
           />
         )}
         </div>

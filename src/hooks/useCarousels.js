@@ -39,6 +39,10 @@ export const CAROUSEL_ACTIONS = {
   SET_ROW_STRETCHED_PATTERN: 'SET_ROW_STRETCHED_PATTERN',
   // Fill Layer Actions
   UPDATE_FILL_LAYER: 'UPDATE_FILL_LAYER',
+  // Product Image Layer Actions
+  ADD_PRODUCT_IMAGE_TO_FRAME: 'ADD_PRODUCT_IMAGE_TO_FRAME',
+  UPDATE_PRODUCT_IMAGE_LAYER: 'UPDATE_PRODUCT_IMAGE_LAYER',
+  REMOVE_PRODUCT_IMAGE_FROM_FRAME: 'REMOVE_PRODUCT_IMAGE_FROM_FRAME',
 };
 
 // Initial state shape
@@ -589,6 +593,82 @@ function carouselReducer(state, action) {
       };
     }
 
+    // ===== Product Image Layer Actions =====
+    
+    case CAROUSEL_ACTIONS.ADD_PRODUCT_IMAGE_TO_FRAME: {
+      const { carouselId, frameId, imageSrc, layoutIndex, layoutVariant } = action;
+      // Calculate position based on layout
+      // Bottom Stack (layout 0, variant 0): product at top
+      // Top Stack (layout 0, variant 1): product at bottom
+      // Upper Drama (layout 1, variant 2): product at center
+      let yPosition = 0.2; // Default: upper portion
+      if (layoutIndex === 0 && layoutVariant === 1) {
+        yPosition = 0.6; // Top Stack: product at bottom
+      } else if (layoutIndex === 1 && layoutVariant === 2) {
+        yPosition = 0.35; // Upper Drama: center
+      }
+      
+      const newProductImageLayer = {
+        id: `product-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        src: imageSrc,
+        x: 0.5,           // Centered horizontally (0-1 range, 0.5 = center)
+        y: yPosition,     // Vertical position based on layout
+        width: 0.6,       // 60% of frame width
+        opacity: 1,       // Fully visible
+      };
+      
+      return {
+        ...state,
+        carousels: state.carousels.map(carousel => {
+          if (carousel.id !== carouselId) return carousel;
+          return {
+            ...carousel,
+            frames: carousel.frames.map(frame =>
+              frame.id === frameId ? { ...frame, productImageLayer: newProductImageLayer } : frame
+            )
+          };
+        })
+      };
+    }
+
+    case CAROUSEL_ACTIONS.UPDATE_PRODUCT_IMAGE_LAYER: {
+      const { carouselId, frameId, updates } = action;
+      return {
+        ...state,
+        carousels: state.carousels.map(carousel => {
+          if (carousel.id !== carouselId) return carousel;
+          return {
+            ...carousel,
+            frames: carousel.frames.map(frame => {
+              if (frame.id !== frameId || !frame.productImageLayer) return frame;
+              return {
+                ...frame,
+                productImageLayer: { ...frame.productImageLayer, ...updates }
+              };
+            })
+          };
+        })
+      };
+    }
+
+    case CAROUSEL_ACTIONS.REMOVE_PRODUCT_IMAGE_FROM_FRAME: {
+      const { carouselId, frameId } = action;
+      return {
+        ...state,
+        carousels: state.carousels.map(carousel => {
+          if (carousel.id !== carouselId) return carousel;
+          return {
+            ...carousel,
+            frames: carousel.frames.map(frame => {
+              if (frame.id !== frameId) return frame;
+              const { productImageLayer, ...rest } = frame;
+              return rest;
+            })
+          };
+        })
+      };
+    }
+
     default:
       return state;
   }
@@ -730,6 +810,16 @@ export default function useCarousels(initialData) {
     // Fill Layer Actions
     handleUpdateFillLayer: useCallback((carouselId, frameId, updates) =>
       dispatch({ type: CAROUSEL_ACTIONS.UPDATE_FILL_LAYER, carouselId, frameId, updates }), []),
+    
+    // Product Image Layer Actions
+    handleAddProductImageToFrame: useCallback((carouselId, frameId, imageSrc, layoutIndex, layoutVariant) =>
+      dispatch({ type: CAROUSEL_ACTIONS.ADD_PRODUCT_IMAGE_TO_FRAME, carouselId, frameId, imageSrc, layoutIndex, layoutVariant }), []),
+    
+    handleUpdateProductImageLayer: useCallback((carouselId, frameId, updates) =>
+      dispatch({ type: CAROUSEL_ACTIONS.UPDATE_PRODUCT_IMAGE_LAYER, carouselId, frameId, updates }), []),
+    
+    handleRemoveProductImageFromFrame: useCallback((carouselId, frameId) =>
+      dispatch({ type: CAROUSEL_ACTIONS.REMOVE_PRODUCT_IMAGE_FROM_FRAME, carouselId, frameId }), []),
   };
 
   return {

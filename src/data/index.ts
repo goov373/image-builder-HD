@@ -39,4 +39,11 @@ export {
   type PatternDefinition,
   type PatternLayer,
 } from './patterns';
+export {
+  brandIcons,
+  getAllBrandIcons,
+  getBrandIconsByCategory,
+  iconCategories,
+  type BrandIcon,
+} from './brandIcons';
 

@@ -4,6 +4,7 @@ import { frameSizes, getFontSizes, getFrameStyle } from '../data';
 import { LayoutBottomStack, LayoutCenterDrama, LayoutEditorialLeft } from './Layouts';
 import ImageLayer from './ImageLayer';
 import PatternLayer from './PatternLayer';
+import ProductImageLayer from './ProductImageLayer';
 
 /**
  * Progress Dots Overlay
@@ -62,6 +63,10 @@ export const CarouselFrame = ({
   // Pattern layer props
   onUpdatePatternLayer,
   onRemovePatternFromFrame,
+  // Product image layer props
+  onUpdateProductImageLayer,
+  onRemoveProductImageFromFrame,
+  onRequestAddProductImage, // Callback to open design panel with product imagery section
   // Cross-frame overflow
   prevFrameImage = null,
   nextFrameImage = null,
@@ -86,6 +91,10 @@ export const CarouselFrame = ({
   // Pattern editing state
   const [isPatternEditing, setIsPatternEditing] = useState(false);
   const [initialPatternState, setInitialPatternState] = useState(null);
+  
+  // Product image editing state
+  const [isProductImageEditing, setIsProductImageEditing] = useState(false);
+  const [initialProductImageState, setInitialProductImageState] = useState(null);
   
   // Notify parent (SortableFrame) when image edit mode changes
   const handleImageEditModeChange = (editing) => {
@@ -178,6 +187,33 @@ export const CarouselFrame = ({
     setInitialPatternState(null);
   };
   
+  // Product image editing handlers
+  const handleStartProductImageEdit = () => {
+    if (!isProductImageEditing && frame.productImageLayer) {
+      setInitialProductImageState({ ...frame.productImageLayer });
+    }
+    setIsProductImageEditing(true);
+  };
+  
+  const handleCancelProductImageEdit = () => {
+    if (initialProductImageState) {
+      onUpdateProductImageLayer?.(carouselId, frame.id, initialProductImageState);
+    }
+    setIsProductImageEditing(false);
+    setInitialProductImageState(null);
+  };
+  
+  const handleDoneProductImageEdit = () => {
+    setIsProductImageEditing(false);
+    setInitialProductImageState(null);
+  };
+  
+  const handleDeleteProductImage = () => {
+    onRemoveProductImageFromFrame?.(carouselId, frame.id);
+    setIsProductImageEditing(false);
+    setInitialProductImageState(null);
+  };
+  
   const style = getFrameStyle(carouselId, frame.style, designSystem);
   const content = frame.variants[frame.currentVariant];
   const layoutIndex = frame.currentLayout || 0;
@@ -185,6 +221,11 @@ export const CarouselFrame = ({
   const isLandscape = frameSize === 'landscape' || frameSize === 'slides';
   const formatting = frame.variants[frame.currentVariant]?.formatting || {};
   const layoutVariant = frame.layoutVariant || 0;
+  
+  // Check if current layout is eligible for product images
+  // Bottom Stack (layout 0, variant 0), Top Stack (layout 0, variant 1), Upper Drama (layout 1, variant 2)
+  const isProductImageEligible = (layoutIndex === 0 && (layoutVariant === 0 || layoutVariant === 1)) 
+                                || (layoutIndex === 1 && layoutVariant === 2);
   
   // Compute background style - handles both simple string and stretched gradient objects
   const getBackgroundStyle = () => {
@@ -339,6 +380,16 @@ export const CarouselFrame = ({
           {renderLayout()}
         </div>
         
+        {/* Layer 5: Product Image - above text (z-index: 20) */}
+        {frame.productImageLayer && (
+          <ProductImageLayer
+            productImageLayer={frame.productImageLayer}
+            frameWidth={size.width}
+            frameHeight={size.height}
+            isEditing={isProductImageEditing}
+          />
+        )}
+        
         {/* Progress Dots Overlay - Hidden during image editing */}
         {!isImageEditing && (
           <div className="absolute top-2 right-2 z-10">
@@ -371,8 +422,45 @@ export const CarouselFrame = ({
       <div className={`${isRowSelected ? 'min-h-[52px]' : 'h-0'}`}>
       {/* Layer Indicators - outside frame, below card */}
       {/* Only visible when row is selected, hidden during editing modes */}
-      {isRowSelected && !isImageEditing && !isFillEditing && !isPatternEditing && (
+      {isRowSelected && !isImageEditing && !isFillEditing && !isPatternEditing && !isProductImageEditing && (
       <div className="mt-1.5 flex flex-col items-start gap-1">
+        {/* Add Product Image - Only for eligible layouts without a product image */}
+        {isProductImageEligible && !frame.productImageLayer && isFrameSelected && (
+          <button 
+            type="button"
+            className="flex items-center gap-1 px-2 py-1 bg-purple-600/80 hover:bg-purple-500/80 rounded-full transition-colors"
+            title="Add a product image"
+            onClick={(e) => { e.stopPropagation(); onRequestAddProductImage?.(); }}
+          >
+            <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            <span className="text-[10px] text-white font-medium">Add Product Image</span>
+          </button>
+        )}
+        {/* Edit Product Image - When a product image exists */}
+        {frame.productImageLayer && (
+          <div 
+            className="flex items-center gap-1 px-2 py-1 bg-gray-800/80 rounded-full group cursor-pointer hover:bg-gray-700/80 transition-colors"
+            title="Click to edit product image"
+            onClick={(e) => { e.stopPropagation(); if (isFrameSelected) handleStartProductImageEdit(); }}
+          >
+            <svg className="w-3 h-3 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+            </svg>
+            <span className="text-[10px] text-gray-400 group-hover:text-white transition-colors">{isFrameSelected ? 'Edit Product' : 'Product'}</span>
+            <button
+              type="button"
+              onClick={(e) => { e.stopPropagation(); onRemoveProductImageFromFrame?.(carouselId, frame.id); }}
+              className="w-3.5 h-3.5 flex items-center justify-center rounded-full hover:bg-gray-600 transition-colors ml-0.5"
+              title="Remove product image"
+            >
+              <svg className="w-2.5 h-2.5 text-gray-400 hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        )}
         {/* Pattern Indicator - Click to edit */}
         {frame.patternLayer && (
           <div 
@@ -790,6 +878,84 @@ export const CarouselFrame = ({
           </button>
         </div>
       )}
+      
+      {/* Product Image Edit Controls - appears below frame when editing product image */}
+      {isProductImageEditing && frame.productImageLayer && (
+        <div 
+          className="mt-1.5 flex items-center gap-2 flex-wrap" 
+          data-product-image-edit-controls
+          onClick={(e) => e.stopPropagation()}
+          onMouseDown={(e) => e.stopPropagation()}
+        >
+          {/* Opacity Control */}
+          <div className="flex items-center gap-1 bg-gray-800/90 rounded-lg px-2 py-1.5">
+            <span className="text-gray-500 text-[10px] mr-1 min-w-[40px]">Opacity</span>
+            <button
+              type="button"
+              onClick={() => onUpdateProductImageLayer?.(carouselId, frame.id, { opacity: Math.max(0, (frame.productImageLayer.opacity || 1) - 0.1) })}
+              className="w-5 h-5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 rounded transition-colors"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+              </svg>
+            </button>
+            <span className="text-gray-300 text-[10px] font-medium min-w-[32px] text-center">
+              {Math.round((frame.productImageLayer.opacity || 1) * 100)}%
+            </span>
+            <button
+              type="button"
+              onClick={() => onUpdateProductImageLayer?.(carouselId, frame.id, { opacity: Math.min(1, (frame.productImageLayer.opacity || 1) + 0.1) })}
+              className="w-5 h-5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 rounded transition-colors"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              onClick={() => onUpdateProductImageLayer?.(carouselId, frame.id, { opacity: 1 })}
+              className="w-5 h-5 flex items-center justify-center text-gray-500 hover:text-white hover:bg-white/10 rounded transition-colors"
+              title="Reset opacity to 100%"
+            >
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+            </button>
+          </div>
+
+          {/* Cancel Button */}
+          <button
+            type="button"
+            onClick={handleCancelProductImageEdit}
+            className="bg-gray-700/90 hover:bg-gray-600 rounded-lg px-2.5 py-1.5 text-gray-300 hover:text-white text-[10px] font-medium transition-colors"
+            title="Cancel and revert changes"
+          >
+            Cancel
+          </button>
+
+          {/* Done Button */}
+          <button
+            type="button"
+            onClick={handleDoneProductImageEdit}
+            className="bg-orange-500/90 hover:bg-orange-500 rounded-lg px-2.5 py-1.5 text-white text-[10px] font-medium transition-colors"
+            title="Done editing"
+          >
+            Done
+          </button>
+
+          {/* Delete Button */}
+          <button
+            type="button"
+            onClick={handleDeleteProductImage}
+            className="bg-gray-800/90 hover:bg-red-600 rounded-lg px-2 py-1.5 text-gray-400 hover:text-white transition-colors"
+            title="Remove product image"
+          >
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+          </button>
+        </div>
+      )}
       </div>
     </div>
   );
@@ -824,6 +990,10 @@ export const SortableFrame = ({
   // Pattern layer props
   onUpdatePatternLayer,
   onRemovePatternFromFrame,
+  // Product image layer props
+  onUpdateProductImageLayer,
+  onRemoveProductImageFromFrame,
+  onRequestAddProductImage,
   // Cross-frame overflow
   prevFrameImage,
   nextFrameImage,
@@ -887,6 +1057,9 @@ export const SortableFrame = ({
         onUpdateFillLayer={onUpdateFillLayer}
         onUpdatePatternLayer={onUpdatePatternLayer}
         onRemovePatternFromFrame={onRemovePatternFromFrame}
+        onUpdateProductImageLayer={onUpdateProductImageLayer}
+        onRemoveProductImageFromFrame={onRemoveProductImageFromFrame}
+        onRequestAddProductImage={onRequestAddProductImage}
         prevFrameImage={prevFrameImage}
         nextFrameImage={nextFrameImage}
         onImageEditModeChange={setIsImageEditing}

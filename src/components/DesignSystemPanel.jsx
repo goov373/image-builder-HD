@@ -6,7 +6,7 @@ import {
   uploadDoc, listDocs, deleteDoc 
 } from '../lib/storage';
 import { isSupabaseConfigured } from '../lib/supabase';
-import { getAllGradientCSSValues, allGradients, solidColors } from '../data';
+import { getAllGradientCSSValues, allGradients, solidColors, brandIcons } from '../data';
 import { LIMITS } from '../config';
 import ImageUploader from './design-panel/ImageUploader';
 import ImageGrid from './design-panel/ImageGrid';
@@ -29,11 +29,14 @@ const DesignSystemPanel = ({
   onSetFrameBackground,
   onSetRowStretchedBackground,
   onAddImageToFrame,
+  onAddProductImageToFrame,
   // Pattern layer handlers (carousel)
   onAddPatternToFrame,
   onUpdatePatternLayer,
   onRemovePatternFromFrame,
   onSetRowStretchedPattern,
+  // Control which section to expand when panel opens
+  expandSectionOnOpen,
   // Eblast-specific props
   selectedEblastId,
   selectedSectionId,
@@ -144,7 +147,15 @@ const DesignSystemPanel = ({
     yourImages: true,
     yourDocs: true,
     yourProductImages: true,
+    brandIcons: true,
   });
+  // Expand a specific section when the panel opens with expandSectionOnOpen
+  React.useEffect(() => {
+    if (expandSectionOnOpen && collapsedSections[expandSectionOnOpen]) {
+      setCollapsedSections(prev => ({ ...prev, [expandSectionOnOpen]: false }));
+    }
+  }, [expandSectionOnOpen]);
+  
   const toggleSection = (section) => {
     setCollapsedSections(prev => ({ ...prev, [section]: !prev[section] }));
   };
@@ -944,9 +955,31 @@ const DesignSystemPanel = ({
             ) : (
               <div className="grid grid-cols-3 gap-2">
                 {uploadedProductImages.map((img) => (
-                  <div key={img.id} className="relative group aspect-square rounded-lg overflow-hidden bg-gray-800 ring-1 ring-gray-700 hover:ring-gray-400 transition-colors cursor-pointer">
+                  <button 
+                    key={img.id} 
+                    type="button"
+                    onClick={() => {
+                      if (isCarousel && hasFrameSelected && onAddProductImageToFrame) {
+                        // Get the frame's layout info for positioning
+                        const frame = selectedCarouselFrames?.find(f => f.id === selectedFrameId);
+                        const layoutIndex = frame?.currentLayout || 0;
+                        const layoutVariant = frame?.layoutVariant || 0;
+                        onAddProductImageToFrame(selectedCarouselId, selectedFrameId, img.url, layoutIndex, layoutVariant);
+                      }
+                    }}
+                    className={`relative group aspect-square rounded-lg overflow-hidden bg-gray-800 ring-1 ring-gray-700 hover:ring-purple-400 transition-colors ${hasFrameSelected ? 'cursor-pointer' : 'cursor-default opacity-50'}`}
+                    title={hasFrameSelected ? 'Click to add product image to selected frame' : 'Select a frame first'}
+                    disabled={!hasFrameSelected}
+                  >
                     <img src={img.url} alt={img.name} className="w-full h-full object-contain" />
-                  </div>
+                    {hasFrameSelected && (
+                      <div className="absolute inset-0 bg-purple-500/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                        </svg>
+                      </div>
+                    )}
+                  </button>
                 ))}
               </div>
             )}
@@ -1238,6 +1271,67 @@ const DesignSystemPanel = ({
               </button>
             ))}
           </div>
+          </div>
+          )}
+        </div>
+        
+        {/* Brand Icons Section */}
+        <div className="border-t border-gray-800">
+          <button
+            type="button"
+            onClick={() => toggleSection('brandIcons')}
+            className="w-full p-4 flex items-center justify-between hover:bg-gray-800/50 transition-colors"
+          >
+            <div className="flex items-center gap-2">
+              <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Brand Icons</h3>
+              <span className="px-1.5 py-0.5 bg-gray-700 rounded text-[10px] text-gray-400">{brandIcons.length}</span>
+            </div>
+            <svg className={`w-4 h-4 text-gray-500 transition-transform ${collapsedSections.brandIcons ? '' : 'rotate-180'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+          
+          {!collapsedSections.brandIcons && (
+          <div className="px-4 pt-2 pb-4">
+            <p className="text-[10px] text-gray-500 mb-3">HelloData brand icons • 2px stroke, rounded corners</p>
+            
+            {/* Icons Grid - 4 columns, 3+ rows */}
+            <div className="grid grid-cols-4 gap-2">
+              {brandIcons.map((icon) => (
+                <button
+                  key={icon.id}
+                  type="button"
+                  className="group relative aspect-square rounded-lg overflow-hidden bg-gray-800/50 border border-gray-700 hover:border-purple-500 hover:bg-gray-800 transition-all flex items-center justify-center"
+                  title={`${icon.name} - ${icon.description}`}
+                  onClick={() => {
+                    // Copy SVG to clipboard
+                    const svgCode = `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${icon.path}" /></svg>`;
+                    navigator.clipboard.writeText(svgCode);
+                  }}
+                >
+                  <svg 
+                    className="w-6 h-6 text-gray-400 group-hover:text-white transition-colors" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24"
+                  >
+                    <path 
+                      strokeLinecap="round" 
+                      strokeLinejoin="round" 
+                      strokeWidth={2} 
+                      d={icon.path} 
+                    />
+                  </svg>
+                  {/* Hover tooltip */}
+                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-2 py-1 bg-gray-950 text-white text-[10px] font-medium rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50">
+                    {icon.name}
+                    <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-950" />
+                  </div>
+                </button>
+              ))}
+            </div>
+            
+            <p className="text-[9px] text-gray-600 mt-3 text-center">Click icon to copy SVG code</p>
           </div>
           )}
         </div>

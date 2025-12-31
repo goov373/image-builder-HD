@@ -22,6 +22,8 @@ export default function EditorView({
   onUpdateProjectName,
   onCreateProject,
   projectType = 'carousel',
+  // Product image callback
+  onRequestAddProductImage,
 }) {
   // Get state from context
   const { designSystem } = useDesignSystemContext();
@@ -84,6 +86,10 @@ export default function EditorView({
     // Pattern layer methods (carousels)
     handleUpdatePatternLayer: handleUpdatePatternLayerCarousel,
     handleRemovePatternFromFrame,
+    // Product image layer methods (carousels)
+    handleAddProductImageToFrame,
+    handleUpdateProductImageLayer,
+    handleRemoveProductImageFromFrame,
     // Eblast methods
     eblasts,
     handleEblastUpdateText,
@@ -196,6 +202,9 @@ export default function EditorView({
                       onClearBackground={(carouselId, frameId) => handleSetFrameBackground(carouselId, frameId, null)}
                       onUpdatePatternLayer={handleUpdatePatternLayerCarousel}
                       onRemovePatternFromFrame={handleRemovePatternFromFrame}
+                      onUpdateProductImageLayer={handleUpdateProductImageLayer}
+                      onRemoveProductImageFromFrame={handleRemoveProductImageFromFrame}
+                      onRequestAddProductImage={onRequestAddProductImage}
                     />
                     {/* Add Row Button - only after last row */}
                     {index === carousels.length - 1 && (
