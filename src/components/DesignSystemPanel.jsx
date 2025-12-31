@@ -914,7 +914,7 @@ const DesignSystemPanel = ({
                     type="button"
                     onClick={() => {
                       if (isCarousel && hasFrameSelected && onUpdateProgressIndicator) {
-                        onUpdateProgressIndicator(selectedCarouselId, selectedFrameId, { type: indicator.type });
+                        onUpdateProgressIndicator(selectedCarouselId, selectedFrameId, { type: indicator.type, isHidden: false });
                       }
                     }}
                     disabled={!hasFrameSelected}

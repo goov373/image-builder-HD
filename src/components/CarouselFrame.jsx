@@ -1010,31 +1010,27 @@ export const CarouselFrame = ({
               {/* 1. Progress Indicator */}
               <div 
                 className={`flex items-center gap-1.5 px-2 py-1.5 border-b border-gray-600/50 group cursor-pointer transition-colors hover:bg-gray-700/50 ${
-                  frame.progressIndicator?.isHidden ? 'opacity-60' : ''
+                  frame.progressIndicator?.isHidden !== false ? 'opacity-60' : ''
                 }`}
                 title="Edit progress indicator"
                 onClick={(e) => { e.stopPropagation(); onRequestAddPageIndicator?.(); setIsProgressEditing(true); }}
               >
-                <svg className={`w-3 h-3 ${frame.progressIndicator?.isHidden ? 'text-gray-500' : 'text-gray-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className={`w-3 h-3 ${frame.progressIndicator?.isHidden !== false ? 'text-gray-500' : 'text-gray-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
                 </svg>
                 <span className={`text-[10px] transition-colors ${
-                  frame.progressIndicator?.isHidden 
+                  frame.progressIndicator?.isHidden !== false 
                     ? 'text-gray-500 group-hover:text-gray-300' 
                     : 'text-gray-400 group-hover:text-white'
                 }`}>Progress</span>
-                {frame.progressIndicator?.isHidden ? (
-                  <span 
-                    className="ml-auto text-[8px] text-gray-500 hover:text-green-400 transition-colors"
-                    onClick={(e) => { e.stopPropagation(); onUpdateProgressIndicator?.(carouselId, frame.id, { isHidden: false }); }}
-                    title="Show progress indicator"
-                  >show</span>
+                {frame.progressIndicator?.isHidden !== false ? (
+                  <span className="ml-auto text-[8px] text-gray-600 italic">empty</span>
                 ) : (
                   <span 
                     className="ml-auto text-[8px] text-gray-600 hover:text-red-400 transition-colors"
                     onClick={(e) => { e.stopPropagation(); onUpdateProgressIndicator?.(carouselId, frame.id, { isHidden: true }); }}
-                    title="Hide progress indicator"
-                  >hide</span>
+                    title="Clear progress indicator"
+                  >clear</span>
                 )}
               </div>
               
