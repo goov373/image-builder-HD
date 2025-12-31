@@ -899,11 +899,12 @@ export const CarouselFrame = ({
                                 || (layoutIndex === 1 && layoutVariant === 2);
   
   // Compute background style - handles both simple string and stretched gradient objects
-  // Default to white when no backgroundOverride is set
+  // When no backgroundOverride is set, return transparent so pattern layer can show through
+  // The main container already has backgroundColor: '#ffffff' as the base
   const getBackgroundStyle = () => {
     const bgOverride = frame.backgroundOverride;
     if (!bgOverride) {
-      return { background: '#ffffff' }; // Plain white by default
+      return { background: 'transparent' }; // Transparent so pattern layer shows through
     }
     // Check if it's a stretched gradient object
     // IMPORTANT: Use backgroundImage (not background shorthand) to prevent it from resetting size/position
