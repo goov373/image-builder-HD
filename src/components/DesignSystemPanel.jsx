@@ -933,7 +933,7 @@ const DesignSystemPanel = ({
                 <button 
                   type="button" 
                   onClick={() => setActiveTab('assets')}
-                  className="mt-2 text-[10px] text-purple-400 hover:text-purple-300 transition-colors"
+                  className="mt-2 text-[10px] text-white hover:text-gray-300 transition-colors"
                 >
                   Upload in Assets →
                 </button>
