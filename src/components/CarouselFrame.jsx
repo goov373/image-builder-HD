@@ -708,25 +708,15 @@ export const CarouselFrame = ({
   // Handle drag end for background layer reordering
   const handleLayerDragEnd = (event) => {
     const { active, over } = event;
-    console.log('handleLayerDragEnd called', { active: active?.id, over: over?.id });
-    if (!over || active.id === over.id) {
-      console.log('Early return: no over or same id');
-      return;
-    }
+    if (!over || active.id === over.id) return;
     
     const currentOrder = frame.backgroundLayerOrder || ['fill', 'pattern', 'image'];
     const oldIndex = currentOrder.indexOf(active.id);
     const newIndex = currentOrder.indexOf(over.id);
     
-    console.log('Calculating new order:', { currentOrder, oldIndex, newIndex });
-    
     if (oldIndex !== -1 && newIndex !== -1) {
       const newOrder = arrayMove(currentOrder, oldIndex, newIndex);
-      console.log('Calling onReorderBackgroundLayers with newOrder:', newOrder);
-      console.log('onReorderBackgroundLayers exists:', !!onReorderBackgroundLayers);
       onReorderBackgroundLayers?.(carouselId, frame.id, newOrder);
-    } else {
-      console.log('Indices not found, not reordering');
     }
   };
   
@@ -841,6 +831,18 @@ export const CarouselFrame = ({
     setImageCloseTrigger(prev => prev + 1);
     handleImageEditModeChange(false);
     setInitialImageState(null);
+  };
+  
+  // Start image editing - opens the image tool panel
+  const handleStartImageEdit = () => {
+    // Close other tool panels first
+    closeAllToolPanels();
+    // Store initial state when entering edit mode
+    if (frame.imageLayer) {
+      setInitialImageState({ ...frame.imageLayer });
+    }
+    setIsImageEditing(true);
+    onImageEditModeChange?.(true);
   };
   
   // Fill color editing handlers
