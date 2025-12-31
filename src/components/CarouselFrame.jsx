@@ -1,11 +1,70 @@
 import { useState, useRef, useEffect } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+  arrayMove,
+} from '@dnd-kit/sortable';
 import { frameSizes, getFontSizes, getFrameStyle } from '../data';
 import { LayoutBottomStack, LayoutCenterDrama, LayoutEditorialLeft } from './Layouts';
 import ImageLayer from './ImageLayer';
 import PatternLayer from './PatternLayer';
 import ProductImageLayer from './ProductImageLayer';
 import IconLayer from './IconLayer';
+
+/**
+ * SortableLayerRow Component
+ * A draggable row for the background layers panel
+ */
+const SortableLayerRow = ({ id, children }) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  return (
+    <div ref={setNodeRef} style={style} className="flex items-center">
+      {/* Drag Handle */}
+      <div 
+        {...attributes} 
+        {...listeners} 
+        className="flex items-center justify-center w-5 h-full cursor-grab active:cursor-grabbing text-gray-600 hover:text-gray-400"
+        title="Drag to reorder"
+      >
+        <svg className="w-3 h-3" viewBox="0 0 10 16" fill="currentColor">
+          <circle cx="2" cy="2" r="1.5"/>
+          <circle cx="8" cy="2" r="1.5"/>
+          <circle cx="2" cy="8" r="1.5"/>
+          <circle cx="8" cy="8" r="1.5"/>
+          <circle cx="2" cy="14" r="1.5"/>
+          <circle cx="8" cy="14" r="1.5"/>
+        </svg>
+      </div>
+      {/* Row Content */}
+      <div className="flex-1">
+        {children}
+      </div>
+    </div>
+  );
+};
 
 /**
  * Progress Indicator Overlay
@@ -554,6 +613,8 @@ export const CarouselFrame = ({
   onRequestAddPageIndicator, // Callback to open design panel with page indicators section
   // Progress indicator props
   onUpdateProgressIndicator,
+  // Background layer order props
+  onReorderBackgroundLayers,
   // Cross-frame overflow
   prevFrameImage = null,
   nextFrameImage = null,
@@ -636,6 +697,28 @@ export const CarouselFrame = ({
       closeAllToolPanels();
     }
   }, [isFrameSelected]);
+  
+  // Sensors for background layer drag-and-drop (with distance activation to prevent accidental drags)
+  const layerSensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: { distance: 5 },
+    })
+  );
+  
+  // Handle drag end for background layer reordering
+  const handleLayerDragEnd = (event) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+    
+    const currentOrder = frame.backgroundLayerOrder || ['fill', 'pattern', 'image'];
+    const oldIndex = currentOrder.indexOf(active.id);
+    const newIndex = currentOrder.indexOf(over.id);
+    
+    if (oldIndex !== -1 && newIndex !== -1) {
+      const newOrder = arrayMove(currentOrder, oldIndex, newIndex);
+      onReorderBackgroundLayers?.(carouselId, frame.id, newOrder);
+    }
+  };
   
   // Track previous layer states to auto-open tool panels when content is added
   const prevProgressRef = useRef(frame.progressIndicator);
@@ -1274,99 +1357,124 @@ export const CarouselFrame = ({
               )}
             </div>
             
-            {/* Background Layers Section */}
-            {/* Order matches visual stacking: topmost layer at top of list */}
+            {/* Background Layers Section - Drag to reorder */}
+            {/* Display order is reversed from data order (topmost layer at top of list) */}
             <div className="text-[9px] text-gray-500 uppercase tracking-wider px-1 pb-1 pt-2">Background Layers</div>
             <div className="border-t border-gray-600/50">
-              {/* 4. Background Photo - topmost layer (z-3) */}
-              <div 
-                className={`flex items-center gap-1.5 px-2 py-1.5 border-b border-gray-600/50 group cursor-pointer transition-colors hover:bg-gray-700/50 ${
-                  !frame.imageLayer ? 'opacity-60' : ''
-                }`}
-                title={frame.imageLayer ? "Edit image" : "Add an image"}
-                onClick={(e) => { 
-                  e.stopPropagation(); 
-                  onRequestAddPhoto?.();
-                  if (frame.imageLayer) {
-                    handleStartImageEdit();
-                  }
-                  // If empty, tool panel opens automatically after selection via useEffect
-                }}
+              <DndContext 
+                sensors={layerSensors} 
+                collisionDetection={closestCenter} 
+                onDragEnd={handleLayerDragEnd}
               >
-                <svg className={`w-3 h-3 ${frame.imageLayer ? 'text-gray-400' : 'text-gray-500'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-                <span className={`text-[10px] transition-colors ${frame.imageLayer ? 'text-gray-400 group-hover:text-white' : 'text-gray-500 group-hover:text-gray-300'}`}>Background Photo</span>
-                {frame.imageLayer ? (
-                  <span 
-                    className="ml-auto text-[8px] text-gray-600 hover:text-red-400 transition-colors"
-                    onClick={(e) => { e.stopPropagation(); onRemoveImageFromFrame?.(carouselId, frame.id); }}
-                    title="Clear background photo"
-                  >clear</span>
-                ) : (
-                  <span className="ml-auto text-[8px] text-gray-600 italic">empty</span>
-                )}
-              </div>
-              
-              {/* 5. Brand Pattern - middle layer (z-2) */}
-              <div 
-                className={`flex items-center gap-1.5 px-2 py-1.5 border-b border-gray-600/50 group cursor-pointer transition-colors hover:bg-gray-700/50 ${
-                  !frame.patternLayer ? 'opacity-60' : ''
-                }`}
-                title={frame.patternLayer ? "Edit pattern" : "Add a pattern"}
-                onClick={(e) => { 
-                  e.stopPropagation(); 
-                  onRequestAddPattern?.();
-                  if (frame.patternLayer) {
-                    handleStartPatternEdit();
-                  }
-                  // If empty, tool panel opens automatically after selection via useEffect
-                }}
-              >
-                <svg className={`w-3 h-3 ${frame.patternLayer ? 'text-gray-400' : 'text-gray-500'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
-                </svg>
-                <span className={`text-[10px] transition-colors ${frame.patternLayer ? 'text-gray-400 group-hover:text-white' : 'text-gray-500 group-hover:text-gray-300'}`}>Brand Pattern</span>
-                {frame.patternLayer ? (
-                  <span 
-                    className="ml-auto text-[8px] text-gray-600 hover:text-red-400 transition-colors"
-                    onClick={(e) => { e.stopPropagation(); onRemovePatternFromFrame?.(carouselId, frame.id); }}
-                    title="Clear brand pattern"
-                  >clear</span>
-                ) : (
-                  <span className="ml-auto text-[8px] text-gray-600 italic">empty</span>
-                )}
-              </div>
-              
-              {/* 6. Fill Color - backmost layer (z-1) */}
-              <div 
-                className={`flex items-center gap-1.5 px-2 py-1.5 border-b border-gray-600/50 group cursor-pointer transition-colors hover:bg-gray-700/50 ${
-                  !frame.backgroundOverride ? 'opacity-60' : ''
-                }`}
-                title={frame.backgroundOverride ? "Edit fill color" : "Add a fill color"}
-                onClick={(e) => { 
-                  e.stopPropagation(); 
-                  onRequestAddFill?.();
-                  if (frame.backgroundOverride) {
-                    handleStartFillEdit();
-                  }
-                  // If empty, tool panel opens automatically after selection via useEffect
-                }}
-              >
-                <svg className={`w-3 h-3 ${frame.backgroundOverride ? 'text-gray-400' : 'text-gray-500'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
-                </svg>
-                <span className={`text-[10px] transition-colors ${frame.backgroundOverride ? 'text-gray-400 group-hover:text-white' : 'text-gray-500 group-hover:text-gray-300'}`}>Fill Color</span>
-                {frame.backgroundOverride ? (
-                  <span 
-                    className="ml-auto text-[8px] text-gray-600 hover:text-red-400 transition-colors"
-                    onClick={(e) => { e.stopPropagation(); onClearBackground?.(carouselId, frame.id); }}
-                    title="Clear fill color"
-                  >clear</span>
-                ) : (
-                  <span className="ml-auto text-[8px] text-gray-600 italic">empty</span>
-                )}
-              </div>
+                <SortableContext 
+                  items={[...(frame.backgroundLayerOrder || ['fill', 'pattern', 'image'])].reverse()} 
+                  strategy={verticalListSortingStrategy}
+                >
+                  {[...(frame.backgroundLayerOrder || ['fill', 'pattern', 'image'])].reverse().map((layerType) => {
+                    // Render the appropriate row based on layer type
+                    if (layerType === 'image') {
+                      return (
+                        <SortableLayerRow key="image" id="image">
+                          <div 
+                            className={`flex items-center gap-1.5 px-2 py-1.5 border-b border-gray-600/50 group cursor-pointer transition-colors hover:bg-gray-700/50 ${
+                              !frame.imageLayer ? 'opacity-60' : ''
+                            }`}
+                            title={frame.imageLayer ? "Edit image" : "Add an image"}
+                            onClick={(e) => { 
+                              e.stopPropagation(); 
+                              onRequestAddPhoto?.();
+                              if (frame.imageLayer) {
+                                handleStartImageEdit();
+                              }
+                            }}
+                          >
+                            <svg className={`w-3 h-3 ${frame.imageLayer ? 'text-gray-400' : 'text-gray-500'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            <span className={`text-[10px] transition-colors ${frame.imageLayer ? 'text-gray-400 group-hover:text-white' : 'text-gray-500 group-hover:text-gray-300'}`}>Background Photo</span>
+                            {frame.imageLayer ? (
+                              <span 
+                                className="ml-auto text-[8px] text-gray-600 hover:text-red-400 transition-colors"
+                                onClick={(e) => { e.stopPropagation(); onRemoveImageFromFrame?.(carouselId, frame.id); }}
+                                title="Clear background photo"
+                              >clear</span>
+                            ) : (
+                              <span className="ml-auto text-[8px] text-gray-600 italic">empty</span>
+                            )}
+                          </div>
+                        </SortableLayerRow>
+                      );
+                    }
+                    if (layerType === 'pattern') {
+                      return (
+                        <SortableLayerRow key="pattern" id="pattern">
+                          <div 
+                            className={`flex items-center gap-1.5 px-2 py-1.5 border-b border-gray-600/50 group cursor-pointer transition-colors hover:bg-gray-700/50 ${
+                              !frame.patternLayer ? 'opacity-60' : ''
+                            }`}
+                            title={frame.patternLayer ? "Edit pattern" : "Add a pattern"}
+                            onClick={(e) => { 
+                              e.stopPropagation(); 
+                              onRequestAddPattern?.();
+                              if (frame.patternLayer) {
+                                handleStartPatternEdit();
+                              }
+                            }}
+                          >
+                            <svg className={`w-3 h-3 ${frame.patternLayer ? 'text-gray-400' : 'text-gray-500'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
+                            </svg>
+                            <span className={`text-[10px] transition-colors ${frame.patternLayer ? 'text-gray-400 group-hover:text-white' : 'text-gray-500 group-hover:text-gray-300'}`}>Brand Pattern</span>
+                            {frame.patternLayer ? (
+                              <span 
+                                className="ml-auto text-[8px] text-gray-600 hover:text-red-400 transition-colors"
+                                onClick={(e) => { e.stopPropagation(); onRemovePatternFromFrame?.(carouselId, frame.id); }}
+                                title="Clear brand pattern"
+                              >clear</span>
+                            ) : (
+                              <span className="ml-auto text-[8px] text-gray-600 italic">empty</span>
+                            )}
+                          </div>
+                        </SortableLayerRow>
+                      );
+                    }
+                    if (layerType === 'fill') {
+                      return (
+                        <SortableLayerRow key="fill" id="fill">
+                          <div 
+                            className={`flex items-center gap-1.5 px-2 py-1.5 border-b border-gray-600/50 group cursor-pointer transition-colors hover:bg-gray-700/50 ${
+                              !frame.backgroundOverride ? 'opacity-60' : ''
+                            }`}
+                            title={frame.backgroundOverride ? "Edit fill color" : "Add a fill color"}
+                            onClick={(e) => { 
+                              e.stopPropagation(); 
+                              onRequestAddFill?.();
+                              if (frame.backgroundOverride) {
+                                handleStartFillEdit();
+                              }
+                            }}
+                          >
+                            <svg className={`w-3 h-3 ${frame.backgroundOverride ? 'text-gray-400' : 'text-gray-500'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+                            </svg>
+                            <span className={`text-[10px] transition-colors ${frame.backgroundOverride ? 'text-gray-400 group-hover:text-white' : 'text-gray-500 group-hover:text-gray-300'}`}>Fill Color</span>
+                            {frame.backgroundOverride ? (
+                              <span 
+                                className="ml-auto text-[8px] text-gray-600 hover:text-red-400 transition-colors"
+                                onClick={(e) => { e.stopPropagation(); onClearBackground?.(carouselId, frame.id); }}
+                                title="Clear fill color"
+                              >clear</span>
+                            ) : (
+                              <span className="ml-auto text-[8px] text-gray-600 italic">empty</span>
+                            )}
+                          </div>
+                        </SortableLayerRow>
+                      );
+                    }
+                    return null;
+                  })}
+                </SortableContext>
+              </DndContext>
             </div>
           </div>
         )}
