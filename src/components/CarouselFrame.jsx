@@ -970,8 +970,12 @@ export const CarouselFrame = ({
         style={{ width: size.width, height: size.height, backgroundColor: '#ffffff' }}
         onClick={(e) => { e.stopPropagation(); onSelectFrame(frame.id); setSelectedLayer(null); }}
       >
-        {/* Layer 1: Fill/Gradient - backmost base color (z-index: 1) */}
-        {/* Uses fillOpacity (defaults to 0.7 with image, 1 without) and fillRotation for user adjustments */}
+        {/* ===== CUSTOM BACKGROUND LAYERS ===== */}
+        {/* Fixed white background is on the container itself (backgroundColor: '#ffffff') */}
+        {/* These custom layers are all transparent when empty */}
+        
+        {/* Layer 1: Fill Color - backmost custom layer (z-index: 1) */}
+        {/* Uses fillOpacity and fillRotation for user adjustments */}
         <div 
           className="absolute inset-0 z-[1] pointer-events-none overflow-hidden"
         >
@@ -979,16 +983,27 @@ export const CarouselFrame = ({
             className="absolute inset-[-50%] w-[200%] h-[200%]"
             style={{
               ...backgroundStyle,
-              opacity: frame.fillOpacity !== undefined ? frame.fillOpacity : (frame.imageLayer ? 0.7 : 1),
+              opacity: frame.fillOpacity !== undefined ? frame.fillOpacity : 1,
               transform: `rotate(${frame.fillRotation || 0}deg)`,
               transformOrigin: 'center center',
             }}
           />
         </div>
         
-        {/* Layer 2: Image - behind gradient (z-index: 2), raises to z-50 when editing */}
+        {/* Layer 2: Brand Pattern - middle custom layer (z-index: 2) */}
+        {frame.patternLayer && (
+          <div className="absolute inset-0 z-[2]">
+            <PatternLayer
+              patternLayer={frame.patternLayer}
+              frameWidth={size.width}
+              frameHeight={size.height}
+            />
+          </div>
+        )}
+        
+        {/* Layer 3: Background Photo - topmost custom layer (z-index: 3), raises to z-50 when editing */}
         {frame.imageLayer && (
-          <div className={`absolute inset-0 ${isImageEditing ? 'z-[50]' : 'z-[2]'}`}>
+          <div className={`absolute inset-0 ${isImageEditing ? 'z-[50]' : 'z-[3]'}`}>
             <ImageLayer
               imageLayer={frame.imageLayer}
               frameWidth={size.width}
@@ -1005,7 +1020,7 @@ export const CarouselFrame = ({
         
         {/* Overflow from previous frame's image (appears on left side) */}
         {!frame.imageLayer && prevFrameImage && prevFrameImage.x > 0.3 && prevFrameImage.scale > 1 && (
-          <div className="absolute inset-0 z-[2]">
+          <div className="absolute inset-0 z-[3]">
             <ImageLayer
               imageLayer={prevFrameImage}
               frameWidth={size.width}
@@ -1021,7 +1036,7 @@ export const CarouselFrame = ({
         
         {/* Overflow from next frame's image (appears on right side) */}
         {!frame.imageLayer && nextFrameImage && nextFrameImage.x < -0.3 && nextFrameImage.scale > 1 && (
-          <div className="absolute inset-0 z-[2]">
+          <div className="absolute inset-0 z-[3]">
             <ImageLayer
               imageLayer={nextFrameImage}
               frameWidth={size.width}
@@ -1031,17 +1046,6 @@ export const CarouselFrame = ({
               onRemove={() => {}}
               isOverflowFromNext={true}
               overflowImage={nextFrameImage}
-            />
-          </div>
-        )}
-        
-        {/* Layer 3: Pattern - above image, decorative overlay (z-index: 3) */}
-        {frame.patternLayer && (
-          <div className="absolute inset-0 z-[3]">
-            <PatternLayer
-              patternLayer={frame.patternLayer}
-              frameWidth={size.width}
-              frameHeight={size.height}
             />
           </div>
         )}
