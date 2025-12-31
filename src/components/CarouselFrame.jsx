@@ -39,6 +39,204 @@ const ProgressDotsOverlay = ({ frameId, isFrameSelected, isHovered, isProgressHi
 };
 
 /**
+ * Color Dropdown Component
+ * A dropdown selector for brand colors
+ */
+const ColorDropdown = ({ 
+  label, 
+  value, 
+  onChange, 
+  colors, 
+  allowNone = false,
+  noneLabel = 'None'
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  
+  const selectedColor = colors.find(c => c.color === value);
+  
+  return (
+    <div className="relative">
+      <button
+        type="button"
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex items-center gap-2 bg-gray-800/90 hover:bg-gray-700/90 rounded-lg px-2.5 py-1.5 transition-colors min-w-[120px]"
+      >
+        <span className="text-gray-400 text-[10px]">{label}</span>
+        <div className="flex items-center gap-1.5 ml-auto">
+          {value ? (
+            <>
+              <div 
+                className="w-4 h-4 rounded border border-gray-500"
+                style={{ backgroundColor: value }}
+              />
+              <span className="text-gray-300 text-[10px]">{selectedColor?.name || 'Custom'}</span>
+            </>
+          ) : (
+            <span className="text-gray-500 text-[10px]">{noneLabel}</span>
+          )}
+          <svg className={`w-3 h-3 text-gray-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </div>
+      </button>
+      
+      {isOpen && (
+        <div 
+          className="absolute top-full left-0 mt-1 bg-gray-800 rounded-lg shadow-xl border border-gray-700 p-2 z-50 min-w-[140px]"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {allowNone && (
+            <button
+              type="button"
+              onClick={() => { onChange(null); setIsOpen(false); }}
+              className={`w-full flex items-center gap-2 px-2 py-1.5 rounded hover:bg-gray-700 transition-colors ${!value ? 'bg-gray-700' : ''}`}
+            >
+              <div className="w-4 h-4 rounded border border-gray-500 bg-gray-600 flex items-center justify-center">
+                <svg className="w-2.5 h-2.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </div>
+              <span className="text-gray-300 text-[10px]">{noneLabel}</span>
+            </button>
+          )}
+          {colors.map(({ name, color }) => (
+            <button
+              key={name}
+              type="button"
+              onClick={() => { onChange(color); setIsOpen(false); }}
+              className={`w-full flex items-center gap-2 px-2 py-1.5 rounded hover:bg-gray-700 transition-colors ${value === color ? 'bg-gray-700' : ''}`}
+            >
+              <div 
+                className="w-4 h-4 rounded border border-gray-500"
+                style={{ backgroundColor: color }}
+              />
+              <span className="text-gray-300 text-[10px]">{name}</span>
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+/**
+ * Icon Edit Panel Component
+ * Controls for editing icon layer properties
+ */
+const IconEditPanel = ({
+  frame,
+  carouselId,
+  designSystem,
+  onUpdateIconLayer,
+  onRequestAddIcon,
+  handleDeleteIcon,
+  handleCancelIconEdit,
+  handleDoneIconEdit,
+}) => {
+  // Brand colors array
+  const brandColors = [
+    { name: 'Primary', color: designSystem.primary },
+    { name: 'Secondary', color: designSystem.secondary },
+    { name: 'Accent', color: designSystem.accent },
+    { name: 'Dark', color: designSystem.neutral1 },
+    { name: 'Mid Grey', color: designSystem.neutral2 },
+    { name: 'Light Grey', color: designSystem.neutral4 },
+    { name: 'Primary 2', color: designSystem.primary2 },
+    { name: 'Accent 2', color: designSystem.accent2 },
+    { name: 'White', color: designSystem.neutral3 },
+  ];
+
+  return (
+    <div 
+      className="mt-1.5 flex flex-col gap-1.5" 
+      data-icon-edit-controls
+      onClick={(e) => e.stopPropagation()}
+      onMouseDown={(e) => e.stopPropagation()}
+    >
+      {/* Row 1: Action buttons and color dropdowns */}
+      <div className="flex items-center gap-2 flex-wrap">
+        {/* Change Icon Button */}
+        <button
+          type="button"
+          onClick={() => { onRequestAddIcon?.(); }}
+          className="flex items-center gap-1.5 bg-purple-600/80 hover:bg-purple-500/80 rounded-lg px-2.5 py-1.5 text-white text-[10px] font-medium transition-colors"
+          title="Change icon"
+        >
+          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+          Change
+        </button>
+
+        {/* Icon Color Dropdown */}
+        <ColorDropdown
+          label="Icon"
+          value={frame.iconLayer.color}
+          onChange={(color) => onUpdateIconLayer?.(carouselId, frame.id, { color: color || '#ffffff' })}
+          colors={brandColors}
+        />
+
+        {/* Border Color Dropdown */}
+        <ColorDropdown
+          label="Border"
+          value={frame.iconLayer.borderColor}
+          onChange={(color) => onUpdateIconLayer?.(carouselId, frame.id, { borderColor: color })}
+          colors={brandColors}
+          allowNone
+          noneLabel="None"
+        />
+
+        {/* Fill Color Dropdown */}
+        <ColorDropdown
+          label="Fill"
+          value={frame.iconLayer.backgroundColor}
+          onChange={(color) => onUpdateIconLayer?.(carouselId, frame.id, { backgroundColor: color })}
+          colors={brandColors}
+          allowNone
+          noneLabel="None"
+        />
+      </div>
+
+      {/* Row 2: Cancel, Done, Remove buttons */}
+      <div className="flex items-center gap-2">
+        {/* Cancel Button */}
+        <button
+          type="button"
+          onClick={handleCancelIconEdit}
+          className="bg-gray-800/90 hover:bg-gray-700 rounded-lg px-2.5 py-1.5 text-gray-400 hover:text-white text-[10px] font-medium transition-colors"
+          title="Cancel and revert changes"
+        >
+          Cancel
+        </button>
+
+        {/* Done Button */}
+        <button
+          type="button"
+          onClick={handleDoneIconEdit}
+          className="bg-orange-500/90 hover:bg-orange-500 rounded-lg px-2.5 py-1.5 text-white text-[10px] font-medium transition-colors"
+          title="Done editing"
+        >
+          Done
+        </button>
+
+        {/* Remove Icon Button */}
+        <button
+          type="button"
+          onClick={handleDeleteIcon}
+          className="flex items-center gap-1 bg-gray-800/90 hover:bg-red-600 rounded-lg px-2.5 py-1.5 text-gray-400 hover:text-white text-[10px] font-medium transition-colors"
+          title="Remove icon"
+        >
+          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+          </svg>
+          Remove
+        </button>
+      </div>
+    </div>
+  );
+};
+
+/**
  * Single Frame Component
  * Displays a single carousel frame with layout and content
  */
@@ -1130,169 +1328,16 @@ export const CarouselFrame = ({
       
       {/* Icon Edit Controls - appears below frame when editing icon */}
       {isIconEditing && frame.iconLayer && (
-        <div 
-          className="mt-1.5 flex flex-col gap-1.5" 
-          data-icon-edit-controls
-          onClick={(e) => e.stopPropagation()}
-          onMouseDown={(e) => e.stopPropagation()}
-        >
-          {/* Row 1: Add/Change Icon and Remove Icon */}
-          <div className="flex items-center gap-2">
-            {/* Add/Change Icon Button */}
-            <button
-              type="button"
-              onClick={() => { onRequestAddIcon?.(); }}
-              className="flex items-center gap-1.5 bg-purple-600/80 hover:bg-purple-500/80 rounded-lg px-2.5 py-1.5 text-white text-[10px] font-medium transition-colors"
-              title="Change icon"
-            >
-              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-              </svg>
-              Change Icon
-            </button>
-
-            {/* Remove Icon Button */}
-            <button
-              type="button"
-              onClick={handleDeleteIcon}
-              className="flex items-center gap-1.5 bg-gray-800/90 hover:bg-red-600 rounded-lg px-2.5 py-1.5 text-gray-400 hover:text-white text-[10px] font-medium transition-colors"
-              title="Remove icon"
-            >
-              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-              </svg>
-              Remove
-            </button>
-          </div>
-
-          {/* Row 2: Icon Color */}
-          <div className="flex items-center gap-1 bg-gray-800/90 rounded-lg px-2 py-1.5">
-            <span className="text-gray-400 text-[10px] mr-2 min-w-[60px]">Icon Color</span>
-            <div className="flex items-center gap-1">
-              {[
-                { key: 'primary', color: designSystem.primary },
-                { key: 'secondary', color: designSystem.secondary },
-                { key: 'accent', color: designSystem.accent },
-                { key: 'neutral1', color: designSystem.neutral1 },
-                { key: 'neutral2', color: designSystem.neutral2 },
-                { key: 'neutral4', color: designSystem.neutral4 },
-                { key: 'primary2', color: designSystem.primary2 },
-                { key: 'accent2', color: designSystem.accent2 },
-                { key: 'neutral3', color: designSystem.neutral3 },
-              ].map(({ key, color }) => (
-                <button
-                  key={key}
-                  type="button"
-                  onClick={() => onUpdateIconLayer?.(carouselId, frame.id, { color })}
-                  className={`w-5 h-5 rounded border-2 transition-all ${frame.iconLayer.color === color ? 'border-white scale-110' : 'border-gray-600 hover:border-gray-400'}`}
-                  style={{ backgroundColor: color }}
-                  title={key}
-                />
-              ))}
-            </div>
-          </div>
-
-          {/* Row 3: Border Color */}
-          <div className="flex items-center gap-1 bg-gray-800/90 rounded-lg px-2 py-1.5">
-            <span className="text-gray-400 text-[10px] mr-2 min-w-[60px]">Border</span>
-            <div className="flex items-center gap-1">
-              {/* None option */}
-              <button
-                type="button"
-                onClick={() => onUpdateIconLayer?.(carouselId, frame.id, { borderColor: null })}
-                className={`w-5 h-5 rounded border-2 transition-all flex items-center justify-center ${!frame.iconLayer.borderColor ? 'border-white scale-110' : 'border-gray-600 hover:border-gray-400'}`}
-                style={{ backgroundColor: '#374151' }}
-                title="No border"
-              >
-                <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-              {[
-                { key: 'primary', color: designSystem.primary },
-                { key: 'secondary', color: designSystem.secondary },
-                { key: 'accent', color: designSystem.accent },
-                { key: 'neutral1', color: designSystem.neutral1 },
-                { key: 'neutral2', color: designSystem.neutral2 },
-                { key: 'neutral4', color: designSystem.neutral4 },
-                { key: 'primary2', color: designSystem.primary2 },
-                { key: 'accent2', color: designSystem.accent2 },
-                { key: 'neutral3', color: designSystem.neutral3 },
-              ].map(({ key, color }) => (
-                <button
-                  key={key}
-                  type="button"
-                  onClick={() => onUpdateIconLayer?.(carouselId, frame.id, { borderColor: color })}
-                  className={`w-5 h-5 rounded border-2 transition-all ${frame.iconLayer.borderColor === color ? 'border-white scale-110' : 'border-gray-600 hover:border-gray-400'}`}
-                  style={{ backgroundColor: color }}
-                  title={key}
-                />
-              ))}
-            </div>
-          </div>
-
-          {/* Row 4: Background Fill Color */}
-          <div className="flex items-center gap-1 bg-gray-800/90 rounded-lg px-2 py-1.5">
-            <span className="text-gray-400 text-[10px] mr-2 min-w-[60px]">Fill</span>
-            <div className="flex items-center gap-1">
-              {/* None option */}
-              <button
-                type="button"
-                onClick={() => onUpdateIconLayer?.(carouselId, frame.id, { backgroundColor: null })}
-                className={`w-5 h-5 rounded border-2 transition-all flex items-center justify-center ${!frame.iconLayer.backgroundColor ? 'border-white scale-110' : 'border-gray-600 hover:border-gray-400'}`}
-                style={{ backgroundColor: '#374151' }}
-                title="No fill"
-              >
-                <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-              {[
-                { key: 'primary', color: designSystem.primary },
-                { key: 'secondary', color: designSystem.secondary },
-                { key: 'accent', color: designSystem.accent },
-                { key: 'neutral1', color: designSystem.neutral1 },
-                { key: 'neutral2', color: designSystem.neutral2 },
-                { key: 'neutral4', color: designSystem.neutral4 },
-                { key: 'primary2', color: designSystem.primary2 },
-                { key: 'accent2', color: designSystem.accent2 },
-                { key: 'neutral3', color: designSystem.neutral3 },
-              ].map(({ key, color }) => (
-                <button
-                  key={key}
-                  type="button"
-                  onClick={() => onUpdateIconLayer?.(carouselId, frame.id, { backgroundColor: color })}
-                  className={`w-5 h-5 rounded border-2 transition-all ${frame.iconLayer.backgroundColor === color ? 'border-white scale-110' : 'border-gray-600 hover:border-gray-400'}`}
-                  style={{ backgroundColor: color }}
-                  title={key}
-                />
-              ))}
-            </div>
-          </div>
-
-          {/* Row 5: Cancel and Done buttons */}
-          <div className="flex items-center gap-2">
-            {/* Cancel Button */}
-            <button
-              type="button"
-              onClick={handleCancelIconEdit}
-              className="bg-gray-800/90 hover:bg-gray-700 rounded-lg px-2.5 py-1.5 text-gray-400 hover:text-white text-[10px] font-medium transition-colors"
-              title="Cancel and revert changes"
-            >
-              Cancel
-            </button>
-
-            {/* Done Button */}
-            <button
-              type="button"
-              onClick={handleDoneIconEdit}
-              className="bg-orange-500/90 hover:bg-orange-500 rounded-lg px-2.5 py-1.5 text-white text-[10px] font-medium transition-colors"
-              title="Done editing"
-            >
-              Done
-            </button>
-          </div>
-        </div>
+        <IconEditPanel
+          frame={frame}
+          carouselId={carouselId}
+          designSystem={designSystem}
+          onUpdateIconLayer={onUpdateIconLayer}
+          onRequestAddIcon={onRequestAddIcon}
+          handleDeleteIcon={handleDeleteIcon}
+          handleCancelIconEdit={handleCancelIconEdit}
+          handleDoneIconEdit={handleDoneIconEdit}
+        />
       )}
       </div>
     </div>
