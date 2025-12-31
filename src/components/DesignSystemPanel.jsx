@@ -814,7 +814,12 @@ const DesignSystemPanel = ({
             onClick={() => toggleSection('backgrounds')}
             className="w-full p-4 flex items-center justify-between hover:bg-gray-800/50 transition-colors"
           >
-            <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Backgrounds</h3>
+            <div className="flex items-center gap-2">
+              <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Backgrounds</h3>
+              {selectedCarouselFrames.filter(f => f.backgroundOverride).length > 0 && (
+                <span className="px-1.5 py-0.5 bg-gray-700 rounded text-[10px] text-gray-400">{selectedCarouselFrames.filter(f => f.backgroundOverride).length}</span>
+              )}
+            </div>
             <div className="flex items-center gap-2">
               {!collapsedSections.backgrounds && hasRowSelected && (
                 <span className="text-[10px] text-green-400 flex items-center gap-1">
@@ -1115,7 +1120,12 @@ const DesignSystemPanel = ({
             onClick={() => toggleSection('patterns')}
             className="w-full p-4 flex items-center justify-between hover:bg-gray-800/50 transition-colors"
           >
-            <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Brand Patterns</h3>
+            <div className="flex items-center gap-2">
+              <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Brand Patterns</h3>
+              {selectedCarouselFrames.filter(f => f.patternLayer).length > 0 && (
+                <span className="px-1.5 py-0.5 bg-gray-700 rounded text-[10px] text-gray-400">{selectedCarouselFrames.filter(f => f.patternLayer).length}</span>
+              )}
+            </div>
             <svg className={`w-4 h-4 text-gray-500 transition-transform ${collapsedSections.patterns ? '' : 'rotate-180'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
             </svg>
