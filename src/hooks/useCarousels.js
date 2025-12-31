@@ -692,6 +692,8 @@ function carouselReducer(state, action) {
         name: iconName,
         scale: 1,
         color: '#ffffff', // Default white
+        borderColor: null, // No border by default
+        backgroundColor: null, // No background by default
       };
       
       return {

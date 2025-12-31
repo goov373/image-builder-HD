@@ -16,7 +16,7 @@ const IconLayer = ({
   
   if (!iconLayer) return null;
   
-  const { path, scale = 1, color = '#ffffff', isHidden = false } = iconLayer;
+  const { path, scale = 1, color = '#ffffff', isHidden = false, borderColor = null, backgroundColor = null } = iconLayer;
   
   // Position: left-aligned, above text area (same as icon placeholder)
   const iconSize = 36 * scale;
@@ -51,6 +51,20 @@ const IconLayer = ({
     );
   }
   
+  // Determine border style - user-defined border takes precedence over selection indicators
+  const getBorderStyle = () => {
+    if (borderColor) {
+      return `2px solid ${borderColor}`;
+    }
+    if (isFrameSelected) {
+      return '2px solid #f97316';
+    }
+    if (isRowSelected) {
+      return '2px dashed rgba(249, 115, 22, 0.4)';
+    }
+    return 'none';
+  };
+  
   return (
     <div 
       className="absolute"
@@ -64,11 +78,8 @@ const IconLayer = ({
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: '8px',
-        border: isFrameSelected 
-          ? '2px solid #f97316' 
-          : isRowSelected 
-            ? '2px dashed rgba(249, 115, 22, 0.4)' 
-            : 'none',
+        border: getBorderStyle(),
+        backgroundColor: backgroundColor || 'transparent',
       }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
