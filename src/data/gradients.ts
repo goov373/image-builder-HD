@@ -146,6 +146,9 @@ export const solidColors: SolidColorDefinition[] = [
   { id: 'sc-accent', name: 'Accent', hex: '#F97316' },
   { id: 'sc-dark', name: 'Dark', hex: '#18191A' },
   { id: 'sc-mid', name: 'Mid', hex: '#ACACAC' },
+  { id: 'sc-light-grey', name: 'Light Grey', hex: '#CBCBCB' },
+  { id: 'sc-primary-2', name: 'Primary 2', hex: '#8D97F3' },
+  { id: 'sc-accent-2', name: 'Accent 2', hex: '#FFA257' },
   { id: 'sc-light', name: 'Light', hex: '#ffffff' },
 ];
 

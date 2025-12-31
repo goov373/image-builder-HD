@@ -6,7 +6,7 @@ import {
   uploadDoc, listDocs, deleteDoc 
 } from '../lib/storage';
 import { isSupabaseConfigured } from '../lib/supabase';
-import { getAllGradientCSSValues, getSolidColorHexValues } from '../data';
+import { getAllGradientCSSValues } from '../data';
 import { LIMITS } from '../config';
 import ImageUploader from './design-panel/ImageUploader';
 import ImageGrid from './design-panel/ImageGrid';
@@ -479,9 +479,21 @@ const DesignSystemPanel = ({
     { key: 'neutral3', label: 'Light' },
   ];
 
-  // Use centralized gradient and color definitions from data layer
+  // Use centralized gradient definitions from data layer
   const gradients = getAllGradientCSSValues();
-  const solidColors = getSolidColorHexValues();
+  
+  // Dynamic solid colors linked to brand colors from designSystem
+  const solidColors = [
+    designSystem.primary,
+    designSystem.secondary,
+    designSystem.accent,
+    designSystem.neutral1,
+    designSystem.neutral2,
+    designSystem.neutral4,
+    designSystem.primary2,
+    designSystem.accent2,
+    designSystem.neutral3,
+  ];
   
   return (
     <>
