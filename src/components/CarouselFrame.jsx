@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { frameSizes, getFontSizes, getFrameStyle } from '../data';
 import { LayoutBottomStack, LayoutCenterDrama, LayoutEditorialLeft } from './Layouts';
@@ -587,6 +587,82 @@ export const CarouselFrame = ({
   const [isIconEditing, setIsIconEditing] = useState(false);
   const [initialIconState, setInitialIconState] = useState(null);
   
+  // Track previous layer states to auto-open tool panels when content is added
+  const prevProgressRef = useRef(frame.progressIndicator);
+  const prevIconRef = useRef(frame.iconLayer);
+  const prevProductImageRef = useRef(frame.productImageLayer);
+  const prevFillRef = useRef(frame.backgroundOverride);
+  const prevImageRef = useRef(frame.imageLayer);
+  const prevPatternRef = useRef(frame.patternLayer);
+  
+  // Auto-open Progress tool panel when indicator is added
+  useEffect(() => {
+    const wasEmpty = !prevProgressRef.current || prevProgressRef.current.isHidden !== false;
+    const nowHasContent = frame.progressIndicator?.isHidden === false;
+    if (wasEmpty && nowHasContent) {
+      setIsProgressEditing(true);
+    }
+    prevProgressRef.current = frame.progressIndicator;
+  }, [frame.progressIndicator]);
+  
+  // Auto-open Icon tool panel when icon is added
+  useEffect(() => {
+    const wasEmpty = !prevIconRef.current;
+    const nowHasContent = !!frame.iconLayer;
+    if (wasEmpty && nowHasContent) {
+      setIsIconEditing(true);
+      setInitialIconState({ ...frame.iconLayer });
+    }
+    prevIconRef.current = frame.iconLayer;
+  }, [frame.iconLayer]);
+  
+  // Auto-open Product Image tool panel when product image is added
+  useEffect(() => {
+    const wasEmpty = !prevProductImageRef.current;
+    const nowHasContent = !!frame.productImageLayer;
+    if (wasEmpty && nowHasContent) {
+      setIsProductImageEditing(true);
+      setInitialProductImageState({ ...frame.productImageLayer });
+    }
+    prevProductImageRef.current = frame.productImageLayer;
+  }, [frame.productImageLayer]);
+  
+  // Auto-open Fill tool panel when fill color is added
+  useEffect(() => {
+    const wasEmpty = !prevFillRef.current;
+    const nowHasContent = !!frame.backgroundOverride;
+    if (wasEmpty && nowHasContent) {
+      setIsFillEditing(true);
+      setInitialFillState({
+        backgroundOverride: frame.backgroundOverride,
+        fillOpacity: frame.fillOpacity || 1,
+        fillRotation: frame.fillRotation || 0,
+      });
+    }
+    prevFillRef.current = frame.backgroundOverride;
+  }, [frame.backgroundOverride]);
+  
+  // Auto-open Image tool panel when background photo is added
+  useEffect(() => {
+    const wasEmpty = !prevImageRef.current;
+    const nowHasContent = !!frame.imageLayer;
+    if (wasEmpty && nowHasContent) {
+      handleImageEditModeChange(true);
+    }
+    prevImageRef.current = frame.imageLayer;
+  }, [frame.imageLayer]);
+  
+  // Auto-open Pattern tool panel when pattern is added
+  useEffect(() => {
+    const wasEmpty = !prevPatternRef.current;
+    const nowHasContent = !!frame.patternLayer;
+    if (wasEmpty && nowHasContent) {
+      setIsPatternEditing(true);
+      setInitialPatternState({ ...frame.patternLayer });
+    }
+    prevPatternRef.current = frame.patternLayer;
+  }, [frame.patternLayer]);
+  
   // Notify parent (SortableFrame) when image edit mode changes
   const handleImageEditModeChange = (editing) => {
     // Store initial state when entering edit mode
@@ -1012,8 +1088,18 @@ export const CarouselFrame = ({
                 className={`flex items-center gap-1.5 px-2 py-1.5 border-b border-gray-600/50 group cursor-pointer transition-colors hover:bg-gray-700/50 ${
                   frame.progressIndicator?.isHidden !== false ? 'opacity-60' : ''
                 }`}
-                title="Edit progress indicator"
-                onClick={(e) => { e.stopPropagation(); onRequestAddPageIndicator?.(); setIsProgressEditing(true); }}
+                title={frame.progressIndicator?.isHidden !== false ? "Add progress indicator" : "Edit progress indicator"}
+                onClick={(e) => { 
+                  e.stopPropagation(); 
+                  if (frame.progressIndicator?.isHidden !== false) {
+                    // Empty - just open design menu, tool panel opens automatically after selection
+                    onRequestAddPageIndicator?.();
+                  } else {
+                    // Has content - open both design menu and tool panel
+                    onRequestAddPageIndicator?.();
+                    setIsProgressEditing(true);
+                  }
+                }}
               >
                 <svg className={`w-3 h-3 ${frame.progressIndicator?.isHidden !== false ? 'text-gray-500' : 'text-gray-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
@@ -1041,7 +1127,14 @@ export const CarouselFrame = ({
                     !frame.iconLayer ? 'opacity-60' : ''
                   }`}
                   title={frame.iconLayer ? "Edit icon" : "Add an icon"}
-                  onClick={(e) => { e.stopPropagation(); frame.iconLayer ? handleStartIconEdit() : onRequestAddIcon?.(); }}
+                  onClick={(e) => { 
+                    e.stopPropagation(); 
+                    onRequestAddIcon?.();
+                    if (frame.iconLayer) {
+                      handleStartIconEdit();
+                    }
+                    // If empty, tool panel opens automatically after selection via useEffect
+                  }}
                 >
                   <svg className={`w-3 h-3 ${frame.iconLayer ? 'text-gray-400' : 'text-gray-500'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -1066,7 +1159,14 @@ export const CarouselFrame = ({
                     !frame.productImageLayer ? 'opacity-60' : ''
                   }`}
                   title={frame.productImageLayer ? "Edit product image" : "Add a product image"}
-                  onClick={(e) => { e.stopPropagation(); frame.productImageLayer ? handleStartProductImageEdit() : onRequestAddProductImage?.(); }}
+                  onClick={(e) => { 
+                    e.stopPropagation(); 
+                    onRequestAddProductImage?.();
+                    if (frame.productImageLayer) {
+                      handleStartProductImageEdit();
+                    }
+                    // If empty, tool panel opens automatically after selection via useEffect
+                  }}
                 >
                   <svg className={`w-3 h-3 ${frame.productImageLayer ? 'text-gray-400' : 'text-gray-500'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
@@ -1094,7 +1194,14 @@ export const CarouselFrame = ({
                   !frame.backgroundOverride ? 'opacity-60' : ''
                 }`}
                 title={frame.backgroundOverride ? "Edit fill color" : "Add a fill color"}
-                onClick={(e) => { e.stopPropagation(); frame.backgroundOverride ? handleStartFillEdit() : onRequestAddFill?.(); }}
+                onClick={(e) => { 
+                  e.stopPropagation(); 
+                  onRequestAddFill?.();
+                  if (frame.backgroundOverride) {
+                    handleStartFillEdit();
+                  }
+                  // If empty, tool panel opens automatically after selection via useEffect
+                }}
               >
                 <svg className={`w-3 h-3 ${frame.backgroundOverride ? 'text-gray-400' : 'text-gray-500'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
@@ -1117,7 +1224,14 @@ export const CarouselFrame = ({
                   !frame.imageLayer ? 'opacity-60' : ''
                 }`}
                 title={frame.imageLayer ? "Edit image" : "Add an image"}
-                onClick={(e) => { e.stopPropagation(); frame.imageLayer ? handleStartImageEdit() : onRequestAddPhoto?.(); }}
+                onClick={(e) => { 
+                  e.stopPropagation(); 
+                  onRequestAddPhoto?.();
+                  if (frame.imageLayer) {
+                    handleStartImageEdit();
+                  }
+                  // If empty, tool panel opens automatically after selection via useEffect
+                }}
               >
                 <svg className={`w-3 h-3 ${frame.imageLayer ? 'text-gray-400' : 'text-gray-500'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -1140,7 +1254,14 @@ export const CarouselFrame = ({
                   !frame.patternLayer ? 'opacity-60' : ''
                 }`}
                 title={frame.patternLayer ? "Edit pattern" : "Add a pattern"}
-                onClick={(e) => { e.stopPropagation(); frame.patternLayer ? handleStartPatternEdit() : onRequestAddPattern?.(); }}
+                onClick={(e) => { 
+                  e.stopPropagation(); 
+                  onRequestAddPattern?.();
+                  if (frame.patternLayer) {
+                    handleStartPatternEdit();
+                  }
+                  // If empty, tool panel opens automatically after selection via useEffect
+                }}
               >
                 <svg className={`w-3 h-3 ${frame.patternLayer ? 'text-gray-400' : 'text-gray-500'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
