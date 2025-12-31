@@ -501,12 +501,6 @@ const DesignSystemPanel = ({
               </button>
               <p className="text-[10px] text-gray-600 mt-2">PDF, DOCX, TXT, MD up to 10MB each</p>
             </div>
-            <p className="text-[10px] text-gray-500 mt-3 flex items-center justify-center gap-1.5">
-              <svg className="w-3 h-3 text-purple-400" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 2L14.09 8.26L20 9.27L15.55 13.97L16.91 20L12 16.9L7.09 20L8.45 13.97L4 9.27L9.91 8.26L12 2Z" />
-              </svg>
-              <span>AI will generate projects from your specs</span>
-            </p>
           </div>
           
           {/* Your Docs Browser - Collapsible */}
