@@ -127,6 +127,7 @@ const DesignSystemPanel = ({
   const [activeTab, setActiveTab] = useState('design'); // 'design' or 'assets'
   const [uploadedFiles, setUploadedFiles] = useState([]); // Compressed uploaded files
   const [uploadedDocs, setUploadedDocs] = useState([]); // Uploaded docs
+  const [uploadedProductImages, setUploadedProductImages] = useState([]); // Product imagery uploads
   const [isUploading, setIsUploading] = useState(false);
   const [isLoadingImages, setIsLoadingImages] = useState(false);
   const [uploadProgress, setUploadProgress] = useState({ current: 0, total: 0, fileName: '' });
@@ -138,6 +139,7 @@ const DesignSystemPanel = ({
     photography: true,
     yourImages: true,
     yourDocs: true,
+    yourProductImages: true,
   });
   const toggleSection = (section) => {
     setCollapsedSections(prev => ({ ...prev, [section]: !prev[section] }));
@@ -449,6 +451,56 @@ const DesignSystemPanel = ({
               </button>
               <p className="text-[10px] text-gray-600 mt-2">PNG with transparent background</p>
             </div>
+          </div>
+          
+          {/* Your Product Images - Collapsible */}
+          <div className="border-t border-gray-800">
+            <button
+              type="button"
+              onClick={() => toggleSection('yourProductImages')}
+              className="w-full p-4 flex items-center justify-between hover:bg-gray-800/50 transition-colors"
+            >
+              <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Your Product Images</h3>
+              <div className="flex items-center gap-2">
+                {uploadedProductImages.length > 0 && (
+                  <span className="px-1.5 py-0.5 bg-gray-700 rounded text-[10px] text-gray-300">{uploadedProductImages.length}</span>
+                )}
+                <svg className={`w-4 h-4 text-gray-500 transition-transform ${collapsedSections.yourProductImages ? '' : 'rotate-180'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+            </button>
+            
+            {!collapsedSections.yourProductImages && (
+              <div className="px-4 pb-4">
+                {uploadedProductImages.length === 0 ? (
+                  <div className="text-center py-6">
+                    <svg className="w-10 h-10 mx-auto mb-2 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                    </svg>
+                    <p className="text-xs text-gray-500">No product images yet</p>
+                    <p className="text-[10px] text-gray-600 mt-1">Upload product shots above</p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-2 gap-2">
+                    {uploadedProductImages.map((img, idx) => (
+                      <div key={idx} className="relative group aspect-square rounded-lg overflow-hidden bg-gray-800">
+                        <img src={img.url} alt={img.name} className="w-full h-full object-contain" />
+                        <button 
+                          type="button"
+                          onClick={() => setUploadedProductImages(prev => prev.filter((_, i) => i !== idx))}
+                          className="absolute top-1 right-1 p-1 bg-black/70 hover:bg-red-500 rounded-full opacity-0 group-hover:opacity-100 transition-all"
+                        >
+                          <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
           
           {/* Upload Docs Section */}
