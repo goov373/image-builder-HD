@@ -59,6 +59,9 @@ export const CarouselFrame = ({
   // Background/Fill props
   onClearBackground,
   onUpdateFillLayer,
+  // Pattern layer props
+  onUpdatePatternLayer,
+  onRemovePatternFromFrame,
   // Cross-frame overflow
   prevFrameImage = null,
   nextFrameImage = null,
@@ -79,6 +82,10 @@ export const CarouselFrame = ({
   // Fill color editing state
   const [isFillEditing, setIsFillEditing] = useState(false);
   const [initialFillState, setInitialFillState] = useState(null);
+  
+  // Pattern editing state
+  const [isPatternEditing, setIsPatternEditing] = useState(false);
+  const [initialPatternState, setInitialPatternState] = useState(null);
   
   // Notify parent (SortableFrame) when image edit mode changes
   const handleImageEditModeChange = (editing) => {
@@ -141,6 +148,34 @@ export const CarouselFrame = ({
     onClearBackground?.(carouselId, frame.id);
     setIsFillEditing(false);
     setInitialFillState(null);
+  };
+  
+  // Pattern editing handlers
+  const handleStartPatternEdit = () => {
+    if (!isPatternEditing && frame.patternLayer) {
+      setInitialPatternState({ ...frame.patternLayer });
+    }
+    setIsPatternEditing(true);
+  };
+  
+  const handleCancelPatternEdit = () => {
+    if (initialPatternState) {
+      // Restore initial pattern state
+      onUpdatePatternLayer?.(carouselId, frame.id, initialPatternState);
+    }
+    setIsPatternEditing(false);
+    setInitialPatternState(null);
+  };
+  
+  const handleDonePatternEdit = () => {
+    setIsPatternEditing(false);
+    setInitialPatternState(null);
+  };
+  
+  const handleDeletePattern = () => {
+    onRemovePatternFromFrame?.(carouselId, frame.id);
+    setIsPatternEditing(false);
+    setInitialPatternState(null);
   };
   
   const style = getFrameStyle(carouselId, frame.style, designSystem);
@@ -336,8 +371,31 @@ export const CarouselFrame = ({
       <div className={`${isRowSelected ? 'min-h-[52px]' : 'h-0'}`}>
       {/* Layer Indicators - outside frame, below card */}
       {/* Only visible when row is selected, hidden during editing modes */}
-      {isRowSelected && !isImageEditing && !isFillEditing && (
+      {isRowSelected && !isImageEditing && !isFillEditing && !isPatternEditing && (
       <div className="mt-1.5 flex flex-col items-start gap-1">
+        {/* Pattern Indicator - Click to edit */}
+        {frame.patternLayer && (
+          <div 
+            className="flex items-center gap-1 px-2 py-1 bg-gray-800/80 rounded-full group cursor-pointer hover:bg-gray-700/80 transition-colors"
+            title="Click to edit pattern"
+            onClick={(e) => { e.stopPropagation(); if (isFrameSelected) handleStartPatternEdit(); }}
+          >
+            <svg className="w-3 h-3 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
+            </svg>
+            <span className="text-[10px] text-gray-400 group-hover:text-white transition-colors">{isFrameSelected ? 'Edit Pattern' : 'Pattern'}</span>
+            <button
+              type="button"
+              onClick={(e) => { e.stopPropagation(); onRemovePatternFromFrame?.(carouselId, frame.id); }}
+              className="w-3.5 h-3.5 flex items-center justify-center rounded-full hover:bg-gray-600 transition-colors ml-0.5"
+              title="Remove pattern"
+            >
+              <svg className="w-2.5 h-2.5 text-gray-400 hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        )}
         {/* Fill Color Indicator - Click to edit */}
         {(frame.backgroundOverride || style.background) && (
           <div 
@@ -616,6 +674,122 @@ export const CarouselFrame = ({
           </button>
         </div>
       )}
+      
+      {/* Pattern Edit Controls - appears below frame when editing pattern */}
+      {isPatternEditing && frame.patternLayer && (
+        <div 
+          className="mt-1.5 flex items-center gap-2 flex-wrap" 
+          data-pattern-edit-controls
+          onClick={(e) => e.stopPropagation()}
+          onMouseDown={(e) => e.stopPropagation()}
+        >
+          {/* Opacity Control */}
+          <div className="flex items-center gap-1 bg-gray-800/90 rounded-lg px-2 py-1.5">
+            <span className="text-gray-500 text-[10px] mr-1 min-w-[40px]">Opacity</span>
+            <button
+              type="button"
+              onClick={() => onUpdatePatternLayer?.(carouselId, frame.id, { opacity: Math.max(0, (frame.patternLayer.opacity || 1) - 0.1) })}
+              className="w-5 h-5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 rounded transition-colors"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+              </svg>
+            </button>
+            <span className="text-gray-300 text-[10px] font-medium min-w-[32px] text-center">
+              {Math.round((frame.patternLayer.opacity || 1) * 100)}%
+            </span>
+            <button
+              type="button"
+              onClick={() => onUpdatePatternLayer?.(carouselId, frame.id, { opacity: Math.min(1, (frame.patternLayer.opacity || 1) + 0.1) })}
+              className="w-5 h-5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 rounded transition-colors"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              onClick={() => onUpdatePatternLayer?.(carouselId, frame.id, { opacity: 1 })}
+              className="w-5 h-5 flex items-center justify-center text-gray-500 hover:text-white hover:bg-white/10 rounded transition-colors"
+              title="Reset opacity to 100%"
+            >
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+            </button>
+          </div>
+
+          {/* Rotation Control */}
+          <div className="flex items-center gap-1 bg-gray-800/90 rounded-lg px-2 py-1.5">
+            <span className="text-gray-500 text-[10px] mr-1 min-w-[40px]">Rotate</span>
+            <button
+              type="button"
+              onClick={() => onUpdatePatternLayer?.(carouselId, frame.id, { rotation: ((frame.patternLayer.rotation || 0) - 90 + 360) % 360 })}
+              className="w-5 h-5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 rounded transition-colors"
+              title="Rotate -90°"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+              </svg>
+            </button>
+            <span className="text-gray-300 text-[10px] font-medium min-w-[32px] text-center">
+              {frame.patternLayer.rotation || 0}°
+            </span>
+            <button
+              type="button"
+              onClick={() => onUpdatePatternLayer?.(carouselId, frame.id, { rotation: ((frame.patternLayer.rotation || 0) + 90) % 360 })}
+              className="w-5 h-5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 rounded transition-colors"
+              title="Rotate +90°"
+            >
+              <svg className="w-3.5 h-3.5 transform scale-x-[-1]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              onClick={() => onUpdatePatternLayer?.(carouselId, frame.id, { rotation: 0 })}
+              className="w-5 h-5 flex items-center justify-center text-gray-500 hover:text-white hover:bg-white/10 rounded transition-colors"
+              title="Reset rotation to 0°"
+            >
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+            </button>
+          </div>
+
+          {/* Cancel Button */}
+          <button
+            type="button"
+            onClick={handleCancelPatternEdit}
+            className="bg-gray-700/90 hover:bg-gray-600 rounded-lg px-2.5 py-1.5 text-gray-300 hover:text-white text-[10px] font-medium transition-colors"
+            title="Cancel and revert changes"
+          >
+            Cancel
+          </button>
+
+          {/* Done Button */}
+          <button
+            type="button"
+            onClick={handleDonePatternEdit}
+            className="bg-orange-500/90 hover:bg-orange-500 rounded-lg px-2.5 py-1.5 text-white text-[10px] font-medium transition-colors"
+            title="Done editing"
+          >
+            Done
+          </button>
+
+          {/* Delete Button */}
+          <button
+            type="button"
+            onClick={handleDeletePattern}
+            className="bg-gray-800/90 hover:bg-red-600 rounded-lg px-2 py-1.5 text-gray-400 hover:text-white transition-colors"
+            title="Remove pattern"
+          >
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+          </button>
+        </div>
+      )}
       </div>
     </div>
   );
@@ -647,6 +821,9 @@ export const SortableFrame = ({
   // Background/Fill props
   onClearBackground,
   onUpdateFillLayer,
+  // Pattern layer props
+  onUpdatePatternLayer,
+  onRemovePatternFromFrame,
   // Cross-frame overflow
   prevFrameImage,
   nextFrameImage,
@@ -708,6 +885,8 @@ export const SortableFrame = ({
         onRemoveImageFromFrame={onRemoveImageFromFrame}
         onClearBackground={onClearBackground}
         onUpdateFillLayer={onUpdateFillLayer}
+        onUpdatePatternLayer={onUpdatePatternLayer}
+        onRemovePatternFromFrame={onRemovePatternFromFrame}
         prevFrameImage={prevFrameImage}
         nextFrameImage={nextFrameImage}
         onImageEditModeChange={setIsImageEditing}

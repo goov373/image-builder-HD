@@ -81,6 +81,9 @@ export default function EditorView({
     handleRemoveImageFromFrame,
     // Fill layer methods
     handleUpdateFillLayer,
+    // Pattern layer methods (carousels)
+    handleUpdatePatternLayer: handleUpdatePatternLayerCarousel,
+    handleRemovePatternFromFrame,
     // Eblast methods
     eblasts,
     handleEblastUpdateText,
@@ -191,6 +194,8 @@ export default function EditorView({
                       onRemoveImageFromFrame={handleRemoveImageFromFrame}
                       onUpdateFillLayer={handleUpdateFillLayer}
                       onClearBackground={(carouselId, frameId) => handleSetFrameBackground(carouselId, frameId, null)}
+                      onUpdatePatternLayer={handleUpdatePatternLayerCarousel}
+                      onRemovePatternFromFrame={handleRemovePatternFromFrame}
                     />
                     {/* Add Row Button - only after last row */}
                     {index === carousels.length - 1 && (

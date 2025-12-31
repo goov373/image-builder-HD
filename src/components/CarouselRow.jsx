@@ -19,7 +19,7 @@ import { SortableFrame } from './CarouselFrame';
  * Carousel Row Component
  * Displays a row of frames with drag-and-drop reordering
  */
-const CarouselRow = ({ carousel, designSystem, isSelected, hasAnySelection, selectedFrameId, onSelect, onSelectFrame, onAddFrame, onRemoveFrame, onRemoveRow, onUpdateText, activeTextField, onActivateTextField, onReorderFrames, onUpdateImageLayer, onRemoveImageFromFrame, onUpdateFillLayer, onClearBackground }) => {
+const CarouselRow = ({ carousel, designSystem, isSelected, hasAnySelection, selectedFrameId, onSelect, onSelectFrame, onAddFrame, onRemoveFrame, onRemoveRow, onUpdateText, activeTextField, onActivateTextField, onReorderFrames, onUpdateImageLayer, onRemoveImageFromFrame, onUpdateFillLayer, onClearBackground, onUpdatePatternLayer, onRemovePatternFromFrame }) => {
   const totalFrames = carousel.frames.length;
   const isFaded = hasAnySelection && !isSelected;
   
@@ -116,6 +116,8 @@ const CarouselRow = ({ carousel, designSystem, isSelected, hasAnySelection, sele
                     onRemoveImageFromFrame={onRemoveImageFromFrame}
                     onUpdateFillLayer={onUpdateFillLayer}
                     onClearBackground={onClearBackground}
+                    onUpdatePatternLayer={onUpdatePatternLayer}
+                    onRemovePatternFromFrame={onRemovePatternFromFrame}
                     prevFrameImage={index > 0 ? carousel.frames[index - 1]?.imageLayer : null}
                     nextFrameImage={index < totalFrames - 1 ? carousel.frames[index + 1]?.imageLayer : null}
                   />

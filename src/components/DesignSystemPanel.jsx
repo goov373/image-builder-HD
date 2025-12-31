@@ -6,7 +6,7 @@ import {
   uploadDoc, listDocs, deleteDoc 
 } from '../lib/storage';
 import { isSupabaseConfigured } from '../lib/supabase';
-import { getAllGradientCSSValues } from '../data';
+import { getAllGradientCSSValues, allPatterns, patternCategories } from '../data';
 import { LIMITS } from '../config';
 import ImageUploader from './design-panel/ImageUploader';
 import ImageGrid from './design-panel/ImageGrid';
@@ -1125,92 +1125,44 @@ const DesignSystemPanel = ({
           <div className="px-4 pt-2 pb-4">
           <p className="text-[10px] text-gray-500 mb-3">Data-driven visuals that tell the HelloData story</p>
           
-          {/* Pattern Grid - Data Visualizations */}
-          <p className="text-[9px] text-gray-500 mb-2 uppercase tracking-wide">Data Visualizations</p>
-          <div className="grid grid-cols-3 gap-2 mb-4">
-            {[
-              { name: 'Market Map', file: 'street-grid.svg', desc: 'Submarket overview' },
-              { name: 'Comp Radius', file: 'comp-radius-new.svg', desc: 'Property analysis' },
-              { name: 'Rent Trends', file: 'rent-trends.svg', desc: 'Market movement' },
-              { name: 'Unit Grid', file: 'apartment-units.svg', desc: 'Multifamily units' },
-              { name: 'Market Heat', file: 'market-heat.svg', desc: 'Submarket intensity' },
-              { name: 'Data Network', file: 'property-network.svg', desc: 'Property connections' },
-            ].map((pattern, i) => (
-              <button
-                key={pattern.file}
-                type="button"
-                className="group relative aspect-square rounded-lg overflow-hidden border border-gray-700 hover:border-purple-500 transition-all"
-                style={{
-                  backgroundImage: `url(/patterns/${pattern.file})`,
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                }}
-                title={pattern.desc}
-              >
-                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                  <span className="text-[10px] text-white font-medium">{pattern.name}</span>
-                </div>
-              </button>
-            ))}
-          </div>
-          
-          {/* City Map Patterns */}
-          <p className="text-[9px] text-gray-500 mb-2 uppercase tracking-wide">Neighborhood</p>
-          <div className="grid grid-cols-3 gap-2 mb-4">
-            {[
-              { name: 'Grid City', file: 'city-blocks-1.svg', desc: 'Standard grid layout' },
-              { name: 'Diagonal Ave', file: 'city-blocks-2.svg', desc: 'With diagonal road' },
-              { name: 'Dense Urban', file: 'city-blocks-3.svg', desc: 'Tight city blocks' },
-              { name: 'River City', file: 'city-blocks-4.svg', desc: 'Boulevard layout' },
-              { name: 'Highway', file: 'city-blocks-5.svg', desc: 'Diagonal highway' },
-              { name: 'Roundabout', file: 'city-blocks-6.svg', desc: 'Circle intersection' },
-            ].map((pattern, i) => (
-              <button
-                key={pattern.file}
-                type="button"
-                className="group relative aspect-square rounded-lg overflow-hidden border border-gray-700 hover:border-purple-500 transition-all"
-                style={{
-                  backgroundImage: `url(/patterns/${pattern.file})`,
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                }}
-                title={pattern.desc}
-              >
-                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                  <span className="text-[10px] text-white font-medium">{pattern.name}</span>
-                </div>
-              </button>
-            ))}
-          </div>
-          
-          {/* Metro/Submarket Patterns */}
-          <p className="text-[9px] text-gray-500 mb-2 uppercase tracking-wide">Metro / Submarket</p>
-          <div className="grid grid-cols-3 gap-2 mb-4">
-            {[
-              { name: 'Beltway', file: 'metro-1.svg', desc: 'Highway loop metro' },
-              { name: 'River Metro', file: 'metro-2.svg', desc: 'River through city' },
-              { name: 'Coastal', file: 'metro-3.svg', desc: 'Coastal metro area' },
-              { name: 'Lakefront', file: 'metro-4.svg', desc: 'Lake city with transit' },
-              { name: 'Airport Hub', file: 'metro-5.svg', desc: 'Metro with airport' },
-              { name: 'Multi-Core', file: 'metro-6.svg', desc: 'Poly-centric metro' },
-            ].map((pattern, i) => (
-              <button
-                key={pattern.file}
-                type="button"
-                className="group relative aspect-square rounded-lg overflow-hidden border border-gray-700 hover:border-purple-500 transition-all"
-                style={{
-                  backgroundImage: `url(/patterns/${pattern.file})`,
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                }}
-                title={pattern.desc}
-              >
-                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                  <span className="text-[10px] text-white font-medium">{pattern.name}</span>
-                </div>
-              </button>
-            ))}
-          </div>
+          {/* Pattern categories from data */}
+          {patternCategories.map((category) => (
+            <div key={category.id} className="mb-4">
+              <p className="text-[9px] text-gray-500 mb-2 uppercase tracking-wide">{category.name}</p>
+              <div className="grid grid-cols-3 gap-2">
+                {category.patterns.map((pattern) => (
+                  <button
+                    key={pattern.id}
+                    type="button"
+                    className={`group relative aspect-square rounded-lg overflow-hidden ring-1 ring-gray-700 hover:ring-gray-400 hover:scale-105 transition-all ${!selectedCarouselId && !selectedEblastId && !selectedVideoCoverId && !selectedSingleImageId ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    style={{
+                      backgroundImage: `url("${pattern.svg}")`,
+                      backgroundSize: `${pattern.tileSize}px ${pattern.tileSize}px`,
+                      backgroundRepeat: 'repeat',
+                      backgroundColor: '#18191A',
+                    }}
+                    title={`${pattern.name}${!selectedCarouselId && !selectedEblastId ? ' - Select a frame first' : ''}`}
+                    onClick={() => {
+                      if (projectType === 'carousel' && selectedCarouselId && selectedFrameId) {
+                        onAddPatternToFrame?.(selectedCarouselId, selectedFrameId, pattern.id);
+                      } else if (projectType === 'eblast' && selectedEblastId && selectedSectionId) {
+                        onAddPatternToSection?.(selectedEblastId, selectedSectionId, pattern.id);
+                      } else if (projectType === 'videoCover' && selectedVideoCoverId) {
+                        // Video cover pattern support if needed
+                      } else if (projectType === 'singleImage' && selectedSingleImageId) {
+                        // Single image pattern support if needed
+                      }
+                    }}
+                    disabled={!selectedCarouselId && !selectedEblastId && !selectedVideoCoverId && !selectedSingleImageId}
+                  >
+                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <span className="text-[10px] text-white font-medium text-center px-1">{pattern.name}</span>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          ))}
           </div>
           )}
         </div>
