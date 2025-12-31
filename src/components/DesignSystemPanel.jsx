@@ -137,6 +137,7 @@ const DesignSystemPanel = ({
     productImagery: true,
     photography: true,
     yourImages: true,
+    yourDocs: true,
   });
   const toggleSection = (section) => {
     setCollapsedSections(prev => ({ ...prev, [section]: !prev[section] }));
@@ -475,32 +476,51 @@ const DesignSystemPanel = ({
             </p>
           </div>
           
-          {/* Your Docs Browser */}
-          <div className="p-4">
-            <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-3">Your Docs</h3>
-            {uploadedDocs.length === 0 ? (
-              <div className="text-center py-8">
-                <svg className="w-12 h-12 mx-auto mb-3 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          {/* Your Docs Browser - Collapsible */}
+          <div className="border-t border-gray-800">
+            <button
+              type="button"
+              onClick={() => toggleSection('yourDocs')}
+              className="w-full p-4 flex items-center justify-between hover:bg-gray-800/50 transition-colors"
+            >
+              <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Your Docs</h3>
+              <div className="flex items-center gap-2">
+                {uploadedDocs.length > 0 && (
+                  <span className="px-1.5 py-0.5 bg-gray-700 rounded text-[10px] text-gray-300">{uploadedDocs.length}</span>
+                )}
+                <svg className={`w-4 h-4 text-gray-500 transition-transform ${collapsedSections.yourDocs ? '' : 'rotate-180'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
-                <p className="text-xs text-gray-500">No docs uploaded yet</p>
-                <p className="text-[10px] text-gray-600 mt-1">Upload docs to use in your designs</p>
               </div>
-            ) : (
-              <div className="space-y-1.5">
-                {uploadedDocs.map((doc, idx) => (
-                  <div key={idx} className="flex items-center gap-2 px-2.5 py-2 bg-gray-800/50 rounded-lg group hover:bg-gray-800 transition-colors">
-                    <svg className="w-4 h-4 text-purple-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </button>
+            
+            {!collapsedSections.yourDocs && (
+              <div className="px-4 pb-4">
+                {uploadedDocs.length === 0 ? (
+                  <div className="text-center py-8">
+                    <svg className="w-12 h-12 mx-auto mb-3 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
-                    <span className="text-[11px] text-gray-300 flex-1 truncate">{doc.name}</span>
-                    <button type="button" className="p-1 text-gray-600 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all">
-                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                      </svg>
-                    </button>
+                    <p className="text-xs text-gray-500">No docs uploaded yet</p>
+                    <p className="text-[10px] text-gray-600 mt-1">Upload docs to use in your designs</p>
                   </div>
-                ))}
+                ) : (
+                  <div className="space-y-1.5">
+                    {uploadedDocs.map((doc, idx) => (
+                      <div key={idx} className="flex items-center gap-2 px-2.5 py-2 bg-gray-800/50 rounded-lg group hover:bg-gray-800 transition-colors">
+                        <svg className="w-4 h-4 text-purple-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        <span className="text-[11px] text-gray-300 flex-1 truncate">{doc.name}</span>
+                        <button type="button" className="p-1 text-gray-600 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all">
+                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
           </div>
