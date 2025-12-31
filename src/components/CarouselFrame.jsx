@@ -587,6 +587,34 @@ export const CarouselFrame = ({
   const [isIconEditing, setIsIconEditing] = useState(false);
   const [initialIconState, setInitialIconState] = useState(null);
   
+  // Layer selection state - only one layer can be selected at a time
+  // Values: 'icon', 'productImage', null (null means no layer selected, or text is selected)
+  const [selectedLayer, setSelectedLayer] = useState(null);
+  
+  // When a layer is selected, clear text field selection
+  const handleSelectLayer = (layer) => {
+    setSelectedLayer(layer);
+    // Clear text field selection when selecting a different layer
+    if (layer) {
+      onActivateTextField?.(null);
+    }
+  };
+  
+  // When text field is activated, clear layer selection
+  const handleActivateFieldWithClear = (field) => {
+    if (field) {
+      setSelectedLayer(null);
+    }
+    onActivateTextField?.(field);
+  };
+  
+  // Clear layer selection when frame is deselected
+  useEffect(() => {
+    if (!isFrameSelected) {
+      setSelectedLayer(null);
+    }
+  }, [isFrameSelected]);
+  
   // Helper function to close all tool panels
   const closeAllToolPanels = () => {
     setIsImageEditing(false);
@@ -792,6 +820,8 @@ export const CarouselFrame = ({
   const handleStartProductImageEdit = () => {
     // Close other tool panels first
     closeAllToolPanels();
+    // Select this layer and clear text selection
+    handleSelectLayer('productImage');
     if (frame.productImageLayer) {
       setInitialProductImageState({ ...frame.productImageLayer });
     }
@@ -821,6 +851,8 @@ export const CarouselFrame = ({
   const handleStartIconEdit = () => {
     // Close other tool panels first
     closeAllToolPanels();
+    // Select this layer and clear text selection
+    handleSelectLayer('icon');
     if (frame.iconLayer) {
       setInitialIconState({ ...frame.iconLayer });
     }
@@ -896,7 +928,7 @@ export const CarouselFrame = ({
     : 'default';
   
   const handleUpdateText = (field, value) => onUpdateText?.(carouselId, frame.id, field, value);
-  const handleActivateField = (field) => onActivateTextField?.(field);
+  const handleActivateField = (field) => handleActivateFieldWithClear(field);
   
   const renderLayout = () => {
     const fontSizes = getFontSizes(frameSize);
@@ -935,7 +967,7 @@ export const CarouselFrame = ({
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         style={{ width: size.width, height: size.height, backgroundColor: '#ffffff' }}
-        onClick={(e) => { e.stopPropagation(); onSelectFrame(frame.id); }}
+        onClick={(e) => { e.stopPropagation(); onSelectFrame(frame.id); setSelectedLayer(null); }}
       >
         {/* Layer 1: Pattern - backmost (z-index: 1) */}
         {frame.patternLayer && (
@@ -1056,6 +1088,7 @@ export const CarouselFrame = ({
             frameHeight={size.height}
             isRowSelected={isRowSelected}
             isFrameSelected={isFrameSelected}
+            isSelected={selectedLayer === 'icon'}
             onClick={handleStartIconEdit}
           />
         )}
@@ -1077,6 +1110,7 @@ export const CarouselFrame = ({
               textContent={{ headline, subhead }}
               isRowSelected={isRowSelected}
               isFrameSelected={isFrameSelected}
+              isSelected={selectedLayer === 'productImage'}
               onUpdateLayer={(updates) => onUpdateProductImageLayer?.(carouselId, frame.id, updates)}
               onDragStateChange={onProductImageDragChange}
               onClick={handleStartProductImageEdit}

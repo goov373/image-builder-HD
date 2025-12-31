@@ -20,6 +20,7 @@ const ProductImageLayer = ({
   textContent = null, // { headline, subhead } for calculating text height
   isRowSelected = false, // Show faint dotted border when row is selected
   isFrameSelected = false, // Show solid border when frame is selected
+  isSelected = false, // When this layer is actively selected (clicked)
   onUpdateLayer = null, // Callback to update layer properties
   onDragStateChange = null, // Callback when dragging starts/stops
   onClick = null, // Callback when clicked (to open tool panel)
@@ -113,12 +114,19 @@ const ProductImageLayer = ({
       };
   
   // Determine border style based on selection state
-  // Only show border when frame is selected, not when just row is selected
+  // When selected (clicked), show solid orange like text fields
+  // When frame selected but not this layer, show dashed
   // Always use the user's borderRadius for live preview of corner rounding
   const getBorderStyle = () => {
+    if (isSelected) {
+      return {
+        border: '2px solid rgb(249, 115, 22)', // Solid orange when selected
+        borderRadius: `${borderRadius}px`, // Use user's borderRadius for live preview
+      };
+    }
     if (isFrameSelected) {
       return {
-        border: '1px dashed rgba(249, 115, 22, 0.5)', // Match icon container style
+        border: '1px dashed rgba(249, 115, 22, 0.4)', // Dashed when frame selected but not this layer
         borderRadius: `${borderRadius}px`, // Use user's borderRadius for live preview
       };
     }

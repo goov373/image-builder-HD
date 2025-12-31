@@ -8,6 +8,7 @@ const IconLayer = ({
   frameHeight,
   isRowSelected = false,
   isFrameSelected = false,
+  isSelected = false, // When this layer is actively selected (clicked)
   onClick,
 }) => {
   if (!iconLayer) return null;
@@ -19,13 +20,17 @@ const IconLayer = ({
   const horizontalPadding = frameWidth * 0.075;
   
   // Determine border style - user-defined border takes precedence over selection indicators
-  // Only show selection-based borders when frame is selected, not just row
+  // When selected (clicked), show solid orange like text fields
+  // When frame selected but not this layer, show dashed
   const getBorderStyle = () => {
     if (borderColor) {
       return `2px solid ${borderColor}`;
     }
+    if (isSelected) {
+      return '2px solid rgb(249, 115, 22)'; // Solid orange when selected
+    }
     if (isFrameSelected) {
-      return '1px dashed rgba(249, 115, 22, 0.5)';
+      return '1px dashed rgba(249, 115, 22, 0.4)'; // Dashed when frame selected but not this layer
     }
     // No border when only row is selected or nothing is selected
     return 'none';
