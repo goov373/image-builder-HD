@@ -790,7 +790,15 @@ function loadFromStorage(initialData) {
     if (saved) {
       const parsed = JSON.parse(saved);
       if (Array.isArray(parsed) && parsed.length > 0) {
-        return parsed;
+        // Migration: Clear all backgroundOverride values so frames default to white
+        const migrated = parsed.map(carousel => ({
+          ...carousel,
+          frames: carousel.frames?.map(frame => {
+            const { backgroundOverride, ...rest } = frame;
+            return rest; // Remove backgroundOverride from all frames
+          }) || []
+        }));
+        return migrated;
       }
     }
   } catch (e) {
