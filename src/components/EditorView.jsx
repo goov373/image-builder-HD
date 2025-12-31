@@ -26,6 +26,12 @@ export default function EditorView({
   onRequestAddProductImage,
   // Icon callback
   onRequestAddIcon,
+  // Fill color callback
+  onRequestAddFill,
+  // Photo callback
+  onRequestAddPhoto,
+  // Pattern callback
+  onRequestAddPattern,
 }) {
   // Get state from context
   const { designSystem } = useDesignSystemContext();
@@ -217,6 +223,9 @@ export default function EditorView({
                       onRemoveIconFromFrame={handleRemoveIconFromFrame}
                       onRequestAddIcon={onRequestAddIcon}
                       onUpdateProgressIndicator={handleUpdateProgressIndicator}
+                      onRequestAddFill={onRequestAddFill}
+                      onRequestAddPhoto={onRequestAddPhoto}
+                      onRequestAddPattern={onRequestAddPattern}
                     />
                     {/* Add Row Button - only after last row */}
                     {index === carousels.length - 1 && (

@@ -409,6 +409,12 @@ export const CarouselFrame = ({
   onUpdateIconLayer,
   onRemoveIconFromFrame,
   onRequestAddIcon, // Callback to open design panel with brand icons section
+  // Fill color callback
+  onRequestAddFill, // Callback to open design panel with backgrounds section
+  // Photo callback
+  onRequestAddPhoto, // Callback to open design panel with photography section
+  // Pattern callback
+  onRequestAddPattern, // Callback to open design panel with brand patterns section
   // Progress indicator props
   onUpdateProgressIndicator,
   // Cross-frame overflow
@@ -951,7 +957,7 @@ export const CarouselFrame = ({
               <div 
                 className="flex items-center gap-1 px-2 py-1 bg-gray-800/50 rounded-full group cursor-pointer hover:bg-gray-700/80 transition-colors border border-dashed border-gray-600"
                 title="Add a fill color"
-                onClick={(e) => { e.stopPropagation(); handleStartFillEdit(); }}
+                onClick={(e) => { e.stopPropagation(); onRequestAddFill?.(); }}
               >
                 <svg className="w-3 h-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
@@ -976,7 +982,7 @@ export const CarouselFrame = ({
               <div 
                 className="flex items-center gap-1 px-2 py-1 bg-gray-800/50 rounded-full group cursor-pointer hover:bg-gray-700/80 transition-colors border border-dashed border-gray-600"
                 title="Add an image"
-                onClick={(e) => { e.stopPropagation(); /* TODO: Open image picker */ }}
+                onClick={(e) => { e.stopPropagation(); onRequestAddPhoto?.(); }}
               >
                 <svg className="w-3 h-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -1001,7 +1007,7 @@ export const CarouselFrame = ({
               <div 
                 className="flex items-center gap-1 px-2 py-1 bg-gray-800/50 rounded-full group cursor-pointer hover:bg-gray-700/80 transition-colors border border-dashed border-gray-600"
                 title="Add a pattern"
-                onClick={(e) => { e.stopPropagation(); /* TODO: Open pattern picker */ }}
+                onClick={(e) => { e.stopPropagation(); onRequestAddPattern?.(); }}
               >
                 <svg className="w-3 h-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
@@ -1543,6 +1549,10 @@ export const SortableFrame = ({
   onRequestAddIcon,
   // Progress indicator props
   onUpdateProgressIndicator,
+  // Additional callbacks
+  onRequestAddFill,
+  onRequestAddPhoto,
+  onRequestAddPattern,
   // Cross-frame overflow
   prevFrameImage,
   nextFrameImage,
@@ -1615,6 +1625,9 @@ export const SortableFrame = ({
         onRemoveIconFromFrame={onRemoveIconFromFrame}
         onRequestAddIcon={onRequestAddIcon}
         onUpdateProgressIndicator={onUpdateProgressIndicator}
+        onRequestAddFill={onRequestAddFill}
+        onRequestAddPhoto={onRequestAddPhoto}
+        onRequestAddPattern={onRequestAddPattern}
         prevFrameImage={prevFrameImage}
         nextFrameImage={nextFrameImage}
         onImageEditModeChange={setIsImageEditing}

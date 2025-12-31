@@ -93,6 +93,27 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
     setTimeout(() => setExpandSectionOnOpen(null), 100);
   };
 
+  // Handler to open Design panel and expand Backgrounds section (for Fill Color)
+  const handleRequestAddFill = () => {
+    setExpandSectionOnOpen('backgrounds');
+    setActivePanel('design');
+    setTimeout(() => setExpandSectionOnOpen(null), 100);
+  };
+
+  // Handler to open Design panel and expand Photography section (for Background Photo)
+  const handleRequestAddPhoto = () => {
+    setExpandSectionOnOpen('photography');
+    setActivePanel('design');
+    setTimeout(() => setExpandSectionOnOpen(null), 100);
+  };
+
+  // Handler to open Design panel and expand Brand Patterns section
+  const handleRequestAddPattern = () => {
+    setExpandSectionOnOpen('patterns');
+    setActivePanel('design');
+    setTimeout(() => setExpandSectionOnOpen(null), 100);
+  };
+
   // Get current project type from active tab
   const currentProjectType = tabs.activeTab?.projectType || 'carousel';
 
@@ -457,6 +478,9 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
             selectedDevice={selectedDevice}
             onRequestAddProductImage={handleRequestAddProductImage}
             onRequestAddIcon={handleRequestAddIcon}
+            onRequestAddFill={handleRequestAddFill}
+            onRequestAddPhoto={handleRequestAddPhoto}
+            onRequestAddPattern={handleRequestAddPattern}
           />
         )}
         </div>
