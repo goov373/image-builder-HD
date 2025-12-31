@@ -140,26 +140,77 @@ const DesignSystemPanel = ({
   const [isLoadingImages, setIsLoadingImages] = useState(false);
   const [uploadProgress, setUploadProgress] = useState({ current: 0, total: 0, fileName: '' });
   const [compressionPreset, setCompressionPreset] = useState('highQuality');
-  const [collapsedSections, setCollapsedSections] = useState({
-    backgrounds: true,
-    patterns: true,
-    productImagery: true,
-    photography: true,
-    yourImages: true,
-    yourDocs: true,
-    yourProductImages: true,
-    brandIcons: true,
-  });
-  // Expand a specific section when the panel opens with expandSectionOnOpen
+  
+  // Default order for design dropdown sections
+  const defaultSectionOrder = ['backgrounds', 'productImagery', 'photography', 'patterns', 'brandIcons'];
+  
+  // Track which single section is open (null = all closed), and dynamic section order
+  const [openSection, setOpenSection] = useState(null);
+  const [sectionOrder, setSectionOrder] = useState(defaultSectionOrder);
+  
+  // Assets tab sections (separate from design sections)
+  const [openAssetSection, setOpenAssetSection] = useState(null);
+  
+  // Helper to check if a section is collapsed (for compatibility)
+  const collapsedSections = {
+    backgrounds: openSection !== 'backgrounds',
+    patterns: openSection !== 'patterns',
+    productImagery: openSection !== 'productImagery',
+    photography: openSection !== 'photography',
+    brandIcons: openSection !== 'brandIcons',
+    // Assets sections
+    yourImages: openAssetSection !== 'yourImages',
+    yourDocs: openAssetSection !== 'yourDocs',
+    yourProductImages: openAssetSection !== 'yourProductImages',
+  };
+  
+  // Toggle a section - only one can be open at a time
+  const toggleSection = (section) => {
+    // Check if this is an asset section
+    const assetSections = ['yourImages', 'yourDocs', 'yourProductImages'];
+    if (assetSections.includes(section)) {
+      setOpenAssetSection(prev => prev === section ? null : section);
+    } else {
+      // Design sections - also reorder to put clicked section at top
+      if (openSection === section) {
+        setOpenSection(null);
+      } else {
+        setOpenSection(section);
+        // Move this section to the top of the order
+        setSectionOrder(prev => {
+          if (prev[0] === section) return prev;
+          return [section, ...prev.filter(s => s !== section)];
+        });
+      }
+    }
+  };
+  
+  // Expand and prioritize a specific section when triggered by tag click
   useEffect(() => {
-    if (expandSectionOnOpen && collapsedSections[expandSectionOnOpen]) {
-      setCollapsedSections(prev => ({ ...prev, [expandSectionOnOpen]: false }));
+    if (expandSectionOnOpen) {
+      // Open this section and move it to top
+      setOpenSection(expandSectionOnOpen);
+      setSectionOrder(prev => {
+        if (prev[0] === expandSectionOnOpen) return prev;
+        return [expandSectionOnOpen, ...prev.filter(s => s !== expandSectionOnOpen)];
+      });
     }
   }, [expandSectionOnOpen]);
   
-  const toggleSection = (section) => {
-    setCollapsedSections(prev => ({ ...prev, [section]: !prev[section] }));
-  };
+  // Close all sections when sidebar closes
+  useEffect(() => {
+    if (!isOpen) {
+      setOpenSection(null);
+      setOpenAssetSection(null);
+      setSectionOrder(defaultSectionOrder);
+    }
+  }, [isOpen]);
+  
+  // Close all sections when switching tabs
+  useEffect(() => {
+    setOpenSection(null);
+    setOpenAssetSection(null);
+  }, [activeTab]);
   const fileInputRef = useRef(null);
   const MAX_FILES = LIMITS.MAX_UPLOADED_FILES;
   const MAX_DOCS = LIMITS.MAX_UPLOADED_DOCS;
@@ -819,8 +870,10 @@ const DesignSystemPanel = ({
           </div>
         </div>
       
+        {/* Dynamic Dropdown Sections - rendered in order based on sectionOrder */}
+        <div className="flex flex-col">
         {/* Backgrounds Section */}
-        <div className="border-b border-gray-800">
+        <div className="border-b border-gray-800" style={{ order: sectionOrder.indexOf('backgrounds') }}>
           <button
             type="button"
             onClick={() => toggleSection('backgrounds')}
@@ -920,7 +973,7 @@ const DesignSystemPanel = ({
         </div>
         
         {/* Product Imagery Section - Display only, upload in Assets tab */}
-        <div className="border-b border-gray-800">
+        <div className="border-b border-gray-800" style={{ order: sectionOrder.indexOf('productImagery') }}>
           <button
             type="button"
             onClick={() => toggleSection('productImagery')}
@@ -989,7 +1042,7 @@ const DesignSystemPanel = ({
         </div>
         
         {/* Photography Section - Displays images from Assets tab */}
-        <div className="border-b border-gray-800">
+        <div className="border-b border-gray-800" style={{ order: sectionOrder.indexOf('photography') }}>
           <button
             type="button"
             onClick={() => toggleSection('photography')}
@@ -1146,7 +1199,7 @@ const DesignSystemPanel = ({
         </div>
         
         {/* Brand Patterns Section */}
-        <div className="">
+        <div className="border-b border-gray-800" style={{ order: sectionOrder.indexOf('patterns') }}>
           <button
             type="button"
             onClick={() => toggleSection('patterns')}
@@ -1277,7 +1330,7 @@ const DesignSystemPanel = ({
         </div>
         
         {/* Brand Icons Section */}
-        <div className="border-t border-gray-800">
+        <div className="border-b border-gray-800" style={{ order: sectionOrder.indexOf('brandIcons') }}>
           <button
             type="button"
             onClick={() => toggleSection('brandIcons')}
@@ -1337,6 +1390,7 @@ const DesignSystemPanel = ({
           </div>
           )}
         </div>
+        </div>{/* End of dynamic dropdown sections flex container */}
         </>
       )}
       </div>
