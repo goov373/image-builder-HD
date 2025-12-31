@@ -975,8 +975,8 @@ export const CarouselFrame = ({
           {renderLayout()}
         </div>
         
-        {/* Icon Placeholder - appears on Bottom Stack layouts without a product image or icon */}
-        {layoutIndex === 0 && layoutVariant === 0 && !frame.productImageLayer && !frame.iconLayer && (
+        {/* Icon Placeholder - appears on Bottom Stack layouts without a product image or icon, only when frame is selected */}
+        {isFrameSelected && layoutIndex === 0 && layoutVariant === 0 && !frame.productImageLayer && !frame.iconLayer && (
           <div 
             className="absolute"
             style={{
