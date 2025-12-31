@@ -1012,8 +1012,8 @@ export const CarouselFrame = ({
                 className={`flex items-center gap-1.5 px-2 py-1.5 border-b border-gray-600/50 group cursor-pointer transition-colors hover:bg-gray-700/50 ${
                   frame.progressIndicator?.isHidden ? 'opacity-60' : ''
                 }`}
-                title="Edit progress indicator"
-                onClick={(e) => { e.stopPropagation(); onRequestAddPageIndicator?.(); }}
+                title={frame.progressIndicator?.isHidden ? "Choose indicator style" : "Edit progress indicator"}
+                onClick={(e) => { e.stopPropagation(); frame.progressIndicator?.isHidden ? onRequestAddPageIndicator?.() : setIsProgressEditing(true); }}
               >
                 <svg className={`w-3 h-3 ${frame.progressIndicator?.isHidden ? 'text-gray-500' : 'text-gray-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
