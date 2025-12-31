@@ -22,6 +22,7 @@ const ProductImageLayer = ({
   isFrameSelected = false, // Show solid border when frame is selected
   onUpdateLayer = null, // Callback to update layer properties
   onDragStateChange = null, // Callback when dragging starts/stops
+  onClick = null, // Callback when clicked (to open tool panel)
 }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
@@ -132,11 +133,17 @@ const ProductImageLayer = ({
       e.stopPropagation();
     }
   };
+  
+  // Handle click to open tool panel
+  const handleClick = (e) => {
+    e.stopPropagation();
+    onClick?.();
+  };
 
   return (
     <div 
       ref={containerRef}
-      className="absolute"
+      className="absolute cursor-pointer"
       style={{
         left: horizontalPadding,
         right: horizontalPadding,
@@ -151,6 +158,7 @@ const ProductImageLayer = ({
       }}
       onMouseDown={handleContainerMouseDown}
       onPointerDown={handleContainerMouseDown}
+      onClick={handleClick}
     >
       <img 
         src={src} 

@@ -587,6 +587,28 @@ export const CarouselFrame = ({
   const [isIconEditing, setIsIconEditing] = useState(false);
   const [initialIconState, setInitialIconState] = useState(null);
   
+  // Helper function to close all tool panels
+  const closeAllToolPanels = () => {
+    setIsImageEditing(false);
+    setIsFillEditing(false);
+    setIsPatternEditing(false);
+    setIsProductImageEditing(false);
+    setIsIconEditing(false);
+    setIsProgressEditing(false);
+    setInitialImageState(null);
+    setInitialFillState(null);
+    setInitialPatternState(null);
+    setInitialProductImageState(null);
+    setInitialIconState(null);
+  };
+  
+  // Close all tool panels when frame is deselected
+  useEffect(() => {
+    if (!isFrameSelected) {
+      closeAllToolPanels();
+    }
+  }, [isFrameSelected]);
+  
   // Track previous layer states to auto-open tool panels when content is added
   const prevProgressRef = useRef(frame.progressIndicator);
   const prevIconRef = useRef(frame.iconLayer);
@@ -595,43 +617,47 @@ export const CarouselFrame = ({
   const prevImageRef = useRef(frame.imageLayer);
   const prevPatternRef = useRef(frame.patternLayer);
   
-  // Auto-open Progress tool panel when indicator is added
+  // Auto-open Progress tool panel when indicator is added (close others first)
   useEffect(() => {
     const wasEmpty = !prevProgressRef.current || prevProgressRef.current.isHidden !== false;
     const nowHasContent = frame.progressIndicator?.isHidden === false;
     if (wasEmpty && nowHasContent) {
+      closeAllToolPanels();
       setIsProgressEditing(true);
     }
     prevProgressRef.current = frame.progressIndicator;
   }, [frame.progressIndicator]);
   
-  // Auto-open Icon tool panel when icon is added
+  // Auto-open Icon tool panel when icon is added (close others first)
   useEffect(() => {
     const wasEmpty = !prevIconRef.current;
     const nowHasContent = !!frame.iconLayer;
     if (wasEmpty && nowHasContent) {
+      closeAllToolPanels();
       setIsIconEditing(true);
       setInitialIconState({ ...frame.iconLayer });
     }
     prevIconRef.current = frame.iconLayer;
   }, [frame.iconLayer]);
   
-  // Auto-open Product Image tool panel when product image is added
+  // Auto-open Product Image tool panel when product image is added (close others first)
   useEffect(() => {
     const wasEmpty = !prevProductImageRef.current;
     const nowHasContent = !!frame.productImageLayer;
     if (wasEmpty && nowHasContent) {
+      closeAllToolPanels();
       setIsProductImageEditing(true);
       setInitialProductImageState({ ...frame.productImageLayer });
     }
     prevProductImageRef.current = frame.productImageLayer;
   }, [frame.productImageLayer]);
   
-  // Auto-open Fill tool panel when fill color is added
+  // Auto-open Fill tool panel when fill color is added (close others first)
   useEffect(() => {
     const wasEmpty = !prevFillRef.current;
     const nowHasContent = !!frame.backgroundOverride;
     if (wasEmpty && nowHasContent) {
+      closeAllToolPanels();
       setIsFillEditing(true);
       setInitialFillState({
         backgroundOverride: frame.backgroundOverride,
@@ -642,21 +668,23 @@ export const CarouselFrame = ({
     prevFillRef.current = frame.backgroundOverride;
   }, [frame.backgroundOverride]);
   
-  // Auto-open Image tool panel when background photo is added
+  // Auto-open Image tool panel when background photo is added (close others first)
   useEffect(() => {
     const wasEmpty = !prevImageRef.current;
     const nowHasContent = !!frame.imageLayer;
     if (wasEmpty && nowHasContent) {
+      closeAllToolPanels();
       handleImageEditModeChange(true);
     }
     prevImageRef.current = frame.imageLayer;
   }, [frame.imageLayer]);
   
-  // Auto-open Pattern tool panel when pattern is added
+  // Auto-open Pattern tool panel when pattern is added (close others first)
   useEffect(() => {
     const wasEmpty = !prevPatternRef.current;
     const nowHasContent = !!frame.patternLayer;
     if (wasEmpty && nowHasContent) {
+      closeAllToolPanels();
       setIsPatternEditing(true);
       setInitialPatternState({ ...frame.patternLayer });
     }
@@ -665,6 +693,10 @@ export const CarouselFrame = ({
   
   // Notify parent (SortableFrame) when image edit mode changes
   const handleImageEditModeChange = (editing) => {
+    // Close other tool panels first when opening
+    if (editing) {
+      closeAllToolPanels();
+    }
     // Store initial state when entering edit mode
     if (editing && frame.imageLayer && !isImageEditing) {
       setInitialImageState({ ...frame.imageLayer });
@@ -692,13 +724,13 @@ export const CarouselFrame = ({
   
   // Fill color editing handlers
   const handleStartFillEdit = () => {
-    if (!isFillEditing) {
-      setInitialFillState({
-        backgroundOverride: frame.backgroundOverride,
-        fillOpacity: frame.fillOpacity || 1,
-        fillRotation: frame.fillRotation || 0,
-      });
-    }
+    // Close other tool panels first
+    closeAllToolPanels();
+    setInitialFillState({
+      backgroundOverride: frame.backgroundOverride,
+      fillOpacity: frame.fillOpacity || 1,
+      fillRotation: frame.fillRotation || 0,
+    });
     setIsFillEditing(true);
   };
   
@@ -728,7 +760,9 @@ export const CarouselFrame = ({
   
   // Pattern editing handlers
   const handleStartPatternEdit = () => {
-    if (!isPatternEditing && frame.patternLayer) {
+    // Close other tool panels first
+    closeAllToolPanels();
+    if (frame.patternLayer) {
       setInitialPatternState({ ...frame.patternLayer });
     }
     setIsPatternEditing(true);
@@ -756,7 +790,9 @@ export const CarouselFrame = ({
   
   // Product image editing handlers
   const handleStartProductImageEdit = () => {
-    if (!isProductImageEditing && frame.productImageLayer) {
+    // Close other tool panels first
+    closeAllToolPanels();
+    if (frame.productImageLayer) {
       setInitialProductImageState({ ...frame.productImageLayer });
     }
     setIsProductImageEditing(true);
@@ -783,7 +819,9 @@ export const CarouselFrame = ({
   
   // Icon editing handlers
   const handleStartIconEdit = () => {
-    if (!isIconEditing && frame.iconLayer) {
+    // Close other tool panels first
+    closeAllToolPanels();
+    if (frame.iconLayer) {
       setInitialIconState({ ...frame.iconLayer });
     }
     setIsIconEditing(true);
@@ -806,6 +844,13 @@ export const CarouselFrame = ({
     onRemoveIconFromFrame?.(carouselId, frame.id);
     setIsIconEditing(false);
     setInitialIconState(null);
+  };
+  
+  // Progress editing handlers
+  const handleStartProgressEdit = () => {
+    // Close other tool panels first
+    closeAllToolPanels();
+    setIsProgressEditing(true);
   };
   
   const style = getFrameStyle(carouselId, frame.style, designSystem);
@@ -1034,6 +1079,7 @@ export const CarouselFrame = ({
               isFrameSelected={isFrameSelected}
               onUpdateLayer={(updates) => onUpdateProductImageLayer?.(carouselId, frame.id, updates)}
               onDragStateChange={onProductImageDragChange}
+              onClick={handleStartProductImageEdit}
             />
           );
         })()}
@@ -1092,7 +1138,7 @@ export const CarouselFrame = ({
                   } else {
                     // Has content - open both design menu and tool panel
                     onRequestAddPageIndicator?.();
-                    setIsProgressEditing(true);
+                    handleStartProgressEdit();
                   }
                 }}
               >
