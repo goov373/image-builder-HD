@@ -859,7 +859,8 @@ const DesignSystemPanel = ({
               Add more frames to use stretch mode
             </div>
           )}
-          <div className="grid grid-cols-3 gap-2 mb-3">
+          <h4 className="text-[10px] text-gray-500 uppercase tracking-wide mb-2">Gradients</h4>
+          <div className="grid grid-cols-3 gap-2 mb-4">
             {gradients.map((gradient, idx) => (
               <button
                 type="button"
@@ -876,6 +877,7 @@ const DesignSystemPanel = ({
               />
             ))}
           </div>
+          <h4 className="text-[10px] text-gray-500 uppercase tracking-wide mb-2">Solid Colors</h4>
           <div className="grid grid-cols-3 gap-1.5">
             {solidColors.map(color => (
               <div key={color} className="relative group">
