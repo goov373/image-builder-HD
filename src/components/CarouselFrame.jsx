@@ -857,20 +857,89 @@ export const CarouselFrame = ({
       {/* Only visible when row is selected, hidden during editing modes */}
       {isRowSelected && !isImageEditing && !isFillEditing && !isPatternEditing && !isProductImageEditing && !isIconEditing && !isProgressEditing && (
       <div className="mt-1.5 flex flex-col items-start gap-1">
-        {/* Add Product Image - Only for eligible layouts without a product image */}
-        {isProductImageEligible && !frame.productImageLayer && isFrameSelected && (
-          <button 
-            type="button"
-            className="flex items-center gap-1 px-2 py-1 bg-purple-600/80 hover:bg-purple-500/80 rounded-full transition-colors"
-            title="Add a product image"
-            onClick={(e) => { e.stopPropagation(); onRequestAddProductImage?.(); }}
-          >
-            <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-            </svg>
-            <span className="text-[10px] text-white font-medium">Add Product Image</span>
-          </button>
+        {/* Placeholder chips - show when frame is selected and layer doesn't exist */}
+        {isFrameSelected && (
+          <div className="flex flex-wrap items-center gap-1">
+            {/* Add Image placeholder */}
+            {!frame.imageLayer && (
+              <div 
+                className="flex items-center gap-1 px-2 py-1 bg-gray-800/50 rounded-full group cursor-pointer hover:bg-gray-700/80 transition-colors border border-dashed border-gray-600"
+                title="Add an image"
+                onClick={(e) => { e.stopPropagation(); /* TODO: Open image picker */ }}
+              >
+                <svg className="w-3 h-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <span className="text-[10px] text-gray-500 group-hover:text-gray-300 transition-colors">Image</span>
+              </div>
+            )}
+            {/* Add Fill placeholder */}
+            {!frame.backgroundOverride && (
+              <div 
+                className="flex items-center gap-1 px-2 py-1 bg-gray-800/50 rounded-full group cursor-pointer hover:bg-gray-700/80 transition-colors border border-dashed border-gray-600"
+                title="Add a fill color"
+                onClick={(e) => { e.stopPropagation(); /* TODO: Open fill picker */ }}
+              >
+                <svg className="w-3 h-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+                </svg>
+                <span className="text-[10px] text-gray-500 group-hover:text-gray-300 transition-colors">Fill</span>
+              </div>
+            )}
+            {/* Add Pattern placeholder */}
+            {!frame.patternLayer && (
+              <div 
+                className="flex items-center gap-1 px-2 py-1 bg-gray-800/50 rounded-full group cursor-pointer hover:bg-gray-700/80 transition-colors border border-dashed border-gray-600"
+                title="Add a pattern"
+                onClick={(e) => { e.stopPropagation(); /* TODO: Open pattern picker */ }}
+              >
+                <svg className="w-3 h-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
+                </svg>
+                <span className="text-[10px] text-gray-500 group-hover:text-gray-300 transition-colors">Pattern</span>
+              </div>
+            )}
+            {/* Add Icon placeholder - only for eligible layouts */}
+            {layoutIndex === 0 && layoutVariant === 0 && !frame.productImageLayer && !frame.iconLayer && (
+              <div 
+                className="flex items-center gap-1 px-2 py-1 bg-gray-800/50 rounded-full group cursor-pointer hover:bg-gray-700/80 transition-colors border border-dashed border-gray-600"
+                title="Add an icon"
+                onClick={(e) => { e.stopPropagation(); onRequestAddIcon?.(); }}
+              >
+                <svg className="w-3 h-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span className="text-[10px] text-gray-500 group-hover:text-gray-300 transition-colors">Icon</span>
+              </div>
+            )}
+            {/* Add Product Image - Only for eligible layouts without a product image */}
+            {isProductImageEligible && !frame.productImageLayer && (
+              <div 
+                className="flex items-center gap-1 px-2 py-1 bg-gray-800/50 rounded-full group cursor-pointer hover:bg-gray-700/80 transition-colors border border-dashed border-gray-600"
+                title="Add a product image"
+                onClick={(e) => { e.stopPropagation(); onRequestAddProductImage?.(); }}
+              >
+                <svg className="w-3 h-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                </svg>
+                <span className="text-[10px] text-gray-500 group-hover:text-gray-300 transition-colors">Product</span>
+              </div>
+            )}
+            {/* Progress Indicator - always available, shown as solid chip */}
+            <div 
+              className="flex items-center gap-1 px-2 py-1 bg-gray-800/80 rounded-full group cursor-pointer hover:bg-gray-700/80 transition-colors"
+              title="Edit progress indicator"
+              onClick={(e) => { e.stopPropagation(); setIsProgressEditing(true); }}
+            >
+              <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
+              </svg>
+              <span className="text-[10px] text-gray-400 group-hover:text-white transition-colors">Progress</span>
+            </div>
+          </div>
         )}
+        
+        {/* Existing layer edit chips - show when frame is selected and layer exists */}
         {/* Edit Product Image - When a product image exists (only when frame is selected) */}
         {isFrameSelected && frame.productImageLayer && (
           <div 
@@ -916,19 +985,6 @@ export const CarouselFrame = ({
               </svg>
             </button>
           </div>
-        )}
-        {/* Progress Indicator - Click to edit (only when frame is selected) */}
-        {isFrameSelected && (
-        <div 
-          className="flex items-center gap-1 px-2 py-1 bg-gray-800/80 rounded-full group cursor-pointer hover:bg-gray-700/80 transition-colors"
-          title="Click to edit progress indicator"
-          onClick={(e) => { e.stopPropagation(); setIsProgressEditing(true); }}
-        >
-          <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
-          </svg>
-          <span className="text-[10px] text-gray-400 group-hover:text-white transition-colors">Edit Progress</span>
-        </div>
         )}
         {/* Pattern Indicator - Click to edit (only when frame is selected) */}
         {isFrameSelected && frame.patternLayer && (
