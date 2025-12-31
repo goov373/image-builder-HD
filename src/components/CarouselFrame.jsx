@@ -155,7 +155,7 @@ const IconEditPanel = ({
         <button
           type="button"
           onClick={() => { onRequestAddIcon?.(); }}
-          className="flex items-center gap-1.5 bg-purple-600/80 hover:bg-purple-500/80 rounded-lg px-2.5 py-1.5 text-white text-[10px] font-medium transition-colors"
+          className="flex items-center gap-1.5 bg-gray-700/90 hover:bg-gray-600/90 rounded-lg px-2.5 py-1.5 text-gray-300 hover:text-white text-[10px] font-medium transition-colors"
           title="Change icon"
         >
           <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -209,7 +209,7 @@ const IconEditPanel = ({
         <button
           type="button"
           onClick={handleDoneIconEdit}
-          className="bg-orange-500/90 hover:bg-orange-500 rounded-lg px-2.5 py-1.5 text-white text-[10px] font-medium transition-colors"
+          className="bg-gray-600/90 hover:bg-gray-500 rounded-lg px-2.5 py-1.5 text-white text-[10px] font-medium transition-colors"
           title="Done editing"
         >
           Done
