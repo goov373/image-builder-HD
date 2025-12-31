@@ -482,22 +482,6 @@ const DesignSystemPanel = ({
   
   return (
     <>
-      {/* Decorative Diagonal Lines Pattern - In header/tab bar area */}
-      <div 
-        className={`fixed top-0 h-[56px] w-72 z-30 border-r border-gray-800 ${isOpen ? 'pointer-events-none' : 'pointer-events-none'}`}
-        style={{ 
-          left: isOpen ? 64 : -224, 
-          transition: 'left 0.3s ease-out',
-          backgroundImage: `repeating-linear-gradient(
-            -45deg,
-            transparent,
-            transparent 10px,
-            rgba(100, 102, 233, 0.1) 10px,
-            rgba(100, 102, 233, 0.1) 11px
-          )`,
-        }}
-      />
-      
       <div 
         className={`fixed top-[56px] h-[calc(100%-56px)] w-72 bg-gray-900 border-r border-t border-gray-800 z-40 flex flex-col ${isOpen ? 'pointer-events-auto' : 'pointer-events-none'}`}
         style={{ left: isOpen ? 64 : -224, transition: 'left 0.3s ease-out' }}
