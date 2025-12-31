@@ -878,17 +878,17 @@ const DesignSystemPanel = ({
             ))}
           </div>
           <h4 className="text-[10px] text-gray-500 uppercase tracking-wide mb-2">Solid Colors</h4>
-          <div className="grid grid-cols-3 gap-1.5">
+          <div className="grid grid-cols-3 gap-2">
             {solidColors.map(color => (
               <div key={color} className="relative group">
                 <button
                   type="button"
                   onClick={() => handleBackgroundClick(color)}
                   disabled={!hasFrameSelected}
-                  className={`w-full aspect-square rounded border-2 transition-colors ${
+                  className={`w-full aspect-square rounded-lg transition-colors overflow-hidden ${
                     hasFrameSelected 
-                      ? 'border-gray-700 hover:border-gray-400 hover:scale-110 cursor-pointer' 
-                      : 'border-gray-700/50 opacity-60 cursor-not-allowed'
+                      ? 'ring-1 ring-gray-700 hover:ring-gray-400 hover:scale-105 cursor-pointer' 
+                      : 'ring-1 ring-gray-700/50 opacity-50 cursor-not-allowed'
                   }`}
                   style={{ backgroundColor: color }}
                   title={hasFrameSelected ? 'Click to apply this background' : 'Select a frame first'}
