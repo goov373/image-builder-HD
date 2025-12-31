@@ -1264,39 +1264,10 @@ export const CarouselFrame = ({
             </div>
             
             {/* Background Layers Section */}
+            {/* Order matches visual stacking: topmost layer at top of list */}
             <div className="text-[9px] text-gray-500 uppercase tracking-wider px-1 pb-1 pt-2">Background Layers</div>
             <div className="border-t border-gray-600/50">
-              {/* 4. Fill Color */}
-              <div 
-                className={`flex items-center gap-1.5 px-2 py-1.5 border-b border-gray-600/50 group cursor-pointer transition-colors hover:bg-gray-700/50 ${
-                  !frame.backgroundOverride ? 'opacity-60' : ''
-                }`}
-                title={frame.backgroundOverride ? "Edit fill color" : "Add a fill color"}
-                onClick={(e) => { 
-                  e.stopPropagation(); 
-                  onRequestAddFill?.();
-                  if (frame.backgroundOverride) {
-                    handleStartFillEdit();
-                  }
-                  // If empty, tool panel opens automatically after selection via useEffect
-                }}
-              >
-                <svg className={`w-3 h-3 ${frame.backgroundOverride ? 'text-gray-400' : 'text-gray-500'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
-                </svg>
-                <span className={`text-[10px] transition-colors ${frame.backgroundOverride ? 'text-gray-400 group-hover:text-white' : 'text-gray-500 group-hover:text-gray-300'}`}>Fill Color</span>
-                {frame.backgroundOverride ? (
-                  <span 
-                    className="ml-auto text-[8px] text-gray-600 hover:text-red-400 transition-colors"
-                    onClick={(e) => { e.stopPropagation(); onClearBackground?.(carouselId, frame.id); }}
-                    title="Clear fill color"
-                  >clear</span>
-                ) : (
-                  <span className="ml-auto text-[8px] text-gray-600 italic">empty</span>
-                )}
-              </div>
-              
-              {/* 5. Background Photo */}
+              {/* 4. Background Photo - topmost layer (z-3) */}
               <div 
                 className={`flex items-center gap-1.5 px-2 py-1.5 border-b border-gray-600/50 group cursor-pointer transition-colors hover:bg-gray-700/50 ${
                   !frame.imageLayer ? 'opacity-60' : ''
@@ -1326,7 +1297,7 @@ export const CarouselFrame = ({
                 )}
               </div>
               
-              {/* 6. Brand Pattern */}
+              {/* 5. Brand Pattern - middle layer (z-2) */}
               <div 
                 className={`flex items-center gap-1.5 px-2 py-1.5 border-b border-gray-600/50 group cursor-pointer transition-colors hover:bg-gray-700/50 ${
                   !frame.patternLayer ? 'opacity-60' : ''
@@ -1350,6 +1321,36 @@ export const CarouselFrame = ({
                     className="ml-auto text-[8px] text-gray-600 hover:text-red-400 transition-colors"
                     onClick={(e) => { e.stopPropagation(); onRemovePatternFromFrame?.(carouselId, frame.id); }}
                     title="Clear brand pattern"
+                  >clear</span>
+                ) : (
+                  <span className="ml-auto text-[8px] text-gray-600 italic">empty</span>
+                )}
+              </div>
+              
+              {/* 6. Fill Color - backmost layer (z-1) */}
+              <div 
+                className={`flex items-center gap-1.5 px-2 py-1.5 border-b border-gray-600/50 group cursor-pointer transition-colors hover:bg-gray-700/50 ${
+                  !frame.backgroundOverride ? 'opacity-60' : ''
+                }`}
+                title={frame.backgroundOverride ? "Edit fill color" : "Add a fill color"}
+                onClick={(e) => { 
+                  e.stopPropagation(); 
+                  onRequestAddFill?.();
+                  if (frame.backgroundOverride) {
+                    handleStartFillEdit();
+                  }
+                  // If empty, tool panel opens automatically after selection via useEffect
+                }}
+              >
+                <svg className={`w-3 h-3 ${frame.backgroundOverride ? 'text-gray-400' : 'text-gray-500'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+                </svg>
+                <span className={`text-[10px] transition-colors ${frame.backgroundOverride ? 'text-gray-400 group-hover:text-white' : 'text-gray-500 group-hover:text-gray-300'}`}>Fill Color</span>
+                {frame.backgroundOverride ? (
+                  <span 
+                    className="ml-auto text-[8px] text-gray-600 hover:text-red-400 transition-colors"
+                    onClick={(e) => { e.stopPropagation(); onClearBackground?.(carouselId, frame.id); }}
+                    title="Clear fill color"
                   >clear</span>
                 ) : (
                   <span className="ml-auto text-[8px] text-gray-600 italic">empty</span>
