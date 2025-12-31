@@ -829,7 +829,7 @@ const DesignSystemPanel = ({
           </button>
           
           {!collapsedSections.backgrounds && (
-          <div className="px-4 pb-4">
+          <div className="px-4 pt-2 pb-4">
           {/* Apply Mode Toggle - Using extracted component */}
           {hasRowSelected && (
             <ApplyModeToggle 
