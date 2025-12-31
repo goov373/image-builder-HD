@@ -31,6 +31,8 @@ const DesignSystemPanel = ({
   onAddImageToFrame,
   onAddProductImageToFrame,
   onAddIconToFrame,
+  // Progress indicator handler (carousel)
+  onUpdateProgressIndicator,
   // Pattern layer handlers (carousel)
   onAddPatternToFrame,
   onUpdatePatternLayer,
@@ -142,7 +144,7 @@ const DesignSystemPanel = ({
   const [compressionPreset, setCompressionPreset] = useState('highQuality');
   
   // Default order for design dropdown sections
-  const defaultSectionOrder = ['backgrounds', 'productImagery', 'photography', 'patterns', 'brandIcons'];
+  const defaultSectionOrder = ['pageIndicators', 'backgrounds', 'productImagery', 'photography', 'patterns', 'brandIcons'];
   
   // Track which single section is open (null = all closed), and dynamic section order
   const [openSection, setOpenSection] = useState(null);
@@ -153,6 +155,7 @@ const DesignSystemPanel = ({
   
   // Helper to check if a section is collapsed (for compatibility)
   const collapsedSections = {
+    pageIndicators: openSection !== 'pageIndicators',
     backgrounds: openSection !== 'backgrounds',
     patterns: openSection !== 'patterns',
     productImagery: openSection !== 'productImagery',
@@ -872,6 +875,133 @@ const DesignSystemPanel = ({
       
         {/* Dynamic Dropdown Sections - rendered in order based on sectionOrder */}
         <div className="flex flex-col">
+        
+        {/* Page Indicators Section */}
+        <div className="border-b border-gray-800" style={{ order: sectionOrder.indexOf('pageIndicators') }}>
+          <button
+            type="button"
+            onClick={() => toggleSection('pageIndicators')}
+            className="w-full p-4 flex items-center justify-between hover:bg-gray-800/50 transition-colors"
+          >
+            <div className="flex items-center gap-2">
+              <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Page Indicators</h3>
+              <span className="px-1.5 py-0.5 bg-gray-700 rounded text-[10px] text-gray-400">6</span>
+            </div>
+            <svg className={`w-4 h-4 text-gray-500 transition-transform ${collapsedSections.pageIndicators ? '' : 'rotate-180'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+          
+          {!collapsedSections.pageIndicators && (
+          <div className="px-4 pt-2 pb-4">
+            <p className="text-[10px] text-gray-500 mb-3">Choose a style for frame position indicators</p>
+            
+            {/* Indicator Style Grid - 2 columns */}
+            <div className="grid grid-cols-2 gap-2">
+              {[
+                { type: 'dots', name: 'Dots', desc: 'Classic dot indicators' },
+                { type: 'arrows', name: 'Arrows', desc: 'Chevron navigation' },
+                { type: 'bar', name: 'Loading Bar', desc: 'Progress bar style' },
+                { type: 'mapPins', name: 'Map Pins', desc: 'GPS waypoints' },
+                { type: 'forecast', name: 'Forecast', desc: 'Trend line markers' },
+                { type: 'barChart', name: 'Bar Chart', desc: 'Mini chart bars' },
+              ].map((indicator) => {
+                const currentType = selectedItem?.progressIndicator?.type || 'dots';
+                const isSelected = currentType === indicator.type;
+                return (
+                  <button
+                    key={indicator.type}
+                    type="button"
+                    onClick={() => {
+                      if (isCarousel && hasFrameSelected && onUpdateProgressIndicator) {
+                        onUpdateProgressIndicator(selectedCarouselId, selectedFrameId, { type: indicator.type });
+                      }
+                    }}
+                    disabled={!hasFrameSelected}
+                    className={`group relative p-3 rounded-lg border transition-all ${
+                      hasFrameSelected 
+                        ? isSelected
+                          ? 'border-purple-500 bg-purple-500/10'
+                          : 'border-gray-700 hover:border-gray-500 bg-gray-800/50'
+                        : 'border-gray-700/50 opacity-50 cursor-not-allowed'
+                    }`}
+                    title={indicator.desc}
+                  >
+                    {/* Preview of the indicator style */}
+                    <div className="flex justify-center mb-2 h-5 items-center">
+                      {indicator.type === 'dots' && (
+                        <div className="flex items-center gap-1">
+                          {[1,2,3,4,5].map(i => (
+                            <div 
+                              key={i} 
+                              className="w-1.5 h-1.5 rounded-full bg-white"
+                              style={{ opacity: i === 3 ? 1 : 0.3 }}
+                            />
+                          ))}
+                        </div>
+                      )}
+                      {indicator.type === 'arrows' && (
+                        <div className="flex items-center gap-1.5">
+                          <svg className="w-3.5 h-3.5 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                          </svg>
+                          <span className="text-[9px] text-white font-medium">3/5</span>
+                          <svg className="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                          </svg>
+                        </div>
+                      )}
+                      {indicator.type === 'bar' && (
+                        <div className="w-12 h-1 rounded-full bg-white/20 overflow-hidden">
+                          <div className="h-full w-3/5 bg-white rounded-full" />
+                        </div>
+                      )}
+                      {indicator.type === 'mapPins' && (
+                        <svg width="48" height="14" viewBox="0 0 48 14" fill="none">
+                          <path d="M2 10 Q12 3, 24 6 Q36 9, 46 5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeOpacity="0.25" fill="none"/>
+                          {[{ x: 2, y: 10 }, { x: 13, y: 4 }, { x: 24, y: 6 }, { x: 35, y: 8 }, { x: 46, y: 5 }].map((pos, i) => (
+                            <g key={i}>
+                              <circle cx={pos.x} cy={pos.y - 2} r="2" fill="white" fillOpacity={i === 2 ? 1 : 0.3}/>
+                              <line x1={pos.x} y1={pos.y} x2={pos.x} y2={pos.y + 2} stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeOpacity={i === 2 ? 1 : 0.3}/>
+                            </g>
+                          ))}
+                        </svg>
+                      )}
+                      {indicator.type === 'forecast' && (
+                        <svg width="44" height="14" viewBox="0 0 44 14" fill="none">
+                          <path d="M2 11 L11 8 L22 9 L33 5 L42 2" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" strokeOpacity="0.25" fill="none"/>
+                          {[{ x: 2, y: 11 }, { x: 11, y: 8 }, { x: 22, y: 9 }, { x: 33, y: 5 }, { x: 42, y: 2 }].map((pos, i) => (
+                            <g key={i} opacity={i === 2 ? 1 : 0.3}>
+                              <line x1={pos.x - 2} y1={pos.y - 2} x2={pos.x + 2} y2={pos.y + 2} stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
+                              <line x1={pos.x + 2} y1={pos.y - 2} x2={pos.x - 2} y2={pos.y + 2} stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
+                            </g>
+                          ))}
+                        </svg>
+                      )}
+                      {indicator.type === 'barChart' && (
+                        <svg width="36" height="14" viewBox="0 0 36 14" fill="none">
+                          {[{ x: 2, h: 6 }, { x: 9, h: 10 }, { x: 16, h: 5 }, { x: 23, h: 12 }, { x: 30, h: 8 }].map((bar, i) => (
+                            <rect key={i} x={bar.x} y={14 - bar.h} width="4" height={bar.h} rx="1" fill="white" fillOpacity={i === 2 ? 1 : 0.3}/>
+                          ))}
+                        </svg>
+                      )}
+                    </div>
+                    {/* Label */}
+                    <span className={`text-[10px] font-medium block text-center ${isSelected ? 'text-purple-300' : 'text-gray-400 group-hover:text-white'}`}>
+                      {indicator.name}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+            
+            {!hasFrameSelected && (
+              <p className="text-[10px] text-gray-600 text-center mt-3">Select a frame to apply an indicator style</p>
+            )}
+          </div>
+          )}
+        </div>
+        
         {/* Backgrounds Section */}
         <div className="border-b border-gray-800" style={{ order: sectionOrder.indexOf('backgrounds') }}>
           <button

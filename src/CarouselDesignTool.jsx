@@ -114,6 +114,13 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
     setTimeout(() => setExpandSectionOnOpen(null), 100);
   };
 
+  // Handler to open Design panel and expand Page Indicators section
+  const handleRequestAddPageIndicator = () => {
+    setExpandSectionOnOpen('pageIndicators');
+    setActivePanel('design');
+    setTimeout(() => setExpandSectionOnOpen(null), 100);
+  };
+
   // Get current project type from active tab
   const currentProjectType = tabs.activeTab?.projectType || 'carousel';
 
@@ -406,6 +413,7 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
           onAddImageToFrame={carousels.handleAddImageToFrame}
           onAddProductImageToFrame={carousels.handleAddProductImageToFrame}
           onAddIconToFrame={carousels.handleAddIconToFrame}
+          onUpdateProgressIndicator={carousels.handleUpdateProgressIndicator}
           onAddPatternToFrame={carousels.handleAddPatternToFrame}
           onUpdatePatternLayer={carousels.handleUpdatePatternLayer}
           onRemovePatternFromFrame={carousels.handleRemovePatternFromFrame}
@@ -481,6 +489,7 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
             onRequestAddFill={handleRequestAddFill}
             onRequestAddPhoto={handleRequestAddPhoto}
             onRequestAddPattern={handleRequestAddPattern}
+            onRequestAddPageIndicator={handleRequestAddPageIndicator}
           />
         )}
         </div>

@@ -71,6 +71,141 @@ const ProgressIndicatorOverlay = ({
     );
   }
   
+  // Map Pins style - pins along a curved GPS path
+  if (type === 'mapPins') {
+    return (
+      <div className="flex items-center min-w-[64px] min-h-[20px] justify-end">
+        <svg width="64" height="16" viewBox="0 0 64 16" fill="none">
+          {/* Curved path */}
+          <path 
+            d="M4 12 Q16 4, 32 8 Q48 12, 60 6" 
+            stroke={color} 
+            strokeWidth="1.5" 
+            strokeLinecap="round"
+            strokeOpacity="0.25"
+            fill="none"
+          />
+          {/* Pin markers */}
+          {[1,2,3,4,5].map((i, idx) => {
+            const positions = [
+              { x: 4, y: 12 },
+              { x: 19, y: 5.5 },
+              { x: 32, y: 8 },
+              { x: 45, y: 10 },
+              { x: 60, y: 6 }
+            ];
+            const pos = positions[idx];
+            const isActive = i === frameId;
+            return (
+              <g key={i}>
+                <circle 
+                  cx={pos.x} 
+                  cy={pos.y - 3} 
+                  r="2.5" 
+                  fill={color}
+                  fillOpacity={isActive ? 1 : 0.3}
+                />
+                <line 
+                  x1={pos.x} 
+                  y1={pos.y - 0.5} 
+                  x2={pos.x} 
+                  y2={pos.y + 2} 
+                  stroke={color}
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeOpacity={isActive ? 1 : 0.3}
+                />
+              </g>
+            );
+          })}
+        </svg>
+      </div>
+    );
+  }
+  
+  // Forecast style - X marks on upward trend line
+  if (type === 'forecast') {
+    return (
+      <div className="flex items-center min-w-[60px] min-h-[20px] justify-end">
+        <svg width="60" height="16" viewBox="0 0 60 16" fill="none">
+          {/* Trend line going up and to the right */}
+          <path 
+            d="M4 13 L16 10 L28 11 L40 7 L52 4" 
+            stroke={color} 
+            strokeWidth="1.5" 
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeOpacity="0.25"
+            fill="none"
+          />
+          {/* X markers at data points */}
+          {[1,2,3,4,5].map((i, idx) => {
+            const positions = [
+              { x: 4, y: 13 },
+              { x: 16, y: 10 },
+              { x: 28, y: 11 },
+              { x: 40, y: 7 },
+              { x: 52, y: 4 }
+            ];
+            const pos = positions[idx];
+            const isActive = i === frameId;
+            const size = 2;
+            return (
+              <g key={i} opacity={isActive ? 1 : 0.3}>
+                <line 
+                  x1={pos.x - size} 
+                  y1={pos.y - size} 
+                  x2={pos.x + size} 
+                  y2={pos.y + size} 
+                  stroke={color}
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                />
+                <line 
+                  x1={pos.x + size} 
+                  y1={pos.y - size} 
+                  x2={pos.x - size} 
+                  y2={pos.y + size} 
+                  stroke={color}
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                />
+              </g>
+            );
+          })}
+        </svg>
+      </div>
+    );
+  }
+  
+  // Bar Chart style - mini vertical bars
+  if (type === 'barChart') {
+    return (
+      <div className="flex items-center min-w-[48px] min-h-[20px] justify-end">
+        <svg width="48" height="16" viewBox="0 0 48 16" fill="none">
+          {[1,2,3,4,5].map((i, idx) => {
+            const heights = [8, 12, 6, 14, 10]; // Varying heights for visual interest
+            const height = heights[idx];
+            const x = 4 + idx * 9;
+            const isActive = i === frameId;
+            return (
+              <rect
+                key={i}
+                x={x}
+                y={16 - height}
+                width="5"
+                height={height}
+                rx="1"
+                fill={color}
+                fillOpacity={isActive ? 1 : 0.3}
+              />
+            );
+          })}
+        </svg>
+      </div>
+    );
+  }
+  
   return null;
 };
 
@@ -415,6 +550,8 @@ export const CarouselFrame = ({
   onRequestAddPhoto, // Callback to open design panel with photography section
   // Pattern callback
   onRequestAddPattern, // Callback to open design panel with brand patterns section
+  // Page indicator callback
+  onRequestAddPageIndicator, // Callback to open design panel with page indicators section
   // Progress indicator props
   onUpdateProgressIndicator,
   // Cross-frame overflow
@@ -876,7 +1013,7 @@ export const CarouselFrame = ({
                   frame.progressIndicator?.isHidden ? 'opacity-60' : ''
                 }`}
                 title="Edit progress indicator"
-                onClick={(e) => { e.stopPropagation(); setIsProgressEditing(true); }}
+                onClick={(e) => { e.stopPropagation(); onRequestAddPageIndicator?.(); }}
               >
                 <svg className={`w-3 h-3 ${frame.progressIndicator?.isHidden ? 'text-gray-500' : 'text-gray-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
@@ -1562,6 +1699,7 @@ export const SortableFrame = ({
   onRequestAddFill,
   onRequestAddPhoto,
   onRequestAddPattern,
+  onRequestAddPageIndicator,
   // Cross-frame overflow
   prevFrameImage,
   nextFrameImage,
@@ -1637,6 +1775,7 @@ export const SortableFrame = ({
         onRequestAddFill={onRequestAddFill}
         onRequestAddPhoto={onRequestAddPhoto}
         onRequestAddPattern={onRequestAddPattern}
+        onRequestAddPageIndicator={onRequestAddPageIndicator}
         prevFrameImage={prevFrameImage}
         nextFrameImage={nextFrameImage}
         onImageEditModeChange={setIsImageEditing}

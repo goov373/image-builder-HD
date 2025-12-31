@@ -32,6 +32,8 @@ export default function EditorView({
   onRequestAddPhoto,
   // Pattern callback
   onRequestAddPattern,
+  // Page indicator callback
+  onRequestAddPageIndicator,
 }) {
   // Get state from context
   const { designSystem } = useDesignSystemContext();
@@ -226,6 +228,7 @@ export default function EditorView({
                       onRequestAddFill={onRequestAddFill}
                       onRequestAddPhoto={onRequestAddPhoto}
                       onRequestAddPattern={onRequestAddPattern}
+                      onRequestAddPageIndicator={onRequestAddPageIndicator}
                     />
                     {/* Add Row Button - only after last row */}
                     {index === carousels.length - 1 && (
