@@ -49,6 +49,8 @@ export const CAROUSEL_ACTIONS = {
   REMOVE_ICON_FROM_FRAME: 'REMOVE_ICON_FROM_FRAME',
   // Progress Indicator Actions
   UPDATE_PROGRESS_INDICATOR: 'UPDATE_PROGRESS_INDICATOR',
+  // Background Layer Order Actions
+  REORDER_BACKGROUND_LAYERS: 'REORDER_BACKGROUND_LAYERS',
 };
 
 // Initial state shape
@@ -202,7 +204,8 @@ function carouselReducer(state, action) {
             currentLayout: 0,
             layoutVariant: 0,
             style: adjacentFrame?.style || "dark-single-pin",
-            backgroundOverride: '#6466e9' // Default to primary purple
+            backgroundOverride: '#6466e9', // Default to primary purple
+            backgroundLayerOrder: ['fill', 'pattern', 'image'], // Default layer order (backmost to topmost)
           };
           const newFrames = [...carousel.frames];
           newFrames.splice(insertIndex, 0, newFrame);
@@ -779,6 +782,26 @@ function carouselReducer(state, action) {
       };
     }
 
+    // ===== Background Layer Order Actions =====
+    
+    case CAROUSEL_ACTIONS.REORDER_BACKGROUND_LAYERS: {
+      const { carouselId, frameId, newOrder } = action;
+      return {
+        ...state,
+        carousels: state.carousels.map(carousel => {
+          if (carousel.id !== carouselId) return carousel;
+          return {
+            ...carousel,
+            frames: carousel.frames.map(frame =>
+              frame.id === frameId 
+                ? { ...frame, backgroundLayerOrder: newOrder } 
+                : frame
+            )
+          };
+        })
+      };
+    }
+
     default:
       return state;
   }
@@ -791,12 +814,13 @@ function loadFromStorage(initialData) {
     if (saved) {
       const parsed = JSON.parse(saved);
       if (Array.isArray(parsed) && parsed.length > 0) {
-        // Migration: Set all frames to default primary purple background
+        // Migration: Set defaults for frames
         const migrated = parsed.map(carousel => ({
           ...carousel,
           frames: carousel.frames?.map(frame => ({
             ...frame,
-            backgroundOverride: frame.backgroundOverride || '#6466e9' // Default to primary purple if not set
+            backgroundOverride: frame.backgroundOverride || '#6466e9', // Default to primary purple if not set
+            backgroundLayerOrder: frame.backgroundLayerOrder || ['fill', 'pattern', 'image'], // Default layer order
           })) || []
         }));
         // Force save the migrated data immediately
@@ -955,6 +979,10 @@ export default function useCarousels(initialData) {
     // Progress Indicator Actions
     handleUpdateProgressIndicator: useCallback((carouselId, frameId, updates) =>
       dispatch({ type: CAROUSEL_ACTIONS.UPDATE_PROGRESS_INDICATOR, carouselId, frameId, updates }), []),
+    
+    // Background Layer Order Actions
+    handleReorderBackgroundLayers: useCallback((carouselId, frameId, newOrder) =>
+      dispatch({ type: CAROUSEL_ACTIONS.REORDER_BACKGROUND_LAYERS, carouselId, frameId, newOrder }), []),
   };
 
   return {
