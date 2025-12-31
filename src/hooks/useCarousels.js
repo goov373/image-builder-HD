@@ -794,10 +794,14 @@ function loadFromStorage(initialData) {
         const migrated = parsed.map(carousel => ({
           ...carousel,
           frames: carousel.frames?.map(frame => {
-            const { backgroundOverride, ...rest } = frame;
-            return rest; // Remove backgroundOverride from all frames
+            // Remove backgroundOverride completely
+            const { backgroundOverride, fillOpacity, fillRotation, ...rest } = frame;
+            return rest; // Remove all fill-related properties
           }) || []
         }));
+        // Force save the migrated data immediately
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(migrated));
+        console.log('Migration: Cleared all background overrides from frames');
         return migrated;
       }
     }

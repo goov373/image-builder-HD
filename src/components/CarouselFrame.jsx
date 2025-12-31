@@ -670,7 +670,7 @@ export const CarouselFrame = ({
         className={`relative overflow-hidden shadow-lg cursor-pointer transition-all border ${isFrameSelected ? 'border-orange-500' : 'border-gray-700 hover:border-gray-600'}`}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        style={{ width: size.width, height: size.height, backgroundColor: '#18191A' }}
+        style={{ width: size.width, height: size.height, backgroundColor: '#ffffff' }}
         onClick={(e) => { e.stopPropagation(); onSelectFrame(frame.id); }}
       >
         {/* Layer 1: Pattern - backmost (z-index: 1) */}
