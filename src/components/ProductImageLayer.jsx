@@ -112,19 +112,15 @@ const ProductImageLayer = ({
       };
   
   // Determine border style based on selection state
+  // Only show border when frame is selected, not when just row is selected
   const getBorderStyle = () => {
     if (isFrameSelected) {
       return {
-        border: '2px solid #f97316', // Solid orange when selected
-        borderRadius: `${borderRadius}px`,
+        border: '1px dashed rgba(249, 115, 22, 0.5)', // Match icon container style
+        borderRadius: '4px', // Match icon container rounding
       };
     }
-    if (isRowSelected) {
-      return {
-        border: '2px dashed rgba(249, 115, 22, 0.4)', // Faint dotted orange when row selected
-        borderRadius: `${borderRadius}px`,
-      };
-    }
+    // No border when only row is selected or nothing is selected
     return {
       borderRadius: `${borderRadius}px`,
     };
