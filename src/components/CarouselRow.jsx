@@ -19,7 +19,7 @@ import { SortableFrame } from './CarouselFrame';
  * Carousel Row Component
  * Displays a row of frames with drag-and-drop reordering
  */
-const CarouselRow = ({ carousel, designSystem, isSelected, hasAnySelection, selectedFrameId, onSelect, onSelectFrame, onAddFrame, onRemoveFrame, onRemoveRow, onUpdateText, activeTextField, onActivateTextField, onReorderFrames, onUpdateImageLayer, onRemoveImageFromFrame, onUpdateFillLayer, onClearBackground, onUpdatePatternLayer, onRemovePatternFromFrame, onUpdateProductImageLayer, onRemoveProductImageFromFrame, onRequestAddProductImage, onUpdateIconLayer, onRemoveIconFromFrame, onRequestAddIcon, onUpdateProgressIndicator, onRequestAddFill, onRequestAddPhoto, onRequestAddPattern, onRequestAddPageIndicator }) => {
+const CarouselRow = ({ carousel, designSystem, isSelected, hasAnySelection, selectedFrameId, onSelect, onSelectFrame, onAddFrame, onRemoveFrame, onRemoveRow, onUpdateText, activeTextField, onActivateTextField, onReorderFrames, onUpdateImageLayer, onRemoveImageFromFrame, onUpdateFillLayer, onClearBackground, onUpdatePatternLayer, onRemovePatternFromFrame, onUpdateProductImageLayer, onRemoveProductImageFromFrame, onRequestAddProductImage, onUpdateIconLayer, onRemoveIconFromFrame, onRequestAddIcon, onUpdateProgressIndicator, onReorderBackgroundLayers, onRequestAddFill, onRequestAddPhoto, onRequestAddPattern, onRequestAddPageIndicator }) => {
   const totalFrames = carousel.frames.length;
   const isFaded = hasAnySelection && !isSelected;
   
@@ -125,6 +125,7 @@ const CarouselRow = ({ carousel, designSystem, isSelected, hasAnySelection, sele
                     onRemoveIconFromFrame={onRemoveIconFromFrame}
                     onRequestAddIcon={onRequestAddIcon}
                     onUpdateProgressIndicator={onUpdateProgressIndicator}
+                    onReorderBackgroundLayers={onReorderBackgroundLayers}
                     onRequestAddFill={onRequestAddFill}
                     onRequestAddPhoto={onRequestAddPhoto}
                     onRequestAddPattern={onRequestAddPattern}

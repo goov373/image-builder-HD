@@ -106,6 +106,8 @@ export default function EditorView({
     handleRemoveIconFromFrame,
     // Progress indicator methods (carousels)
     handleUpdateProgressIndicator,
+    // Background layer order methods (carousels)
+    handleReorderBackgroundLayers,
     // Eblast methods
     eblasts,
     handleEblastUpdateText,
@@ -225,6 +227,7 @@ export default function EditorView({
                       onRemoveIconFromFrame={handleRemoveIconFromFrame}
                       onRequestAddIcon={onRequestAddIcon}
                       onUpdateProgressIndicator={handleUpdateProgressIndicator}
+                      onReorderBackgroundLayers={handleReorderBackgroundLayers}
                       onRequestAddFill={onRequestAddFill}
                       onRequestAddPhoto={onRequestAddPhoto}
                       onRequestAddPattern={onRequestAddPattern}
