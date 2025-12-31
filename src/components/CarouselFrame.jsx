@@ -1121,7 +1121,7 @@ export const CarouselFrame = ({
               </div>
               
               {/* 2. Icon - only for eligible layouts */}
-              {layoutIndex === 0 && layoutVariant === 0 && !frame.productImageLayer && (
+              {layoutIndex === 0 && layoutVariant === 0 && (
                 <div 
                   className={`flex items-center gap-1.5 px-2 py-1.5 border-b border-gray-600/50 group cursor-pointer transition-colors hover:bg-gray-700/50 ${
                     !frame.iconLayer ? 'opacity-60' : ''
