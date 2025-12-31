@@ -871,8 +871,8 @@ export const CarouselFrame = ({
             <span className="text-[10px] text-white font-medium">Add Product Image</span>
           </button>
         )}
-        {/* Edit Product Image - When a product image exists */}
-        {frame.productImageLayer && (
+        {/* Edit Product Image - When a product image exists (only when frame is selected) */}
+        {isFrameSelected && frame.productImageLayer && (
           <div 
             className="flex items-center gap-1 px-2 py-1 bg-gray-800/80 rounded-full group cursor-pointer hover:bg-gray-700/80 transition-colors"
             title="Click to edit product image"
@@ -881,7 +881,7 @@ export const CarouselFrame = ({
             <svg className="w-3 h-3 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
             </svg>
-            <span className="text-[10px] text-gray-400 group-hover:text-white transition-colors">{isFrameSelected ? 'Edit Product' : 'Product'}</span>
+            <span className="text-[10px] text-gray-400 group-hover:text-white transition-colors">Edit Product</span>
             <button
               type="button"
               onClick={(e) => { e.stopPropagation(); onRemoveProductImageFromFrame?.(carouselId, frame.id); }}
@@ -894,8 +894,8 @@ export const CarouselFrame = ({
             </button>
           </div>
         )}
-        {/* Icon Indicator - Click to edit */}
-        {frame.iconLayer && !frame.iconLayer.isHidden && (
+        {/* Icon Indicator - Click to edit (only when frame is selected) */}
+        {isFrameSelected && frame.iconLayer && !frame.iconLayer.isHidden && (
           <div 
             className="flex items-center gap-1 px-2 py-1 bg-gray-800/80 rounded-full group cursor-pointer hover:bg-gray-700/80 transition-colors"
             title="Click to edit icon"
@@ -904,7 +904,7 @@ export const CarouselFrame = ({
             <svg className="w-3 h-3 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            <span className="text-[10px] text-gray-400 group-hover:text-white transition-colors">{isFrameSelected ? 'Edit Icon' : 'Icon'}</span>
+            <span className="text-[10px] text-gray-400 group-hover:text-white transition-colors">Edit Icon</span>
             <button
               type="button"
               onClick={(e) => { e.stopPropagation(); onRemoveIconFromFrame?.(carouselId, frame.id); }}
@@ -917,19 +917,21 @@ export const CarouselFrame = ({
             </button>
           </div>
         )}
-        {/* Progress Indicator - Click to edit */}
+        {/* Progress Indicator - Click to edit (only when frame is selected) */}
+        {isFrameSelected && (
         <div 
           className="flex items-center gap-1 px-2 py-1 bg-gray-800/80 rounded-full group cursor-pointer hover:bg-gray-700/80 transition-colors"
           title="Click to edit progress indicator"
-          onClick={(e) => { e.stopPropagation(); if (isFrameSelected) setIsProgressEditing(true); }}
+          onClick={(e) => { e.stopPropagation(); setIsProgressEditing(true); }}
         >
           <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
           </svg>
-          <span className="text-[10px] text-gray-400 group-hover:text-white transition-colors">{isFrameSelected ? 'Edit Progress' : 'Progress'}</span>
+          <span className="text-[10px] text-gray-400 group-hover:text-white transition-colors">Edit Progress</span>
         </div>
-        {/* Pattern Indicator - Click to edit */}
-        {frame.patternLayer && (
+        )}
+        {/* Pattern Indicator - Click to edit (only when frame is selected) */}
+        {isFrameSelected && frame.patternLayer && (
           <div 
             className="flex items-center gap-1 px-2 py-1 bg-gray-800/80 rounded-full group cursor-pointer hover:bg-gray-700/80 transition-colors"
             title="Click to edit pattern"
@@ -938,7 +940,7 @@ export const CarouselFrame = ({
             <svg className="w-3 h-3 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
             </svg>
-            <span className="text-[10px] text-gray-400 group-hover:text-white transition-colors">{isFrameSelected ? 'Edit Pattern' : 'Pattern'}</span>
+            <span className="text-[10px] text-gray-400 group-hover:text-white transition-colors">Edit Pattern</span>
             <button
               type="button"
               onClick={(e) => { e.stopPropagation(); onRemovePatternFromFrame?.(carouselId, frame.id); }}
@@ -951,8 +953,8 @@ export const CarouselFrame = ({
             </button>
           </div>
         )}
-        {/* Fill Color Indicator - Click to edit */}
-        {(frame.backgroundOverride || style.background) && (
+        {/* Fill Color Indicator - Click to edit (only when frame is selected) */}
+        {isFrameSelected && (frame.backgroundOverride || style.background) && (
           <div 
             className="flex items-center gap-1 px-2 py-1 bg-gray-800/80 rounded-full group cursor-pointer hover:bg-gray-700/80 transition-colors"
             title="Click to edit fill color"
@@ -961,7 +963,7 @@ export const CarouselFrame = ({
             <svg className="w-3 h-3 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
             </svg>
-            <span className="text-[10px] text-gray-400 group-hover:text-white transition-colors">{isFrameSelected ? 'Edit Fill' : 'Fill Color'}</span>
+            <span className="text-[10px] text-gray-400 group-hover:text-white transition-colors">Edit Fill</span>
             <button
               type="button"
               onClick={(e) => { e.stopPropagation(); onClearBackground?.(carouselId, frame.id); }}
@@ -974,8 +976,8 @@ export const CarouselFrame = ({
             </button>
           </div>
         )}
-        {/* Image Indicator - Click to edit, X to remove */}
-        {frame.imageLayer && !isImageEditing && (
+        {/* Image Indicator - Click to edit, X to remove (only when frame is selected) */}
+        {isFrameSelected && frame.imageLayer && !isImageEditing && (
           <div 
             className="flex items-center gap-1 px-2 py-1 bg-gray-800/80 rounded-full group cursor-pointer hover:bg-gray-700/80 transition-colors"
             title="Click to edit image position & size"
@@ -984,7 +986,7 @@ export const CarouselFrame = ({
             <svg className="w-3 h-3 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
-            <span className="text-[10px] text-gray-400 group-hover:text-white transition-colors">{isFrameSelected ? 'Edit Image' : 'Image'}</span>
+            <span className="text-[10px] text-gray-400 group-hover:text-white transition-colors">Edit Image</span>
             <button
               type="button"
               onClick={(e) => { e.stopPropagation(); onRemoveImageFromFrame?.(carouselId, frame.id); }}
