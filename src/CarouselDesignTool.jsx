@@ -85,6 +85,14 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
     setTimeout(() => setExpandSectionOnOpen(null), 100);
   };
 
+  // Handler to open Design panel and expand Brand Icons section
+  const handleRequestAddIcon = () => {
+    setExpandSectionOnOpen('brandIcons');
+    setActivePanel('design');
+    // Clear the expand trigger after a short delay so it can be triggered again
+    setTimeout(() => setExpandSectionOnOpen(null), 100);
+  };
+
   // Get current project type from active tab
   const currentProjectType = tabs.activeTab?.projectType || 'carousel';
 
@@ -225,6 +233,10 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
     handleAddProductImageToFrame: carousels.handleAddProductImageToFrame,
     handleUpdateProductImageLayer: carousels.handleUpdateProductImageLayer,
     handleRemoveProductImageFromFrame: carousels.handleRemoveProductImageFromFrame,
+    // Icon layer methods
+    handleAddIconToFrame: carousels.handleAddIconToFrame,
+    handleUpdateIconLayer: carousels.handleUpdateIconLayer,
+    handleRemoveIconFromFrame: carousels.handleRemoveIconFromFrame,
     // Eblast methods
     eblasts: eblasts.eblasts,
     handleEblastSetVariant: eblasts.handleSetVariant,
@@ -370,6 +382,7 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
           onSetRowStretchedBackground={carousels.handleSetRowStretchedBackground}
           onAddImageToFrame={carousels.handleAddImageToFrame}
           onAddProductImageToFrame={carousels.handleAddProductImageToFrame}
+          onAddIconToFrame={carousels.handleAddIconToFrame}
           onAddPatternToFrame={carousels.handleAddPatternToFrame}
           onUpdatePatternLayer={carousels.handleUpdatePatternLayer}
           onRemovePatternFromFrame={carousels.handleRemovePatternFromFrame}
@@ -441,6 +454,7 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
             projectType={currentProjectType}
             selectedDevice={selectedDevice}
             onRequestAddProductImage={handleRequestAddProductImage}
+            onRequestAddIcon={handleRequestAddIcon}
           />
         )}
         </div>

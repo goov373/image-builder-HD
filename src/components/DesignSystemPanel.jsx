@@ -30,6 +30,7 @@ const DesignSystemPanel = ({
   onSetRowStretchedBackground,
   onAddImageToFrame,
   onAddProductImageToFrame,
+  onAddIconToFrame,
   // Pattern layer handlers (carousel)
   onAddPatternToFrame,
   onUpdatePatternLayer,
@@ -1301,12 +1302,13 @@ const DesignSystemPanel = ({
                 <button
                   key={icon.id}
                   type="button"
-                  className="group relative aspect-square rounded-lg overflow-hidden bg-gray-800/50 border border-gray-700 hover:border-purple-500 hover:bg-gray-800 transition-all flex items-center justify-center"
-                  title={`${icon.name} - ${icon.description}`}
+                  className={`group relative aspect-square rounded-lg overflow-hidden bg-gray-800/50 border border-gray-700 hover:border-purple-500 hover:bg-gray-800 transition-all flex items-center justify-center ${hasFrameSelected ? 'cursor-pointer' : 'cursor-default opacity-60'}`}
+                  title={hasFrameSelected ? `Click to add ${icon.name} to frame` : `${icon.name} - Select a frame first`}
+                  disabled={!hasFrameSelected}
                   onClick={() => {
-                    // Copy SVG to clipboard
-                    const svgCode = `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${icon.path}" /></svg>`;
-                    navigator.clipboard.writeText(svgCode);
+                    if (isCarousel && hasFrameSelected && onAddIconToFrame) {
+                      onAddIconToFrame(selectedCarouselId, selectedFrameId, icon.id, icon.path, icon.name);
+                    }
                   }}
                 >
                   <svg 

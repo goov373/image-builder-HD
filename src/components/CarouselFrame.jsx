@@ -5,6 +5,7 @@ import { LayoutBottomStack, LayoutCenterDrama, LayoutEditorialLeft } from './Lay
 import ImageLayer from './ImageLayer';
 import PatternLayer from './PatternLayer';
 import ProductImageLayer from './ProductImageLayer';
+import IconLayer from './IconLayer';
 
 /**
  * Progress Dots Overlay
@@ -68,6 +69,10 @@ export const CarouselFrame = ({
   onRemoveProductImageFromFrame,
   onRequestAddProductImage, // Callback to open design panel with product imagery section
   onProductImageDragChange, // Callback when product image drag state changes
+  // Icon layer props
+  onUpdateIconLayer,
+  onRemoveIconFromFrame,
+  onRequestAddIcon, // Callback to open design panel with brand icons section
   // Cross-frame overflow
   prevFrameImage = null,
   nextFrameImage = null,
@@ -382,47 +387,50 @@ export const CarouselFrame = ({
           {renderLayout()}
         </div>
         
-        {/* Icon Placeholder - appears on Bottom Stack layouts without a product image */}
-        {layoutIndex === 0 && layoutVariant === 0 && !frame.productImageLayer && !isIconPlaceholderHidden && (
+        {/* Icon Placeholder - appears on Bottom Stack layouts without a product image or icon */}
+        {layoutIndex === 0 && layoutVariant === 0 && !frame.productImageLayer && !frame.iconLayer && !isIconPlaceholderHidden && (
           <div 
-            className="absolute z-15"
+            className="absolute"
             style={{
               left: '7.5%',
               bottom: '52%', // Position above text area
               width: '36px',
               height: '36px',
+              zIndex: 30, // Above all other layers
             }}
           >
-            <div 
+            <button 
+              type="button"
+              onClick={(e) => { e.stopPropagation(); if (isFrameSelected) onRequestAddIcon?.(); }}
               className={`w-full h-full rounded-lg border-2 border-dashed flex items-center justify-center transition-colors ${
                 isFrameSelected 
                   ? 'border-orange-500 bg-orange-500/10 cursor-pointer hover:bg-orange-500/20' 
                   : isRowSelected 
-                    ? 'border-orange-500/40 bg-transparent'
-                    : 'border-gray-600/50 bg-transparent'
+                    ? 'border-orange-500/40 bg-transparent cursor-default'
+                    : 'border-gray-600/50 bg-transparent cursor-default'
               }`}
               title={isFrameSelected ? "Click to add icon" : "Icon placeholder"}
+              disabled={!isFrameSelected}
             >
               {isFrameSelected && (
-                <>
-                  <svg className="w-4 h-4 text-orange-500/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                  </svg>
-                  {/* Toggle visibility button */}
-                  <button
-                    type="button"
-                    onClick={(e) => { e.stopPropagation(); setIsIconPlaceholderHidden(true); }}
-                    className="absolute -top-2 -right-2 w-4 h-4 bg-gray-800 hover:bg-red-500 rounded-full flex items-center justify-center transition-colors"
-                    title="Hide icon placeholder"
-                  >
-                    <svg className="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                </>
+                <svg className="w-4 h-4 text-orange-500/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                </svg>
               )}
-            </div>
+            </button>
           </div>
+        )}
+        
+        {/* Icon Layer - renders when frame has an icon */}
+        {frame.iconLayer && (
+          <IconLayer
+            iconLayer={frame.iconLayer}
+            frameWidth={size.width}
+            frameHeight={size.height}
+            isRowSelected={isRowSelected}
+            isFrameSelected={isFrameSelected}
+            onToggleVisibility={() => onUpdateIconLayer?.(carouselId, frame.id, { isHidden: !frame.iconLayer.isHidden })}
+          />
         )}
         
         {/* Layer 5: Product Image - above text (z-index: 20) */}
@@ -1103,6 +1111,10 @@ export const SortableFrame = ({
   onUpdateProductImageLayer,
   onRemoveProductImageFromFrame,
   onRequestAddProductImage,
+  // Icon layer props
+  onUpdateIconLayer,
+  onRemoveIconFromFrame,
+  onRequestAddIcon,
   // Cross-frame overflow
   prevFrameImage,
   nextFrameImage,
@@ -1171,6 +1183,9 @@ export const SortableFrame = ({
         onRemoveProductImageFromFrame={onRemoveProductImageFromFrame}
         onRequestAddProductImage={onRequestAddProductImage}
         onProductImageDragChange={setIsProductImageDragging}
+        onUpdateIconLayer={onUpdateIconLayer}
+        onRemoveIconFromFrame={onRemoveIconFromFrame}
+        onRequestAddIcon={onRequestAddIcon}
         prevFrameImage={prevFrameImage}
         nextFrameImage={nextFrameImage}
         onImageEditModeChange={setIsImageEditing}

@@ -44,9 +44,9 @@ const PatternLayer = ({
     backgroundRepeat: isStaticFile ? 'no-repeat' : 'repeat',
     opacity,
     mixBlendMode: blendMode || 'normal',
-    // If we have rotation, we need to scale up to cover corners
+    // Apply rotation without scaling - the expanded container handles corners
     ...(hasRotation && {
-      transform: `rotate(${rotation}deg) scale(1.5)`,
+      transform: `rotate(${rotation}deg)`,
       transformOrigin: 'center center',
     }),
   };
@@ -63,13 +63,8 @@ const PatternLayer = ({
       style={{ zIndex: -2, overflow: 'hidden' }}
     >
       <div
-        className="absolute"
+        className="absolute inset-0"
         style={{
-          // Extend beyond frame to handle rotation
-          top: hasRotation ? '-25%' : 0,
-          left: hasRotation ? '-25%' : 0,
-          width: hasRotation ? '150%' : '100%',
-          height: hasRotation ? '150%' : '100%',
           ...patternStyle,
           ...colorStyle,
         }}

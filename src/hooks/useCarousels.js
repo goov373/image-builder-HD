@@ -43,6 +43,10 @@ export const CAROUSEL_ACTIONS = {
   ADD_PRODUCT_IMAGE_TO_FRAME: 'ADD_PRODUCT_IMAGE_TO_FRAME',
   UPDATE_PRODUCT_IMAGE_LAYER: 'UPDATE_PRODUCT_IMAGE_LAYER',
   REMOVE_PRODUCT_IMAGE_FROM_FRAME: 'REMOVE_PRODUCT_IMAGE_FROM_FRAME',
+  // Icon Layer Actions
+  ADD_ICON_TO_FRAME: 'ADD_ICON_TO_FRAME',
+  UPDATE_ICON_LAYER: 'UPDATE_ICON_LAYER',
+  REMOVE_ICON_FROM_FRAME: 'REMOVE_ICON_FROM_FRAME',
 };
 
 // Initial state shape
@@ -676,6 +680,72 @@ function carouselReducer(state, action) {
       };
     }
 
+    // ===== Icon Layer Actions =====
+    
+    case CAROUSEL_ACTIONS.ADD_ICON_TO_FRAME: {
+      const { carouselId, frameId, iconId, iconPath, iconName } = action;
+      
+      const newIconLayer = {
+        id: `icon-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        iconId,
+        path: iconPath,
+        name: iconName,
+        scale: 1,
+        color: '#ffffff', // Default white
+      };
+      
+      return {
+        ...state,
+        carousels: state.carousels.map(carousel => {
+          if (carousel.id !== carouselId) return carousel;
+          return {
+            ...carousel,
+            frames: carousel.frames.map(frame =>
+              frame.id === frameId ? { ...frame, iconLayer: newIconLayer } : frame
+            )
+          };
+        })
+      };
+    }
+
+    case CAROUSEL_ACTIONS.UPDATE_ICON_LAYER: {
+      const { carouselId, frameId, updates } = action;
+      return {
+        ...state,
+        carousels: state.carousels.map(carousel => {
+          if (carousel.id !== carouselId) return carousel;
+          return {
+            ...carousel,
+            frames: carousel.frames.map(frame => {
+              if (frame.id !== frameId || !frame.iconLayer) return frame;
+              return {
+                ...frame,
+                iconLayer: { ...frame.iconLayer, ...updates }
+              };
+            })
+          };
+        })
+      };
+    }
+
+    case CAROUSEL_ACTIONS.REMOVE_ICON_FROM_FRAME: {
+      const { carouselId, frameId } = action;
+      return {
+        ...state,
+        carousels: state.carousels.map(carousel => {
+          if (carousel.id !== carouselId) return carousel;
+          return {
+            ...carousel,
+            frames: carousel.frames.map(frame => {
+              if (frame.id !== frameId) return frame;
+              const { iconLayer, ...rest } = frame;
+              return rest;
+            })
+          };
+        })
+      };
+    }
+
     default:
       return state;
   }
@@ -827,6 +897,16 @@ export default function useCarousels(initialData) {
     
     handleRemoveProductImageFromFrame: useCallback((carouselId, frameId) =>
       dispatch({ type: CAROUSEL_ACTIONS.REMOVE_PRODUCT_IMAGE_FROM_FRAME, carouselId, frameId }), []),
+    
+    // Icon Layer Actions
+    handleAddIconToFrame: useCallback((carouselId, frameId, iconId, iconPath, iconName) =>
+      dispatch({ type: CAROUSEL_ACTIONS.ADD_ICON_TO_FRAME, carouselId, frameId, iconId, iconPath, iconName }), []),
+    
+    handleUpdateIconLayer: useCallback((carouselId, frameId, updates) =>
+      dispatch({ type: CAROUSEL_ACTIONS.UPDATE_ICON_LAYER, carouselId, frameId, updates }), []),
+    
+    handleRemoveIconFromFrame: useCallback((carouselId, frameId) =>
+      dispatch({ type: CAROUSEL_ACTIONS.REMOVE_ICON_FROM_FRAME, carouselId, frameId }), []),
   };
 
   return {
