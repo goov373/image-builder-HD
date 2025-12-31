@@ -473,6 +473,7 @@ const DesignSystemPanel = ({
     { key: 'accent', label: 'Accent' },
     { key: 'neutral1', label: 'Dark' },
     { key: 'neutral2', label: 'Mid' },
+    { key: 'neutral4', label: 'Light Grey' },
     { key: 'neutral3', label: 'Light' },
   ];
 

@@ -8,6 +8,7 @@ export interface DesignSystem {
   accent: string;
   neutral1: string;
   neutral2: string;
+  neutral4: string;
   neutral3: string;
   headingFont: string;
   bodyFont: string;

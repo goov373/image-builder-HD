@@ -27,6 +27,7 @@ export const defaultDesignSystem: DesignSystem = {
   accent: '#F97316',       // Orange - CTAs, highlights, energy
   neutral1: '#18191A',     // Shadow - Deep backgrounds, text
   neutral2: '#ACACAC',     // Medium Grey - Secondary text, borders
+  neutral4: '#CBCBCB',     // Light Grey - Subtle backgrounds, dividers
   neutral3: '#FFFFFF',     // White - Light backgrounds, cards
   headingFont: '"Nunito Sans", sans-serif',
   bodyFont: '"Nunito Sans", sans-serif',
