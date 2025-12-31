@@ -1211,12 +1211,6 @@ const DesignSystemPanel = ({
               </button>
             ))}
           </div>
-          
-          {/* Upload custom patterns */}
-          <div className="border border-dashed border-gray-700 rounded-lg p-3 text-center hover:border-gray-600 transition-colors cursor-pointer">
-            <p className="text-[10px] text-gray-500 mb-1">Upload custom pattern</p>
-            <p className="text-[9px] text-gray-600">SVG, PNG (tileable)</p>
-          </div>
           </div>
           )}
         </div>
