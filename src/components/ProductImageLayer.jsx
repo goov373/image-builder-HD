@@ -114,11 +114,12 @@ const ProductImageLayer = ({
   
   // Determine border style based on selection state
   // Only show border when frame is selected, not when just row is selected
+  // Always use the user's borderRadius for live preview of corner rounding
   const getBorderStyle = () => {
     if (isFrameSelected) {
       return {
         border: '1px dashed rgba(249, 115, 22, 0.5)', // Match icon container style
-        borderRadius: '4px', // Match icon container rounding
+        borderRadius: `${borderRadius}px`, // Use user's borderRadius for live preview
       };
     }
     // No border when only row is selected or nothing is selected
