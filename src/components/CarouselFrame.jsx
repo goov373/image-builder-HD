@@ -603,10 +603,11 @@ export const CarouselFrame = ({
                                 || (layoutIndex === 1 && layoutVariant === 2);
   
   // Compute background style - handles both simple string and stretched gradient objects
+  // Default to white when no backgroundOverride is set
   const getBackgroundStyle = () => {
     const bgOverride = frame.backgroundOverride;
     if (!bgOverride) {
-      return { background: style.background };
+      return { background: '#ffffff' }; // Plain white by default
     }
     // Check if it's a stretched gradient object
     // IMPORTANT: Use backgroundImage (not background shorthand) to prevent it from resetting size/position
@@ -1017,8 +1018,8 @@ export const CarouselFrame = ({
             </button>
           </div>
         )}
-        {/* Fill Color Indicator - Click to edit (only when frame is selected) */}
-        {isFrameSelected && (frame.backgroundOverride || style.background) && (
+        {/* Fill Color Indicator - Click to edit (only when frame is selected and has a fill) */}
+        {isFrameSelected && frame.backgroundOverride && (
           <div 
             className="flex items-center gap-1 px-2 py-1 bg-gray-800/80 rounded-full group cursor-pointer hover:bg-gray-700/80 transition-colors"
             title="Click to edit fill color"
