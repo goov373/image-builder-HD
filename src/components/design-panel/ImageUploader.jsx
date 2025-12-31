@@ -52,6 +52,13 @@ const ImageUploader = ({
         </select>
       </div>
       
+      <p className="text-[10px] text-gray-500 mb-3 flex items-center justify-center gap-1.5">
+        <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span>Auto-compressed to WebP for fast loading</span>
+      </p>
+      
       {/* Drop Zone - Condensed style */}
       <div 
         className="border-2 border-dashed border-gray-700 rounded-lg p-4 text-center hover:border-gray-600 transition-colors cursor-pointer"
@@ -95,10 +102,6 @@ const ImageUploader = ({
           </>
         )}
       </div>
-      <p className="text-[10px] text-gray-500 mt-3 flex items-center justify-center gap-1.5">
-        <span className="text-green-400">✓</span>
-        <span>Auto-compressed to WebP for fast loading</span>
-      </p>
     </div>
   );
 };
