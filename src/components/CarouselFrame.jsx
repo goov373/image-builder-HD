@@ -921,6 +921,16 @@ export const CarouselFrame = ({
   };
   const backgroundStyle = getBackgroundStyle();
   
+  // Get dynamic z-index for background layers based on user-defined order
+  // Array position in backgroundLayerOrder = z-index (0 = z-1, 1 = z-2, 2 = z-3)
+  const getLayerZIndex = (layerType) => {
+    const order = frame.backgroundLayerOrder || ['fill', 'pattern', 'image'];
+    const baseZ = order.indexOf(layerType) + 1; // z-1, z-2, or z-3
+    // Special case: image editing raises to z-50 for editing controls
+    if (layerType === 'image' && isImageEditing) return 50;
+    return baseZ;
+  };
+  
   // Generate a key for the background div to force re-render when background type changes
   const bgKey = frame.backgroundOverride 
     ? (typeof frame.backgroundOverride === 'object' 
@@ -972,12 +982,13 @@ export const CarouselFrame = ({
       >
         {/* ===== CUSTOM BACKGROUND LAYERS ===== */}
         {/* Fixed white background is on the container itself (backgroundColor: '#ffffff') */}
-        {/* These custom layers are all transparent when empty */}
+        {/* These custom layers use dynamic z-index based on frame.backgroundLayerOrder */}
         
-        {/* Layer 1: Fill Color - backmost custom layer (z-index: 1) */}
+        {/* Fill Color Layer - z-index from getLayerZIndex('fill') */}
         {/* Uses fillOpacity and fillRotation for user adjustments */}
         <div 
-          className="absolute inset-0 z-[1] pointer-events-none overflow-hidden"
+          className="absolute inset-0 pointer-events-none overflow-hidden"
+          style={{ zIndex: getLayerZIndex('fill') }}
         >
           <div 
             className="absolute inset-[-50%] w-[200%] h-[200%]"
@@ -990,9 +1001,9 @@ export const CarouselFrame = ({
           />
         </div>
         
-        {/* Layer 2: Brand Pattern - middle custom layer (z-index: 2) */}
+        {/* Brand Pattern Layer - z-index from getLayerZIndex('pattern') */}
         {frame.patternLayer && (
-          <div className="absolute inset-0 z-[2]">
+          <div className="absolute inset-0" style={{ zIndex: getLayerZIndex('pattern') }}>
             <PatternLayer
               patternLayer={frame.patternLayer}
               frameWidth={size.width}
@@ -1001,9 +1012,9 @@ export const CarouselFrame = ({
           </div>
         )}
         
-        {/* Layer 3: Background Photo - topmost custom layer (z-index: 3), raises to z-50 when editing */}
+        {/* Background Photo Layer - z-index from getLayerZIndex('image'), raises to z-50 when editing */}
         {frame.imageLayer && (
-          <div className={`absolute inset-0 ${isImageEditing ? 'z-[50]' : 'z-[3]'}`}>
+          <div className="absolute inset-0" style={{ zIndex: getLayerZIndex('image') }}>
             <ImageLayer
               imageLayer={frame.imageLayer}
               frameWidth={size.width}
@@ -1020,7 +1031,7 @@ export const CarouselFrame = ({
         
         {/* Overflow from previous frame's image (appears on left side) */}
         {!frame.imageLayer && prevFrameImage && prevFrameImage.x > 0.3 && prevFrameImage.scale > 1 && (
-          <div className="absolute inset-0 z-[3]">
+          <div className="absolute inset-0" style={{ zIndex: getLayerZIndex('image') }}>
             <ImageLayer
               imageLayer={prevFrameImage}
               frameWidth={size.width}
@@ -1036,7 +1047,7 @@ export const CarouselFrame = ({
         
         {/* Overflow from next frame's image (appears on right side) */}
         {!frame.imageLayer && nextFrameImage && nextFrameImage.x < -0.3 && nextFrameImage.scale > 1 && (
-          <div className="absolute inset-0 z-[3]">
+          <div className="absolute inset-0" style={{ zIndex: getLayerZIndex('image') }}>
             <ImageLayer
               imageLayer={nextFrameImage}
               frameWidth={size.width}
