@@ -35,11 +35,11 @@ export default function TabBar({
                   closeAllDropdowns();
                   if (!wasOpen) setShowNewTabMenu(true);
                 }}
-                className="group flex items-center gap-2 px-4 h-10 rounded-t-lg cursor-pointer transition-colors duration-150 bg-transparent text-gray-500 hover:text-gray-300 border-b-2 border-dashed border-gray-600 hover:border-gray-500"
+                className="group flex items-center gap-2 px-4 h-10 rounded-t-lg cursor-pointer transition-colors duration-150 bg-transparent text-[--text-tertiary] hover:text-[--text-primary] border-b-2 border-dashed border-[--border-default] hover:border-[--border-emphasis]"
                 style={{ minWidth: 140, maxWidth: 220 }}
               >
                 <svg
-                  className="w-4 h-4 flex-shrink-0 text-gray-600 group-hover:text-gray-400 transition-colors"
+                  className="w-4 h-4 flex-shrink-0 text-[--text-tertiary] group-hover:text-[--text-primary] transition-colors"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
