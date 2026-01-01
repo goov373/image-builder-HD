@@ -16,10 +16,10 @@ const HistoryControls = ({ className = '' }) => {
         type="button"
         onClick={handleUndo}
         disabled={!canUndo}
-        className={`p-2 rounded-lg border transition-all duration-200 ${
+        className={`p-2 rounded-[--radius-md] border transition-all duration-200 ${
           canUndo
-            ? 'border-gray-700 text-gray-400 hover:bg-gray-700 hover:border-gray-600 hover:text-white'
-            : 'border-transparent text-gray-600 cursor-not-allowed'
+            ? 'border-[--border-default] text-[--text-tertiary] hover:bg-[--surface-overlay] hover:border-[--border-emphasis] hover:text-white'
+            : 'border-transparent text-[--text-disabled] cursor-not-allowed'
         }`}
         title={`Undo (${historyLength} steps back available)`}
       >
@@ -38,10 +38,10 @@ const HistoryControls = ({ className = '' }) => {
         type="button"
         onClick={handleRedo}
         disabled={!canRedo}
-        className={`p-2 rounded-lg border transition-all duration-200 ${
+        className={`p-2 rounded-[--radius-md] border transition-all duration-200 ${
           canRedo
-            ? 'border-gray-700 text-gray-400 hover:bg-gray-700 hover:border-gray-600 hover:text-white'
-            : 'border-transparent text-gray-600 cursor-not-allowed'
+            ? 'border-[--border-default] text-[--text-tertiary] hover:bg-[--surface-overlay] hover:border-[--border-emphasis] hover:text-white'
+            : 'border-transparent text-[--text-disabled] cursor-not-allowed'
         }`}
         title={`Redo (${futureLength} steps forward available)`}
       >
