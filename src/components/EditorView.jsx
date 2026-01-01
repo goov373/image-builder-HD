@@ -70,6 +70,7 @@ export default function EditorView({
     handleSelectVideoCover,
     handleSelectSingleImage,
     handleDeselect,
+    handleDeselectFrame,
   } = selection;
 
   // Carousel methods
@@ -232,7 +233,7 @@ export default function EditorView({
                       onRequestAddPhoto={onRequestAddPhoto}
                       onRequestAddPattern={onRequestAddPattern}
                       onRequestAddPageIndicator={onRequestAddPageIndicator}
-                      onDeselect={handleDeselect}
+                      onDeselectFrame={handleDeselectFrame}
                     />
                     {/* Add Row Button - only after last row */}
                     {index === carousels.length - 1 && (

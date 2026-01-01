@@ -183,6 +183,13 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
     }
   };
 
+  // Deselect only the frame (keeps the row/carousel selected)
+  const handleDeselectFrame = () => {
+    if (currentProjectType === 'carousel') {
+      carousels.deselectFrame();
+    }
+  };
+
   // Layout calculations
   const panelWidth = activePanel ? 288 : 0;
   const sidebarWidth = 64;
@@ -228,6 +235,7 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
     handleSelectVideoCover,
     handleSelectSingleImage,
     handleDeselect,
+    handleDeselectFrame,
     currentProjectType,
   };
 

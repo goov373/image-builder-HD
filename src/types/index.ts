@@ -202,6 +202,7 @@ export interface SelectionContextValue {
   handleSelectFrame: (carouselId: number, frameId: number) => void;
   handleSelectCarousel: (carouselId: number | null) => void;
   handleDeselect: () => void;
+  handleDeselectFrame: () => void;
 }
 
 export interface CarouselsContextValue {

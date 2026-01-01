@@ -635,6 +635,8 @@ export const CarouselFrame = ({
   isRowSelected = false,
   // Whether this frame is currently being dragged
   isDragging = false,
+  // Whether ANY frame in the row is being dragged (hides all panels)
+  isDraggingAny = false,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isProgressEditing, setIsProgressEditing] = useState(false);
@@ -710,6 +712,13 @@ export const CarouselFrame = ({
       closeAllToolPanels();
     }
   }, [isFrameSelected]);
+  
+  // Close all tool panels when any frame starts dragging
+  useEffect(() => {
+    if (isDraggingAny) {
+      closeAllToolPanels();
+    }
+  }, [isDraggingAny]);
   
   // Sensors for background layer drag-and-drop (with distance activation to prevent accidental drags)
   const layerSensors = useSensors(
@@ -1299,10 +1308,10 @@ export const CarouselFrame = ({
       </div>
       
       {/* Controls Area - fixed height to prevent layout snap */}
-      <div className={`${isRowSelected ? 'min-h-[52px]' : 'h-0'}`}>
+      <div className={`${isRowSelected && !isDraggingAny ? 'min-h-[52px]' : 'h-0'}`}>
       {/* Layer Indicators - outside frame, below card */}
-      {/* Only visible when row is selected, hidden during editing modes */}
-      {isRowSelected && !isImageEditing && !isFillEditing && !isPatternEditing && !isProductImageEditing && !isIconEditing && !isProgressEditing && (
+      {/* Only visible when row is selected, hidden during editing modes and drag operations */}
+      {isRowSelected && !isDraggingAny && !isImageEditing && !isFillEditing && !isPatternEditing && !isProductImageEditing && !isIconEditing && !isProgressEditing && (
       <div className="mt-1.5 flex flex-col items-start gap-1">
         {/* Layer chips - show when frame is selected, organized into table sections */}
         {isFrameSelected && (
@@ -1540,8 +1549,8 @@ export const CarouselFrame = ({
       </div>
       )}
       
-      {/* Image Edit Controls - appears below frame when editing */}
-      {isImageEditing && frame.imageLayer && (
+      {/* Image Edit Controls - appears below frame when editing, hidden during drag */}
+      {isImageEditing && !isDraggingAny && frame.imageLayer && (
         <div 
           className="mt-1.5 flex items-center gap-2 flex-wrap" 
           data-image-edit-controls
@@ -1654,8 +1663,8 @@ export const CarouselFrame = ({
         </div>
       )}
       
-      {/* Fill Color Edit Controls - appears below frame when editing fill */}
-      {isFillEditing && (
+      {/* Fill Color Edit Controls - appears below frame when editing fill, hidden during drag */}
+      {isFillEditing && !isDraggingAny && (
         <div 
           className="mt-1.5 flex items-center gap-2 flex-wrap" 
           data-fill-edit-controls
@@ -1770,8 +1779,8 @@ export const CarouselFrame = ({
         </div>
       )}
       
-      {/* Pattern Edit Controls - appears below frame when editing pattern */}
-      {isPatternEditing && frame.patternLayer && (
+      {/* Pattern Edit Controls - appears below frame when editing pattern, hidden during drag */}
+      {isPatternEditing && !isDraggingAny && frame.patternLayer && (
         <div 
           className="mt-1.5 flex items-center gap-2 flex-wrap" 
           data-pattern-edit-controls
@@ -1886,8 +1895,8 @@ export const CarouselFrame = ({
         </div>
       )}
       
-      {/* Product Image Edit Controls - appears below frame when editing product image */}
-      {isProductImageEditing && frame.productImageLayer && (
+      {/* Product Image Edit Controls - appears below frame when editing product image, hidden during drag */}
+      {isProductImageEditing && !isDraggingAny && frame.productImageLayer && (
         <div 
           className="mt-1.5 flex items-center gap-2 flex-wrap" 
           data-product-image-edit-controls
@@ -2000,8 +2009,8 @@ export const CarouselFrame = ({
         </div>
       )}
       
-      {/* Icon Edit Controls - appears below frame when editing icon */}
-      {isIconEditing && frame.iconLayer && (
+      {/* Icon Edit Controls - appears below frame when editing icon, hidden during drag */}
+      {isIconEditing && !isDraggingAny && frame.iconLayer && (
         <IconEditPanel
           frame={frame}
           carouselId={carouselId}
@@ -2014,8 +2023,8 @@ export const CarouselFrame = ({
         />
       )}
       
-      {/* Progress Edit Controls - appears below frame when editing progress indicator */}
-      {isProgressEditing && (
+      {/* Progress Edit Controls - appears below frame when editing progress indicator, hidden during drag */}
+      {isProgressEditing && !isDraggingAny && (
         <ProgressEditPanel
           frame={frame}
           carouselId={carouselId}
@@ -2079,6 +2088,8 @@ export const SortableFrame = ({
   // Cross-frame overflow
   prevFrameImage,
   nextFrameImage,
+  // Global drag state from row
+  isDraggingAny,
 }) => {
   const [isImageEditing, setIsImageEditing] = useState(false);
   const [isProductImageDragging, setIsProductImageDragging] = useState(false);
@@ -2158,6 +2169,7 @@ export const SortableFrame = ({
         onImageEditModeChange={setIsImageEditing}
         isRowSelected={isRowSelected}
         isDragging={isDragging}
+        isDraggingAny={isDraggingAny}
       />
     </div>
   );

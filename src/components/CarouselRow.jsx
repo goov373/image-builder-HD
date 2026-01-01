@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   DndContext,
   closestCenter,
@@ -19,9 +19,12 @@ import { SortableFrame } from './CarouselFrame';
  * Carousel Row Component
  * Displays a row of frames with drag-and-drop reordering
  */
-const CarouselRow = ({ carousel, designSystem, isSelected, hasAnySelection, selectedFrameId, onSelect, onSelectFrame, onAddFrame, onRemoveFrame, onRemoveRow, onUpdateText, activeTextField, onActivateTextField, onReorderFrames, onUpdateImageLayer, onRemoveImageFromFrame, onUpdateFillLayer, onClearBackground, onUpdatePatternLayer, onRemovePatternFromFrame, onUpdateProductImageLayer, onRemoveProductImageFromFrame, onRequestAddProductImage, onUpdateIconLayer, onRemoveIconFromFrame, onRequestAddIcon, onUpdateProgressIndicator, onReorderBackgroundLayers, onRequestAddFill, onRequestAddPhoto, onRequestAddPattern, onRequestAddPageIndicator, onDeselect }) => {
+const CarouselRow = ({ carousel, designSystem, isSelected, hasAnySelection, selectedFrameId, onSelect, onSelectFrame, onAddFrame, onRemoveFrame, onRemoveRow, onUpdateText, activeTextField, onActivateTextField, onReorderFrames, onUpdateImageLayer, onRemoveImageFromFrame, onUpdateFillLayer, onClearBackground, onUpdatePatternLayer, onRemovePatternFromFrame, onUpdateProductImageLayer, onRemoveProductImageFromFrame, onRequestAddProductImage, onUpdateIconLayer, onRemoveIconFromFrame, onRequestAddIcon, onUpdateProgressIndicator, onReorderBackgroundLayers, onRequestAddFill, onRequestAddPhoto, onRequestAddPattern, onRequestAddPageIndicator, onDeselectFrame }) => {
   const totalFrames = carousel.frames.length;
   const isFaded = hasAnySelection && !isSelected;
+  
+  // Track if ANY frame in the row is being dragged (to hide panels on all frames)
+  const [isDraggingAny, setIsDraggingAny] = useState(false);
   
   // Get card dimensions for consistent add-button alignment
   const cardWidth = frameSizes[carousel.frameSize]?.width || 192;
@@ -38,12 +41,14 @@ const CarouselRow = ({ carousel, designSystem, isSelected, hasAnySelection, sele
     })
   );
 
-  // Deselect immediately when drag starts to close any open tool panels
+  // Deselect frame (not row) when drag starts to close tool panels, and track drag state
   const handleDragStart = () => {
-    onDeselect?.();
+    setIsDraggingAny(true);
+    onDeselectFrame?.(); // Only deselects frame, keeps row open
   };
 
   const handleDragEnd = (event) => {
+    setIsDraggingAny(false);
     const { active, over } = event;
     if (active.id !== over?.id && over) {
       const oldIndex = carousel.frames.findIndex(f => `frame-${f.id}` === active.id);
@@ -141,6 +146,7 @@ const CarouselRow = ({ carousel, designSystem, isSelected, hasAnySelection, sele
                     onRequestAddPageIndicator={onRequestAddPageIndicator}
                     prevFrameImage={index > 0 ? carousel.frames[index - 1]?.imageLayer : null}
                     nextFrameImage={index < totalFrames - 1 ? carousel.frames[index + 1]?.imageLayer : null}
+                    isDraggingAny={isDraggingAny}
                   />
               
                   {/* Add Button After Each Frame - Fixed height to align with card center */}

@@ -12,6 +12,7 @@ export const CAROUSEL_ACTIONS = {
   SELECT_FRAME: 'SELECT_FRAME',
   SET_ACTIVE_TEXT_FIELD: 'SET_ACTIVE_TEXT_FIELD',
   CLEAR_SELECTION: 'CLEAR_SELECTION',
+  DESELECT_FRAME: 'DESELECT_FRAME',
   SET_VARIANT: 'SET_VARIANT',
   SET_LAYOUT: 'SET_LAYOUT',
   SHUFFLE_LAYOUT_VARIANT: 'SHUFFLE_LAYOUT_VARIANT',
@@ -96,6 +97,10 @@ function carouselReducer(state, action) {
 
     case CAROUSEL_ACTIONS.CLEAR_SELECTION:
       return { ...state, selectedCarouselId: null, selectedFrameId: null, activeTextField: null };
+
+    case CAROUSEL_ACTIONS.DESELECT_FRAME:
+      // Only clear frame selection, keep row (carousel) selected
+      return { ...state, selectedFrameId: null, activeTextField: null };
 
     case CAROUSEL_ACTIONS.SET_VARIANT:
       return {
@@ -831,6 +836,8 @@ export default function useCarousels(initialData) {
   // Memoized action creators for backwards compatibility
   const actions = {
     clearSelection: useCallback(() => dispatch({ type: CAROUSEL_ACTIONS.CLEAR_SELECTION }), []),
+    
+    deselectFrame: useCallback(() => dispatch({ type: CAROUSEL_ACTIONS.DESELECT_FRAME }), []),
     
     setActiveTextField: useCallback((field) => 
       dispatch({ type: CAROUSEL_ACTIONS.SET_ACTIVE_TEXT_FIELD, field }), []),
