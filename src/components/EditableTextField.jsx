@@ -57,9 +57,11 @@ const EditableTextField = ({ children, field, isFrameSelected, isActive, onActiv
     ...getUnderlineStyles(),
   };
   
+  // Layer selection outline styles using CSS variable tokens
+  // Orange accent is ONLY for editable content layers (per design spec)
   const outlineStyle = !isFrameSelected ? {} : isActive 
-    ? { outline: '2px solid rgb(249 115 22)', outlineOffset: '2px' }
-    : { outline: '1px dashed rgb(249 115 22 / 0.4)', outlineOffset: '2px' };
+    ? { outline: '2px solid var(--accent-layer)', outlineOffset: '2px' }
+    : { outline: '1px dashed var(--accent-layer-subtle)', outlineOffset: '2px' };
   
   const highlightColor = formatting.underlineColor || formatting.color || '#fbbf24';
   const highlightStyle = isHighlight ? {

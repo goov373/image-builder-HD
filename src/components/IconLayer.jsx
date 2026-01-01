@@ -20,6 +20,7 @@ const IconLayer = ({
   const horizontalPadding = frameWidth * 0.075;
   
   // Determine border style - user-defined border takes precedence over selection indicators
+  // Orange accent is used ONLY for editable content layers (per design spec)
   // When selected (clicked), show solid orange like text fields
   // When frame selected but not this layer, show dashed
   const getBorderStyle = () => {
@@ -27,10 +28,10 @@ const IconLayer = ({
       return `2px solid ${borderColor}`;
     }
     if (isSelected) {
-      return '2px solid rgb(249, 115, 22)'; // Solid orange when selected
+      return '2px solid var(--accent-layer)'; // Solid when layer selected
     }
     if (isFrameSelected) {
-      return '1px dashed rgba(249, 115, 22, 0.4)'; // Dashed when frame selected but not this layer
+      return '1px dashed var(--accent-layer-subtle)'; // Dashed when frame selected
     }
     // No border when only row is selected or nothing is selected
     return 'none';

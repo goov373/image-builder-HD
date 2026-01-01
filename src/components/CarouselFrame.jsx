@@ -825,7 +825,7 @@ export const CarouselFrame = ({
         data-carousel-id={carouselId}
         data-project-key={`carousel-${carouselId}`}
         data-exportable="true"
-        className={`relative overflow-hidden shadow-lg cursor-pointer transition-all border ${isFrameSelected ? 'border-orange-500' : 'border-gray-700 hover:border-gray-600'}`}
+        className={`relative overflow-hidden shadow-lg cursor-pointer transition-all border ${isFrameSelected ? 'border-[--border-strong]' : 'border-[--border-default] hover:border-[--border-emphasis]'}`}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         style={{ width: size.width, height: size.height, backgroundColor: '#ffffff' }}
@@ -932,13 +932,13 @@ export const CarouselFrame = ({
             <button 
               type="button"
               onClick={(e) => { e.stopPropagation(); if (isFrameSelected) onRequestAddIcon?.(); }}
-              className="w-full h-full rounded flex items-center justify-center cursor-pointer transition-colors hover:bg-orange-500/10"
+              className="w-full h-full rounded-[--radius-sm] flex items-center justify-center cursor-pointer transition-colors hover:bg-[--surface-raised]"
               style={{
-                border: '1px dashed rgba(249, 115, 22, 0.5)',
+                border: '1px dashed var(--border-emphasis)',
               }}
               title="Click to add icon"
             >
-              <svg className="w-3.5 h-3.5 text-orange-500/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-3.5 h-3.5 text-[--text-quaternary]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
               </svg>
             </button>

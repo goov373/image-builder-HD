@@ -114,19 +114,20 @@ const ProductImageLayer = ({
       };
   
   // Determine border style based on selection state
+  // Orange accent is used ONLY for editable content layers (per design spec)
   // When selected (clicked), show solid orange like text fields
   // When frame selected but not this layer, show dashed
   // Always use the user's borderRadius for live preview of corner rounding
   const getBorderStyle = () => {
     if (isSelected) {
       return {
-        border: '2px solid rgb(249, 115, 22)', // Solid orange when selected
+        border: '2px solid var(--accent-layer)', // Solid when layer selected
         borderRadius: `${borderRadius}px`, // Use user's borderRadius for live preview
       };
     }
     if (isFrameSelected) {
       return {
-        border: '1px dashed rgba(249, 115, 22, 0.4)', // Dashed when frame selected but not this layer
+        border: '1px dashed var(--accent-layer-subtle)', // Dashed when frame selected
         borderRadius: `${borderRadius}px`, // Use user's borderRadius for live preview
       };
     }
