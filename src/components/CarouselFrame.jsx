@@ -30,7 +30,7 @@ const SortableLayerRow = ({ id, children }) => {
       <div
         {...attributes}
         {...listeners}
-        className="flex items-center justify-center w-5 h-full cursor-grab active:cursor-grabbing text-gray-600 hover:text-gray-400"
+        className="flex items-center justify-center w-5 h-full cursor-grab active:cursor-grabbing text-[--text-disabled] hover:text-[--text-tertiary]"
         title="Drag to reorder"
       >
         <svg className="w-3 h-3" viewBox="0 0 10 16" fill="currentColor">
@@ -785,7 +785,7 @@ export const CarouselFrame = ({
           className="absolute left-0 flex flex-col items-stretch w-full max-w-[180px]"
           style={{ bottom: '100%', marginBottom: 6 }}
         >
-          <div className="text-[9px] text-gray-500 uppercase tracking-wider px-1">Frame {frameIndex + 1}</div>
+          <div className="text-[9px] text-[--text-quaternary] uppercase tracking-wider px-1">Frame {frameIndex + 1}</div>
         </div>
       )}
       <div
@@ -1010,11 +1010,11 @@ export const CarouselFrame = ({
               {isFrameSelected && (
                 <div className="flex flex-col items-stretch w-full max-w-[180px]">
                   {/* Foreground Layers Section */}
-                  <div className="text-[9px] text-gray-500 uppercase tracking-wider px-1 pb-1">Foreground Layers</div>
-                  <div className="border-t border-gray-600/50">
+                  <div className="text-[9px] text-[--text-quaternary] uppercase tracking-wider px-1 pb-1">Foreground Layers</div>
+                  <div className="border-t border-[--border-emphasis]/50">
                     {/* 1. Progress Indicator - visible by default, only hidden when explicitly isHidden: true */}
                     <div
-                      className={`flex items-center gap-1.5 px-2 py-1.5 border-b border-gray-600/50 group cursor-pointer transition-colors hover:bg-gray-700/50 ${
+                      className={`flex items-center gap-1.5 px-2 py-1.5 border-b border-[--border-emphasis]/50 group cursor-pointer transition-colors hover:bg-[--surface-overlay]/50 ${
                         frame.progressIndicator?.isHidden === true ? 'opacity-60' : ''
                       }`}
                       title={
@@ -1035,7 +1035,7 @@ export const CarouselFrame = ({
                       }}
                     >
                       <svg
-                        className={`w-3 h-3 ${frame.progressIndicator?.isHidden === true ? 'text-gray-500' : 'text-gray-400'}`}
+                        className={`w-3 h-3 ${frame.progressIndicator?.isHidden === true ? 'text-[--text-quaternary]' : 'text-[--text-tertiary]'}`}
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -1050,14 +1050,14 @@ export const CarouselFrame = ({
                       <span
                         className={`text-[10px] transition-colors ${
                           frame.progressIndicator?.isHidden === true
-                            ? 'text-gray-500 group-hover:text-gray-300'
-                            : 'text-gray-400 group-hover:text-white'
+                            ? 'text-[--text-quaternary] group-hover:text-[--text-secondary]'
+                            : 'text-[--text-tertiary] group-hover:text-white'
                         }`}
                       >
                         Progress
                       </span>
                       {frame.progressIndicator?.isHidden === true ? (
-                        <span className="ml-auto text-[8px] text-gray-500 flex items-center gap-0.5">
+                        <span className="ml-auto text-[8px] text-[--text-quaternary] flex items-center gap-0.5">
                           <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                           </svg>
@@ -1065,7 +1065,7 @@ export const CarouselFrame = ({
                         </span>
                       ) : (
                         <span
-                          className="ml-auto text-[8px] text-gray-600 hover:text-red-400 transition-colors"
+                          className="ml-auto text-[8px] text-[--text-disabled] hover:text-red-400 transition-colors"
                           onClick={(e) => {
                             e.stopPropagation();
                             onUpdateProgressIndicator?.(carouselId, frame.id, { isHidden: true });
@@ -1080,7 +1080,7 @@ export const CarouselFrame = ({
                     {/* 2. Icon - only for eligible layouts */}
                     {layoutIndex === 0 && layoutVariant === 0 && (
                       <div
-                        className={`flex items-center gap-1.5 px-2 py-1.5 border-b border-gray-600/50 group cursor-pointer transition-colors hover:bg-gray-700/50 ${
+                        className={`flex items-center gap-1.5 px-2 py-1.5 border-b border-[--border-emphasis]/50 group cursor-pointer transition-colors hover:bg-[--surface-overlay]/50 ${
                           !frame.iconLayer ? 'opacity-60' : ''
                         }`}
                         title={frame.iconLayer ? 'Edit icon' : 'Add an icon'}
@@ -1094,7 +1094,7 @@ export const CarouselFrame = ({
                         }}
                       >
                         <svg
-                          className={`w-3 h-3 ${frame.iconLayer ? 'text-gray-400' : 'text-gray-500'}`}
+                          className={`w-3 h-3 ${frame.iconLayer ? 'text-[--text-tertiary]' : 'text-[--text-quaternary]'}`}
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -1107,13 +1107,13 @@ export const CarouselFrame = ({
                           />
                         </svg>
                         <span
-                          className={`text-[10px] transition-colors ${frame.iconLayer ? 'text-gray-400 group-hover:text-white' : 'text-gray-500 group-hover:text-gray-300'}`}
+                          className={`text-[10px] transition-colors ${frame.iconLayer ? 'text-[--text-tertiary] group-hover:text-white' : 'text-[--text-quaternary] group-hover:text-[--text-secondary]'}`}
                         >
                           Icon / Stat
                         </span>
                         {frame.iconLayer ? (
                           <span
-                            className="ml-auto text-[8px] text-gray-600 hover:text-red-400 transition-colors"
+                            className="ml-auto text-[8px] text-[--text-disabled] hover:text-red-400 transition-colors"
                             onClick={(e) => {
                               e.stopPropagation();
                               onRemoveIconFromFrame?.(carouselId, frame.id);
@@ -1123,7 +1123,7 @@ export const CarouselFrame = ({
                             clear
                           </span>
                         ) : (
-                          <span className="ml-auto text-[8px] text-gray-500 flex items-center gap-0.5">
+                          <span className="ml-auto text-[8px] text-[--text-quaternary] flex items-center gap-0.5">
                             <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                             </svg>
@@ -1136,7 +1136,7 @@ export const CarouselFrame = ({
                     {/* 3. Product Image - only for eligible layouts */}
                     {isProductImageEligible && (
                       <div
-                        className={`flex items-center gap-1.5 px-2 py-1.5 border-b border-gray-600/50 group cursor-pointer transition-colors hover:bg-gray-700/50 ${
+                        className={`flex items-center gap-1.5 px-2 py-1.5 border-b border-[--border-emphasis]/50 group cursor-pointer transition-colors hover:bg-[--surface-overlay]/50 ${
                           !frame.productImageLayer ? 'opacity-60' : ''
                         }`}
                         title={frame.productImageLayer ? 'Edit product image' : 'Add a product image'}
@@ -1150,7 +1150,7 @@ export const CarouselFrame = ({
                         }}
                       >
                         <svg
-                          className={`w-3 h-3 ${frame.productImageLayer ? 'text-gray-400' : 'text-gray-500'}`}
+                          className={`w-3 h-3 ${frame.productImageLayer ? 'text-[--text-tertiary]' : 'text-[--text-quaternary]'}`}
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -1163,13 +1163,13 @@ export const CarouselFrame = ({
                           />
                         </svg>
                         <span
-                          className={`text-[10px] transition-colors ${frame.productImageLayer ? 'text-gray-400 group-hover:text-white' : 'text-gray-500 group-hover:text-gray-300'}`}
+                          className={`text-[10px] transition-colors ${frame.productImageLayer ? 'text-[--text-tertiary] group-hover:text-white' : 'text-[--text-quaternary] group-hover:text-[--text-secondary]'}`}
                         >
                           Product Image
                         </span>
                         {frame.productImageLayer ? (
                           <span
-                            className="ml-auto text-[8px] text-gray-600 hover:text-red-400 transition-colors"
+                            className="ml-auto text-[8px] text-[--text-disabled] hover:text-red-400 transition-colors"
                             onClick={(e) => {
                               e.stopPropagation();
                               onRemoveProductImageFromFrame?.(carouselId, frame.id);
@@ -1179,7 +1179,7 @@ export const CarouselFrame = ({
                             clear
                           </span>
                         ) : (
-                          <span className="ml-auto text-[8px] text-gray-500 flex items-center gap-0.5">
+                          <span className="ml-auto text-[8px] text-[--text-quaternary] flex items-center gap-0.5">
                             <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                             </svg>
@@ -1192,10 +1192,10 @@ export const CarouselFrame = ({
 
                   {/* Background Layers Section - Drag to reorder */}
                   {/* Display order is reversed from data order (topmost layer at top of list) */}
-                  <div className="text-[9px] text-gray-500 uppercase tracking-wider px-1 pb-1 pt-2">
+                  <div className="text-[9px] text-[--text-quaternary] uppercase tracking-wider px-1 pb-1 pt-2">
                     Background Layers
                   </div>
-                  <div className="border-t border-gray-600/50">
+                  <div className="border-t border-[--border-emphasis]/50">
                     <DndContext
                       sensors={layerSensors}
                       collisionDetection={closestCenter}
@@ -1213,7 +1213,7 @@ export const CarouselFrame = ({
                               return (
                                 <SortableLayerRow key="image" id="image">
                                   <div
-                                    className={`flex items-center gap-1.5 px-2 py-1.5 border-b border-gray-600/50 group cursor-pointer transition-colors hover:bg-gray-700/50 ${
+                                    className={`flex items-center gap-1.5 px-2 py-1.5 border-b border-[--border-emphasis]/50 group cursor-pointer transition-colors hover:bg-[--surface-overlay]/50 ${
                                       !frame.imageLayer ? 'opacity-60' : ''
                                     }`}
                                     title={frame.imageLayer ? 'Edit image' : 'Add an image'}
@@ -1229,7 +1229,7 @@ export const CarouselFrame = ({
                                     }}
                                   >
                                     <svg
-                                      className={`w-3 h-3 ${frame.imageLayer ? 'text-gray-400' : 'text-gray-500'}`}
+                                      className={`w-3 h-3 ${frame.imageLayer ? 'text-[--text-tertiary]' : 'text-[--text-quaternary]'}`}
                                       fill="none"
                                       stroke="currentColor"
                                       viewBox="0 0 24 24"
@@ -1242,13 +1242,13 @@ export const CarouselFrame = ({
                                       />
                                     </svg>
                                     <span
-                                      className={`text-[10px] transition-colors ${frame.imageLayer ? 'text-gray-400 group-hover:text-white' : 'text-gray-500 group-hover:text-gray-300'}`}
+                                      className={`text-[10px] transition-colors ${frame.imageLayer ? 'text-[--text-tertiary] group-hover:text-white' : 'text-[--text-quaternary] group-hover:text-[--text-secondary]'}`}
                                     >
                                       Background Photo
                                     </span>
                                     {frame.imageLayer ? (
                                       <span
-                                        className="ml-auto text-[8px] text-gray-600 hover:text-red-400 transition-colors"
+                                        className="ml-auto text-[8px] text-[--text-disabled] hover:text-red-400 transition-colors"
                                         onClick={(e) => {
                                           e.stopPropagation();
                                           onRemoveImageFromFrame?.(carouselId, frame.id);
@@ -1258,7 +1258,7 @@ export const CarouselFrame = ({
                                         clear
                                       </span>
                                     ) : (
-                                      <span className="ml-auto text-[8px] text-gray-500 flex items-center gap-0.5">
+                                      <span className="ml-auto text-[8px] text-[--text-quaternary] flex items-center gap-0.5">
                                         <svg
                                           className="w-2.5 h-2.5"
                                           fill="none"
@@ -1283,7 +1283,7 @@ export const CarouselFrame = ({
                               return (
                                 <SortableLayerRow key="pattern" id="pattern">
                                   <div
-                                    className={`flex items-center gap-1.5 px-2 py-1.5 border-b border-gray-600/50 group cursor-pointer transition-colors hover:bg-gray-700/50 ${
+                                    className={`flex items-center gap-1.5 px-2 py-1.5 border-b border-[--border-emphasis]/50 group cursor-pointer transition-colors hover:bg-[--surface-overlay]/50 ${
                                       !frame.patternLayer ? 'opacity-60' : ''
                                     }`}
                                     title={frame.patternLayer ? 'Edit pattern' : 'Add a pattern'}
@@ -1296,7 +1296,7 @@ export const CarouselFrame = ({
                                     }}
                                   >
                                     <svg
-                                      className={`w-3 h-3 ${frame.patternLayer ? 'text-gray-400' : 'text-gray-500'}`}
+                                      className={`w-3 h-3 ${frame.patternLayer ? 'text-[--text-tertiary]' : 'text-[--text-quaternary]'}`}
                                       fill="none"
                                       stroke="currentColor"
                                       viewBox="0 0 24 24"
@@ -1309,13 +1309,13 @@ export const CarouselFrame = ({
                                       />
                                     </svg>
                                     <span
-                                      className={`text-[10px] transition-colors ${frame.patternLayer ? 'text-gray-400 group-hover:text-white' : 'text-gray-500 group-hover:text-gray-300'}`}
+                                      className={`text-[10px] transition-colors ${frame.patternLayer ? 'text-[--text-tertiary] group-hover:text-white' : 'text-[--text-quaternary] group-hover:text-[--text-secondary]'}`}
                                     >
                                       Brand Pattern
                                     </span>
                                     {frame.patternLayer ? (
                                       <span
-                                        className="ml-auto text-[8px] text-gray-600 hover:text-red-400 transition-colors"
+                                        className="ml-auto text-[8px] text-[--text-disabled] hover:text-red-400 transition-colors"
                                         onClick={(e) => {
                                           e.stopPropagation();
                                           onRemovePatternFromFrame?.(carouselId, frame.id);
@@ -1325,7 +1325,7 @@ export const CarouselFrame = ({
                                         clear
                                       </span>
                                     ) : (
-                                      <span className="ml-auto text-[8px] text-gray-500 flex items-center gap-0.5">
+                                      <span className="ml-auto text-[8px] text-[--text-quaternary] flex items-center gap-0.5">
                                         <svg
                                           className="w-2.5 h-2.5"
                                           fill="none"
@@ -1350,7 +1350,7 @@ export const CarouselFrame = ({
                               return (
                                 <SortableLayerRow key="fill" id="fill">
                                   <div
-                                    className={`flex items-center gap-1.5 px-2 py-1.5 border-b border-gray-600/50 group cursor-pointer transition-colors hover:bg-gray-700/50 ${
+                                    className={`flex items-center gap-1.5 px-2 py-1.5 border-b border-[--border-emphasis]/50 group cursor-pointer transition-colors hover:bg-[--surface-overlay]/50 ${
                                       !frame.backgroundOverride ? 'opacity-60' : ''
                                     }`}
                                     title={frame.backgroundOverride ? 'Edit fill color' : 'Add a fill color'}
@@ -1363,7 +1363,7 @@ export const CarouselFrame = ({
                                     }}
                                   >
                                     <svg
-                                      className={`w-3 h-3 ${frame.backgroundOverride ? 'text-gray-400' : 'text-gray-500'}`}
+                                      className={`w-3 h-3 ${frame.backgroundOverride ? 'text-[--text-tertiary]' : 'text-[--text-quaternary]'}`}
                                       fill="none"
                                       stroke="currentColor"
                                       viewBox="0 0 24 24"
@@ -1376,13 +1376,13 @@ export const CarouselFrame = ({
                                       />
                                     </svg>
                                     <span
-                                      className={`text-[10px] transition-colors ${frame.backgroundOverride ? 'text-gray-400 group-hover:text-white' : 'text-gray-500 group-hover:text-gray-300'}`}
+                                      className={`text-[10px] transition-colors ${frame.backgroundOverride ? 'text-[--text-tertiary] group-hover:text-white' : 'text-[--text-quaternary] group-hover:text-[--text-secondary]'}`}
                                     >
                                       Fill Color
                                     </span>
                                     {frame.backgroundOverride ? (
                                       <span
-                                        className="ml-auto text-[8px] text-gray-600 hover:text-red-400 transition-colors"
+                                        className="ml-auto text-[8px] text-[--text-disabled] hover:text-red-400 transition-colors"
                                         onClick={(e) => {
                                           e.stopPropagation();
                                           onClearBackground?.(carouselId, frame.id);
@@ -1392,7 +1392,7 @@ export const CarouselFrame = ({
                                         clear
                                       </span>
                                     ) : (
-                                      <span className="ml-auto text-[8px] text-gray-500 flex items-center gap-0.5">
+                                      <span className="ml-auto text-[8px] text-[--text-quaternary] flex items-center gap-0.5">
                                         <svg
                                           className="w-2.5 h-2.5"
                                           fill="none"
@@ -1432,20 +1432,20 @@ export const CarouselFrame = ({
             onMouseDown={(e) => e.stopPropagation()}
           >
             {/* Zoom Controls */}
-            <div className="flex items-center gap-1 bg-gray-800/90 rounded px-2 py-1.5">
-              <span className="text-gray-500 text-[10px] mr-1 min-w-[40px]">Zoom</span>
+            <div className="flex items-center gap-1 bg-[--surface-raised]/90 rounded px-2 py-1.5">
+              <span className="text-[--text-quaternary] text-[10px] mr-1 min-w-[40px]">Zoom</span>
               <button
                 type="button"
                 onClick={() =>
                   onUpdateImageLayer?.(carouselId, frame.id, { scale: Math.max(0.5, frame.imageLayer.scale - 0.1) })
                 }
-                className="w-5 h-5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 rounded transition-colors"
+                className="w-5 h-5 flex items-center justify-center text-[--text-tertiary] hover:text-white hover:bg-white/10 rounded transition-colors"
               >
                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
                 </svg>
               </button>
-              <span className="text-gray-300 text-[10px] font-medium min-w-[32px] text-center">
+              <span className="text-[--text-secondary] text-[10px] font-medium min-w-[32px] text-center">
                 {Math.round(frame.imageLayer.scale * 100)}%
               </span>
               <button
@@ -1453,7 +1453,7 @@ export const CarouselFrame = ({
                 onClick={() =>
                   onUpdateImageLayer?.(carouselId, frame.id, { scale: Math.min(5, frame.imageLayer.scale + 0.1) })
                 }
-                className="w-5 h-5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 rounded transition-colors"
+                className="w-5 h-5 flex items-center justify-center text-[--text-tertiary] hover:text-white hover:bg-white/10 rounded transition-colors"
               >
                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -1462,7 +1462,7 @@ export const CarouselFrame = ({
               <button
                 type="button"
                 onClick={() => onUpdateImageLayer?.(carouselId, frame.id, { scale: 1 })}
-                className="w-5 h-5 flex items-center justify-center text-gray-500 hover:text-white hover:bg-white/10 rounded transition-colors"
+                className="w-5 h-5 flex items-center justify-center text-[--text-quaternary] hover:text-white hover:bg-white/10 rounded transition-colors"
                 title="Reset zoom to 100%"
               >
                 <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1477,20 +1477,20 @@ export const CarouselFrame = ({
             </div>
 
             {/* Opacity Control */}
-            <div className="flex items-center gap-1 bg-gray-800/90 rounded px-2 py-1.5">
-              <span className="text-gray-500 text-[10px] mr-1 min-w-[40px]">Opacity</span>
+            <div className="flex items-center gap-1 bg-[--surface-raised]/90 rounded px-2 py-1.5">
+              <span className="text-[--text-quaternary] text-[10px] mr-1 min-w-[40px]">Opacity</span>
               <button
                 type="button"
                 onClick={() =>
                   onUpdateImageLayer?.(carouselId, frame.id, { opacity: Math.max(0, frame.imageLayer.opacity - 0.1) })
                 }
-                className="w-5 h-5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 rounded transition-colors"
+                className="w-5 h-5 flex items-center justify-center text-[--text-tertiary] hover:text-white hover:bg-white/10 rounded transition-colors"
               >
                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
                 </svg>
               </button>
-              <span className="text-gray-300 text-[10px] font-medium min-w-[32px] text-center">
+              <span className="text-[--text-secondary] text-[10px] font-medium min-w-[32px] text-center">
                 {Math.round(frame.imageLayer.opacity * 100)}%
               </span>
               <button
@@ -1498,7 +1498,7 @@ export const CarouselFrame = ({
                 onClick={() =>
                   onUpdateImageLayer?.(carouselId, frame.id, { opacity: Math.min(1, frame.imageLayer.opacity + 0.1) })
                 }
-                className="w-5 h-5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 rounded transition-colors"
+                className="w-5 h-5 flex items-center justify-center text-[--text-tertiary] hover:text-white hover:bg-white/10 rounded transition-colors"
               >
                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -1507,7 +1507,7 @@ export const CarouselFrame = ({
               <button
                 type="button"
                 onClick={() => onUpdateImageLayer?.(carouselId, frame.id, { opacity: 1 })}
-                className="w-5 h-5 flex items-center justify-center text-gray-500 hover:text-white hover:bg-white/10 rounded transition-colors"
+                className="w-5 h-5 flex items-center justify-center text-[--text-quaternary] hover:text-white hover:bg-white/10 rounded transition-colors"
                 title="Reset opacity to 100%"
               >
                 <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1525,7 +1525,7 @@ export const CarouselFrame = ({
             <button
               type="button"
               onClick={handleCancelEdit}
-              className="bg-gray-700/90 hover:bg-gray-600 rounded px-2.5 py-1.5 text-gray-300 hover:text-white text-[10px] font-medium transition-colors"
+              className="bg-[--surface-overlay]/90 hover:bg-[--surface-elevated] rounded px-2.5 py-1.5 text-[--text-secondary] hover:text-white text-[10px] font-medium transition-colors"
               title="Cancel and revert changes"
             >
               Cancel
@@ -1535,7 +1535,7 @@ export const CarouselFrame = ({
             <button
               type="button"
               onClick={handleDoneEdit}
-              className="bg-gray-600/90 hover:bg-gray-500 rounded px-2.5 py-1.5 text-white text-[10px] font-medium transition-colors"
+              className="bg-[--surface-elevated]/90 hover:bg-[--surface-overlay] rounded-[--radius-sm] px-2.5 py-1.5 text-white text-[10px] font-medium transition-colors"
               title="Done editing"
             >
               Done
@@ -1549,7 +1549,7 @@ export const CarouselFrame = ({
                 handleImageEditModeChange(false);
                 onRemoveImageFromFrame?.(carouselId, frame.id);
               }}
-              className="bg-gray-800/90 hover:bg-red-600 rounded px-2 py-1.5 text-gray-400 hover:text-white transition-colors"
+              className="bg-[--surface-raised]/90 hover:bg-red-600 rounded px-2 py-1.5 text-[--text-tertiary] hover:text-white transition-colors"
               title="Remove image"
             >
               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1573,8 +1573,8 @@ export const CarouselFrame = ({
             onMouseDown={(e) => e.stopPropagation()}
           >
             {/* Opacity Control */}
-            <div className="flex items-center gap-1 bg-gray-800/90 rounded px-2 py-1.5">
-              <span className="text-gray-500 text-[10px] mr-1 min-w-[40px]">Opacity</span>
+            <div className="flex items-center gap-1 bg-[--surface-raised]/90 rounded px-2 py-1.5">
+              <span className="text-[--text-quaternary] text-[10px] mr-1 min-w-[40px]">Opacity</span>
               <button
                 type="button"
                 onClick={() =>
@@ -1582,13 +1582,13 @@ export const CarouselFrame = ({
                     fillOpacity: Math.max(0, (frame.fillOpacity || 1) - 0.1),
                   })
                 }
-                className="w-5 h-5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 rounded transition-colors"
+                className="w-5 h-5 flex items-center justify-center text-[--text-tertiary] hover:text-white hover:bg-white/10 rounded transition-colors"
               >
                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
                 </svg>
               </button>
-              <span className="text-gray-300 text-[10px] font-medium min-w-[32px] text-center">
+              <span className="text-[--text-secondary] text-[10px] font-medium min-w-[32px] text-center">
                 {Math.round((frame.fillOpacity || 1) * 100)}%
               </span>
               <button
@@ -1598,7 +1598,7 @@ export const CarouselFrame = ({
                     fillOpacity: Math.min(1, (frame.fillOpacity || 1) + 0.1),
                   })
                 }
-                className="w-5 h-5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 rounded transition-colors"
+                className="w-5 h-5 flex items-center justify-center text-[--text-tertiary] hover:text-white hover:bg-white/10 rounded transition-colors"
               >
                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -1607,7 +1607,7 @@ export const CarouselFrame = ({
               <button
                 type="button"
                 onClick={() => onUpdateFillLayer?.(carouselId, frame.id, { fillOpacity: 1 })}
-                className="w-5 h-5 flex items-center justify-center text-gray-500 hover:text-white hover:bg-white/10 rounded transition-colors"
+                className="w-5 h-5 flex items-center justify-center text-[--text-quaternary] hover:text-white hover:bg-white/10 rounded transition-colors"
                 title="Reset opacity to 100%"
               >
                 <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1622,8 +1622,8 @@ export const CarouselFrame = ({
             </div>
 
             {/* Rotation Control */}
-            <div className="flex items-center gap-1 bg-gray-800/90 rounded px-2 py-1.5">
-              <span className="text-gray-500 text-[10px] mr-1 min-w-[40px]">Rotate</span>
+            <div className="flex items-center gap-1 bg-[--surface-raised]/90 rounded px-2 py-1.5">
+              <span className="text-[--text-quaternary] text-[10px] mr-1 min-w-[40px]">Rotate</span>
               <button
                 type="button"
                 onClick={() =>
@@ -1631,7 +1631,7 @@ export const CarouselFrame = ({
                     fillRotation: ((frame.fillRotation || 0) - 90 + 360) % 360,
                   })
                 }
-                className="w-5 h-5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 rounded transition-colors"
+                className="w-5 h-5 flex items-center justify-center text-[--text-tertiary] hover:text-white hover:bg-white/10 rounded transition-colors"
                 title="Rotate -90°"
               >
                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1643,7 +1643,7 @@ export const CarouselFrame = ({
                   />
                 </svg>
               </button>
-              <span className="text-gray-300 text-[10px] font-medium min-w-[32px] text-center">
+              <span className="text-[--text-secondary] text-[10px] font-medium min-w-[32px] text-center">
                 {frame.fillRotation || 0}°
               </span>
               <button
@@ -1651,7 +1651,7 @@ export const CarouselFrame = ({
                 onClick={() =>
                   onUpdateFillLayer?.(carouselId, frame.id, { fillRotation: ((frame.fillRotation || 0) + 90) % 360 })
                 }
-                className="w-5 h-5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 rounded transition-colors"
+                className="w-5 h-5 flex items-center justify-center text-[--text-tertiary] hover:text-white hover:bg-white/10 rounded transition-colors"
                 title="Rotate +90°"
               >
                 <svg
@@ -1671,7 +1671,7 @@ export const CarouselFrame = ({
               <button
                 type="button"
                 onClick={() => onUpdateFillLayer?.(carouselId, frame.id, { fillRotation: 0 })}
-                className="w-5 h-5 flex items-center justify-center text-gray-500 hover:text-white hover:bg-white/10 rounded transition-colors"
+                className="w-5 h-5 flex items-center justify-center text-[--text-quaternary] hover:text-white hover:bg-white/10 rounded transition-colors"
                 title="Reset rotation to 0°"
               >
                 <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1689,7 +1689,7 @@ export const CarouselFrame = ({
             <button
               type="button"
               onClick={handleCancelFillEdit}
-              className="bg-gray-700/90 hover:bg-gray-600 rounded px-2.5 py-1.5 text-gray-300 hover:text-white text-[10px] font-medium transition-colors"
+              className="bg-[--surface-overlay]/90 hover:bg-[--surface-elevated] rounded px-2.5 py-1.5 text-[--text-secondary] hover:text-white text-[10px] font-medium transition-colors"
               title="Cancel and revert changes"
             >
               Cancel
@@ -1699,7 +1699,7 @@ export const CarouselFrame = ({
             <button
               type="button"
               onClick={handleDoneFillEdit}
-              className="bg-gray-600/90 hover:bg-gray-500 rounded px-2.5 py-1.5 text-white text-[10px] font-medium transition-colors"
+              className="bg-[--surface-elevated]/90 hover:bg-[--surface-overlay] rounded-[--radius-sm] px-2.5 py-1.5 text-white text-[10px] font-medium transition-colors"
               title="Done editing"
             >
               Done
@@ -1709,7 +1709,7 @@ export const CarouselFrame = ({
             <button
               type="button"
               onClick={handleDeleteFill}
-              className="bg-gray-800/90 hover:bg-red-600 rounded px-2 py-1.5 text-gray-400 hover:text-white transition-colors"
+              className="bg-[--surface-raised]/90 hover:bg-red-600 rounded px-2 py-1.5 text-[--text-tertiary] hover:text-white transition-colors"
               title="Remove fill color"
             >
               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1733,8 +1733,8 @@ export const CarouselFrame = ({
             onMouseDown={(e) => e.stopPropagation()}
           >
             {/* Opacity Control */}
-            <div className="flex items-center gap-1 bg-gray-800/90 rounded px-2 py-1.5">
-              <span className="text-gray-500 text-[10px] mr-1 min-w-[40px]">Opacity</span>
+            <div className="flex items-center gap-1 bg-[--surface-raised]/90 rounded px-2 py-1.5">
+              <span className="text-[--text-quaternary] text-[10px] mr-1 min-w-[40px]">Opacity</span>
               <button
                 type="button"
                 onClick={() =>
@@ -1742,13 +1742,13 @@ export const CarouselFrame = ({
                     opacity: Math.max(0, (frame.patternLayer.opacity || 1) - 0.1),
                   })
                 }
-                className="w-5 h-5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 rounded transition-colors"
+                className="w-5 h-5 flex items-center justify-center text-[--text-tertiary] hover:text-white hover:bg-white/10 rounded transition-colors"
               >
                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
                 </svg>
               </button>
-              <span className="text-gray-300 text-[10px] font-medium min-w-[32px] text-center">
+              <span className="text-[--text-secondary] text-[10px] font-medium min-w-[32px] text-center">
                 {Math.round((frame.patternLayer.opacity || 1) * 100)}%
               </span>
               <button
@@ -1758,7 +1758,7 @@ export const CarouselFrame = ({
                     opacity: Math.min(1, (frame.patternLayer.opacity || 1) + 0.1),
                   })
                 }
-                className="w-5 h-5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 rounded transition-colors"
+                className="w-5 h-5 flex items-center justify-center text-[--text-tertiary] hover:text-white hover:bg-white/10 rounded transition-colors"
               >
                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -1767,7 +1767,7 @@ export const CarouselFrame = ({
               <button
                 type="button"
                 onClick={() => onUpdatePatternLayer?.(carouselId, frame.id, { opacity: 1 })}
-                className="w-5 h-5 flex items-center justify-center text-gray-500 hover:text-white hover:bg-white/10 rounded transition-colors"
+                className="w-5 h-5 flex items-center justify-center text-[--text-quaternary] hover:text-white hover:bg-white/10 rounded transition-colors"
                 title="Reset opacity to 100%"
               >
                 <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1782,8 +1782,8 @@ export const CarouselFrame = ({
             </div>
 
             {/* Rotation Control */}
-            <div className="flex items-center gap-1 bg-gray-800/90 rounded px-2 py-1.5">
-              <span className="text-gray-500 text-[10px] mr-1 min-w-[40px]">Rotate</span>
+            <div className="flex items-center gap-1 bg-[--surface-raised]/90 rounded px-2 py-1.5">
+              <span className="text-[--text-quaternary] text-[10px] mr-1 min-w-[40px]">Rotate</span>
               <button
                 type="button"
                 onClick={() =>
@@ -1791,7 +1791,7 @@ export const CarouselFrame = ({
                     rotation: ((frame.patternLayer.rotation || 0) - 90 + 360) % 360,
                   })
                 }
-                className="w-5 h-5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 rounded transition-colors"
+                className="w-5 h-5 flex items-center justify-center text-[--text-tertiary] hover:text-white hover:bg-white/10 rounded transition-colors"
                 title="Rotate -90°"
               >
                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1803,7 +1803,7 @@ export const CarouselFrame = ({
                   />
                 </svg>
               </button>
-              <span className="text-gray-300 text-[10px] font-medium min-w-[32px] text-center">
+              <span className="text-[--text-secondary] text-[10px] font-medium min-w-[32px] text-center">
                 {frame.patternLayer.rotation || 0}°
               </span>
               <button
@@ -1813,7 +1813,7 @@ export const CarouselFrame = ({
                     rotation: ((frame.patternLayer.rotation || 0) + 90) % 360,
                   })
                 }
-                className="w-5 h-5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 rounded transition-colors"
+                className="w-5 h-5 flex items-center justify-center text-[--text-tertiary] hover:text-white hover:bg-white/10 rounded transition-colors"
                 title="Rotate +90°"
               >
                 <svg
@@ -1833,7 +1833,7 @@ export const CarouselFrame = ({
               <button
                 type="button"
                 onClick={() => onUpdatePatternLayer?.(carouselId, frame.id, { rotation: 0 })}
-                className="w-5 h-5 flex items-center justify-center text-gray-500 hover:text-white hover:bg-white/10 rounded transition-colors"
+                className="w-5 h-5 flex items-center justify-center text-[--text-quaternary] hover:text-white hover:bg-white/10 rounded transition-colors"
                 title="Reset rotation to 0°"
               >
                 <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1851,7 +1851,7 @@ export const CarouselFrame = ({
             <button
               type="button"
               onClick={handleCancelPatternEdit}
-              className="bg-gray-700/90 hover:bg-gray-600 rounded px-2.5 py-1.5 text-gray-300 hover:text-white text-[10px] font-medium transition-colors"
+              className="bg-[--surface-overlay]/90 hover:bg-[--surface-elevated] rounded px-2.5 py-1.5 text-[--text-secondary] hover:text-white text-[10px] font-medium transition-colors"
               title="Cancel and revert changes"
             >
               Cancel
@@ -1861,7 +1861,7 @@ export const CarouselFrame = ({
             <button
               type="button"
               onClick={handleDonePatternEdit}
-              className="bg-gray-600/90 hover:bg-gray-500 rounded px-2.5 py-1.5 text-white text-[10px] font-medium transition-colors"
+              className="bg-[--surface-elevated]/90 hover:bg-[--surface-overlay] rounded-[--radius-sm] px-2.5 py-1.5 text-white text-[10px] font-medium transition-colors"
               title="Done editing"
             >
               Done
@@ -1871,7 +1871,7 @@ export const CarouselFrame = ({
             <button
               type="button"
               onClick={handleDeletePattern}
-              className="bg-gray-800/90 hover:bg-red-600 rounded px-2 py-1.5 text-gray-400 hover:text-white transition-colors"
+              className="bg-[--surface-raised]/90 hover:bg-red-600 rounded px-2 py-1.5 text-[--text-tertiary] hover:text-white transition-colors"
               title="Remove pattern"
             >
               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1895,8 +1895,8 @@ export const CarouselFrame = ({
             onMouseDown={(e) => e.stopPropagation()}
           >
             {/* Zoom Control */}
-            <div className="flex items-center gap-1 bg-gray-800/90 rounded px-2 py-1.5">
-              <span className="text-gray-500 text-[10px] mr-1 min-w-[40px]">Zoom</span>
+            <div className="flex items-center gap-1 bg-[--surface-raised]/90 rounded px-2 py-1.5">
+              <span className="text-[--text-quaternary] text-[10px] mr-1 min-w-[40px]">Zoom</span>
               <button
                 type="button"
                 onClick={() =>
@@ -1904,13 +1904,13 @@ export const CarouselFrame = ({
                     scale: Math.max(0.5, (frame.productImageLayer.scale || 1) - 0.1),
                   })
                 }
-                className="w-5 h-5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 rounded transition-colors"
+                className="w-5 h-5 flex items-center justify-center text-[--text-tertiary] hover:text-white hover:bg-white/10 rounded transition-colors"
               >
                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
                 </svg>
               </button>
-              <span className="text-gray-300 text-[10px] font-medium min-w-[32px] text-center">
+              <span className="text-[--text-secondary] text-[10px] font-medium min-w-[32px] text-center">
                 {Math.round((frame.productImageLayer.scale || 1) * 100)}%
               </span>
               <button
@@ -1920,7 +1920,7 @@ export const CarouselFrame = ({
                     scale: Math.min(2, (frame.productImageLayer.scale || 1) + 0.1),
                   })
                 }
-                className="w-5 h-5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 rounded transition-colors"
+                className="w-5 h-5 flex items-center justify-center text-[--text-tertiary] hover:text-white hover:bg-white/10 rounded transition-colors"
               >
                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -1929,7 +1929,7 @@ export const CarouselFrame = ({
               <button
                 type="button"
                 onClick={() => onUpdateProductImageLayer?.(carouselId, frame.id, { scale: 1 })}
-                className="w-5 h-5 flex items-center justify-center text-gray-500 hover:text-white hover:bg-white/10 rounded transition-colors"
+                className="w-5 h-5 flex items-center justify-center text-[--text-quaternary] hover:text-white hover:bg-white/10 rounded transition-colors"
                 title="Reset zoom to 100%"
               >
                 <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1944,8 +1944,8 @@ export const CarouselFrame = ({
             </div>
 
             {/* Corner Rounding Control */}
-            <div className="flex items-center gap-1 bg-gray-800/90 rounded px-2 py-1.5">
-              <span className="text-gray-500 text-[10px] mr-1 min-w-[40px]">Corners</span>
+            <div className="flex items-center gap-1 bg-[--surface-raised]/90 rounded px-2 py-1.5">
+              <span className="text-[--text-quaternary] text-[10px] mr-1 min-w-[40px]">Corners</span>
               <button
                 type="button"
                 onClick={() =>
@@ -1953,13 +1953,13 @@ export const CarouselFrame = ({
                     borderRadius: Math.max(0, (frame.productImageLayer.borderRadius ?? 8) - 4),
                   })
                 }
-                className="w-5 h-5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 rounded transition-colors"
+                className="w-5 h-5 flex items-center justify-center text-[--text-tertiary] hover:text-white hover:bg-white/10 rounded transition-colors"
               >
                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
                 </svg>
               </button>
-              <span className="text-gray-300 text-[10px] font-medium min-w-[32px] text-center">
+              <span className="text-[--text-secondary] text-[10px] font-medium min-w-[32px] text-center">
                 {frame.productImageLayer.borderRadius ?? 8}px
               </span>
               <button
@@ -1969,7 +1969,7 @@ export const CarouselFrame = ({
                     borderRadius: Math.min(48, (frame.productImageLayer.borderRadius ?? 8) + 4),
                   })
                 }
-                className="w-5 h-5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 rounded transition-colors"
+                className="w-5 h-5 flex items-center justify-center text-[--text-tertiary] hover:text-white hover:bg-white/10 rounded transition-colors"
               >
                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -1978,7 +1978,7 @@ export const CarouselFrame = ({
               <button
                 type="button"
                 onClick={() => onUpdateProductImageLayer?.(carouselId, frame.id, { borderRadius: 8 })}
-                className="w-5 h-5 flex items-center justify-center text-gray-500 hover:text-white hover:bg-white/10 rounded transition-colors"
+                className="w-5 h-5 flex items-center justify-center text-[--text-quaternary] hover:text-white hover:bg-white/10 rounded transition-colors"
                 title="Reset corners to 8px"
               >
                 <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1996,7 +1996,7 @@ export const CarouselFrame = ({
             <button
               type="button"
               onClick={handleCancelProductImageEdit}
-              className="bg-gray-700/90 hover:bg-gray-600 rounded px-2.5 py-1.5 text-gray-300 hover:text-white text-[10px] font-medium transition-colors"
+              className="bg-[--surface-overlay]/90 hover:bg-[--surface-elevated] rounded px-2.5 py-1.5 text-[--text-secondary] hover:text-white text-[10px] font-medium transition-colors"
               title="Cancel and revert changes"
             >
               Cancel
@@ -2006,7 +2006,7 @@ export const CarouselFrame = ({
             <button
               type="button"
               onClick={handleDoneProductImageEdit}
-              className="bg-gray-600/90 hover:bg-gray-500 rounded px-2.5 py-1.5 text-white text-[10px] font-medium transition-colors"
+              className="bg-[--surface-elevated]/90 hover:bg-[--surface-overlay] rounded-[--radius-sm] px-2.5 py-1.5 text-white text-[10px] font-medium transition-colors"
               title="Done editing"
             >
               Done
@@ -2016,7 +2016,7 @@ export const CarouselFrame = ({
             <button
               type="button"
               onClick={handleDeleteProductImage}
-              className="bg-gray-800/90 hover:bg-red-600 rounded px-2 py-1.5 text-gray-400 hover:text-white transition-colors"
+              className="bg-[--surface-raised]/90 hover:bg-red-600 rounded px-2 py-1.5 text-[--text-tertiary] hover:text-white transition-colors"
               title="Remove product image"
             >
               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
