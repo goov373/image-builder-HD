@@ -45,7 +45,7 @@ const Panel = ({
 
   return (
     <div
-      className={`fixed h-[calc(100%-${top}px)] ${width} bg-gray-900 border-r border-t border-gray-800 z-40 flex flex-col ${
+      className={`fixed h-[calc(100%-${top}px)] ${width} bg-[--surface-default] border-r border-t border-[--border-default] z-40 flex flex-col ${
         isOpen ? 'pointer-events-auto' : 'pointer-events-none'
       } ${className}`}
       style={{
@@ -66,7 +66,7 @@ const Panel = ({
 
       {/* Footer */}
       {footer && (
-        <div className="flex-shrink-0 border-t border-gray-800 p-4">
+        <div className="flex-shrink-0 border-t border-[--border-default] p-4">
           {footer}
         </div>
       )}
@@ -85,13 +85,13 @@ export const PanelHeader = ({
   height = 64,
 }) => (
   <div 
-    className="flex-shrink-0 px-4 border-b border-gray-800 flex items-center justify-between" 
+    className="flex-shrink-0 px-4 border-b border-[--border-default] flex items-center justify-between" 
     style={{ height }}
   >
     <div>
-      <h2 className="text-sm font-semibold text-white">{title}</h2>
+      <h2 className="text-sm font-semibold text-[--text-primary]">{title}</h2>
       {subtitle && (
-        <p className="text-[10px] text-gray-500 mt-0.5">{subtitle}</p>
+        <p className="text-[10px] text-[--text-quaternary] mt-0.5">{subtitle}</p>
       )}
     </div>
     <div className="flex items-center gap-2">
@@ -100,7 +100,7 @@ export const PanelHeader = ({
         <button 
           type="button" 
           onClick={onClose} 
-          className="text-gray-400 hover:text-white transition-colors p-1"
+          className="text-[--text-tertiary] hover:text-[--text-primary] transition-colors duration-[--duration-fast] p-1 rounded-[--radius-sm] hover:bg-[--surface-raised]"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -128,19 +128,19 @@ export const PanelSection = ({
   const [isOpen, setIsOpen] = React.useState(defaultOpen);
 
   return (
-    <div className={`${noBorder ? '' : 'border-b border-gray-800'}`}>
+    <div className={`${noBorder ? '' : 'border-b border-[--border-default]'}`}>
       {/* Section Header */}
       {title && (
         <div 
           className={`flex items-center justify-between ${noPadding ? 'px-0' : 'px-4'} py-3 ${
-            collapsible ? 'cursor-pointer hover:bg-gray-800/50' : ''
-          }`}
+            collapsible ? 'cursor-pointer hover:bg-[--surface-raised]' : ''
+          } transition-colors duration-[--duration-fast]`}
           onClick={collapsible ? () => setIsOpen(!isOpen) : undefined}
         >
           <div className="flex items-center gap-2">
             {collapsible && (
               <svg 
-                className={`w-3 h-3 text-gray-500 transition-transform ${isOpen ? 'rotate-90' : ''}`}
+                className={`w-3 h-3 text-[--text-quaternary] transition-transform duration-[--duration-fast] ${isOpen ? 'rotate-90' : ''}`}
                 fill="none" 
                 stroke="currentColor" 
                 viewBox="0 0 24 24"
@@ -149,9 +149,9 @@ export const PanelSection = ({
               </svg>
             )}
             <div>
-              <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">{title}</h3>
+              <h3 className="text-xs font-medium text-[--text-tertiary] uppercase tracking-wide">{title}</h3>
               {subtitle && (
-                <p className="text-[10px] text-gray-600 mt-0.5">{subtitle}</p>
+                <p className="text-[10px] text-[--text-quaternary] mt-0.5">{subtitle}</p>
               )}
             </div>
           </div>
@@ -178,21 +178,21 @@ export const PanelTabs = ({
   activeTab,
   onChange,
 }) => (
-  <div className="flex-shrink-0 flex border-b border-gray-800">
+  <div className="flex-shrink-0 flex border-b border-[--border-default]">
     {tabs.map((tab) => (
       <button
         key={tab.id}
         type="button"
         onClick={() => onChange(tab.id)}
-        className={`flex-1 py-3 text-xs font-medium transition-colors ${
+        className={`flex-1 py-3 text-xs font-medium transition-colors duration-[--duration-fast] ${
           activeTab === tab.id 
-            ? 'text-white border-b-2 border-gray-400' 
-            : 'text-gray-500 hover:text-gray-300'
+            ? 'text-[--text-primary] border-b-2 border-[--border-strong]' 
+            : 'text-[--text-quaternary] hover:text-[--text-secondary]'
         }`}
       >
         {tab.label}
         {tab.badge !== undefined && (
-          <span className="ml-1.5 px-1.5 py-0.5 bg-gray-700 rounded text-[10px]">
+          <span className="ml-1.5 px-1.5 py-0.5 bg-[--surface-raised] rounded-[--radius-sm] text-[10px]">
             {tab.badge}
           </span>
         )}
@@ -213,13 +213,13 @@ export const PanelEmptyState = ({
 }) => (
   <div className="text-center py-8">
     {icon && (
-      <div className="w-12 h-12 mx-auto mb-3 text-gray-700">
+      <div className="w-12 h-12 mx-auto mb-3 text-[--text-quaternary]">
         {icon}
       </div>
     )}
-    <p className="text-xs text-gray-500">{title}</p>
+    <p className="text-xs text-[--text-tertiary]">{title}</p>
     {description && (
-      <p className="text-[10px] text-gray-600 mt-1">{description}</p>
+      <p className="text-[10px] text-[--text-quaternary] mt-1">{description}</p>
     )}
     {action && (
       <div className="mt-3">{action}</div>
@@ -228,4 +228,3 @@ export const PanelEmptyState = ({
 );
 
 export default Panel;
-

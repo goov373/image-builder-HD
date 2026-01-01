@@ -20,21 +20,21 @@ const ToolbarDropdown = forwardRef(({
         type="button"
         onClick={onToggle}
         disabled={disabled}
-        className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 border ${
+        className={`flex items-center gap-2 px-3 py-2 rounded-[--radius-md] transition-all duration-[--duration-fast] border ${
           isOpen 
-            ? 'bg-gray-700 border-gray-500' 
-            : 'bg-gray-800/50 border-gray-700 hover:bg-gray-700 hover:border-gray-600'
+            ? 'bg-[--surface-overlay] border-[--border-strong]' 
+            : 'bg-[--surface-default] border-[--border-default] hover:bg-[--surface-raised] hover:border-[--border-emphasis]'
         } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
       >
-        <span className="text-xs font-medium text-gray-300">{label}</span>
+        <span className="text-xs font-medium text-[--text-secondary]">{label}</span>
         {value && (
-          <span className="text-[11px] text-gray-500">{value}</span>
+          <span className="text-[11px] text-[--text-quaternary]">{value}</span>
         )}
         <ChevronIcon isOpen={isOpen} />
       </button>
       
       {isOpen && (
-        <div className={`absolute top-full left-0 mt-2 p-1.5 bg-gray-900 border border-gray-700 rounded-xl shadow-xl z-[200] ${minWidth}`}>
+        <div className={`absolute top-full left-0 mt-2 p-1.5 bg-[--surface-overlay] border border-[--border-emphasis] rounded-[--radius-lg] shadow-xl z-[200] ${minWidth}`}>
           {children}
         </div>
       )}
@@ -58,17 +58,17 @@ export const ToolbarDropdownItem = ({
   <button
     type="button"
     onClick={onClick}
-    className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-left text-xs transition-all duration-200 ${
+    className={`w-full flex items-center justify-between px-3 py-2 rounded-[--radius-md] text-left text-xs transition-all duration-[--duration-fast] ${
       isSelected 
-        ? 'bg-gray-700 text-white' 
-        : 'text-gray-400 hover:bg-gray-800 hover:text-gray-300'
+        ? 'bg-[--surface-raised] text-[--text-primary]' 
+        : 'text-[--text-tertiary] hover:bg-[--surface-raised] hover:text-[--text-secondary]'
     }`}
   >
     <div className="flex items-center gap-2.5">
       {icon && <span className="flex-shrink-0">{icon}</span>}
       <span className="font-medium">{children}</span>
     </div>
-    {subtitle && <span className="text-gray-600">{subtitle}</span>}
+    {subtitle && <span className="text-[--text-quaternary]">{subtitle}</span>}
   </button>
 );
 
@@ -78,7 +78,7 @@ export const ToolbarDropdownItem = ({
  */
 export const ChevronIcon = ({ isOpen, className = '' }) => (
   <svg 
-    className={`w-3 h-3 text-gray-500 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''} ${className}`} 
+    className={`w-3 h-3 text-[--text-quaternary] transition-transform duration-[--duration-fast] ${isOpen ? 'rotate-180' : ''} ${className}`} 
     fill="none" 
     stroke="currentColor" 
     viewBox="0 0 24 24"
@@ -88,4 +88,3 @@ export const ChevronIcon = ({ isOpen, className = '' }) => (
 );
 
 export default ToolbarDropdown;
-
