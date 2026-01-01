@@ -1095,6 +1095,14 @@ export const CarouselFrame = ({
   
   return (
     <div className="flex flex-col" style={{ width: size.width }}>
+      {/* Position Header - appears above card when frame is selected */}
+      {isFrameSelected && (
+        <div className="mb-1.5 flex flex-col items-stretch w-full max-w-[180px]">
+          <div className="text-[9px] text-gray-500 uppercase tracking-wider px-1 pb-1">
+            Frame {frameIndex + 1}
+          </div>
+        </div>
+      )}
       <div 
         key={bgKey}
         data-frame-id={frame.id}
