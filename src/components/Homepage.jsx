@@ -10,7 +10,8 @@ const Homepage = ({
   onCreateNew,
   onDeleteProject,
   onDuplicateProject,
-  onRenameProject 
+  onRenameProject,
+  onQuickExport,
 }) => {
   const [openMenuId, setOpenMenuId] = useState(null);
   const [renamingId, setRenamingId] = useState(null);
@@ -129,11 +130,66 @@ const Homepage = ({
         </div>
       </div>
       
-      {/* Projects Section */}
+      {/* Recent Projects Section - shows 6 most recent */}
+      {projects.filter(p => p.hasContent).length > 0 && (
+        <div className="max-w-6xl mx-auto mb-10">
+          <h2 className="text-sm font-medium text-gray-400 uppercase tracking-wide mb-4">Recent</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {[...projects]
+              .filter(p => p.hasContent)
+              .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
+              .slice(0, 6)
+              .map(project => (
+                <button 
+                  key={project.id}
+                  type="button"
+                  onClick={() => onOpenProject(project.id)}
+                  className="group flex items-center gap-3 p-3 bg-gray-800/50 hover:bg-gray-800 border border-gray-800 hover:border-gray-700 rounded-lg transition-all text-left"
+                >
+                  {/* Mini thumbnail icon */}
+                  <div className="w-10 h-10 rounded-md bg-gray-700 flex items-center justify-center flex-shrink-0">
+                    {(project.projectType === 'carousel' || !project.projectType) && (
+                      <div className="flex gap-0.5">
+                        {[0, 1, 2].map(i => (
+                          <div key={i} className={`w-2 h-3 rounded-[2px] bg-gray-500 ${i > 0 ? 'opacity-40' : ''}`} />
+                        ))}
+                      </div>
+                    )}
+                    {project.projectType === 'singleImage' && (
+                      <div className="w-5 h-4 rounded-sm border border-gray-500 bg-gray-600" />
+                    )}
+                    {project.projectType === 'eblast' && (
+                      <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                      </svg>
+                    )}
+                    {project.projectType === 'videoCover' && (
+                      <svg className="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M8 5v14l11-7z" />
+                      </svg>
+                    )}
+                  </div>
+                  {/* Text */}
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm font-medium text-white truncate group-hover:text-gray-200">{project.name}</div>
+                    <div className="text-[10px] text-gray-500">{project.updatedAt}</div>
+                  </div>
+                  {/* Arrow */}
+                  <svg className="w-4 h-4 text-gray-600 group-hover:text-gray-400 transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+              ))
+            }
+          </div>
+        </div>
+      )}
+      
+      {/* All Projects Section */}
       <div className="max-w-6xl mx-auto">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-4">
-            <h2 className="text-xl font-semibold text-white">Your Projects</h2>
+            <h2 className="text-xl font-semibold text-white">All Projects</h2>
             
             {/* Search and Filter Controls */}
             <div className="flex items-center gap-2">
@@ -263,10 +319,23 @@ const Homepage = ({
                 
                 {/* Hover overlay */}
                 <div className="absolute inset-0 bg-gray-700/0 group-hover:bg-gray-700/20 transition-colors flex items-center justify-center">
-                  <div className="opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-2">
                     <div className="px-4 py-2 bg-gray-700 border border-gray-500 rounded-lg text-white text-sm font-medium">
                       Open Project
                     </div>
+                    {onQuickExport && (
+                      <button
+                        type="button"
+                        onClick={(e) => { e.stopPropagation(); onQuickExport(project.id); }}
+                        className="px-3 py-2 bg-gray-800 hover:bg-gray-600 border border-gray-600 rounded-lg text-white text-sm font-medium transition-colors flex items-center gap-1.5"
+                        title="Export with last-used settings"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                        </svg>
+                        Export
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>

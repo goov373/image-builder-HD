@@ -21,7 +21,7 @@ const GradientPicker = ({
   return (
     <div className="p-4 border-b border-gray-800">
       <div className="flex items-center justify-between mb-3">
-        <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Backgrounds</h3>
+        <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Set Background</h3>
         {hasSelection ? (
           <span className="text-[10px] text-green-400 flex items-center gap-1">
             <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse" />

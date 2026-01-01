@@ -23,7 +23,9 @@ import {
   ExportPanel,
   Homepage,
   TabBar,
-  EditorView
+  EditorView,
+  ErrorBoundary,
+  SectionErrorBoundary,
 } from './components';
 import KeyboardShortcutsModal from './components/KeyboardShortcutsModal';
 
@@ -344,6 +346,7 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
   };
 
   return (
+    <ErrorBoundary>
     <HistoryProvider>
       <AppProvider
         designSystem={designSystemContextValue}
@@ -414,7 +417,8 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
           }}
         />
         
-        {/* Panels */}
+        {/* Panels - wrapped in error boundaries for stability */}
+        <SectionErrorBoundary name="Design Panel">
         <DesignSystemPanel 
           designSystem={designSystem} 
           onUpdate={setDesignSystem} 
@@ -461,6 +465,8 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
           onUpdateSingleImagePattern={singleImages.handleUpdatePattern}
           onRemoveSingleImagePattern={singleImages.handleRemovePattern}
         />
+        </SectionErrorBoundary>
+        <SectionErrorBoundary name="Export Panel">
         <ExportPanel 
           onClose={() => setActivePanel(null)} 
           isOpen={activePanel === 'export'} 
@@ -470,12 +476,15 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
           singleImages={singleImages.singleImages}
           projectType={currentProjectType}
         />
+        </SectionErrorBoundary>
+        <SectionErrorBoundary name="Account Panel">
         <AccountPanel 
           onClose={() => setIsAccountOpen(false)} 
           isOpen={isAccountOpen && tabs.currentView === 'home'}
           onSignOut={onSignOut}
           user={user}
         />
+        </SectionErrorBoundary>
 
         {/* Homepage or Editor View */}
         {tabs.currentView === 'home' ? (
@@ -490,6 +499,11 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
               onDeleteProject={tabs.handleDeleteProject}
               onDuplicateProject={tabs.handleDuplicateProject}
               onRenameProject={tabs.handleRenameProject}
+              onQuickExport={(projectId) => {
+                // Open the project first, then open export panel
+                handleOpenProject(projectId);
+                setActivePanel('export');
+              }}
             />
           </div>
         ) : (
@@ -518,5 +532,6 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
         />
       </AppProvider>
     </HistoryProvider>
+    </ErrorBoundary>
   );
 }

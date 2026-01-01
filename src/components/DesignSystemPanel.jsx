@@ -12,6 +12,7 @@ import ImageUploader from './design-panel/ImageUploader';
 import ImageGrid from './design-panel/ImageGrid';
 import { ApplyModeToggle, FrameRangeSlider } from './design-panel/GradientPicker';
 import { BrandColorsSection, FontsSection, BrandIconsSection } from './design-panel/sections';
+import { useToast } from './ui/Toast';
 
 /**
  * Design & Assets Panel
@@ -108,12 +109,17 @@ const DesignSystemPanel = ({
   const effectiveEnd = stretchRange.end !== null ? Math.min(stretchRange.end, totalFrames - 1) : totalFrames - 1;
   const selectedFrameCount = Math.max(0, effectiveEnd - stretchRange.start + 1);
   
+  // Toast notifications for batch operations
+  const { addToast } = useToast();
+  
   const handleBackgroundClick = (background) => {
     if (isCarousel) {
       if (applyMode === 'row' && hasRowSelected && onSetRowStretchedBackground) {
         const startIdx = stretchRange.start;
         const endIdx = stretchRange.end !== null ? stretchRange.end : totalFrames - 1;
+        const frameCount = endIdx - startIdx + 1;
         onSetRowStretchedBackground(selectedCarouselId, background, startIdx, endIdx);
+        addToast(`Applied to ${frameCount} frames`, { type: 'success', duration: 2000 });
       } else if (hasFrameSelected && onSetFrameBackground) {
         onSetFrameBackground(selectedCarouselId, selectedFrameId, background);
       }
@@ -121,7 +127,9 @@ const DesignSystemPanel = ({
       if (applyMode === 'row' && hasRowSelected && onSetStretchedBackground) {
         const startIdx = stretchRange.start;
         const endIdx = stretchRange.end !== null ? stretchRange.end : totalFrames - 1;
+        const sectionCount = endIdx - startIdx + 1;
         onSetStretchedBackground(selectedEblastId, background, startIdx, endIdx);
+        addToast(`Applied to ${sectionCount} sections`, { type: 'success', duration: 2000 });
       } else if (hasFrameSelected && onSetSectionBackground) {
         onSetSectionBackground(selectedEblastId, selectedSectionId, background);
       }
@@ -145,17 +153,44 @@ const DesignSystemPanel = ({
   const [compressionPreset, setCompressionPreset] = useState('highQuality');
   
   // Default order for design dropdown sections
-  const defaultSectionOrder = ['pageIndicators', 'backgrounds', 'productImagery', 'photography', 'patterns', 'brandIcons'];
+  const defaultSectionOrder = ['brandColors', 'fonts', 'pageIndicators', 'backgrounds', 'productImagery', 'photography', 'patterns', 'brandIcons'];
   
   // Track which single section is open (null = all closed), and dynamic section order
-  const [openSection, setOpenSection] = useState(null);
-  const [sectionOrder, setSectionOrder] = useState(defaultSectionOrder);
+  // Persist to localStorage for user preference retention
+  const [openSection, setOpenSection] = useState(() => {
+    try {
+      const saved = localStorage.getItem('designPanel.openSection');
+      return saved ? JSON.parse(saved) : null;
+    } catch { return null; }
+  });
+  const [sectionOrder, setSectionOrder] = useState(() => {
+    try {
+      const saved = localStorage.getItem('designPanel.sectionOrder');
+      return saved ? JSON.parse(saved) : defaultSectionOrder;
+    } catch { return defaultSectionOrder; }
+  });
+  
+  // Persist open section changes
+  useEffect(() => {
+    try {
+      localStorage.setItem('designPanel.openSection', JSON.stringify(openSection));
+    } catch { /* ignore storage errors */ }
+  }, [openSection]);
+  
+  // Persist section order changes
+  useEffect(() => {
+    try {
+      localStorage.setItem('designPanel.sectionOrder', JSON.stringify(sectionOrder));
+    } catch { /* ignore storage errors */ }
+  }, [sectionOrder]);
   
   // Assets tab sections (separate from design sections)
   const [openAssetSection, setOpenAssetSection] = useState(null);
   
   // Helper to check if a section is collapsed (for compatibility)
   const collapsedSections = {
+    brandColors: openSection !== 'brandColors',
+    fonts: openSection !== 'fonts',
     pageIndicators: openSection !== 'pageIndicators',
     backgrounds: openSection !== 'backgrounds',
     patterns: openSection !== 'patterns',
@@ -647,7 +682,7 @@ const DesignSystemPanel = ({
           {/* Product Imagery Upload Section */}
           <div className="p-4 border-t border-gray-800">
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Product Imagery</h3>
+              <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Upload Product Images</h3>
             </div>
             <div 
               className="border-2 border-dashed border-gray-700 rounded-lg p-4 text-center hover:border-gray-600 transition-colors cursor-pointer"
@@ -808,10 +843,22 @@ const DesignSystemPanel = ({
         <>
       
         {/* Colors Section - Extracted */}
-        <BrandColorsSection designSystem={designSystem} onUpdate={onUpdate} />
+        <BrandColorsSection 
+          designSystem={designSystem} 
+          onUpdate={onUpdate} 
+          isCollapsed={collapsedSections.brandColors}
+          onToggle={() => toggleSection('brandColors')}
+          order={sectionOrder.indexOf('brandColors')}
+        />
         
         {/* Fonts Section - Extracted */}
-        <FontsSection designSystem={designSystem} onUpdate={onUpdate} />
+        <FontsSection 
+          designSystem={designSystem} 
+          onUpdate={onUpdate} 
+          isCollapsed={collapsedSections.fonts}
+          onToggle={() => toggleSection('fonts')}
+          order={sectionOrder.indexOf('fonts')}
+        />
       
         {/* Dynamic Dropdown Sections - rendered in order based on sectionOrder */}
         <div className="flex flex-col">
@@ -824,7 +871,7 @@ const DesignSystemPanel = ({
             className="w-full p-4 flex items-center justify-between hover:bg-gray-800/50 transition-colors"
           >
             <div className="flex items-center gap-2">
-              <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Page Indicators</h3>
+              <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Add Indicator</h3>
               <span className="px-1.5 py-0.5 bg-gray-700 rounded text-[10px] text-gray-400">6</span>
             </div>
             <svg className={`w-4 h-4 text-gray-500 transition-transform ${collapsedSections.pageIndicators ? '' : 'rotate-180'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -950,7 +997,7 @@ const DesignSystemPanel = ({
             className="w-full p-4 flex items-center justify-between hover:bg-gray-800/50 transition-colors"
           >
             <div className="flex items-center gap-2">
-              <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Backgrounds</h3>
+              <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Set Background</h3>
               <span className="px-1.5 py-0.5 bg-gray-700 rounded text-[10px] text-gray-400">{allGradients.length + solidColors.length}</span>
             </div>
             <div className="flex items-center gap-2">
@@ -1049,7 +1096,7 @@ const DesignSystemPanel = ({
             onClick={() => toggleSection('productImagery')}
             className="w-full p-4 flex items-center justify-between hover:bg-gray-800/50 transition-colors"
           >
-            <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Product Imagery</h3>
+            <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Add Product Image</h3>
             <div className="flex items-center gap-2">
               {uploadedProductImages.length > 0 && (
                 <span className="px-1.5 py-0.5 bg-gray-700 rounded text-[10px] text-gray-300">{uploadedProductImages.length}</span>
@@ -1119,7 +1166,7 @@ const DesignSystemPanel = ({
             className="w-full p-4 flex items-center justify-between hover:bg-gray-800/50 transition-colors"
           >
             <div className="flex items-center gap-2">
-              <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Photography</h3>
+              <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Add Photo</h3>
               {uploadedFiles.length > 0 && (
                 <span className="px-1.5 py-0.5 bg-gray-700 rounded text-[10px] text-gray-400">{uploadedFiles.length}</span>
               )}
@@ -1276,7 +1323,7 @@ const DesignSystemPanel = ({
             className="w-full p-4 flex items-center justify-between hover:bg-gray-800/50 transition-colors"
           >
             <div className="flex items-center gap-2">
-              <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Brand Patterns</h3>
+              <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Add Pattern</h3>
               <span className="px-1.5 py-0.5 bg-gray-700 rounded text-[10px] text-gray-400">18</span>
             </div>
             <svg className={`w-4 h-4 text-gray-500 transition-transform ${collapsedSections.patterns ? '' : 'rotate-180'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">

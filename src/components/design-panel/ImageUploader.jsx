@@ -34,7 +34,7 @@ const ImageUploader = ({
   return (
     <div className="p-4">
       <div className="flex items-center justify-between mb-3">
-        <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Upload Images</h3>
+        <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Add Images</h3>
         <span className="text-[10px] text-gray-500">{currentCount}/{maxCount}</span>
       </div>
       
@@ -78,13 +78,24 @@ const ImageUploader = ({
         
         {isUploading ? (
           <div className="py-2">
-            <div className="w-8 h-8 mx-auto mb-2 border-2 border-gray-600 border-t-gray-400 rounded-full animate-spin" />
-            <p className="text-xs text-gray-400 mb-1">
+            <div className="w-8 h-8 mx-auto mb-2 border-2 border-gray-600 border-t-white rounded-full animate-spin" />
+            <p className="text-xs text-gray-300 mb-1 font-medium">
+              Compressing...
+            </p>
+            <p className="text-[10px] text-gray-400 truncate max-w-[180px] mx-auto">
               {uploadProgress.fileName}
             </p>
-            <p className="text-[10px] text-gray-500">
-              {uploadProgress.current}/{uploadProgress.total} files
-            </p>
+            <div className="mt-2 flex items-center justify-center gap-2">
+              <div className="h-1 w-20 bg-gray-700 rounded-full overflow-hidden">
+                <div 
+                  className="h-full bg-white transition-all duration-300" 
+                  style={{ width: `${(uploadProgress.current / uploadProgress.total) * 100}%` }} 
+                />
+              </div>
+              <span className="text-[10px] text-gray-500 tabular-nums">
+                {uploadProgress.current}/{uploadProgress.total}
+              </span>
+            </div>
           </div>
         ) : (
           <>

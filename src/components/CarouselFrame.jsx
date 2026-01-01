@@ -1050,7 +1050,7 @@ export const CarouselFrame = ({
                     : 'text-gray-400 group-hover:text-white'
                 }`}>Progress</span>
                 {frame.progressIndicator?.isHidden === true ? (
-                  <span className="ml-auto text-[8px] text-gray-600 italic">empty</span>
+                  <span className="ml-auto text-[8px] text-gray-500 flex items-center gap-0.5"><svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>add</span>
                 ) : (
                   <span 
                     className="ml-auto text-[8px] text-gray-600 hover:text-red-400 transition-colors"
@@ -1087,7 +1087,7 @@ export const CarouselFrame = ({
                       title="Clear icon"
                     >clear</span>
                   ) : (
-                    <span className="ml-auto text-[8px] text-gray-600 italic">empty</span>
+                    <span className="ml-auto text-[8px] text-gray-500 flex items-center gap-0.5"><svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>add</span>
                   )}
                 </div>
               )}
@@ -1119,7 +1119,7 @@ export const CarouselFrame = ({
                       title="Clear product image"
                     >clear</span>
                   ) : (
-                    <span className="ml-auto text-[8px] text-gray-600 italic">empty</span>
+                    <span className="ml-auto text-[8px] text-gray-500 flex items-center gap-0.5"><svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>add</span>
                   )}
                 </div>
               )}
@@ -1170,7 +1170,7 @@ export const CarouselFrame = ({
                                 title="Clear background photo"
                               >clear</span>
                             ) : (
-                              <span className="ml-auto text-[8px] text-gray-600 italic">empty</span>
+                              <span className="ml-auto text-[8px] text-gray-500 flex items-center gap-0.5"><svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>add</span>
                             )}
                           </div>
                         </SortableLayerRow>
@@ -1203,7 +1203,7 @@ export const CarouselFrame = ({
                                 title="Clear brand pattern"
                               >clear</span>
                             ) : (
-                              <span className="ml-auto text-[8px] text-gray-600 italic">empty</span>
+                              <span className="ml-auto text-[8px] text-gray-500 flex items-center gap-0.5"><svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>add</span>
                             )}
                           </div>
                         </SortableLayerRow>
@@ -1236,7 +1236,7 @@ export const CarouselFrame = ({
                                 title="Clear fill color"
                               >clear</span>
                             ) : (
-                              <span className="ml-auto text-[8px] text-gray-600 italic">empty</span>
+                              <span className="ml-auto text-[8px] text-gray-500 flex items-center gap-0.5"><svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>add</span>
                             )}
                           </div>
                         </SortableLayerRow>

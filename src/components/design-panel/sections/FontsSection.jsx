@@ -1,10 +1,13 @@
 /**
  * FontsSection Component
- * Font weight selectors for headings and body text
+ * Font weight selectors for headings and body text (collapsible)
  */
 const FontsSection = ({
   designSystem,
   onUpdate,
+  isCollapsed,
+  onToggle,
+  order,
 }) => {
   const fontWeightOptions = [
     { value: '200', label: 'ExtraLight (200)' },
@@ -18,49 +21,68 @@ const FontsSection = ({
   ];
 
   return (
-    <div className="p-4 border-b border-[--border-default]">
-      <h3 className="text-xs font-medium text-[--text-tertiary] uppercase tracking-wide mb-3">Brand Font: Nunito Sans</h3>
-      <div className="space-y-3">
-        <div>
-          <label className="text-[10px] text-[--text-tertiary] font-medium block mb-1.5">Heading Weight</label>
-          <select
-            value={designSystem.headingWeight || '700'}
-            onChange={(e) => onUpdate({ ...designSystem, headingWeight: e.target.value })}
-            className="w-full bg-[--surface-raised] border border-[--border-default] rounded-[--radius-md] px-3 py-2 text-xs text-[--text-primary] hover:border-[--border-emphasis] focus:border-[--border-strong] focus:outline-none transition-colors cursor-pointer"
-          >
-            {fontWeightOptions.map(option => (
-              <option 
-                key={option.value} 
-                value={option.value} 
-                style={{ fontFamily: 'Nunito Sans', fontWeight: option.value }}
+    <div className="border-b border-[--border-default]" style={{ order }}>
+      <button
+        type="button"
+        onClick={onToggle}
+        className="w-full p-4 flex items-center justify-between hover:bg-[--surface-raised] transition-colors duration-[--duration-fast]"
+      >
+        <h3 className="text-xs font-medium text-[--text-tertiary] uppercase tracking-wide">Typography</h3>
+        <svg 
+          className={`w-4 h-4 text-[--text-quaternary] transition-transform duration-[--duration-fast] ${isCollapsed ? '' : 'rotate-180'}`} 
+          fill="none" 
+          stroke="currentColor" 
+          viewBox="0 0 24 24"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+      
+      {!isCollapsed && (
+        <div className="px-4 pb-4">
+          <p className="text-[10px] text-[--text-quaternary] mb-3">Nunito Sans</p>
+          <div className="space-y-3">
+            <div>
+              <label className="text-[10px] text-[--text-tertiary] font-medium block mb-1.5">Heading Weight</label>
+              <select
+                value={designSystem.headingWeight || '700'}
+                onChange={(e) => onUpdate({ ...designSystem, headingWeight: e.target.value })}
+                className="w-full bg-[--surface-raised] border border-[--border-default] rounded-[--radius-md] px-3 py-2 text-xs text-[--text-primary] hover:border-[--border-emphasis] focus:border-[--border-strong] focus:outline-none transition-colors cursor-pointer"
               >
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label className="text-[10px] text-[--text-tertiary] font-medium block mb-1.5">Body Weight</label>
-          <select
-            value={designSystem.bodyWeight || '400'}
-            onChange={(e) => onUpdate({ ...designSystem, bodyWeight: e.target.value })}
-            className="w-full bg-[--surface-raised] border border-[--border-default] rounded-[--radius-md] px-3 py-2 text-xs text-[--text-primary] hover:border-[--border-emphasis] focus:border-[--border-strong] focus:outline-none transition-colors cursor-pointer"
-          >
-            {fontWeightOptions.map(option => (
-              <option 
-                key={option.value} 
-                value={option.value} 
-                style={{ fontFamily: 'Nunito Sans', fontWeight: option.value }}
+                {fontWeightOptions.map(option => (
+                  <option 
+                    key={option.value} 
+                    value={option.value} 
+                    style={{ fontFamily: 'Nunito Sans', fontWeight: option.value }}
+                  >
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="text-[10px] text-[--text-tertiary] font-medium block mb-1.5">Body Weight</label>
+              <select
+                value={designSystem.bodyWeight || '400'}
+                onChange={(e) => onUpdate({ ...designSystem, bodyWeight: e.target.value })}
+                className="w-full bg-[--surface-raised] border border-[--border-default] rounded-[--radius-md] px-3 py-2 text-xs text-[--text-primary] hover:border-[--border-emphasis] focus:border-[--border-strong] focus:outline-none transition-colors cursor-pointer"
               >
-                {option.label}
-              </option>
-            ))}
-          </select>
+                {fontWeightOptions.map(option => (
+                  <option 
+                    key={option.value} 
+                    value={option.value} 
+                    style={{ fontFamily: 'Nunito Sans', fontWeight: option.value }}
+                  >
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
 
 export default FontsSection;
-

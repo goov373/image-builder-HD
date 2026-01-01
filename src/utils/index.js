@@ -54,3 +54,6 @@ export {
   EXPORT_DEFAULTS,
   RESOLUTION_SCALES,
 } from './browserExport';
+
+// Logger utility - environment-aware logging
+export { logger } from './logger';

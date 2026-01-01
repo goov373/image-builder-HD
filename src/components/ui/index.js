@@ -24,3 +24,6 @@ export { default as Badge } from './Badge';
 export { default as Slider } from './Slider';
 export { default as ColorDropdown } from './ColorDropdown';
 
+// Feedback components
+export { default as ToastProvider, useToast } from './Toast';
+

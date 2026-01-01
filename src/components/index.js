@@ -1,4 +1,9 @@
 // Central export for all components
+
+// Error Boundaries - Critical for app stability
+export { default as ErrorBoundary } from './ErrorBoundary';
+export { default as SectionErrorBoundary } from './SectionErrorBoundary';
+
 export { default as AccountPanel } from './AccountPanel';
 export { default as FormatButton } from './FormatButton';
 export { default as EditableTextField } from './EditableTextField';

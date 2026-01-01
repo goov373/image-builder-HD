@@ -22,7 +22,7 @@ const BrandIconsSection = ({
         className="w-full p-4 flex items-center justify-between hover:bg-[--surface-raised] transition-colors duration-[--duration-fast]"
       >
         <div className="flex items-center gap-2">
-          <h3 className="text-xs font-medium text-[--text-tertiary] uppercase tracking-wide">Brand Icons</h3>
+          <h3 className="text-xs font-medium text-[--text-tertiary] uppercase tracking-wide">Add Icon</h3>
           <span className="px-1.5 py-0.5 bg-[--surface-raised] rounded-[--radius-sm] text-[10px] text-[--text-tertiary]">
             {brandIcons.length}
           </span>
@@ -78,7 +78,9 @@ const BrandIconsSection = ({
             ))}
           </div>
           
-          <p className="text-[9px] text-[--text-quaternary] mt-3 text-center">Click icon to add to selected frame</p>
+          {!hasFrameSelected && (
+            <p className="text-[9px] text-[--text-quaternary] mt-3 text-center">Select a frame to add icons</p>
+          )}
         </div>
       )}
     </div>

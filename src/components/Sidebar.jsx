@@ -2,10 +2,25 @@
  * Sidebar Component
  * Main navigation sidebar with panel buttons and zoom controls
  */
+
+// Detect Mac vs Windows/Linux for shortcut display
+const isMac = typeof navigator !== 'undefined' && navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+const cmdKey = isMac ? '⌘' : 'Ctrl';
+
 const Sidebar = ({ activePanel, onPanelChange, zoom, onZoomChange, isHomePage, onAccountClick, isAccountOpen, onCloseAccount, onShowShortcuts }) => {
   const panels = [
-    { id: 'design', icon: 'M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01', label: 'Design & Assets' },
-    { id: 'export', icon: 'M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12', label: 'Export' },
+    { 
+      id: 'design', 
+      icon: 'M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01', 
+      label: 'Design & Assets',
+      shortcut: null, // No shortcut for design panel
+    },
+    { 
+      id: 'export', 
+      icon: 'M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12', 
+      label: 'Export',
+      shortcut: `${cmdKey}E`,
+    },
   ];
   
   const handlePanelClick = (panelId) => {
@@ -22,12 +37,18 @@ const Sidebar = ({ activePanel, onPanelChange, zoom, onZoomChange, isHomePage, o
             type="button"
             key={panel.id}
             onClick={() => handlePanelClick(panel.id)}
-            className={`w-11 h-11 rounded-[--radius-md] flex items-center justify-center transition-all duration-[--duration-fast] ${activePanel === panel.id ? 'bg-[--surface-overlay] text-[--text-primary]' : 'text-[--text-tertiary] hover:text-[--text-primary] hover:bg-[--surface-raised]'}`}
-            title={panel.label}
+            className={`relative group w-11 h-11 rounded-[--radius-md] flex items-center justify-center transition-all duration-[--duration-fast] ${activePanel === panel.id ? 'bg-[--surface-overlay] text-[--text-primary]' : 'text-[--text-tertiary] hover:text-[--text-primary] hover:bg-[--surface-raised]'}`}
+            title={panel.shortcut ? `${panel.label} (${panel.shortcut})` : panel.label}
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d={panel.icon} />
             </svg>
+            {/* Keyboard shortcut badge - shows on hover */}
+            {panel.shortcut && (
+              <span className="absolute -right-1 -bottom-1 px-1 py-0.5 bg-[--surface-overlay] border border-[--border-default] rounded text-[8px] font-mono text-[--text-quaternary] opacity-0 group-hover:opacity-100 transition-opacity duration-[--duration-fast] pointer-events-none">
+                {panel.shortcut}
+              </span>
+            )}
           </button>
         ))}
       </div>
@@ -38,12 +59,16 @@ const Sidebar = ({ activePanel, onPanelChange, zoom, onZoomChange, isHomePage, o
         <button 
           type="button"
           onClick={onShowShortcuts}
-          className="w-8 h-8 rounded-[--radius-md] flex items-center justify-center text-[--text-quaternary] hover:text-[--text-primary] hover:bg-[--surface-raised] transition-colors duration-[--duration-fast] mb-2"
+          className="relative group w-8 h-8 rounded-[--radius-md] flex items-center justify-center text-[--text-quaternary] hover:text-[--text-primary] hover:bg-[--surface-raised] transition-colors duration-[--duration-fast] mb-2"
           title="Keyboard shortcuts (?)"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
+          {/* Shortcut badge */}
+          <span className="absolute -right-1 -bottom-1 px-1 py-0.5 bg-[--surface-overlay] border border-[--border-default] rounded text-[8px] font-mono text-[--text-quaternary] opacity-0 group-hover:opacity-100 transition-opacity duration-[--duration-fast] pointer-events-none">
+            ?
+          </span>
         </button>
         
         {isHomePage ? (
@@ -65,7 +90,7 @@ const Sidebar = ({ activePanel, onPanelChange, zoom, onZoomChange, isHomePage, o
               type="button"
               onClick={() => onZoomChange(Math.min(250, zoom + 10))} 
               className="w-8 h-8 rounded-[--radius-md] flex items-center justify-center text-[--text-tertiary] hover:text-[--text-primary] hover:bg-[--surface-raised] transition-colors duration-[--duration-fast]"
-              title="Zoom in"
+              title={`Zoom in (${cmdKey}+)`}
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -78,7 +103,7 @@ const Sidebar = ({ activePanel, onPanelChange, zoom, onZoomChange, isHomePage, o
               type="button"
               onClick={() => onZoomChange(Math.max(50, zoom - 10))} 
               className="w-8 h-8 rounded-[--radius-md] flex items-center justify-center text-[--text-tertiary] hover:text-[--text-primary] hover:bg-[--surface-raised] transition-colors duration-[--duration-fast]"
-              title="Zoom out"
+              title={`Zoom out (${cmdKey}-)`}
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
@@ -88,7 +113,7 @@ const Sidebar = ({ activePanel, onPanelChange, zoom, onZoomChange, isHomePage, o
               type="button"
               onClick={() => onZoomChange(100)}
               className="w-8 h-8 rounded-[--radius-md] flex items-center justify-center text-[--text-tertiary] hover:text-[--text-primary] hover:bg-[--surface-raised] transition-colors duration-[--duration-fast]"
-              title="Reset to 100%"
+              title={`Reset zoom (${cmdKey}0)`}
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
