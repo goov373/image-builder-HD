@@ -470,6 +470,7 @@ const ProgressEditPanel = ({
   carouselId,
   designSystem,
   onUpdateProgressIndicator,
+  handleCancelProgressEdit,
   handleDoneProgressEdit,
 }) => {
   // Get current progress indicator settings (with defaults)
@@ -552,8 +553,18 @@ const ProgressEditPanel = ({
         </button>
       </div>
 
-      {/* Row 2: Done button */}
+      {/* Row 2: Cancel and Done buttons */}
       <div className="flex items-center gap-2">
+        {/* Cancel Button */}
+        <button
+          type="button"
+          onClick={handleCancelProgressEdit}
+          className="bg-gray-800/90 hover:bg-gray-700 rounded-lg px-2.5 py-1.5 text-gray-400 hover:text-white text-[10px] font-medium transition-colors"
+          title="Cancel and revert changes"
+        >
+          Cancel
+        </button>
+
         {/* Done Button */}
         <button
           type="button"
@@ -627,6 +638,7 @@ export const CarouselFrame = ({
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isProgressEditing, setIsProgressEditing] = useState(false);
+  const [initialProgressState, setInitialProgressState] = useState(null);
   const [imageEditTrigger, setImageEditTrigger] = useState(0);
   const [imageCloseTrigger, setImageCloseTrigger] = useState(0);
   const [isImageEditing, setIsImageEditing] = useState(false);
@@ -689,6 +701,7 @@ export const CarouselFrame = ({
     setInitialPatternState(null);
     setInitialProductImageState(null);
     setInitialIconState(null);
+    setInitialProgressState(null);
   };
   
   // Close all tool panels when frame is deselected
@@ -978,7 +991,25 @@ export const CarouselFrame = ({
   const handleStartProgressEdit = () => {
     // Close other tool panels first
     closeAllToolPanels();
+    // Store initial state for cancel functionality
+    if (frame.progressIndicator) {
+      setInitialProgressState({ ...frame.progressIndicator });
+    }
     setIsProgressEditing(true);
+  };
+  
+  const handleCancelProgressEdit = () => {
+    if (initialProgressState) {
+      // Restore initial progress indicator state
+      onUpdateProgressIndicator?.(carouselId, frame.id, initialProgressState);
+    }
+    setIsProgressEditing(false);
+    setInitialProgressState(null);
+  };
+  
+  const handleDoneProgressEdit = () => {
+    setIsProgressEditing(false);
+    setInitialProgressState(null);
   };
   
   const style = getFrameStyle(carouselId, frame.style, designSystem);
@@ -1979,7 +2010,8 @@ export const CarouselFrame = ({
           carouselId={carouselId}
           designSystem={designSystem}
           onUpdateProgressIndicator={onUpdateProgressIndicator}
-          handleDoneProgressEdit={() => setIsProgressEditing(false)}
+          handleCancelProgressEdit={handleCancelProgressEdit}
+          handleDoneProgressEdit={handleDoneProgressEdit}
         />
       )}
       </div>
