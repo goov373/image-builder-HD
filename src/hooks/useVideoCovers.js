@@ -248,7 +248,7 @@ function videoCoverReducer(state, action) {
         ...state,
         videoCovers: state.videoCovers.map((vc) => {
           if (vc.id !== videoCoverId) return vc;
-          const { patternLayer, ...restFrame } = vc.frame;
+          const { patternLayer: _patternLayer, ...restFrame } = vc.frame;
           return { ...vc, frame: restFrame };
         }),
       };
@@ -302,7 +302,7 @@ function videoCoverReducer(state, action) {
         ...state,
         videoCovers: state.videoCovers.map((vc) => {
           if (vc.id !== videoCoverId) return vc;
-          const { imageLayer, ...restFrame } = vc.frame;
+          const { imageLayer: _imageLayer, ...restFrame } = vc.frame;
           return { ...vc, frame: restFrame };
         }),
       };

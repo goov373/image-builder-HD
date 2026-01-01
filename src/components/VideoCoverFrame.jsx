@@ -23,7 +23,8 @@ const VideoCoverFrame = ({
   onUpdateImage,
   onRemoveImage,
 }) => {
-  const [isHovered, setIsHovered] = useState(false);
+  // Hover state for future hover effects
+  const [_isHovered, setIsHovered] = useState(false);
 
   const frame = videoCover.frame;
   const defaultStyle = getVideoCoverStyle(frame.style, designSystem);

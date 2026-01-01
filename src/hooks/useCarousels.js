@@ -1,7 +1,7 @@
 import { useReducer, useEffect, useState, useCallback } from 'react';
 import { arrayMove } from '@dnd-kit/sortable';
 import { STORAGE_KEYS } from '../config';
-import { createPatternLayer, findPatternById } from '../data';
+import { createPatternLayer } from '../data';
 import { undoable, UNDO, REDO, canUndo, canRedo } from '../utils/undoable';
 import { logger } from '../utils';
 
@@ -458,7 +458,7 @@ function carouselReducer(state, action) {
             ...carousel,
             frames: carousel.frames.map((frame) => {
               if (frame.id !== frameId) return frame;
-              const { imageLayer, ...rest } = frame;
+              const { imageLayer: _imageLayer, ...rest } = frame;
               return rest;
             }),
           };
@@ -537,7 +537,7 @@ function carouselReducer(state, action) {
             ...carousel,
             frames: carousel.frames.map((frame) => {
               if (frame.id !== frameId) return frame;
-              const { patternLayer, ...rest } = frame;
+              const { patternLayer: _patternLayer, ...rest } = frame;
               return rest;
             }),
           };
@@ -682,7 +682,7 @@ function carouselReducer(state, action) {
             ...carousel,
             frames: carousel.frames.map((frame) => {
               if (frame.id !== frameId) return frame;
-              const { productImageLayer, ...rest } = frame;
+              const { productImageLayer: _productImageLayer, ...rest } = frame;
               return rest;
             }),
           };
@@ -750,7 +750,7 @@ function carouselReducer(state, action) {
             ...carousel,
             frames: carousel.frames.map((frame) => {
               if (frame.id !== frameId) return frame;
-              const { iconLayer, ...rest } = frame;
+              const { iconLayer: _iconLayer, ...rest } = frame;
               return rest;
             }),
           };

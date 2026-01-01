@@ -5,8 +5,8 @@
 const IconLayer = ({
   iconLayer,
   frameWidth,
-  frameHeight,
-  isRowSelected = false,
+  frameHeight: _frameHeight,
+  isRowSelected: _isRowSelected = false,
   isFrameSelected = false,
   isSelected = false, // When this layer is actively selected (clicked)
   onClick,

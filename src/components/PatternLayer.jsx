@@ -10,7 +10,7 @@ import { findPatternById } from '../data';
  * - Can be stretched across multiple frames
  * - Sits at z-index -2 (behind gradients)
  */
-const PatternLayer = ({ patternLayer, frameWidth, frameHeight }) => {
+const PatternLayer = ({ patternLayer, frameWidth: _frameWidth, frameHeight: _frameHeight }) => {
   if (!patternLayer) return null;
 
   const pattern = findPatternById(patternLayer.patternId);

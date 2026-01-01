@@ -34,27 +34,29 @@ export default function EditorView({
   const { designSystem } = useDesignSystemContext();
   const selection = useSelectionContext();
   const carouselsCtx = useCarouselsContext();
-  const dropdowns = useDropdownsContext();
+   
+  const _dropdowns = useDropdownsContext();
 
-  // Carousel selection
+  // Carousel selection - destructure all selection state
+   
   const {
     selectedCarouselId,
     selectedFrameId,
-    selectedCarousel,
-    selectedFrame,
+    selectedCarousel: _selectedCarousel,
+    selectedFrame: _selectedFrame,
     // Eblast selection
     selectedEblastId,
     selectedSectionId,
-    selectedEblast,
-    selectedSection,
+    selectedEblast: _selectedEblast,
+    selectedSection: _selectedSection,
     // Video Cover selection
     selectedVideoCoverId,
-    selectedVideoCover,
+    selectedVideoCover: _selectedVideoCover,
     // Single Image selection
     selectedImageId,
-    selectedLayerId,
-    selectedImage,
-    selectedLayer,
+    selectedLayerId: _selectedLayerId,
+    selectedImage: _selectedImage,
+    selectedLayer: _selectedLayer,
     // Shared
     activeTextField,
     setActiveTextField,
@@ -68,23 +70,24 @@ export default function EditorView({
     handleDeselectFrame,
   } = selection;
 
-  // Carousel methods
+  // Carousel methods - destructure all handlers from context
+   
   const {
     carousels,
-    handleSetVariant,
-    handleSetLayout,
-    handleShuffleLayoutVariant,
+    handleSetVariant: _handleSetVariant,
+    handleSetLayout: _handleSetLayout,
+    handleShuffleLayoutVariant: _handleShuffleLayoutVariant,
     handleUpdateText,
-    handleUpdateFormatting,
+    handleUpdateFormatting: _handleUpdateFormatting,
     handleAddFrame,
     handleRemoveFrame,
-    handleChangeFrameSize,
+    handleChangeFrameSize: _handleChangeFrameSize,
     handleReorderFrames,
     handleAddRow,
     handleRemoveRow,
     handleSetFrameBackground,
     // Image layer methods
-    handleAddImageToFrame,
+    handleAddImageToFrame: _handleAddImageToFrame,
     handleUpdateImageLayer,
     handleRemoveImageFromFrame,
     // Fill layer methods
@@ -93,11 +96,11 @@ export default function EditorView({
     handleUpdatePatternLayer: handleUpdatePatternLayerCarousel,
     handleRemovePatternFromFrame,
     // Product image layer methods (carousels)
-    handleAddProductImageToFrame,
+    handleAddProductImageToFrame: _handleAddProductImageToFrame,
     handleUpdateProductImageLayer,
     handleRemoveProductImageFromFrame,
     // Icon layer methods (carousels)
-    handleAddIconToFrame,
+    handleAddIconToFrame: _handleAddIconToFrame,
     handleUpdateIconLayer,
     handleRemoveIconFromFrame,
     // Progress indicator methods (carousels)
@@ -111,13 +114,13 @@ export default function EditorView({
     handleRemoveSection,
     handleReorderSections,
     // Eblast layer methods
-    handleSetSectionBackground,
-    handleSetStretchedBackground,
-    handleAddPatternToSection,
-    handleUpdatePatternLayer,
-    handleRemovePatternFromSection,
-    handleSetStretchedPattern,
-    handleAddImageToSection,
+    handleSetSectionBackground: _handleSetSectionBackground,
+    handleSetStretchedBackground: _handleSetStretchedBackground,
+    handleAddPatternToSection: _handleAddPatternToSection,
+    handleUpdatePatternLayer: _handleUpdatePatternLayer,
+    handleRemovePatternFromSection: _handleRemovePatternFromSection,
+    handleSetStretchedPattern: _handleSetStretchedPattern,
+    handleAddImageToSection: _handleAddImageToSection,
     handleUpdateImageLayerEblast,
     handleRemoveImageFromSection,
     // Video Cover methods
@@ -127,11 +130,11 @@ export default function EditorView({
     handleTogglePlayButton,
     handleUpdateEpisodeNumber,
     // Video Cover layer methods
-    handleVideoCoverSetBackground,
-    handleVideoCoverAddPattern,
-    handleVideoCoverUpdatePattern,
-    handleVideoCoverRemovePattern,
-    handleVideoCoverAddImage,
+    handleVideoCoverSetBackground: _handleVideoCoverSetBackground,
+    handleVideoCoverAddPattern: _handleVideoCoverAddPattern,
+    handleVideoCoverUpdatePattern: _handleVideoCoverUpdatePattern,
+    handleVideoCoverRemovePattern: _handleVideoCoverRemovePattern,
+    handleVideoCoverAddImage: _handleVideoCoverAddImage,
     handleVideoCoverUpdateImage,
     handleVideoCoverRemoveImage,
     // Single Image methods
@@ -249,7 +252,7 @@ export default function EditorView({
                 {/* Eblast Content */}
                 {isEblast &&
                   eblasts &&
-                  eblasts.map((eblast, index) => (
+                  eblasts.map((eblast, _index) => (
                     <React.Fragment key={eblast.id}>
                       <EblastEditor
                         eblast={eblast}
@@ -273,7 +276,7 @@ export default function EditorView({
                 {/* Video Cover Content */}
                 {isVideoCover &&
                   videoCovers &&
-                  videoCovers.map((videoCover, index) => (
+                  videoCovers.map((videoCover, _index) => (
                     <React.Fragment key={videoCover.id}>
                       <VideoCoverEditor
                         videoCover={videoCover}
@@ -295,7 +298,7 @@ export default function EditorView({
                 {/* Single Image Content */}
                 {isSingleImage &&
                   singleImages &&
-                  singleImages.map((singleImage, index) => (
+                  singleImages.map((singleImage, _index) => (
                     <React.Fragment key={singleImage.id}>
                       <SingleImageEditor
                         singleImage={singleImage}

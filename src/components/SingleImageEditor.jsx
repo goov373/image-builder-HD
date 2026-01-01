@@ -2,14 +2,13 @@ import { useState } from 'react';
 import MockupFrame from './MockupFrame';
 import StyleEditor from './StyleEditor';
 import { DataChip, StatCard, Tooltip, Sparkline, AvatarGroup, ProgressRing } from './decorators';
-import { CANVAS_SIZES, DEFAULT_MOCKUP_STYLE } from '../types/singleImage';
-import { MOCKUP_TEMPLATES, DECORATOR_PRESETS } from '../data/initialSingleImages';
+import { CANVAS_SIZES } from '../types/singleImage';
 import PatternLayer from './PatternLayer';
 
 /**
  * Layer Item in sidebar
  */
-const LayerItem = ({ layer, isSelected, onSelect, onToggleVisible, onToggleLocked }) => (
+const LayerItem = ({ layer, isSelected, onSelect, onToggleVisible, onToggleLocked: _onToggleLocked }) => (
   <div
     onClick={() => onSelect(layer.id)}
     className={`
@@ -102,14 +101,15 @@ const SingleImageEditor = ({
   isSelected,
   onSelect,
   onUpdateLayer,
-  onAddLayer,
-  onRemoveLayer,
-  onReorderLayers,
+  onAddLayer: _onAddLayer,
+  onRemoveLayer: _onRemoveLayer,
+  onReorderLayers: _onReorderLayers,
 }) => {
   const [selectedLayerId, setSelectedLayerId] = useState(null);
   const [zoom, setZoom] = useState(80);
-  const [showStylePanel, setShowStylePanel] = useState(true);
-  const [showLayersPanel, setShowLayersPanel] = useState(true);
+  // Panel visibility state for future sidebar implementation
+  const [_showStylePanel, _setShowStylePanel] = useState(true);
+  const [_showLayersPanel, _setShowLayersPanel] = useState(true);
 
   const selectedLayer = singleImage.layers.find((l) => l.id === selectedLayerId);
   const canvasSize = CANVAS_SIZES[singleImage.canvasSize] || CANVAS_SIZES.hero;

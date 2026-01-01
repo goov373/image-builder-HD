@@ -354,7 +354,7 @@ function eblastReducer(state, action) {
             ...eblast,
             sections: eblast.sections.map((section) => {
               if (section.id !== sectionId) return section;
-              const { patternLayer, ...rest } = section;
+              const { patternLayer: _patternLayer, ...rest } = section;
               return rest;
             }),
           };
@@ -454,7 +454,7 @@ function eblastReducer(state, action) {
             ...eblast,
             sections: eblast.sections.map((section) => {
               if (section.id !== sectionId) return section;
-              const { imageLayer, ...rest } = section;
+              const { imageLayer: _imageLayer, ...rest } = section;
               return rest;
             }),
           };

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 import { exportPresets } from '../data/exportPresets';
-import { exportElement, getExtension, getMimeType, RESOLUTION_SCALES } from '../utils/browserExport';
+import { exportElement, getExtension, RESOLUTION_SCALES } from '../utils/browserExport';
 import { logger } from '../utils';
 
 /**
@@ -16,7 +16,7 @@ const ExportPanel = ({
   eblasts = [],
   videoCovers = [],
   singleImages = [],
-  projectType = 'carousel',
+  projectType: _projectType = 'carousel',
 }) => {
   const [selectedProjectKey, setSelectedProjectKey] = useState('');
   const [format, setFormat] = useState('png');
@@ -27,7 +27,7 @@ const ExportPanel = ({
   const [isExporting, setIsExporting] = useState(false);
   const [exportProgress, setExportProgress] = useState({ current: 0, total: 0 });
   const [exportSuccess, setExportSuccess] = useState(false);
-  const [isProjectDropdownOpen, setIsProjectDropdownOpen] = useState(false);
+  const [_isProjectDropdownOpen, setIsProjectDropdownOpen] = useState(false);
   const [selectedPreset, setSelectedPreset] = useState(null);
 
   // Combine all projects into a unified list with unique keys

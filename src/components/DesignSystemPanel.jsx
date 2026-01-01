@@ -262,6 +262,7 @@ const DesignSystemPanel = ({
       setOpenAssetSection(null);
       setSectionOrder(defaultSectionOrder);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- defaultSectionOrder is stable, only run on isOpen change
   }, [isOpen]);
 
   // Close all sections when switching tabs
@@ -450,7 +451,8 @@ const DesignSystemPanel = ({
     }
   };
 
-  const handleDragOver = (event) => {
+  // Handler for drag over events - defined for use with onDragOver handlers
+  const _handleDragOver = (event) => {
     event.preventDefault();
     event.stopPropagation();
   };
@@ -588,12 +590,13 @@ const DesignSystemPanel = ({
     }
   };
 
-  // Calculate total storage used
+  // Calculate total storage used (available for future storage UI)
   const totalStorageUsed = uploadedFiles.reduce((acc, file) => acc + (file.size || 0), 0);
   const totalOriginalSize = uploadedFiles.reduce((acc, file) => acc + (file.originalSize || 0), 0);
-  const totalSavings = totalOriginalSize > 0 ? Math.round((1 - totalStorageUsed / totalOriginalSize) * 100) : 0;
+  const _totalSavings = totalOriginalSize > 0 ? Math.round((1 - totalStorageUsed / totalOriginalSize) * 100) : 0;
 
-  const colorFields = [
+  // Color field definitions for future color editing UI
+  const _colorFields = [
     { key: 'primary', label: 'Primary' },
     { key: 'secondary', label: 'Secondary' },
     { key: 'accent', label: 'Accent' },

@@ -17,7 +17,7 @@ function loadFromStorage(initialData) {
         localStorage.removeItem(key);
       }
     });
-  } catch (_e) {
+  } catch {
     // Silently fail - localStorage may be unavailable or blocked
   }
 

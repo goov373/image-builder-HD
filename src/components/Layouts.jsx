@@ -11,7 +11,7 @@ export const LayoutBottomStack = ({
   headline,
   body,
   text,
-  accent,
+  accent: _accent,
   isLandscape,
   headingFont,
   bodyFont,

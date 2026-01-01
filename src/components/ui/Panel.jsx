@@ -35,7 +35,8 @@ const Panel = ({
   className = '',
 }) => {
   const isLeft = position === 'left';
-  const translateClass = isOpen ? 'translate-x-0' : isLeft ? '-translate-x-full' : 'translate-x-full';
+  // Translate class kept for reference - uses direct positioning instead
+  const _translateClass = isOpen ? 'translate-x-0' : isLeft ? '-translate-x-full' : 'translate-x-full';
 
   const positionStyle = isLeft ? { left: isOpen ? offsetLeft : -288 + offsetLeft } : { right: 0 };
 

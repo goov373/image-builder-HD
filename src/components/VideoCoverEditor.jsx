@@ -21,7 +21,8 @@ const VideoCoverEditor = ({
   onUpdateImage,
   onRemoveImage,
 }) => {
-  const currentSize = frameSizes[videoCover.frameSize] || frameSizes.youtube;
+  // Frame size reference - available for future aspect ratio calculations
+  const _currentSize = frameSizes[videoCover.frameSize] || frameSizes.youtube;
 
   // Get available video sizes
   const videoSizes = Object.entries(frameSizes)

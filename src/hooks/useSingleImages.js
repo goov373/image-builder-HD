@@ -231,7 +231,7 @@ function singleImageReducer(state, action) {
         ...state,
         singleImages: state.singleImages.map((img) => {
           if (img.id !== imageId) return img;
-          const { patternLayer, ...rest } = img;
+          const { patternLayer: _patternLayer, ...rest } = img;
           return { ...rest, updatedAt: new Date().toISOString().split('T')[0] };
         }),
       };

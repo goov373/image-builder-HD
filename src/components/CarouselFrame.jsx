@@ -467,6 +467,7 @@ export const CarouselFrame = ({
       });
     }
     prevFillRef.current = frame.backgroundOverride;
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- Only sync when backgroundOverride changes, not fill values
   }, [frame.backgroundOverride, isDraggingAny]);
 
   // Auto-open Image tool panel when background photo is added (close others first)
@@ -479,6 +480,7 @@ export const CarouselFrame = ({
       handleImageEditModeChange(true);
     }
     prevImageRef.current = frame.imageLayer;
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- Only trigger when imageLayer changes, not callback refs
   }, [frame.imageLayer, isDraggingAny]);
 
   // Auto-open Pattern tool panel when pattern is added (close others first)
