@@ -21,7 +21,7 @@ export default function TabBar({
   return (
     <div
       className="fixed top-0 right-0 z-[110] border-b border-gray-800"
-      style={{ height: 56, left: sidebarOffset, backgroundColor: '#0d1321', transition: 'left 0.3s ease-out' }}
+      style={{ height: 56, left: sidebarOffset, backgroundColor: 'var(--surface-canvas)', transition: 'left 0.3s ease-out' }}
     >
       <div className="flex items-end h-full pl-5">
         {/* Tabs */}
