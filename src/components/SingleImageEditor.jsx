@@ -13,7 +13,7 @@ const LayerItem = ({ layer, isSelected, onSelect, onToggleVisible, onToggleLocke
     onClick={() => onSelect(layer.id)}
     className={`
       flex items-center gap-2 px-2 py-1.5 rounded-lg cursor-pointer transition-colors
-      ${isSelected ? 'bg-gray-700/50 border border-gray-500' : 'hover:bg-gray-800'}
+      ${isSelected ? 'bg-surface-overlay/50 border border-gray-500' : 'hover:bg-surface-raised'}
     `}
   >
     {/* Layer icon */}
@@ -23,14 +23,14 @@ const LayerItem = ({ layer, isSelected, onSelect, onToggleVisible, onToggleLocke
           ? 'bg-blue-500/20 text-blue-400'
           : layer.type === 'decorator'
             ? 'bg-green-500/20 text-green-400'
-            : 'bg-gray-700 text-gray-400'
+            : 'bg-surface-overlay text-tertiary'
       }`}
     >
       {layer.type === 'mockup' ? '□' : layer.type === 'decorator' ? '◆' : 'T'}
     </div>
 
     {/* Name */}
-    <span className={`flex-1 text-xs truncate ${isSelected ? 'text-white' : 'text-gray-400'}`}>{layer.name}</span>
+    <span className={`flex-1 text-xs truncate ${isSelected ? 'text-white' : 'text-tertiary'}`}>{layer.name}</span>
 
     {/* Controls */}
     <button
@@ -39,7 +39,7 @@ const LayerItem = ({ layer, isSelected, onSelect, onToggleVisible, onToggleLocke
         e.stopPropagation();
         onToggleVisible(layer.id);
       }}
-      className={`w-5 h-5 flex items-center justify-center rounded ${layer.visible ? 'text-gray-400' : 'text-gray-600'}`}
+      className={`w-5 h-5 flex items-center justify-center rounded ${layer.visible ? 'text-tertiary' : 'text-gray-600'}`}
     >
       <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         {layer.visible ? (
@@ -153,7 +153,7 @@ const SingleImageEditor = ({
     <div
       data-singleimage-id={singleImage.id}
       className={`mb-10 rounded-xl transition-all duration-150 ${
-        isSelected ? 'bg-blue-500/5 border border-blue-500/20' : 'hover:bg-gray-800/30 border border-transparent'
+        isSelected ? 'bg-blue-500/5 border border-blue-500/20' : 'hover:bg-surface-raised/30 border border-transparent'
       }`}
       onClick={(e) => {
         e.stopPropagation();
@@ -172,7 +172,7 @@ const SingleImageEditor = ({
             className={`w-10 h-10 rounded-xl border-2 flex items-center justify-center transition-all duration-150 ${
               isSelected
                 ? 'border-blue-500 bg-blue-500/10 hover:bg-blue-500/20'
-                : 'border-gray-600 hover:border-gray-500 hover:bg-gray-800'
+                : 'border-gray-600 hover:border-gray-500 hover:bg-surface-raised'
             }`}
           >
             {isSelected ? (
@@ -180,7 +180,7 @@ const SingleImageEditor = ({
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             ) : (
-              <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 text-tertiary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -201,7 +201,7 @@ const SingleImageEditor = ({
                 </span>
               )}
             </div>
-            <p className="text-sm text-gray-400">
+            <p className="text-sm text-tertiary">
               {singleImage.subtitle} · {canvasSize.width}×{canvasSize.height}
             </p>
           </div>
@@ -210,17 +210,17 @@ const SingleImageEditor = ({
         {/* Zoom */}
         {isSelected && (
           <div className="flex items-center gap-2">
-            <span className="text-xs text-gray-500">Zoom</span>
+            <span className="text-xs text-quaternary">Zoom</span>
             <input
               type="range"
               min={25}
               max={150}
               value={zoom}
               onChange={(e) => setZoom(Number(e.target.value))}
-              className="w-24 h-1.5 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-blue-500"
+              className="w-24 h-1.5 bg-surface-overlay rounded-lg appearance-none cursor-pointer accent-blue-500"
               onClick={(e) => e.stopPropagation()}
             />
-            <span className="text-xs text-gray-400 w-10">{zoom}%</span>
+            <span className="text-xs text-tertiary w-10">{zoom}%</span>
           </div>
         )}
       </div>
@@ -330,7 +330,7 @@ const SingleImageEditor = ({
 
             {/* No selection message */}
             {!selectedLayer && (
-              <div className="text-center py-8 text-gray-500 text-xs">Select a layer to edit its properties</div>
+              <div className="text-center py-8 text-quaternary text-xs">Select a layer to edit its properties</div>
             )}
           </div>
         )}

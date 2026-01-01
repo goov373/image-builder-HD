@@ -48,8 +48,8 @@ class ErrorBoundary extends React.Component {
 
       // Default full-page error UI
       return (
-        <div className="fixed inset-0 bg-gray-900 flex items-center justify-center p-8">
-          <div className="max-w-md w-full bg-gray-800 border border-gray-700 rounded-lg p-8 text-center">
+        <div className="fixed inset-0 bg-surface-canvas flex items-center justify-center p-8">
+          <div className="max-w-md w-full bg-surface-raised border border-default rounded-lg p-8 text-center">
             {/* Error Icon */}
             <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-red-500/10 flex items-center justify-center">
               <svg className="w-8 h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -64,11 +64,11 @@ class ErrorBoundary extends React.Component {
 
             {/* Error Message */}
             <h2 className="text-xl font-semibold text-white mb-2">Something went wrong</h2>
-            <p className="text-gray-400 text-sm mb-6">An unexpected error occurred. Your work has been preserved.</p>
+            <p className="text-tertiary text-sm mb-6">An unexpected error occurred. Your work has been preserved.</p>
 
             {/* Error Details (dev only) */}
             {import.meta.env.DEV && this.state.error && (
-              <div className="mb-6 p-3 bg-gray-900 rounded-lg text-left overflow-auto max-h-32">
+              <div className="mb-6 p-3 bg-surface-canvas rounded-lg text-left overflow-auto max-h-32">
                 <p className="text-xs font-mono text-red-400 break-all">{this.state.error.toString()}</p>
               </div>
             )}

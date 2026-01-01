@@ -86,7 +86,7 @@ const ProjectHeader = ({ projectName, onUpdateName }) => {
           >
             {projectName}
             <svg
-              className="w-4 h-4 text-gray-600 group-hover:text-gray-400 transition-colors"
+              className="w-4 h-4 text-gray-600 group-hover:text-tertiary transition-colors"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"

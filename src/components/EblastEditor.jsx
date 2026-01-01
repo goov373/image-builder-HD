@@ -135,7 +135,7 @@ const EblastEditor = ({
     <div
       data-eblast-id={eblast.id}
       className={`mb-10 rounded-xl transition-all duration-150 p-6 ${
-        isSelected ? 'bg-teal-500/5 border border-teal-500/20' : 'hover:bg-gray-800/30 border border-transparent'
+        isSelected ? 'bg-teal-500/5 border border-teal-500/20' : 'hover:bg-surface-raised/30 border border-transparent'
       }`}
       onClick={(e) => {
         e.stopPropagation();
@@ -154,7 +154,7 @@ const EblastEditor = ({
             className={`w-11 h-11 rounded-xl border-2 flex items-center justify-center transition-all duration-150 ${
               isSelected
                 ? 'border-teal-500 bg-teal-500/10 hover:bg-teal-500/20'
-                : 'border-gray-600 hover:border-gray-500 hover:bg-gray-800'
+                : 'border-gray-600 hover:border-gray-500 hover:bg-surface-raised'
             }`}
           >
             {isSelected ? (
@@ -162,7 +162,7 @@ const EblastEditor = ({
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             ) : (
-              <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 text-tertiary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -183,7 +183,7 @@ const EblastEditor = ({
                 </span>
               )}
             </div>
-            <p className="text-sm text-gray-400">
+            <p className="text-sm text-tertiary">
               {eblast.subtitle} · {totalSections} sections
             </p>
           </div>

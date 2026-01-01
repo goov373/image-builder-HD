@@ -19,14 +19,14 @@ const GradientPicker = ({
   return (
     <div className="p-4 border-b border-gray-800">
       <div className="flex items-center justify-between mb-3">
-        <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Set Background</h3>
+        <h3 className="text-xs font-medium text-tertiary uppercase tracking-wide">Set Background</h3>
         {hasSelection ? (
           <span className="text-[10px] text-green-400 flex items-center gap-1">
             <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse" />
             {applyMode === 'row' ? 'Apply to row' : 'Click to apply'}
           </span>
         ) : (
-          <span className="text-[10px] text-gray-500">Select a frame first</span>
+          <span className="text-[10px] text-quaternary">Select a frame first</span>
         )}
       </div>
 
@@ -45,7 +45,7 @@ const GradientPicker = ({
 
       {/* Gradient Swatches */}
       <div className="mb-4">
-        <p className="text-[10px] text-gray-500 mb-2">Gradients</p>
+        <p className="text-[10px] text-quaternary mb-2">Gradients</p>
         <div className="grid grid-cols-3 gap-2">
           {gradients.map((gradient, idx) => (
             <GradientSwatch key={idx} gradient={gradient} onClick={() => onSelect(gradient)} disabled={!hasSelection} />
@@ -55,7 +55,7 @@ const GradientPicker = ({
 
       {/* Solid Colors */}
       <div>
-        <p className="text-[10px] text-gray-500 mb-2">Solid Colors</p>
+        <p className="text-[10px] text-quaternary mb-2">Solid Colors</p>
         <div className="grid grid-cols-6 gap-2">
           {solidColors.map((color, idx) => (
             <ColorSwatch key={idx} color={color} onClick={() => onSelect(color)} disabled={!hasSelection} />
@@ -70,14 +70,14 @@ const GradientPicker = ({
  * ApplyModeToggle - Toggle between Frame and Row (Stretch) modes
  */
 const ApplyModeToggle = ({ mode, onChange }) => (
-  <div className="flex items-center gap-2 mb-3 p-2 bg-gray-800/50 rounded-lg">
-    <span className="text-[10px] text-gray-400">Apply to:</span>
-    <div className="flex rounded-md overflow-hidden border border-gray-700">
+  <div className="flex items-center gap-2 mb-3 p-2 bg-surface-raised/50 rounded-lg">
+    <span className="text-[10px] text-tertiary">Apply to:</span>
+    <div className="flex rounded-md overflow-hidden border border-default">
       <button
         type="button"
         onClick={() => onChange('frame')}
         className={`px-3 py-1 text-[10px] font-medium transition-colors duration-150 ${
-          mode === 'frame' ? 'bg-gray-700 text-white' : 'bg-transparent text-gray-400 hover:text-gray-300'
+          mode === 'frame' ? 'bg-surface-overlay text-white' : 'bg-transparent text-tertiary hover:text-gray-300'
         }`}
       >
         Frame
@@ -86,7 +86,7 @@ const ApplyModeToggle = ({ mode, onChange }) => (
         type="button"
         onClick={() => onChange('row')}
         className={`px-3 py-1 text-[10px] font-medium transition-colors duration-150 ${
-          mode === 'row' ? 'bg-gray-700 text-white' : 'bg-transparent text-gray-400 hover:text-gray-300'
+          mode === 'row' ? 'bg-surface-overlay text-white' : 'bg-transparent text-tertiary hover:text-gray-300'
         }`}
       >
         Row (Stretch)
@@ -99,9 +99,9 @@ const ApplyModeToggle = ({ mode, onChange }) => (
  * FrameRangeSlider - Dual-handle slider for selecting frame range
  */
 const FrameRangeSlider = ({ start, end, total, onChange }) => (
-  <div className="mb-3 p-3 bg-gray-800/50 rounded-lg">
+  <div className="mb-3 p-3 bg-surface-raised/50 rounded-lg">
     <div className="flex items-center justify-between mb-3">
-      <span className="text-[10px] text-gray-400">Frame range:</span>
+      <span className="text-[10px] text-tertiary">Frame range:</span>
       <span className="text-[10px] text-white font-medium">
         {start + 1} – {end + 1}
       </span>
@@ -110,7 +110,7 @@ const FrameRangeSlider = ({ start, end, total, onChange }) => (
     {/* Dual Range Slider */}
     <div className="relative h-6 mb-2">
       {/* Track background */}
-      <div className="absolute top-1/2 -translate-y-1/2 left-0 right-0 h-1.5 bg-gray-700 rounded-full" />
+      <div className="absolute top-1/2 -translate-y-1/2 left-0 right-0 h-1.5 bg-surface-overlay rounded-full" />
 
       {/* Selected range highlight */}
       <div

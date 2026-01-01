@@ -90,6 +90,21 @@ export default [
       'prefer-const': 'warn',
       'no-var': 'error',
       'eqeqeq': ['warn', 'smart'],
+      
+      // Design System Enforcement - Catch hardcoded colors
+      // These rules help enforce the use of design tokens instead of hardcoded values
+      'no-restricted-syntax': ['warn',
+        {
+          // Catch hex color literals in JSX/JS (e.g., '#ff0000', '#6466e9')
+          selector: 'Literal[value=/^#[0-9a-fA-F]{3,8}$/]',
+          message: '🎨 Use design tokens instead of hex colors. See docs/DESIGN-SYSTEM.md',
+        },
+        {
+          // Catch rgb/rgba function calls
+          selector: 'Literal[value=/^rgba?\\(/]',
+          message: '🎨 Use design tokens instead of rgb/rgba colors. See docs/DESIGN-SYSTEM.md',
+        },
+      ],
     },
   },
   {

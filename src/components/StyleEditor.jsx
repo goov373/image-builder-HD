@@ -5,7 +5,7 @@ import { useState } from 'react';
  */
 const SliderControl = ({ label, value, min, max, step = 1, unit = 'px', onChange }) => (
   <div className="mb-3">
-    <div className="flex justify-between text-[10px] text-gray-400 mb-1">
+    <div className="flex justify-between text-[10px] text-tertiary mb-1">
       <span>{label}</span>
       <span>
         {value}
@@ -19,7 +19,7 @@ const SliderControl = ({ label, value, min, max, step = 1, unit = 'px', onChange
       step={step}
       value={value}
       onChange={(e) => onChange(Number(e.target.value))}
-      className="w-full h-1.5 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-gray-400"
+      className="w-full h-1.5 bg-surface-overlay rounded-lg appearance-none cursor-pointer accent-gray-400"
     />
   </div>
 );
@@ -29,7 +29,7 @@ const SliderControl = ({ label, value, min, max, step = 1, unit = 'px', onChange
  */
 const ColorInput = ({ label, value, onChange }) => (
   <div className="flex items-center justify-between mb-2">
-    <span className="text-[10px] text-gray-400">{label}</span>
+    <span className="text-[10px] text-tertiary">{label}</span>
     <div className="flex items-center gap-2">
       <input
         type="color"
@@ -42,7 +42,7 @@ const ColorInput = ({ label, value, onChange }) => (
         value={value || ''}
         onChange={(e) => onChange(e.target.value)}
         placeholder="#000000"
-        className="w-24 px-2 py-1 bg-gray-800 border border-gray-700 rounded text-[10px] text-white"
+        className="w-24 px-2 py-1 bg-surface-raised border border-default rounded text-[10px] text-white"
       />
     </div>
   </div>
@@ -53,11 +53,11 @@ const ColorInput = ({ label, value, onChange }) => (
  */
 const ToggleControl = ({ label, value, onChange }) => (
   <div className="flex items-center justify-between mb-2">
-    <span className="text-[10px] text-gray-400">{label}</span>
+    <span className="text-[10px] text-tertiary">{label}</span>
     <button
       type="button"
       onClick={() => onChange(!value)}
-      className={`w-10 h-5 rounded-full transition-colors ${value ? 'bg-gray-500' : 'bg-gray-700'}`}
+      className={`w-10 h-5 rounded-full transition-colors ${value ? 'bg-gray-500' : 'bg-surface-overlay'}`}
     >
       <div
         className={`w-4 h-4 rounded-full bg-white shadow transition-transform ${value ? 'translate-x-5' : 'translate-x-0.5'}`}
@@ -129,7 +129,7 @@ const StyleEditor = ({ style, onChange, accentColor }) => {
         {openSections.border && (
           <>
             <div className="mb-3">
-              <div className="text-[10px] text-gray-400 mb-1.5">Style</div>
+              <div className="text-[10px] text-tertiary mb-1.5">Style</div>
               <div className="flex gap-1">
                 {['none', 'solid', 'dashed', 'dotted'].map((type) => (
                   <button
@@ -139,7 +139,7 @@ const StyleEditor = ({ style, onChange, accentColor }) => {
                     className={`px-2 py-1 rounded text-[10px] capitalize ${
                       style.borderStyle === type
                         ? 'bg-gray-600 text-white'
-                        : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                        : 'bg-surface-raised text-tertiary hover:bg-surface-overlay'
                     }`}
                   >
                     {type}

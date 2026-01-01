@@ -105,7 +105,7 @@ const VideoCoverFrame = ({
     <div className="flex flex-col items-center">
       {/* Frame Size Indicator */}
       <div className="mb-3 flex items-center gap-2">
-        <span className="text-xs text-gray-400">{size.name}</span>
+        <span className="text-xs text-tertiary">{size.name}</span>
         <span className="text-[10px] text-gray-600">{size.spec}</span>
       </div>
 

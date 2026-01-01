@@ -925,7 +925,7 @@ const DesignSystemPanel = ({
                             className="flex items-center gap-2 px-2.5 py-2 bg-[--surface-default] rounded group hover:bg-[--surface-raised] transition-colors"
                           >
                             <svg
-                              className="w-4 h-4 text-purple-400 flex-shrink-0"
+                              className="w-4 h-4 text-[--text-secondary] flex-shrink-0"
                               fill="none"
                               stroke="currentColor"
                               viewBox="0 0 24 24"
@@ -1397,7 +1397,7 @@ const DesignSystemPanel = ({
                             >
                               <img src={img.url} alt={img.name} className="w-full h-full object-contain" />
                               {hasFrameSelected && (
-                                <div className="absolute inset-0 bg-purple-500/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                <div className="absolute inset-0 bg-[--surface-overlay] opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                                   <svg
                                     className="w-6 h-6 text-white"
                                     fill="none"
@@ -1577,7 +1577,7 @@ const DesignSystemPanel = ({
                             <span className="text-xs font-bold text-white">U</span>
                           </div>
                           <div className="flex-1">
-                            <p className="text-xs text-white group-hover:text-purple-400 transition-colors">Unsplash</p>
+                            <p className="text-xs text-white group-hover:text-[--text-secondary] transition-colors">Unsplash</p>
                             <p className="text-[10px] text-[--text-quaternary]">Apartment buildings</p>
                           </div>
                           <svg className="w-4 h-4 text-[--text-quaternary]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1599,7 +1599,7 @@ const DesignSystemPanel = ({
                             <span className="text-xs font-bold text-white">P</span>
                           </div>
                           <div className="flex-1">
-                            <p className="text-xs text-white group-hover:text-purple-400 transition-colors">Pexels</p>
+                            <p className="text-xs text-white group-hover:text-[--text-secondary] transition-colors">Pexels</p>
                             <p className="text-[10px] text-[--text-quaternary]">Multifamily housing</p>
                           </div>
                           <svg className="w-4 h-4 text-[--text-quaternary]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1621,7 +1621,7 @@ const DesignSystemPanel = ({
                             <span className="text-xs font-bold text-white">Px</span>
                           </div>
                           <div className="flex-1">
-                            <p className="text-xs text-white group-hover:text-purple-400 transition-colors">Pixabay</p>
+                            <p className="text-xs text-white group-hover:text-[--text-secondary] transition-colors">Pixabay</p>
                             <p className="text-[10px] text-[--text-quaternary]">Urban apartments</p>
                           </div>
                           <svg className="w-4 h-4 text-[--text-quaternary]" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -44,8 +44,8 @@ export default function LoginPage({ onLogin, error: externalError, loading: exte
     <div className="min-h-screen flex items-center justify-center p-4" style={{ backgroundColor: '#0d1321' }}>
       {/* Login Card - matching project card style */}
       <div
-        className={`relative w-full max-w-md bg-gray-900 border rounded-md overflow-hidden transition-all duration-150 ${
-          isHovered ? 'border-gray-600 bg-gray-800/50' : 'border-gray-800'
+        className={`relative w-full max-w-md bg-surface-canvas border rounded-md overflow-hidden transition-all duration-150 ${
+          isHovered ? 'border-gray-600 bg-surface-raised/50' : 'border-gray-800'
         }`}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
@@ -61,7 +61,7 @@ export default function LoginPage({ onLogin, error: externalError, loading: exte
                 isHovered ? 'bg-gray-700' : 'bg-gray-700/50'
               } border border-gray-600`}
             >
-              <svg className="w-7 h-7 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-7 h-7 text-tertiary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -88,14 +88,14 @@ export default function LoginPage({ onLogin, error: externalError, loading: exte
             >
               Content Builder
             </h1>
-            <p className="text-gray-500 text-sm">Sign in to your account</p>
+            <p className="text-quaternary text-sm">Sign in to your account</p>
           </div>
 
           {/* Login Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Email Field */}
             <div>
-              <label htmlFor="email" className="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wide">
+              <label htmlFor="email" className="block text-xs font-medium text-quaternary mb-1.5 uppercase tracking-wide">
                 Email
               </label>
               <Input
@@ -115,7 +115,7 @@ export default function LoginPage({ onLogin, error: externalError, loading: exte
             <div>
               <label
                 htmlFor="password"
-                className="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wide"
+                className="block text-xs font-medium text-quaternary mb-1.5 uppercase tracking-wide"
               >
                 Password
               </label>

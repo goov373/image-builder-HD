@@ -39,7 +39,7 @@ class SectionErrorBoundary extends React.Component {
       const sectionName = this.props.name || 'This section';
 
       return (
-        <div className="p-4 bg-gray-800/50 border border-gray-700 rounded-lg">
+        <div className="p-4 bg-surface-raised/50 border border-gray-700 rounded-lg">
           <div className="flex items-start gap-3">
             {/* Warning Icon */}
             <div className="flex-shrink-0 w-8 h-8 rounded-full bg-yellow-500/10 flex items-center justify-center">
@@ -55,7 +55,7 @@ class SectionErrorBoundary extends React.Component {
 
             <div className="flex-1 min-w-0">
               <h3 className="text-sm font-medium text-white mb-1">{sectionName} encountered an error</h3>
-              <p className="text-xs text-gray-400 mb-3">
+              <p className="text-xs text-tertiary mb-3">
                 This section failed to load. Other parts of the app are still working.
               </p>
 

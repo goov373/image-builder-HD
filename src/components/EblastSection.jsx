@@ -11,11 +11,11 @@ import ImageLayer from './ImageLayer';
  */
 const SectionTypeBadge = ({ type }) => {
   const colors = {
-    header: 'bg-purple-500/20 text-purple-400',
+    header: 'bg-[--surface-overlay] text-[--text-secondary]',
     hero: 'bg-blue-500/20 text-blue-400',
     feature: 'bg-teal-500/20 text-teal-400',
     cta: 'bg-orange-500/20 text-orange-400',
-    footer: 'bg-gray-500/20 text-gray-400',
+    footer: 'bg-gray-500/20 text-tertiary',
   };
 
   return (

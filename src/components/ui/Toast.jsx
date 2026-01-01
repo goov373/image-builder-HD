@@ -117,8 +117,8 @@ const ToastItem = ({ toast, onRemove }) => {
     <div
       className={`
         pointer-events-auto flex items-center gap-3 px-4 py-3 
-        bg-gray-800 border border-gray-700 rounded-lg shadow-xl
-        text-sm text-gray-200
+        bg-surface-raised border border-default rounded-lg shadow-xl
+        text-sm text-primary
         transition-all duration-150
         ${isExiting ? 'opacity-0 translate-x-4' : 'opacity-100 translate-x-0'}
         animate-[slideIn_0.15s_ease-out]
@@ -130,7 +130,7 @@ const ToastItem = ({ toast, onRemove }) => {
       <button
         type="button"
         onClick={handleRemove}
-        className="p-1 rounded hover:bg-gray-700 transition-colors text-gray-500 hover:text-gray-300"
+        className="p-1 rounded hover:bg-surface-overlay transition-colors text-quaternary hover:text-secondary"
       >
         <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

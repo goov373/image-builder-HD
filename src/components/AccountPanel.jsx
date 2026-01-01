@@ -203,19 +203,19 @@ const AccountPanel = ({ onClose, isOpen, onSignOut = null, user = null }) => {
 
   return (
     <div
-      className={`fixed top-[56px] h-[calc(100%-56px)] w-80 bg-gray-900 border-r border-gray-800 z-40 flex flex-col ${isOpen ? 'pointer-events-auto' : 'pointer-events-none'}`}
+      className={`fixed top-[56px] h-[calc(100%-56px)] w-80 bg-surface-canvas border-r border-default z-40 flex flex-col ${isOpen ? 'pointer-events-auto' : 'pointer-events-none'}`}
       style={{ left: isOpen ? 64 : -256, transition: 'left 0.3s ease-out' }}
     >
       {/* Fixed Header */}
       <div
-        className="flex-shrink-0 p-4 border-b border-gray-800 flex items-center justify-between"
+        className="flex-shrink-0 p-4 border-b border-default flex items-center justify-between"
         style={{ height: 64 }}
       >
         <h2 className="text-base font-semibold text-white">Account</h2>
         <button
           type="button"
           onClick={onClose}
-          className="p-1.5 rounded hover:bg-gray-800 text-gray-400 hover:text-white transition-colors"
+          className="p-1.5 rounded hover:bg-surface-raised text-tertiary hover:text-white transition-colors"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -224,22 +224,22 @@ const AccountPanel = ({ onClose, isOpen, onSignOut = null, user = null }) => {
       </div>
 
       {/* Tab Navigation */}
-      <div className="flex-shrink-0 flex border-b border-gray-800">
+      <div className="flex-shrink-0 flex border-b border-default">
         <button
           type="button"
           onClick={() => setActiveTab('team')}
-          className={`flex-1 py-3 text-xs font-medium transition-colors ${activeTab === 'team' ? 'text-white border-b-2 border-gray-500' : 'text-gray-500 hover:text-gray-300'}`}
+          className={`flex-1 py-3 text-xs font-medium transition-colors ${activeTab === 'team' ? 'text-white border-b-2 border-strong' : 'text-quaternary hover:text-secondary'}`}
         >
           Team
         </button>
         <button
           type="button"
           onClick={() => setActiveTab('invites')}
-          className={`flex-1 py-3 text-xs font-medium transition-colors relative ${activeTab === 'invites' ? 'text-white border-b-2 border-gray-500' : 'text-gray-500 hover:text-gray-300'}`}
+          className={`flex-1 py-3 text-xs font-medium transition-colors relative ${activeTab === 'invites' ? 'text-white border-b-2 border-strong' : 'text-quaternary hover:text-secondary'}`}
         >
           Invites
           {pendingInvites.length > 0 && (
-            <span className="absolute top-2 right-4 w-4 h-4 bg-gray-600 rounded-full text-[10px] flex items-center justify-center text-white">
+            <span className="absolute top-2 right-4 w-4 h-4 bg-surface-elevated rounded-full text-[10px] flex items-center justify-center text-white">
               {pendingInvites.length}
             </span>
           )}
@@ -247,7 +247,7 @@ const AccountPanel = ({ onClose, isOpen, onSignOut = null, user = null }) => {
         <button
           type="button"
           onClick={() => setActiveTab('settings')}
-          className={`flex-1 py-3 text-xs font-medium transition-colors ${activeTab === 'settings' ? 'text-white border-b-2 border-gray-500' : 'text-gray-500 hover:text-gray-300'}`}
+          className={`flex-1 py-3 text-xs font-medium transition-colors ${activeTab === 'settings' ? 'text-white border-b-2 border-strong' : 'text-quaternary hover:text-secondary'}`}
         >
           Settings
         </button>
@@ -263,7 +263,7 @@ const AccountPanel = ({ onClose, isOpen, onSignOut = null, user = null }) => {
               <button
                 type="button"
                 onClick={() => setShowInviteForm(true)}
-                className="w-full py-2.5 rounded border border-dashed border-gray-600 text-gray-400 hover:border-gray-500 hover:text-white hover:bg-gray-800/50 transition-all text-sm font-medium flex items-center justify-center gap-2"
+                className="w-full py-2.5 rounded border border-dashed border-emphasis text-tertiary hover:border-strong hover:text-white hover:bg-surface-raised/50 transition-all text-sm font-medium flex items-center justify-center gap-2"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -274,18 +274,18 @@ const AccountPanel = ({ onClose, isOpen, onSignOut = null, user = null }) => {
 
             {/* Invite Form */}
             {showInviteForm && (
-              <div className="p-3 rounded bg-gray-800/50 border border-gray-700 space-y-3">
+              <div className="p-3 rounded bg-surface-raised/50 border border-default space-y-3">
                 <input
                   type="email"
                   value={inviteEmail}
                   onChange={(e) => setInviteEmail(e.target.value)}
                   placeholder="Email address"
-                  className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded text-sm text-white placeholder-gray-500 focus:outline-none focus:border-gray-500"
+                  className="w-full px-3 py-2 bg-surface-raised border border-emphasis rounded text-sm text-white placeholder-quaternary focus:outline-none focus:border-strong"
                 />
                 <select
                   value={inviteRole}
                   onChange={(e) => setInviteRole(e.target.value)}
-                  className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded text-sm text-white focus:outline-none focus:border-gray-500"
+                  className="w-full px-3 py-2 bg-surface-raised border border-emphasis rounded text-sm text-white focus:outline-none focus:border-strong"
                 >
                   {roles
                     .filter((r) => r.id !== 'owner')
@@ -299,7 +299,7 @@ const AccountPanel = ({ onClose, isOpen, onSignOut = null, user = null }) => {
                   <button
                     type="button"
                     onClick={() => setShowInviteForm(false)}
-                    className="flex-1 py-2 rounded bg-gray-700 text-gray-300 hover:bg-gray-600 text-sm font-medium transition-colors"
+                    className="flex-1 py-2 rounded bg-surface-overlay text-secondary hover:bg-surface-elevated text-sm font-medium transition-colors"
                   >
                     Cancel
                   </button>
@@ -307,7 +307,7 @@ const AccountPanel = ({ onClose, isOpen, onSignOut = null, user = null }) => {
                     type="button"
                     onClick={handleInvite}
                     disabled={!inviteEmail.trim()}
-                    className="flex-1 py-2 rounded bg-white text-gray-900 hover:bg-gray-200 text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex-1 py-2 rounded bg-white text-black hover:bg-gray-100 text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Send Invite
                   </button>
@@ -317,7 +317,7 @@ const AccountPanel = ({ onClose, isOpen, onSignOut = null, user = null }) => {
 
             {/* Team Members List */}
             <div className="space-y-2">
-              <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+              <h3 className="text-xs font-medium text-quaternary uppercase tracking-wide">
                 Team Members ({teamMembers.length})
               </h3>
 
@@ -331,21 +331,21 @@ const AccountPanel = ({ onClose, isOpen, onSignOut = null, user = null }) => {
               {/* Loading state */}
               {isLoading ? (
                 <div className="py-6 text-center">
-                  <div className="w-6 h-6 mx-auto mb-2 border-2 border-gray-600 border-t-gray-400 rounded-full animate-spin" />
-                  <p className="text-xs text-gray-500">Loading team...</p>
+                  <div className="w-6 h-6 mx-auto mb-2 border-2 border-emphasis border-t-strong rounded-full animate-spin" />
+                  <p className="text-xs text-quaternary">Loading team...</p>
                 </div>
               ) : teamMembers.length === 0 ? (
                 <div className="py-6 text-center">
-                  <p className="text-xs text-gray-500">No team members yet</p>
-                  <p className="text-[10px] text-gray-600 mt-1">Invite someone to get started</p>
+                  <p className="text-xs text-quaternary">No team members yet</p>
+                  <p className="text-[10px] text-disabled mt-1">Invite someone to get started</p>
                 </div>
               ) : (
                 teamMembers.map((member) => (
                   <div
                     key={member.id}
-                    className="p-3 rounded bg-gray-800/30 border border-gray-700/50 flex items-center gap-3"
+                    className="p-3 rounded bg-surface-raised/30 border border-default/50 flex items-center gap-3"
                   >
-                    <div className="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center text-xs font-medium text-white">
+                    <div className="w-8 h-8 rounded-full bg-surface-overlay flex items-center justify-center text-xs font-medium text-white">
                       {(member.name || member.email || '?')
                         .split(' ')
                         .map((n) => n[0])
@@ -357,12 +357,12 @@ const AccountPanel = ({ onClose, isOpen, onSignOut = null, user = null }) => {
                       <p className="text-sm font-medium text-white truncate">
                         {member.isCurrentUser ? 'You' : member.name || member.email?.split('@')[0]}
                       </p>
-                      <p className="text-xs text-gray-500 truncate">{member.email}</p>
+                      <p className="text-xs text-quaternary truncate">{member.email}</p>
                     </div>
                     <div className="flex items-center gap-2">
                       {/* Always show role badge for owner or if current user is viewing themselves */}
                       {member.role === 'owner' || member.isCurrentUser || !isOwner ? (
-                        <span className="text-[10px] px-2 py-0.5 rounded bg-gray-700 text-gray-400 capitalize">
+                        <span className="text-[10px] px-2 py-0.5 rounded bg-surface-overlay text-tertiary capitalize">
                           {member.role}
                         </span>
                       ) : (
@@ -371,7 +371,7 @@ const AccountPanel = ({ onClose, isOpen, onSignOut = null, user = null }) => {
                           <select
                             value={member.role}
                             onChange={(e) => handleChangeRole(member.id, e.target.value)}
-                            className="text-[10px] px-2 py-1 rounded bg-gray-700 border-0 text-gray-300 focus:outline-none cursor-pointer"
+                            className="text-[10px] px-2 py-1 rounded bg-surface-overlay border-0 text-secondary focus:outline-none cursor-pointer"
                           >
                             {roles
                               .filter((r) => r.id !== 'owner')
@@ -384,7 +384,7 @@ const AccountPanel = ({ onClose, isOpen, onSignOut = null, user = null }) => {
                           <button
                             type="button"
                             onClick={() => handleRemoveMember(member.id)}
-                            className="p-1 rounded hover:bg-red-500/20 text-gray-500 hover:text-red-400 transition-colors"
+                            className="p-1 rounded hover:bg-red-500/20 text-quaternary hover:text-red-400 transition-colors"
                             title="Remove member"
                           >
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -413,7 +413,7 @@ const AccountPanel = ({ onClose, isOpen, onSignOut = null, user = null }) => {
               /* Non-owners see a message */
               <div className="text-center py-8">
                 <svg
-                  className="w-12 h-12 mx-auto text-gray-600 mb-3"
+                  className="w-12 h-12 mx-auto text-disabled mb-3"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -425,13 +425,13 @@ const AccountPanel = ({ onClose, isOpen, onSignOut = null, user = null }) => {
                     d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
                   />
                 </svg>
-                <p className="text-sm text-gray-500">Owner access required</p>
-                <p className="text-xs text-gray-600 mt-1">Only the team owner can manage invites</p>
+                <p className="text-sm text-quaternary">Owner access required</p>
+                <p className="text-xs text-disabled mt-1">Only the team owner can manage invites</p>
               </div>
             ) : pendingInvites.length === 0 ? (
               <div className="text-center py-8">
                 <svg
-                  className="w-12 h-12 mx-auto text-gray-600 mb-3"
+                  className="w-12 h-12 mx-auto text-disabled mb-3"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -443,47 +443,47 @@ const AccountPanel = ({ onClose, isOpen, onSignOut = null, user = null }) => {
                     d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
                   />
                 </svg>
-                <p className="text-sm text-gray-500">No pending invites</p>
+                <p className="text-sm text-quaternary">No pending invites</p>
                 <button
                   type="button"
                   onClick={() => {
                     setActiveTab('team');
                     setShowInviteForm(true);
                   }}
-                  className="mt-3 text-xs text-gray-400 hover:text-white transition-colors"
+                  className="mt-3 text-xs text-tertiary hover:text-white transition-colors"
                 >
                   Invite someone →
                 </button>
               </div>
             ) : (
               <div className="space-y-2">
-                <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                <h3 className="text-xs font-medium text-quaternary uppercase tracking-wide">
                   Pending Invites ({pendingInvites.length})
                 </h3>
                 {pendingInvites.map((invite) => (
-                  <div key={invite.id} className="p-3 rounded bg-gray-800/30 border border-gray-700/50">
+                  <div key={invite.id} className="p-3 rounded bg-surface-raised/30 border border-default/50">
                     <div className="flex items-start justify-between mb-2">
                       <div>
                         <p className="text-sm font-medium text-white">{invite.email}</p>
-                        <p className="text-xs text-gray-500 capitalize">{invite.role}</p>
+                        <p className="text-xs text-quaternary capitalize">{invite.role}</p>
                       </div>
-                      <span className="text-[10px] px-2 py-0.5 rounded bg-gray-700 text-gray-400">Pending</span>
+                      <span className="text-[10px] px-2 py-0.5 rounded bg-surface-overlay text-tertiary">Pending</span>
                     </div>
-                    <div className="text-xs text-gray-500 mb-2">
+                    <div className="text-xs text-quaternary mb-2">
                       Sent {formatDate(invite.sent_at)} · Expires {formatDate(invite.expires_at)}
                     </div>
                     <div className="flex gap-2">
                       <button
                         type="button"
                         onClick={() => handleResendInvite(invite.id)}
-                        className="flex-1 py-1.5 rounded bg-gray-700 text-gray-300 hover:bg-gray-600 text-xs font-medium transition-colors"
+                        className="flex-1 py-1.5 rounded bg-surface-overlay text-secondary hover:bg-surface-elevated text-xs font-medium transition-colors"
                       >
                         Resend
                       </button>
                       <button
                         type="button"
                         onClick={() => handleCancelInvite(invite.id)}
-                        className="flex-1 py-1.5 rounded bg-gray-700 text-gray-300 hover:bg-red-500/20 hover:text-red-400 text-xs font-medium transition-colors"
+                        className="flex-1 py-1.5 rounded bg-surface-overlay text-secondary hover:bg-red-500/20 hover:text-red-400 text-xs font-medium transition-colors"
                       >
                         Cancel
                       </button>
@@ -500,29 +500,29 @@ const AccountPanel = ({ onClose, isOpen, onSignOut = null, user = null }) => {
           <div className="space-y-5">
             {/* Profile Section */}
             <div className="space-y-3">
-              <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wide">Profile</h3>
+              <h3 className="text-xs font-medium text-quaternary uppercase tracking-wide">Profile</h3>
 
               {isEditingProfile ? (
                 /* Edit Mode */
-                <div className="p-3 rounded bg-gray-800/30 border border-gray-700/50 space-y-3">
+                <div className="p-3 rounded bg-surface-raised/30 border border-default/50 space-y-3">
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-full bg-gray-700 flex items-center justify-center text-lg font-medium text-white">
+                    <div className="w-12 h-12 rounded-full bg-surface-overlay flex items-center justify-center text-lg font-medium text-white">
                       {userInitials}
                     </div>
                     <div className="flex-1">
-                      <p className="text-xs text-gray-500 mb-1">Display Name</p>
+                      <p className="text-xs text-quaternary mb-1">Display Name</p>
                       <input
                         type="text"
                         value={profileName}
                         onChange={(e) => setProfileName(e.target.value)}
-                        className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded text-sm text-white focus:outline-none focus:border-gray-500"
+                        className="w-full px-3 py-2 bg-surface-raised border border-emphasis rounded text-sm text-white focus:outline-none focus:border-strong"
                         placeholder="Your name"
                       />
                     </div>
                   </div>
                   <div>
-                    <p className="text-xs text-gray-500 mb-1">Email (cannot be changed)</p>
-                    <p className="text-sm text-gray-400 px-3 py-2 bg-gray-800/50 rounded">{userEmail}</p>
+                    <p className="text-xs text-quaternary mb-1">Email (cannot be changed)</p>
+                    <p className="text-sm text-tertiary px-3 py-2 bg-surface-raised/50 rounded">{userEmail}</p>
                   </div>
                   <div className="flex gap-2 pt-2">
                     <button
@@ -531,14 +531,14 @@ const AccountPanel = ({ onClose, isOpen, onSignOut = null, user = null }) => {
                         setIsEditingProfile(false);
                         setProfileName(userDisplayName);
                       }}
-                      className="flex-1 py-2 rounded bg-gray-700 text-gray-300 hover:bg-gray-600 text-xs font-medium transition-colors"
+                      className="flex-1 py-2 rounded bg-surface-overlay text-secondary hover:bg-surface-elevated text-xs font-medium transition-colors"
                     >
                       Cancel
                     </button>
                     <button
                       type="button"
                       onClick={handleUpdateProfile}
-                      className="flex-1 py-2 rounded bg-white text-gray-900 hover:bg-gray-200 text-xs font-medium transition-colors"
+                      className="flex-1 py-2 rounded bg-white text-black hover:bg-gray-100 text-xs font-medium transition-colors"
                     >
                       Save
                     </button>
@@ -546,18 +546,18 @@ const AccountPanel = ({ onClose, isOpen, onSignOut = null, user = null }) => {
                 </div>
               ) : (
                 /* View Mode */
-                <div className="flex items-center gap-3 p-3 rounded bg-gray-800/30 border border-gray-700/50">
-                  <div className="w-12 h-12 rounded-full bg-gray-700 flex items-center justify-center text-lg font-medium text-white">
+                <div className="flex items-center gap-3 p-3 rounded bg-surface-raised/30 border border-default/50">
+                  <div className="w-12 h-12 rounded-full bg-surface-overlay flex items-center justify-center text-lg font-medium text-white">
                     {userInitials}
                   </div>
                   <div className="flex-1">
                     <p className="text-sm font-medium text-white">{userDisplayName}</p>
-                    <p className="text-xs text-gray-500">{userEmail}</p>
+                    <p className="text-xs text-quaternary">{userEmail}</p>
                   </div>
                   <button
                     type="button"
                     onClick={() => setIsEditingProfile(true)}
-                    className="text-xs text-gray-400 hover:text-white transition-colors"
+                    className="text-xs text-tertiary hover:text-white transition-colors"
                   >
                     Edit
                   </button>
@@ -567,14 +567,14 @@ const AccountPanel = ({ onClose, isOpen, onSignOut = null, user = null }) => {
 
             {/* Workspace Section */}
             <div className="space-y-3">
-              <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wide">Workspace</h3>
-              <div className="p-3 rounded bg-gray-800/30 border border-gray-700/50 space-y-3">
+              <h3 className="text-xs font-medium text-quaternary uppercase tracking-wide">Workspace</h3>
+              <div className="p-3 rounded bg-surface-raised/30 border border-default/50 space-y-3">
                 <div>
-                  <label className="text-xs text-gray-400 block mb-1">Workspace Name</label>
+                  <label className="text-xs text-tertiary block mb-1">Workspace Name</label>
                   <input
                     type="text"
                     defaultValue="My Team"
-                    className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded text-sm text-white focus:outline-none focus:border-gray-500"
+                    className="w-full px-3 py-2 bg-surface-raised border border-emphasis rounded text-sm text-white focus:outline-none focus:border-strong"
                   />
                 </div>
               </div>
@@ -583,17 +583,17 @@ const AccountPanel = ({ onClose, isOpen, onSignOut = null, user = null }) => {
             {/* Sign Out */}
             {onSignOut && (
               <div className="space-y-3">
-                <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wide">Session</h3>
-                <div className="p-3 rounded bg-gray-800/50 border border-gray-700 space-y-2">
+                <h3 className="text-xs font-medium text-quaternary uppercase tracking-wide">Session</h3>
+                <div className="p-3 rounded bg-surface-raised/50 border border-default space-y-2">
                   {user?.email && (
-                    <p className="text-xs text-gray-400">
+                    <p className="text-xs text-tertiary">
                       Signed in as <span className="text-white">{user.email}</span>
                     </p>
                   )}
                   <button
                     type="button"
                     onClick={onSignOut}
-                    className="w-full py-2 rounded bg-gray-700 hover:bg-gray-600 text-white text-xs font-medium transition-colors flex items-center justify-center gap-2"
+                    className="w-full py-2 rounded bg-surface-overlay hover:bg-surface-elevated text-white text-xs font-medium transition-colors flex items-center justify-center gap-2"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path
@@ -613,7 +613,7 @@ const AccountPanel = ({ onClose, isOpen, onSignOut = null, user = null }) => {
             <div className="space-y-3">
               <h3 className="text-xs font-medium text-red-400/70 uppercase tracking-wide">Danger Zone</h3>
               <div className="p-3 rounded bg-red-500/5 border border-red-500/20 space-y-2">
-                <p className="text-xs text-gray-400">Permanently delete your account and all associated data.</p>
+                <p className="text-xs text-tertiary">Permanently delete your account and all associated data.</p>
                 <button
                   type="button"
                   className="w-full py-2 rounded border border-red-500/30 text-red-400 hover:bg-red-500/10 text-xs font-medium transition-colors"
