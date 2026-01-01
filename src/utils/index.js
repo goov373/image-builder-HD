@@ -40,3 +40,17 @@ export {
   REDO,
   CLEAR_HISTORY,
 } from './undoable';
+
+// Browser Export utilities - WYSIWYG exports using browser rendering
+// 🏆 GOLDEN RULE: Always use browser rendering for exports
+export {
+  exportElement,
+  exportToPng,
+  exportToJpeg,
+  exportToBlob,
+  exportToCanvas,
+  getExtension,
+  getMimeType,
+  EXPORT_DEFAULTS,
+  RESOLUTION_SCALES,
+} from './browserExport';

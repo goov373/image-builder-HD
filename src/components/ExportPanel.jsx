@@ -1,6 +1,13 @@
 import { useState } from 'react';
-import html2canvas from 'html2canvas';
+import JSZip from 'jszip';
+import { saveAs } from 'file-saver';
 import { exportPresets } from '../data/exportPresets';
+import { 
+  exportElement, 
+  getExtension, 
+  getMimeType, 
+  RESOLUTION_SCALES 
+} from '../utils/browserExport';
 
 /**
  * Export Panel
@@ -22,6 +29,7 @@ const ExportPanel = ({
   const [customBgColor, setCustomBgColor] = useState('#000000');
   const [selectedItems, setSelectedItems] = useState({});
   const [isExporting, setIsExporting] = useState(false);
+  const [exportProgress, setExportProgress] = useState({ current: 0, total: 0 });
   const [exportSuccess, setExportSuccess] = useState(false);
   const [isProjectDropdownOpen, setIsProjectDropdownOpen] = useState(false);
   const [selectedPreset, setSelectedPreset] = useState(null);
@@ -85,12 +93,12 @@ const ExportPanel = ({
   };
 
   const formats = [
-    { id: 'png', name: 'PNG', supportsTransparent: true },
-    { id: 'jpg', name: 'JPG', supportsTransparent: false },
-    { id: 'webp', name: 'WebP', supportsTransparent: true },
-    { id: 'svg', name: 'SVG', supportsTransparent: true },
-    { id: 'pdf', name: 'PDF', supportsTransparent: false },
-    { id: 'pptx', name: 'PPTX', supportsTransparent: false },
+    { id: 'png', name: 'PNG', supportsTransparent: true, available: true },
+    { id: 'jpg', name: 'JPG', supportsTransparent: false, available: true },
+    { id: 'webp', name: 'WebP', supportsTransparent: true, available: true },
+    { id: 'svg', name: 'SVG', supportsTransparent: true, available: false, comingSoon: true },
+    { id: 'pdf', name: 'PDF', supportsTransparent: false, available: false, comingSoon: true },
+    { id: 'pptx', name: 'PPTX', supportsTransparent: false, available: false, comingSoon: true },
   ];
 
   const resolutions = [
@@ -142,35 +150,8 @@ const ExportPanel = ({
     selectAll();
   };
 
-  // Get resolution multiplier
-  const getScale = () => {
-    switch (resolution) {
-      case '1x': return 1;
-      case '2x': return 2;
-      case '3x': return 3;
-      default: return 2;
-    }
-  };
-
-  // Get MIME type for format
-  const getMimeType = () => {
-    switch (format) {
-      case 'png': return 'image/png';
-      case 'jpg': return 'image/jpeg';
-      case 'webp': return 'image/webp';
-      default: return 'image/png';
-    }
-  };
-
-  // Get file extension
-  const getExtension = () => {
-    switch (format) {
-      case 'jpg': return 'jpg';
-      case 'webp': return 'webp';
-      case 'png': 
-      default: return 'png';
-    }
-  };
+  // Get resolution multiplier from centralized utility
+  const getScale = () => RESOLUTION_SCALES[resolution] || 2;
 
   // Download a single file
   const downloadFile = (dataUrl, filename) => {
@@ -187,12 +168,20 @@ const ExportPanel = ({
     
     setIsExporting(true);
     setExportSuccess(false);
+    setExportProgress({ current: 0, total: count });
+    
+    // DIAGNOSTIC: Log export attempt
+    console.group('📤 Export Diagnostic');
+    console.log('Selected count:', count);
+    console.log('Project:', selectedProject?.name);
+    console.log('Format:', format, '| Resolution:', resolution, '| Background:', background);
     
     try {
       const selectedItemIds = Object.keys(selectedItems).filter(id => selectedItems[id]);
       const scale = getScale();
-      const mimeType = getMimeType();
-      const extension = getExtension();
+      const extension = getExtension(format);
+      
+      console.log('Items to export:', selectedItemIds);
       
       const exportedFiles = [];
       
@@ -203,28 +192,67 @@ const ExportPanel = ({
           `[data-frame-id="${itemId}"][data-project-key="${selectedProjectKey}"]`
         ) || document.querySelector(`[data-frame-id="${itemId}"]`);
         
+        console.log(`Frame ${i + 1}/${selectedItemIds.length}: ID=${itemId}, Found=${!!frameElement}`);
+        setExportProgress({ current: i + 1, total: selectedItemIds.length });
+        
         if (frameElement) {
-          const canvas = await html2canvas(frameElement, {
-            scale: scale,
+          console.log(`  Frame size: ${frameElement.offsetWidth}x${frameElement.offsetHeight}`);
+          
+          // 🏆 GOLDEN RULE: Use browser rendering to guarantee WYSIWYG exports
+          // The exportElement function uses html-to-image which embeds actual 
+          // browser-rendered HTML in SVG foreignObject, preserving exact appearance
+          const exportOptions = {
+            pixelRatio: scale,
+            quality: 0.95,
             backgroundColor: background === 'transparent' ? null : 
                             background === 'custom' ? customBgColor : undefined,
-            useCORS: true,
-            allowTaint: true,
-            logging: false,
-          });
+          };
           
-          const dataUrl = canvas.toDataURL(mimeType, 0.95);
+          const dataUrl = await exportElement(frameElement, format, exportOptions);
+          console.log(`  Rendered successfully (${format.toUpperCase()})`);
+          
           const filename = `${selectedProject.name.replace(/[^a-z0-9]/gi, '_')}_${itemLabel}_${i + 1}.${extension}`;
           
           exportedFiles.push({ dataUrl, filename });
         }
       }
       
+      console.log('Successfully rendered:', exportedFiles.length, 'files');
+      
       if (exportedFiles.length > 0) {
-        for (let i = 0; i < exportedFiles.length; i++) {
-          await new Promise(resolve => setTimeout(resolve, 100));
-          downloadFile(exportedFiles[i].dataUrl, exportedFiles[i].filename);
+        console.log('Starting downloads...');
+        
+        if (exportedFiles.length === 1) {
+          // Single file: direct download
+          console.log(`  Downloading: ${exportedFiles[0].filename}`);
+          downloadFile(exportedFiles[0].dataUrl, exportedFiles[0].filename);
+        } else {
+          // Multiple files: bundle into ZIP
+          console.log(`  Bundling ${exportedFiles.length} files into ZIP...`);
+          
+          const zip = new JSZip();
+          const projectName = selectedProject.name.replace(/[^a-z0-9]/gi, '_');
+          
+          exportedFiles.forEach((file, index) => {
+            // Convert data URL to base64
+            const base64Data = file.dataUrl.split(',')[1];
+            zip.file(file.filename, base64Data, { base64: true });
+            console.log(`    Added to ZIP: ${file.filename}`);
+          });
+          
+          // Generate and download ZIP
+          const zipBlob = await zip.generateAsync({ 
+            type: 'blob',
+            compression: 'DEFLATE',
+            compressionOptions: { level: 6 }
+          });
+          
+          const zipFilename = `${projectName}_export_${exportedFiles.length}_files.zip`;
+          console.log(`  Downloading ZIP: ${zipFilename} (${(zipBlob.size / 1024).toFixed(1)} KB)`);
+          saveAs(zipBlob, zipFilename);
         }
+        
+        console.log('✅ Export complete!');
         setExportSuccess(true);
         setTimeout(() => setExportSuccess(false), 3000);
       } else {
@@ -236,6 +264,7 @@ const ExportPanel = ({
       console.error('Export failed:', error);
       alert('Export failed. Please try again.');
     } finally {
+      console.groupEnd();
       setIsExporting(false);
     }
   };
@@ -422,18 +451,26 @@ const ExportPanel = ({
                   type="button"
                   key={f.id}
                   onClick={() => {
+                    if (!f.available) return; // Ignore clicks on unavailable formats
                     setFormat(f.id);
                     if (!f.supportsTransparent && background === 'transparent') {
                       setBackground('original');
                     }
                   }}
-                  className={`px-2 py-2 rounded-lg text-xs font-medium transition-all border ${
-                    format === f.id
+                  disabled={!f.available}
+                  title={f.comingSoon ? 'Coming soon' : undefined}
+                  className={`px-2 py-2 rounded-lg text-xs font-medium transition-all border relative ${
+                    !f.available
+                      ? 'bg-gray-800/30 border-gray-700/50 text-gray-600 cursor-not-allowed opacity-50'
+                      : format === f.id
                       ? 'bg-gray-700 border-gray-500 text-white'
                       : 'bg-gray-800/50 border-gray-700 text-gray-500 hover:bg-gray-700 hover:border-gray-600 hover:text-gray-300'
                   }`}
                 >
                   {f.name}
+                  {f.comingSoon && (
+                    <span className="absolute -top-1 -right-1 w-2 h-2 bg-gray-500 rounded-full" title="Coming soon" />
+                  )}
                 </button>
               ))}
             </div>
@@ -531,7 +568,11 @@ const ExportPanel = ({
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
               </svg>
-              <span>Exporting...</span>
+              <span>
+                {exportProgress.total > 1 
+                  ? `Exporting ${exportProgress.current}/${exportProgress.total}...`
+                  : 'Exporting...'}
+              </span>
             </>
           ) : selectedCount > 0 ? (
             `Export ${selectedCount} ${itemLabel}${selectedCount > 1 ? 's' : ''}`
