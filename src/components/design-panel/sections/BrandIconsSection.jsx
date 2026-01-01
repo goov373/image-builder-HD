@@ -27,20 +27,22 @@ const BrandIconsSection = ({
             {brandIcons.length}
           </span>
         </div>
-        <svg 
-          className={`w-4 h-4 text-[--text-quaternary] transition-transform duration-[--duration-fast] ${isCollapsed ? '' : 'rotate-180'}`} 
-          fill="none" 
-          stroke="currentColor" 
+        <svg
+          className={`w-4 h-4 text-[--text-quaternary] transition-transform duration-[--duration-fast] ${isCollapsed ? '' : 'rotate-180'}`}
+          fill="none"
+          stroke="currentColor"
           viewBox="0 0 24 24"
         >
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
         </svg>
       </button>
-      
+
       {!isCollapsed && (
         <div className="px-4 pt-2 pb-4">
-          <p className="text-[10px] text-[--text-quaternary] mb-3">HelloData brand icons • 2px stroke, rounded corners</p>
-          
+          <p className="text-[10px] text-[--text-quaternary] mb-3">
+            HelloData brand icons • 2px stroke, rounded corners
+          </p>
+
           {/* Icons Grid - 4 columns */}
           <div className="grid grid-cols-4 gap-2">
             {brandIcons.map((icon) => (
@@ -56,18 +58,13 @@ const BrandIconsSection = ({
                   }
                 }}
               >
-                <svg 
-                  className="w-6 h-6 text-[--text-tertiary] group-hover:text-[--text-primary] transition-colors" 
-                  fill="none" 
-                  stroke="currentColor" 
+                <svg
+                  className="w-6 h-6 text-[--text-tertiary] group-hover:text-[--text-primary] transition-colors"
+                  fill="none"
+                  stroke="currentColor"
                   viewBox="0 0 24 24"
                 >
-                  <path 
-                    strokeLinecap="round" 
-                    strokeLinejoin="round" 
-                    strokeWidth={2} 
-                    d={icon.path} 
-                  />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={icon.path} />
                 </svg>
                 {/* Hover tooltip */}
                 <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-2 py-1 bg-[--surface-overlay] text-[--text-primary] text-[10px] font-medium rounded-[--radius-sm] shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50">
@@ -77,7 +74,7 @@ const BrandIconsSection = ({
               </button>
             ))}
           </div>
-          
+
           {!hasFrameSelected && (
             <p className="text-[9px] text-[--text-quaternary] mt-3 text-center">Select a frame to add icons</p>
           )}
@@ -88,4 +85,3 @@ const BrandIconsSection = ({
 };
 
 export default BrandIconsSection;
-

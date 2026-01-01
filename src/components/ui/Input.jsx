@@ -1,20 +1,13 @@
 /**
  * Input Component
  * Text and number input primitive
- * 
+ *
  * @example
  * <Input placeholder="Enter name..." value={name} onChange={handleChange} />
  * <Input type="number" min={0} max={100} value={opacity} onChange={setOpacity} />
  */
 
-const Input = ({
-  type = 'text',
-  size = 'md',
-  disabled = false,
-  error = false,
-  className = '',
-  ...props
-}) => {
+const Input = ({ type = 'text', size = 'md', disabled = false, error = false, className = '', ...props }) => {
   const baseStyles = `
     w-full
     bg-[--surface-default] border border-[--border-default]
@@ -30,13 +23,9 @@ const Input = ({
     lg: 'px-4 py-2.5 text-sm rounded-[--radius-md]',
   };
 
-  const disabledStyles = disabled
-    ? 'opacity-40 cursor-not-allowed'
-    : '';
+  const disabledStyles = disabled ? 'opacity-40 cursor-not-allowed' : '';
 
-  const errorStyles = error
-    ? 'border-[--semantic-error] focus:border-[--semantic-error]'
-    : '';
+  const errorStyles = error ? 'border-[--semantic-error] focus:border-[--semantic-error]' : '';
 
   return (
     <input
@@ -48,7 +37,9 @@ const Input = ({
         ${disabledStyles}
         ${errorStyles}
         ${className}
-      `.replace(/\s+/g, ' ').trim()}
+      `
+        .replace(/\s+/g, ' ')
+        .trim()}
       {...props}
     />
   );
@@ -58,24 +49,12 @@ const Input = ({
  * InputGroup Component
  * Container for input with label and optional error message
  */
-export const InputGroup = ({
-  label,
-  error,
-  children,
-  className = '',
-}) => (
+export const InputGroup = ({ label, error, children, className = '' }) => (
   <div className={`flex flex-col gap-1 ${className}`}>
-    {label && (
-      <label className="text-[11px] font-medium text-[--text-secondary]">
-        {label}
-      </label>
-    )}
+    {label && <label className="text-[11px] font-medium text-[--text-secondary]">{label}</label>}
     {children}
-    {error && (
-      <span className="text-[10px] text-[--semantic-error]">{error}</span>
-    )}
+    {error && <span className="text-[10px] text-[--semantic-error]">{error}</span>}
   </div>
 );
 
 export default Input;
-

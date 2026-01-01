@@ -119,7 +119,6 @@ export const PROJECT_TYPE_ICONS = {
 } as const;
 
 // ===== TYPE EXPORTS =====
-export type StorageKey = typeof STORAGE_KEYS[keyof typeof STORAGE_KEYS];
-export type FontWeight = typeof FONT_WEIGHTS[number];
-export type FontSizeOption = typeof FONT_SIZE_OPTIONS[number];
-
+export type StorageKey = (typeof STORAGE_KEYS)[keyof typeof STORAGE_KEYS];
+export type FontWeight = (typeof FONT_WEIGHTS)[number];
+export type FontSizeOption = (typeof FONT_SIZE_OPTIONS)[number];

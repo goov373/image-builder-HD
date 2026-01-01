@@ -1,7 +1,7 @@
 /**
  * IconButton Component
  * Square icon-only button for toolbars and actions
- * 
+ *
  * @example
  * <IconButton size="md" onClick={handleClick} title="Delete">
  *   <TrashIcon />
@@ -62,13 +62,9 @@ const IconButton = ({
     xl: '[&>svg]:w-6 [&>svg]:h-6',
   };
 
-  const disabledStyles = disabled
-    ? 'opacity-40 cursor-not-allowed pointer-events-none'
-    : '';
+  const disabledStyles = disabled ? 'opacity-40 cursor-not-allowed pointer-events-none' : '';
 
-  const activeStyles = active
-    ? 'bg-[--surface-overlay] border-[--border-strong] text-[--text-primary]'
-    : '';
+  const activeStyles = active ? 'bg-[--surface-overlay] border-[--border-strong] text-[--text-primary]' : '';
 
   return (
     <button
@@ -82,7 +78,9 @@ const IconButton = ({
         ${disabledStyles}
         ${activeStyles}
         ${className}
-      `.replace(/\s+/g, ' ').trim()}
+      `
+        .replace(/\s+/g, ' ')
+        .trim()}
       {...props}
     >
       {children}
@@ -91,4 +89,3 @@ const IconButton = ({
 };
 
 export default IconButton;
-

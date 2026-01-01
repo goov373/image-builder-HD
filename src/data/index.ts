@@ -3,7 +3,12 @@ export { fontOptions, allFonts, defaultDesignSystem } from './fontOptions';
 export { initialCarousels, getFrameStyle } from './initialCarousels';
 export { initialEblasts, createEmptyEblast, getEblastSectionStyle } from './initialEblasts';
 export { initialVideoCovers, createEmptyVideoCover, getVideoCoverStyle } from './initialVideoCovers';
-export { initialSingleImages, createEmptySingleImage, MOCKUP_TEMPLATES, DECORATOR_PRESETS } from './initialSingleImages';
+export {
+  initialSingleImages,
+  createEmptySingleImage,
+  MOCKUP_TEMPLATES,
+  DECORATOR_PRESETS,
+} from './initialSingleImages';
 export {
   whitePurpleGradients,
   purpleRadialGradients,
@@ -19,13 +24,7 @@ export {
   type GradientDefinition,
   type SolidColorDefinition,
 } from './gradients';
-export {
-  exportPresets,
-  platformColors,
-  getPresetById,
-  getPresetsByPlatform,
-  type ExportPreset,
-} from './exportPresets';
+export { exportPresets, platformColors, getPresetById, getPresetsByPlatform, type ExportPreset } from './exportPresets';
 export {
   geometricPatterns,
   organicPatterns,
@@ -39,11 +38,4 @@ export {
   type PatternDefinition,
   type PatternLayer,
 } from './patterns';
-export {
-  brandIcons,
-  getAllBrandIcons,
-  getBrandIconsByCategory,
-  iconCategories,
-  type BrandIcon,
-} from './brandIcons';
-
+export { brandIcons, getAllBrandIcons, getBrandIconsByCategory, iconCategories, type BrandIcon } from './brandIcons';

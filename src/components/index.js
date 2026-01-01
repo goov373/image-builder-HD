@@ -37,18 +37,12 @@ export { DataChip, StatCard, Tooltip, Sparkline, AvatarGroup, ProgressRing } fro
 // ===== REUSABLE COMPONENT LIBRARIES =====
 
 // UI Primitives - Panels, sections, empty states
-export { 
-  Panel, 
-  PanelHeader, 
-  PanelSection, 
-  PanelTabs, 
-  PanelEmptyState 
-} from './ui/index.js';
+export { Panel, PanelHeader, PanelSection, PanelTabs, PanelEmptyState } from './ui/index.js';
 
 // Toolbar Components - Dropdowns, buttons, toggles
-export { 
-  ToolbarDropdown, 
-  ToolbarDropdownItem, 
+export {
+  ToolbarDropdown,
+  ToolbarDropdownItem,
   ChevronIcon,
   ToolbarButtonGroup,
   ToolbarButton,
@@ -58,9 +52,9 @@ export {
 } from './toolbar/index.js';
 
 // Design Panel Components - Image upload, gradients, patterns
-export { 
-  ImageUploader, 
-  ImageGrid, 
+export {
+  ImageUploader,
+  ImageGrid,
   ImageCard,
   GradientPicker,
   ApplyModeToggle,

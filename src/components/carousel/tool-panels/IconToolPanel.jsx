@@ -3,7 +3,7 @@ import { ColorDropdown, Button, IconButton } from '../../ui';
 /**
  * Icon Tool Panel Component
  * Controls for editing icon layer properties
- * 
+ *
  * @see ARCHITECTURE-CONTEXT.md for behavioral rules
  */
 const IconToolPanel = ({
@@ -34,8 +34,8 @@ const IconToolPanel = ({
   };
 
   return (
-    <div 
-      className="mt-1.5 flex flex-col gap-1.5" 
+    <div
+      className="mt-1.5 flex flex-col gap-1.5"
       data-icon-edit-controls
       onClick={(e) => e.stopPropagation()}
       onMouseDown={(e) => e.stopPropagation()}
@@ -51,7 +51,12 @@ const IconToolPanel = ({
           className="gap-1.5"
         >
           <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+            />
           </svg>
           Change
         </Button>
@@ -97,7 +102,12 @@ const IconToolPanel = ({
 
         <IconButton variant="danger" size="sm" onClick={onDelete} title="Remove icon">
           <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+            />
           </svg>
         </IconButton>
       </div>
@@ -106,4 +116,3 @@ const IconToolPanel = ({
 };
 
 export default IconToolPanel;
-

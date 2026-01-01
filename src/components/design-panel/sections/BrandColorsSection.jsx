@@ -2,13 +2,7 @@
  * BrandColorsSection Component
  * Displays brand color swatches with color picker inputs (collapsible)
  */
-const BrandColorsSection = ({
-  designSystem,
-  onUpdate,
-  isCollapsed,
-  onToggle,
-  order,
-}) => {
+const BrandColorsSection = ({ designSystem, onUpdate, isCollapsed, onToggle, order }) => {
   const colorFields = [
     { key: 'primary', label: 'Primary' },
     { key: 'primary2', label: 'Primary 2' },
@@ -34,20 +28,20 @@ const BrandColorsSection = ({
             {colorFields.length}
           </span>
         </div>
-        <svg 
-          className={`w-4 h-4 text-[--text-quaternary] transition-transform duration-[--duration-fast] ${isCollapsed ? '' : 'rotate-180'}`} 
-          fill="none" 
-          stroke="currentColor" 
+        <svg
+          className={`w-4 h-4 text-[--text-quaternary] transition-transform duration-[--duration-fast] ${isCollapsed ? '' : 'rotate-180'}`}
+          fill="none"
+          stroke="currentColor"
           viewBox="0 0 24 24"
         >
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
         </svg>
       </button>
-      
+
       {!isCollapsed && (
         <div className="px-4 pb-4">
           <div className="grid grid-cols-3 gap-3">
-            {colorFields.map(field => (
+            {colorFields.map((field) => (
               <div key={field.key} className="flex flex-col items-center gap-1.5">
                 <div className="relative group">
                   <div className="w-12 h-12 rounded-[--radius-md] border border-[--border-emphasis] hover:border-[--border-strong] transition-colors overflow-hidden">

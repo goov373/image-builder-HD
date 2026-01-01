@@ -1,5 +1,6 @@
 import { useReducer, useEffect, useState, useCallback } from 'react';
 import { createPatternLayer } from '../data';
+import { logger } from '../utils';
 
 const STORAGE_KEY = 'carousel-tool-videocovers';
 
@@ -63,60 +64,60 @@ function videoCoverReducer(state, action) {
     case VIDEOCOVER_ACTIONS.SET_VARIANT:
       return {
         ...state,
-        videoCovers: state.videoCovers.map(vc => {
+        videoCovers: state.videoCovers.map((vc) => {
           if (vc.id !== action.videoCoverId) return vc;
           return {
             ...vc,
-            frame: { ...vc.frame, currentVariant: action.variantIndex }
+            frame: { ...vc.frame, currentVariant: action.variantIndex },
           };
-        })
+        }),
       };
 
     case VIDEOCOVER_ACTIONS.SET_LAYOUT:
       return {
         ...state,
-        videoCovers: state.videoCovers.map(vc => {
+        videoCovers: state.videoCovers.map((vc) => {
           if (vc.id !== action.videoCoverId) return vc;
           return {
             ...vc,
-            frame: { ...vc.frame, currentLayout: action.layoutIndex, layoutVariant: 0 }
+            frame: { ...vc.frame, currentLayout: action.layoutIndex, layoutVariant: 0 },
           };
-        })
+        }),
       };
 
     case VIDEOCOVER_ACTIONS.SHUFFLE_LAYOUT_VARIANT:
       return {
         ...state,
-        videoCovers: state.videoCovers.map(vc => {
+        videoCovers: state.videoCovers.map((vc) => {
           if (vc.id !== action.videoCoverId) return vc;
           return {
             ...vc,
-            frame: { ...vc.frame, layoutVariant: ((vc.frame.layoutVariant || 0) + 1) % 3 }
+            frame: { ...vc.frame, layoutVariant: ((vc.frame.layoutVariant || 0) + 1) % 3 },
           };
-        })
+        }),
       };
 
     case VIDEOCOVER_ACTIONS.UPDATE_TEXT:
       return {
         ...state,
-        videoCovers: state.videoCovers.map(vc => {
+        videoCovers: state.videoCovers.map((vc) => {
           if (vc.id !== action.videoCoverId) return vc;
           const updatedVariants = [...vc.frame.variants];
           updatedVariants[vc.frame.currentVariant] = {
             ...updatedVariants[vc.frame.currentVariant],
-            [action.field]: action.value
+            [action.field]: action.value,
           };
           return {
             ...vc,
-            frame: { ...vc.frame, variants: updatedVariants }
+            frame: { ...vc.frame, variants: updatedVariants },
           };
-        })
+        }),
       };
 
     case VIDEOCOVER_ACTIONS.UPDATE_FORMATTING:
       return {
         ...state,
-        videoCovers: state.videoCovers.map(vc => {
+        videoCovers: state.videoCovers.map((vc) => {
           if (vc.id !== action.videoCoverId) return vc;
           const updatedVariants = [...vc.frame.variants];
           const currentVariant = updatedVariants[vc.frame.currentVariant];
@@ -126,59 +127,59 @@ function videoCoverReducer(state, action) {
             ...currentVariant,
             formatting: {
               ...currentFormatting,
-              [action.field]: { ...fieldFormatting, [action.key]: action.value }
-            }
+              [action.field]: { ...fieldFormatting, [action.key]: action.value },
+            },
           };
           return {
             ...vc,
-            frame: { ...vc.frame, variants: updatedVariants }
+            frame: { ...vc.frame, variants: updatedVariants },
           };
-        })
+        }),
       };
 
     case VIDEOCOVER_ACTIONS.CHANGE_FRAME_SIZE:
       return {
         ...state,
-        videoCovers: state.videoCovers.map(vc =>
+        videoCovers: state.videoCovers.map((vc) =>
           vc.id === action.videoCoverId ? { ...vc, frameSize: action.newSize } : vc
-        )
+        ),
       };
 
     case VIDEOCOVER_ACTIONS.TOGGLE_PLAY_BUTTON:
       return {
         ...state,
-        videoCovers: state.videoCovers.map(vc =>
+        videoCovers: state.videoCovers.map((vc) =>
           vc.id === action.videoCoverId ? { ...vc, showPlayButton: !vc.showPlayButton } : vc
-        )
+        ),
       };
 
     case VIDEOCOVER_ACTIONS.UPDATE_EPISODE_NUMBER:
       return {
         ...state,
-        videoCovers: state.videoCovers.map(vc =>
+        videoCovers: state.videoCovers.map((vc) =>
           vc.id === action.videoCoverId ? { ...vc, episodeNumber: action.episodeNumber } : vc
-        )
+        ),
       };
 
     case VIDEOCOVER_ACTIONS.ADD_VIDEOCOVER: {
       const newVideoCover = {
         id: Date.now(),
-        name: action.name || "New Video Cover",
-        subtitle: "Video Thumbnail",
-        frameSize: "youtube",
+        name: action.name || 'New Video Cover',
+        subtitle: 'Video Thumbnail',
+        frameSize: 'youtube',
         showPlayButton: false,
         frame: {
           id: 1,
           variants: [
-            { headline: "Your Title", body: "Your subtitle", formatting: {} },
-            { headline: "Alternative", body: "Second version", formatting: {} },
-            { headline: "Third", body: "Third version", formatting: {} }
+            { headline: 'Your Title', body: 'Your subtitle', formatting: {} },
+            { headline: 'Alternative', body: 'Second version', formatting: {} },
+            { headline: 'Third', body: 'Third version', formatting: {} },
           ],
           currentVariant: 0,
           currentLayout: 0,
           layoutVariant: 0,
-          style: "video-bold"
-        }
+          style: 'video-bold',
+        },
       };
       return { ...state, videoCovers: [...state.videoCovers, newVideoCover], selectedVideoCoverId: newVideoCover.id };
     }
@@ -188,42 +189,42 @@ function videoCoverReducer(state, action) {
       return {
         ...state,
         selectedVideoCoverId: state.selectedVideoCoverId === action.videoCoverId ? null : state.selectedVideoCoverId,
-        videoCovers: state.videoCovers.filter(vc => vc.id !== action.videoCoverId)
+        videoCovers: state.videoCovers.filter((vc) => vc.id !== action.videoCoverId),
       };
     }
 
     // ===== Background Layer Actions =====
-    
+
     case VIDEOCOVER_ACTIONS.SET_BACKGROUND: {
       const { videoCoverId, background } = action;
       return {
         ...state,
-        videoCovers: state.videoCovers.map(vc => {
+        videoCovers: state.videoCovers.map((vc) => {
           if (vc.id !== videoCoverId) return vc;
           return {
             ...vc,
-            frame: { ...vc.frame, backgroundOverride: background }
+            frame: { ...vc.frame, backgroundOverride: background },
           };
-        })
+        }),
       };
     }
 
     // ===== Pattern Layer Actions =====
-    
+
     case VIDEOCOVER_ACTIONS.ADD_PATTERN: {
       const { videoCoverId, patternId } = action;
       const newPatternLayer = createPatternLayer(patternId);
       if (!newPatternLayer) return state;
-      
+
       return {
         ...state,
-        videoCovers: state.videoCovers.map(vc => {
+        videoCovers: state.videoCovers.map((vc) => {
           if (vc.id !== videoCoverId) return vc;
           return {
             ...vc,
-            frame: { ...vc.frame, patternLayer: newPatternLayer }
+            frame: { ...vc.frame, patternLayer: newPatternLayer },
           };
-        })
+        }),
       };
     }
 
@@ -231,13 +232,13 @@ function videoCoverReducer(state, action) {
       const { videoCoverId, updates } = action;
       return {
         ...state,
-        videoCovers: state.videoCovers.map(vc => {
+        videoCovers: state.videoCovers.map((vc) => {
           if (vc.id !== videoCoverId || !vc.frame.patternLayer) return vc;
           return {
             ...vc,
-            frame: { ...vc.frame, patternLayer: { ...vc.frame.patternLayer, ...updates } }
+            frame: { ...vc.frame, patternLayer: { ...vc.frame.patternLayer, ...updates } },
           };
-        })
+        }),
       };
     }
 
@@ -245,16 +246,16 @@ function videoCoverReducer(state, action) {
       const { videoCoverId } = action;
       return {
         ...state,
-        videoCovers: state.videoCovers.map(vc => {
+        videoCovers: state.videoCovers.map((vc) => {
           if (vc.id !== videoCoverId) return vc;
           const { patternLayer, ...restFrame } = vc.frame;
           return { ...vc, frame: restFrame };
-        })
+        }),
       };
     }
 
     // ===== Image Layer Actions =====
-    
+
     case VIDEOCOVER_ACTIONS.ADD_IMAGE: {
       const { videoCoverId, imageSrc } = action;
       const newImageLayer = {
@@ -268,16 +269,16 @@ function videoCoverReducer(state, action) {
         zIndex: 0,
         fit: 'cover',
       };
-      
+
       return {
         ...state,
-        videoCovers: state.videoCovers.map(vc => {
+        videoCovers: state.videoCovers.map((vc) => {
           if (vc.id !== videoCoverId) return vc;
           return {
             ...vc,
-            frame: { ...vc.frame, imageLayer: newImageLayer }
+            frame: { ...vc.frame, imageLayer: newImageLayer },
           };
-        })
+        }),
       };
     }
 
@@ -285,13 +286,13 @@ function videoCoverReducer(state, action) {
       const { videoCoverId, updates } = action;
       return {
         ...state,
-        videoCovers: state.videoCovers.map(vc => {
+        videoCovers: state.videoCovers.map((vc) => {
           if (vc.id !== videoCoverId || !vc.frame.imageLayer) return vc;
           return {
             ...vc,
-            frame: { ...vc.frame, imageLayer: { ...vc.frame.imageLayer, ...updates } }
+            frame: { ...vc.frame, imageLayer: { ...vc.frame.imageLayer, ...updates } },
           };
-        })
+        }),
       };
     }
 
@@ -299,11 +300,11 @@ function videoCoverReducer(state, action) {
       const { videoCoverId } = action;
       return {
         ...state,
-        videoCovers: state.videoCovers.map(vc => {
+        videoCovers: state.videoCovers.map((vc) => {
           if (vc.id !== videoCoverId) return vc;
           const { imageLayer, ...restFrame } = vc.frame;
           return { ...vc, frame: restFrame };
-        })
+        }),
       };
     }
 
@@ -323,21 +324,17 @@ function loadFromStorage(initialData) {
       }
     }
   } catch (e) {
-    console.warn('Failed to load video covers from localStorage:', e);
+    logger.warn('Failed to load video covers from localStorage:', e);
   }
   return initialData;
 }
 
 export default function useVideoCovers(initialData) {
   const [initialized, setInitialized] = useState(false);
-  const [state, dispatch] = useReducer(
-    videoCoverReducer,
-    loadFromStorage(initialData),
-    createInitialState
-  );
+  const [state, dispatch] = useReducer(videoCoverReducer, loadFromStorage(initialData), createInitialState);
 
   // Computed values
-  const selectedVideoCover = state.videoCovers.find(vc => vc.id === state.selectedVideoCoverId);
+  const selectedVideoCover = state.videoCovers.find((vc) => vc.id === state.selectedVideoCoverId);
 
   // Save to localStorage
   useEffect(() => {
@@ -348,75 +345,108 @@ export default function useVideoCovers(initialData) {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state.videoCovers));
     } catch (e) {
-      console.warn('Failed to save video covers to localStorage:', e);
+      logger.warn('Failed to save video covers to localStorage:', e);
     }
   }, [state.videoCovers, initialized]);
 
   // Memoized actions
   const actions = {
     clearSelection: useCallback(() => dispatch({ type: VIDEOCOVER_ACTIONS.CLEAR_SELECTION }), []),
-    
-    setActiveTextField: useCallback((field) => 
-      dispatch({ type: VIDEOCOVER_ACTIONS.SET_ACTIVE_TEXT_FIELD, field }), []),
-    
+
+    setActiveTextField: useCallback((field) => dispatch({ type: VIDEOCOVER_ACTIONS.SET_ACTIVE_TEXT_FIELD, field }), []),
+
     handleSelectVideoCover: useCallback((videoCoverId, closeAllDropdowns) => {
       if (closeAllDropdowns) closeAllDropdowns();
       dispatch({ type: VIDEOCOVER_ACTIONS.SELECT_VIDEOCOVER, videoCoverId });
     }, []),
-    
-    handleSetVariant: useCallback((videoCoverId, variantIndex) =>
-      dispatch({ type: VIDEOCOVER_ACTIONS.SET_VARIANT, videoCoverId, variantIndex }), []),
-    
-    handleSetLayout: useCallback((videoCoverId, layoutIndex) =>
-      dispatch({ type: VIDEOCOVER_ACTIONS.SET_LAYOUT, videoCoverId, layoutIndex }), []),
-    
-    handleShuffleLayoutVariant: useCallback((videoCoverId) =>
-      dispatch({ type: VIDEOCOVER_ACTIONS.SHUFFLE_LAYOUT_VARIANT, videoCoverId }), []),
-    
-    handleUpdateText: useCallback((videoCoverId, frameId, field, value) =>
-      dispatch({ type: VIDEOCOVER_ACTIONS.UPDATE_TEXT, videoCoverId, field, value }), []),
-    
-    handleUpdateFormatting: useCallback((videoCoverId, frameId, field, key, value) =>
-      dispatch({ type: VIDEOCOVER_ACTIONS.UPDATE_FORMATTING, videoCoverId, field, key, value }), []),
-    
-    handleChangeFrameSize: useCallback((videoCoverId, newSize) =>
-      dispatch({ type: VIDEOCOVER_ACTIONS.CHANGE_FRAME_SIZE, videoCoverId, newSize }), []),
-    
-    handleTogglePlayButton: useCallback((videoCoverId) =>
-      dispatch({ type: VIDEOCOVER_ACTIONS.TOGGLE_PLAY_BUTTON, videoCoverId }), []),
-    
-    handleUpdateEpisodeNumber: useCallback((videoCoverId, episodeNumber) =>
-      dispatch({ type: VIDEOCOVER_ACTIONS.UPDATE_EPISODE_NUMBER, videoCoverId, episodeNumber }), []),
-    
-    handleAddVideoCover: useCallback((name) =>
-      dispatch({ type: VIDEOCOVER_ACTIONS.ADD_VIDEOCOVER, name }), []),
-    
-    handleRemoveVideoCover: useCallback((videoCoverId) =>
-      dispatch({ type: VIDEOCOVER_ACTIONS.REMOVE_VIDEOCOVER, videoCoverId }), []),
-    
+
+    handleSetVariant: useCallback(
+      (videoCoverId, variantIndex) => dispatch({ type: VIDEOCOVER_ACTIONS.SET_VARIANT, videoCoverId, variantIndex }),
+      []
+    ),
+
+    handleSetLayout: useCallback(
+      (videoCoverId, layoutIndex) => dispatch({ type: VIDEOCOVER_ACTIONS.SET_LAYOUT, videoCoverId, layoutIndex }),
+      []
+    ),
+
+    handleShuffleLayoutVariant: useCallback(
+      (videoCoverId) => dispatch({ type: VIDEOCOVER_ACTIONS.SHUFFLE_LAYOUT_VARIANT, videoCoverId }),
+      []
+    ),
+
+    handleUpdateText: useCallback(
+      (videoCoverId, frameId, field, value) =>
+        dispatch({ type: VIDEOCOVER_ACTIONS.UPDATE_TEXT, videoCoverId, field, value }),
+      []
+    ),
+
+    handleUpdateFormatting: useCallback(
+      (videoCoverId, frameId, field, key, value) =>
+        dispatch({ type: VIDEOCOVER_ACTIONS.UPDATE_FORMATTING, videoCoverId, field, key, value }),
+      []
+    ),
+
+    handleChangeFrameSize: useCallback(
+      (videoCoverId, newSize) => dispatch({ type: VIDEOCOVER_ACTIONS.CHANGE_FRAME_SIZE, videoCoverId, newSize }),
+      []
+    ),
+
+    handleTogglePlayButton: useCallback(
+      (videoCoverId) => dispatch({ type: VIDEOCOVER_ACTIONS.TOGGLE_PLAY_BUTTON, videoCoverId }),
+      []
+    ),
+
+    handleUpdateEpisodeNumber: useCallback(
+      (videoCoverId, episodeNumber) =>
+        dispatch({ type: VIDEOCOVER_ACTIONS.UPDATE_EPISODE_NUMBER, videoCoverId, episodeNumber }),
+      []
+    ),
+
+    handleAddVideoCover: useCallback((name) => dispatch({ type: VIDEOCOVER_ACTIONS.ADD_VIDEOCOVER, name }), []),
+
+    handleRemoveVideoCover: useCallback(
+      (videoCoverId) => dispatch({ type: VIDEOCOVER_ACTIONS.REMOVE_VIDEOCOVER, videoCoverId }),
+      []
+    ),
+
     // Background Layer Actions
-    handleSetBackground: useCallback((videoCoverId, background) =>
-      dispatch({ type: VIDEOCOVER_ACTIONS.SET_BACKGROUND, videoCoverId, background }), []),
-    
+    handleSetBackground: useCallback(
+      (videoCoverId, background) => dispatch({ type: VIDEOCOVER_ACTIONS.SET_BACKGROUND, videoCoverId, background }),
+      []
+    ),
+
     // Pattern Layer Actions
-    handleAddPattern: useCallback((videoCoverId, patternId) =>
-      dispatch({ type: VIDEOCOVER_ACTIONS.ADD_PATTERN, videoCoverId, patternId }), []),
-    
-    handleUpdatePattern: useCallback((videoCoverId, updates) =>
-      dispatch({ type: VIDEOCOVER_ACTIONS.UPDATE_PATTERN, videoCoverId, updates }), []),
-    
-    handleRemovePattern: useCallback((videoCoverId) =>
-      dispatch({ type: VIDEOCOVER_ACTIONS.REMOVE_PATTERN, videoCoverId }), []),
-    
+    handleAddPattern: useCallback(
+      (videoCoverId, patternId) => dispatch({ type: VIDEOCOVER_ACTIONS.ADD_PATTERN, videoCoverId, patternId }),
+      []
+    ),
+
+    handleUpdatePattern: useCallback(
+      (videoCoverId, updates) => dispatch({ type: VIDEOCOVER_ACTIONS.UPDATE_PATTERN, videoCoverId, updates }),
+      []
+    ),
+
+    handleRemovePattern: useCallback(
+      (videoCoverId) => dispatch({ type: VIDEOCOVER_ACTIONS.REMOVE_PATTERN, videoCoverId }),
+      []
+    ),
+
     // Image Layer Actions
-    handleAddImage: useCallback((videoCoverId, imageSrc) =>
-      dispatch({ type: VIDEOCOVER_ACTIONS.ADD_IMAGE, videoCoverId, imageSrc }), []),
-    
-    handleUpdateImage: useCallback((videoCoverId, updates) =>
-      dispatch({ type: VIDEOCOVER_ACTIONS.UPDATE_IMAGE, videoCoverId, updates }), []),
-    
-    handleRemoveImage: useCallback((videoCoverId) =>
-      dispatch({ type: VIDEOCOVER_ACTIONS.REMOVE_IMAGE, videoCoverId }), []),
+    handleAddImage: useCallback(
+      (videoCoverId, imageSrc) => dispatch({ type: VIDEOCOVER_ACTIONS.ADD_IMAGE, videoCoverId, imageSrc }),
+      []
+    ),
+
+    handleUpdateImage: useCallback(
+      (videoCoverId, updates) => dispatch({ type: VIDEOCOVER_ACTIONS.UPDATE_IMAGE, videoCoverId, updates }),
+      []
+    ),
+
+    handleRemoveImage: useCallback(
+      (videoCoverId) => dispatch({ type: VIDEOCOVER_ACTIONS.REMOVE_IMAGE, videoCoverId }),
+      []
+    ),
   };
 
   return {
@@ -431,5 +461,3 @@ export default function useVideoCovers(initialData) {
     ...actions,
   };
 }
-
-

@@ -1,7 +1,7 @@
 /**
  * Button Component
  * Universal button primitive with variants and sizes
- * 
+ *
  * @example
  * <Button variant="primary" size="md" onClick={handleClick}>Save</Button>
  * <Button variant="ghost" size="sm" disabled>Cancel</Button>
@@ -58,13 +58,9 @@ const Button = ({
     lg: 'px-4 py-2.5 text-sm rounded-[--radius-lg]',
   };
 
-  const disabledStyles = disabled 
-    ? 'opacity-40 cursor-not-allowed pointer-events-none' 
-    : '';
+  const disabledStyles = disabled ? 'opacity-40 cursor-not-allowed pointer-events-none' : '';
 
-  const activeStyles = active 
-    ? 'bg-[--surface-overlay] border-[--border-strong] text-[--text-primary]' 
-    : '';
+  const activeStyles = active ? 'bg-[--surface-overlay] border-[--border-strong] text-[--text-primary]' : '';
 
   return (
     <button
@@ -77,7 +73,9 @@ const Button = ({
         ${disabledStyles}
         ${activeStyles}
         ${className}
-      `.replace(/\s+/g, ' ').trim()}
+      `
+        .replace(/\s+/g, ' ')
+        .trim()}
       {...props}
     >
       {children}
@@ -86,4 +84,3 @@ const Button = ({
 };
 
 export default Button;
-

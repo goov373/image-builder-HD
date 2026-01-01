@@ -1,21 +1,14 @@
 /**
  * Chip Component
  * For swatches, grid items, toggles, and small interactive elements
- * 
+ *
  * @example
  * <Chip selected={isSelected} onClick={handleSelect}>
  *   <ColorSwatch color="#ff0000" />
  * </Chip>
  */
 
-const Chip = ({
-  selected = false,
-  disabled = false,
-  size = 'md',
-  children,
-  className = '',
-  ...props
-}) => {
+const Chip = ({ selected = false, disabled = false, size = 'md', children, className = '', ...props }) => {
   const baseStyles = `
     inline-flex items-center justify-center
     border transition-all
@@ -35,9 +28,7 @@ const Chip = ({
     lg: 'p-2 rounded-[--radius-md]',
   };
 
-  const disabledStyles = disabled
-    ? 'opacity-40 cursor-not-allowed pointer-events-none'
-    : '';
+  const disabledStyles = disabled ? 'opacity-40 cursor-not-allowed pointer-events-none' : '';
 
   return (
     <button
@@ -49,7 +40,9 @@ const Chip = ({
         ${sizes[size]}
         ${disabledStyles}
         ${className}
-      `.replace(/\s+/g, ' ').trim()}
+      `
+        .replace(/\s+/g, ' ')
+        .trim()}
       {...props}
     >
       {children}
@@ -61,19 +54,10 @@ const Chip = ({
  * ChipGrid Component
  * Container for arranging chips in a grid
  */
-export const ChipGrid = ({
-  columns = 4,
-  gap = 'gap-2',
-  children,
-  className = '',
-}) => (
-  <div 
-    className={`grid ${gap} ${className}`}
-    style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}
-  >
+export const ChipGrid = ({ columns = 4, gap = 'gap-2', children, className = '' }) => (
+  <div className={`grid ${gap} ${className}`} style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}>
     {children}
   </div>
 );
 
 export default Chip;
-

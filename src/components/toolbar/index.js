@@ -3,13 +3,9 @@
  * Composable pieces for building the Toolbar
  */
 
-export { 
-  default as ToolbarDropdown, 
-  ToolbarDropdownItem, 
-  ChevronIcon 
-} from './ToolbarDropdown';
+export { default as ToolbarDropdown, ToolbarDropdownItem, ChevronIcon } from './ToolbarDropdown';
 
-export { 
+export {
   default as ToolbarButtonGroup,
   ToolbarButton,
   ToolbarIconButton,
@@ -18,4 +14,3 @@ export {
 } from './ToolbarButtonGroup';
 
 export { default as HistoryControls } from './HistoryControls';
-

@@ -1,7 +1,7 @@
 /**
  * Image Compression Utility
  * Optimizes images for web/social media while maintaining crispness
- * 
+ *
  * Features:
  * - Smart resizing to max dimensions
  * - WebP conversion with JPEG fallback
@@ -77,7 +77,7 @@ const calculateDimensions = (width, height, maxWidth, maxHeight) => {
   // Only resize if larger than max dimensions
   if (width > maxWidth || height > maxHeight) {
     const aspectRatio = width / height;
-    
+
     if (width > height) {
       newWidth = Math.min(width, maxWidth);
       newHeight = Math.round(newWidth / aspectRatio);
@@ -85,7 +85,7 @@ const calculateDimensions = (width, height, maxWidth, maxHeight) => {
       newHeight = Math.min(height, maxHeight);
       newWidth = Math.round(newHeight * aspectRatio);
     }
-    
+
     // Ensure we don't exceed either dimension
     if (newWidth > maxWidth) {
       newWidth = maxWidth;
@@ -102,7 +102,7 @@ const calculateDimensions = (width, height, maxWidth, maxHeight) => {
 
 /**
  * Compress a single image file
- * 
+ *
  * @param {File} file - The image file to compress
  * @param {Object} options - Compression options
  * @returns {Promise<{blob: Blob, info: Object}>} - Compressed blob and metadata
@@ -133,20 +133,20 @@ export const compressImage = async (file, options = {}) => {
   const canvas = document.createElement('canvas');
   canvas.width = newWidth;
   canvas.height = newHeight;
-  
+
   const ctx = canvas.getContext('2d');
-  
+
   // Enable high-quality image smoothing for crisp output
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';
-  
+
   // Draw the image
   ctx.drawImage(img, 0, 0, newWidth, newHeight);
 
   // Determine output format
   let mimeType = 'image/webp';
   let extension = 'webp';
-  
+
   if (format === 'webp' && !supportsWebP()) {
     mimeType = 'image/jpeg';
     extension = 'jpg';
@@ -194,7 +194,7 @@ export const compressImage = async (file, options = {}) => {
 
 /**
  * Compress multiple images with progress callback
- * 
+ *
  * @param {FileList|File[]} files - Array of image files
  * @param {Object} options - Compression options
  * @param {Function} onProgress - Progress callback (current, total, currentFile)
@@ -203,20 +203,20 @@ export const compressImage = async (file, options = {}) => {
 export const compressImages = async (files, options = {}, onProgress = null) => {
   const fileArray = Array.from(files);
   const results = [];
-  
+
   for (let i = 0; i < fileArray.length; i++) {
     const file = fileArray[i];
-    
+
     // Skip non-image files
     if (!file.type.startsWith('image/')) {
       continue;
     }
-    
+
     try {
       if (onProgress) {
         onProgress(i, fileArray.length, file.name);
       }
-      
+
       const result = await compressImage(file, options);
       results.push(result);
     } catch (error) {
@@ -236,11 +236,11 @@ export const compressImages = async (files, options = {}, onProgress = null) => 
       });
     }
   }
-  
+
   if (onProgress) {
     onProgress(fileArray.length, fileArray.length, 'Complete');
   }
-  
+
   return results;
 };
 
@@ -270,4 +270,3 @@ export default {
   supportsWebP,
   COMPRESSION_PRESETS,
 };
-

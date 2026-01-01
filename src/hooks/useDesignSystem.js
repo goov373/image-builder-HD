@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { logger } from '../utils';
 
 // HelloData brand colors - these are the required defaults
 const HELLODATA_PRIMARY = '#6466e9';
@@ -10,13 +11,13 @@ const STORAGE_KEY = 'carousel-tool-design-system-v8';
 function loadFromStorage(initialData) {
   // Clear ALL old storage keys first to force fresh defaults
   try {
-    Object.keys(localStorage).forEach(key => {
+    Object.keys(localStorage).forEach((key) => {
       if (key.startsWith('carousel-tool-design-system')) {
         localStorage.removeItem(key);
       }
     });
   } catch (e) {}
-  
+
   // Always return fresh defaults - no caching issues
   return initialData;
 }
@@ -34,10 +35,9 @@ export default function useDesignSystem(initialData) {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(designSystem));
     } catch (e) {
-      console.warn('Failed to save design system to localStorage:', e);
+      logger.warn('Failed to save design system to localStorage:', e);
     }
   }, [designSystem, initialized]);
 
   return [designSystem, setDesignSystem];
 }
-

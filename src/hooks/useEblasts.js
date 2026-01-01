@@ -1,6 +1,7 @@
 import { useReducer, useEffect, useState, useCallback } from 'react';
 import { arrayMove } from '@dnd-kit/sortable';
 import { createPatternLayer } from '../data';
+import { logger } from '../utils';
 
 const STORAGE_KEY = 'carousel-tool-eblasts';
 
@@ -61,11 +62,11 @@ function eblastReducer(state, action) {
 
     case EBLAST_ACTIONS.SELECT_SECTION: {
       const { eblastId, sectionId } = action;
-      return { 
-        ...state, 
-        selectedEblastId: eblastId, 
+      return {
+        ...state,
+        selectedEblastId: eblastId,
         selectedSectionId: state.selectedSectionId === sectionId ? null : sectionId,
-        activeTextField: null 
+        activeTextField: null,
       };
     }
 
@@ -78,73 +79,77 @@ function eblastReducer(state, action) {
     case EBLAST_ACTIONS.SET_VARIANT:
       return {
         ...state,
-        eblasts: state.eblasts.map(eblast => {
+        eblasts: state.eblasts.map((eblast) => {
           if (eblast.id !== action.eblastId) return eblast;
           return {
             ...eblast,
-            sections: eblast.sections.map(section =>
+            sections: eblast.sections.map((section) =>
               section.id !== action.sectionId ? section : { ...section, currentVariant: action.variantIndex }
-            )
+            ),
           };
-        })
+        }),
       };
 
     case EBLAST_ACTIONS.SET_LAYOUT:
       return {
         ...state,
-        eblasts: state.eblasts.map(eblast => {
+        eblasts: state.eblasts.map((eblast) => {
           if (eblast.id !== action.eblastId) return eblast;
           return {
             ...eblast,
-            sections: eblast.sections.map(section =>
-              section.id !== action.sectionId ? section : { ...section, currentLayout: action.layoutIndex, layoutVariant: 0 }
-            )
+            sections: eblast.sections.map((section) =>
+              section.id !== action.sectionId
+                ? section
+                : { ...section, currentLayout: action.layoutIndex, layoutVariant: 0 }
+            ),
           };
-        })
+        }),
       };
 
     case EBLAST_ACTIONS.SHUFFLE_LAYOUT_VARIANT:
       return {
         ...state,
-        eblasts: state.eblasts.map(eblast => {
+        eblasts: state.eblasts.map((eblast) => {
           if (eblast.id !== action.eblastId) return eblast;
           return {
             ...eblast,
-            sections: eblast.sections.map(section =>
-              section.id !== action.sectionId ? section : { ...section, layoutVariant: ((section.layoutVariant || 0) + 1) % 3 }
-            )
+            sections: eblast.sections.map((section) =>
+              section.id !== action.sectionId
+                ? section
+                : { ...section, layoutVariant: ((section.layoutVariant || 0) + 1) % 3 }
+            ),
           };
-        })
+        }),
       };
 
     case EBLAST_ACTIONS.UPDATE_TEXT:
       return {
         ...state,
-        eblasts: state.eblasts.map(eblast => {
+        eblasts: state.eblasts.map((eblast) => {
           if (eblast.id !== action.eblastId) return eblast;
           return {
             ...eblast,
-            sections: eblast.sections.map(section => {
+            sections: eblast.sections.map((section) => {
               if (section.id !== action.sectionId) return section;
               const updatedVariants = [...section.variants];
               updatedVariants[section.currentVariant] = {
                 ...updatedVariants[section.currentVariant],
-                [action.field]: action.value
+                [action.field]: action.value,
               };
               return { ...section, variants: updatedVariants };
-            })
+            }),
           };
-        })
+        }),
       };
 
     case EBLAST_ACTIONS.UPDATE_FORMATTING:
       return {
         ...state,
-        eblasts: state.eblasts.map(eblast => {
+        eblasts: state.eblasts.map((eblast) => {
           if (eblast.id !== action.eblastId) return eblast;
           return {
             ...eblast,
-            sections: eblast.sections.map(section => {
+            sections: eblast.sections.map((section) => {
               if (section.id !== action.sectionId) return section;
               const updatedVariants = [...section.variants];
               const currentVariant = updatedVariants[section.currentVariant];
@@ -154,38 +159,38 @@ function eblastReducer(state, action) {
                 ...currentVariant,
                 formatting: {
                   ...currentFormatting,
-                  [action.field]: { ...fieldFormatting, [action.key]: action.value }
-                }
+                  [action.field]: { ...fieldFormatting, [action.key]: action.value },
+                },
               };
               return { ...section, variants: updatedVariants };
-            })
+            }),
           };
-        })
+        }),
       };
 
     case EBLAST_ACTIONS.ADD_SECTION: {
       return {
         ...state,
-        eblasts: state.eblasts.map(eblast => {
+        eblasts: state.eblasts.map((eblast) => {
           if (eblast.id !== action.eblastId) return eblast;
           const newSection = {
             id: Date.now(),
             sectionType: 'feature',
             variants: [
-              { headline: "New Section", body: "Add your content here.", formatting: {} },
-              { headline: "Alternative", body: "Second version.", formatting: {} },
-              { headline: "Third Option", body: "Third version.", formatting: {} }
+              { headline: 'New Section', body: 'Add your content here.', formatting: {} },
+              { headline: 'Alternative', body: 'Second version.', formatting: {} },
+              { headline: 'Third Option', body: 'Third version.', formatting: {} },
             ],
             currentVariant: 0,
             currentLayout: 0,
             layoutVariant: 0,
-            style: "feature-dark",
-            size: "emailHero"
+            style: 'feature-dark',
+            size: 'emailHero',
           };
           const newSections = [...eblast.sections];
           newSections.splice(action.position, 0, newSection);
           return { ...eblast, sections: newSections };
-        })
+        }),
       };
     }
 
@@ -193,43 +198,45 @@ function eblastReducer(state, action) {
       return {
         ...state,
         selectedSectionId: state.selectedSectionId === action.sectionId ? null : state.selectedSectionId,
-        eblasts: state.eblasts.map(eblast => {
+        eblasts: state.eblasts.map((eblast) => {
           if (eblast.id !== action.eblastId) return eblast;
           if (eblast.sections.length <= 1) return eblast;
-          return { ...eblast, sections: eblast.sections.filter(s => s.id !== action.sectionId) };
-        })
+          return { ...eblast, sections: eblast.sections.filter((s) => s.id !== action.sectionId) };
+        }),
       };
     }
 
     case EBLAST_ACTIONS.REORDER_SECTIONS:
       return {
         ...state,
-        eblasts: state.eblasts.map(eblast => {
+        eblasts: state.eblasts.map((eblast) => {
           if (eblast.id !== action.eblastId) return eblast;
           return { ...eblast, sections: arrayMove(eblast.sections, action.oldIndex, action.newIndex) };
-        })
+        }),
       };
 
     case EBLAST_ACTIONS.ADD_EBLAST: {
       const newEblast = {
         id: Date.now(),
-        name: action.name || "New Email",
-        subtitle: "Email Campaign",
-        previewText: "",
-        sections: [{
-          id: 1,
-          sectionType: 'hero',
-          variants: [
-            { headline: "Your Headline", body: "Your message here.", formatting: {} },
-            { headline: "Alternative", body: "Second version.", formatting: {} },
-            { headline: "Third", body: "Third version.", formatting: {} }
-          ],
-          currentVariant: 0,
-          currentLayout: 0,
-          layoutVariant: 0,
-          style: "hero-gradient",
-          size: "emailHero"
-        }]
+        name: action.name || 'New Email',
+        subtitle: 'Email Campaign',
+        previewText: '',
+        sections: [
+          {
+            id: 1,
+            sectionType: 'hero',
+            variants: [
+              { headline: 'Your Headline', body: 'Your message here.', formatting: {} },
+              { headline: 'Alternative', body: 'Second version.', formatting: {} },
+              { headline: 'Third', body: 'Third version.', formatting: {} },
+            ],
+            currentVariant: 0,
+            currentLayout: 0,
+            layoutVariant: 0,
+            style: 'hero-gradient',
+            size: 'emailHero',
+          },
+        ],
       };
       return { ...state, eblasts: [...state.eblasts, newEblast], selectedEblastId: newEblast.id };
     }
@@ -240,25 +247,25 @@ function eblastReducer(state, action) {
         ...state,
         selectedEblastId: state.selectedEblastId === action.eblastId ? null : state.selectedEblastId,
         selectedSectionId: null,
-        eblasts: state.eblasts.filter(e => e.id !== action.eblastId)
+        eblasts: state.eblasts.filter((e) => e.id !== action.eblastId),
       };
     }
 
     // ===== Background Layer Actions =====
-    
+
     case EBLAST_ACTIONS.SET_SECTION_BACKGROUND: {
       const { eblastId, sectionId, background } = action;
       return {
         ...state,
-        eblasts: state.eblasts.map(eblast => {
+        eblasts: state.eblasts.map((eblast) => {
           if (eblast.id !== eblastId) return eblast;
           return {
             ...eblast,
-            sections: eblast.sections.map(section =>
+            sections: eblast.sections.map((section) =>
               section.id === sectionId ? { ...section, backgroundOverride: background } : section
-            )
+            ),
           };
-        })
+        }),
       };
     }
 
@@ -266,26 +273,24 @@ function eblastReducer(state, action) {
       const { eblastId, background, startIdx = 0, endIdx } = action;
       return {
         ...state,
-        eblasts: state.eblasts.map(eblast => {
+        eblasts: state.eblasts.map((eblast) => {
           if (eblast.id !== eblastId) return eblast;
           const numSections = eblast.sections.length;
           if (numSections === 0) return eblast;
-          
+
           const actualEndIdx = endIdx !== undefined ? endIdx : numSections - 1;
           const selectedCount = actualEndIdx - startIdx + 1;
-          
+
           return {
             ...eblast,
             sections: eblast.sections.map((section, index) => {
               if (index < startIdx || index > actualEndIdx) return section;
               const relativeIndex = index - startIdx;
-              
+
               // CSS background-position percentage when bg > container:
               // 0% = top aligned, 100% = bottom aligned
-              const positionPercent = selectedCount > 1 
-                ? (relativeIndex / (selectedCount - 1)) * 100 
-                : 0;
-              
+              const positionPercent = selectedCount > 1 ? (relativeIndex / (selectedCount - 1)) * 100 : 0;
+
               return {
                 ...section,
                 backgroundOverride: {
@@ -293,32 +298,32 @@ function eblastReducer(state, action) {
                   size: `100% ${selectedCount * 100}%`,
                   position: `0% ${positionPercent}%`,
                   isStretched: true,
-                }
+                },
               };
-            })
+            }),
           };
-        })
+        }),
       };
     }
 
     // ===== Pattern Layer Actions =====
-    
+
     case EBLAST_ACTIONS.ADD_PATTERN_TO_SECTION: {
       const { eblastId, sectionId, patternId } = action;
       const newPatternLayer = createPatternLayer(patternId);
       if (!newPatternLayer) return state;
-      
+
       return {
         ...state,
-        eblasts: state.eblasts.map(eblast => {
+        eblasts: state.eblasts.map((eblast) => {
           if (eblast.id !== eblastId) return eblast;
           return {
             ...eblast,
-            sections: eblast.sections.map(section =>
+            sections: eblast.sections.map((section) =>
               section.id === sectionId ? { ...section, patternLayer: newPatternLayer } : section
-            )
+            ),
           };
-        })
+        }),
       };
     }
 
@@ -326,16 +331,16 @@ function eblastReducer(state, action) {
       const { eblastId, sectionId, updates } = action;
       return {
         ...state,
-        eblasts: state.eblasts.map(eblast => {
+        eblasts: state.eblasts.map((eblast) => {
           if (eblast.id !== eblastId) return eblast;
           return {
             ...eblast,
-            sections: eblast.sections.map(section => {
+            sections: eblast.sections.map((section) => {
               if (section.id !== sectionId || !section.patternLayer) return section;
               return { ...section, patternLayer: { ...section.patternLayer, ...updates } };
-            })
+            }),
           };
-        })
+        }),
       };
     }
 
@@ -343,17 +348,17 @@ function eblastReducer(state, action) {
       const { eblastId, sectionId } = action;
       return {
         ...state,
-        eblasts: state.eblasts.map(eblast => {
+        eblasts: state.eblasts.map((eblast) => {
           if (eblast.id !== eblastId) return eblast;
           return {
             ...eblast,
-            sections: eblast.sections.map(section => {
+            sections: eblast.sections.map((section) => {
               if (section.id !== sectionId) return section;
               const { patternLayer, ...rest } = section;
               return rest;
-            })
+            }),
           };
-        })
+        }),
       };
     }
 
@@ -361,17 +366,17 @@ function eblastReducer(state, action) {
       const { eblastId, patternId, startIdx = 0, endIdx } = action;
       const basePatternLayer = createPatternLayer(patternId);
       if (!basePatternLayer) return state;
-      
+
       return {
         ...state,
-        eblasts: state.eblasts.map(eblast => {
+        eblasts: state.eblasts.map((eblast) => {
           if (eblast.id !== eblastId) return eblast;
           const numSections = eblast.sections.length;
           if (numSections === 0) return eblast;
-          
+
           const actualEndIdx = endIdx !== undefined ? endIdx : numSections - 1;
           const selectedCount = actualEndIdx - startIdx + 1;
-          
+
           return {
             ...eblast,
             sections: eblast.sections.map((section, index) => {
@@ -384,16 +389,16 @@ function eblastReducer(state, action) {
                   isStretched: true,
                   stretchSize: `100% ${selectedCount * 100}%`,
                   stretchPosition: `0% ${-relativeIndex * 100}%`,
-                }
+                },
               };
-            })
+            }),
           };
-        })
+        }),
       };
     }
 
     // ===== Image Layer Actions =====
-    
+
     case EBLAST_ACTIONS.ADD_IMAGE_TO_SECTION: {
       const { eblastId, sectionId, imageSrc } = action;
       const newImageLayer = {
@@ -407,18 +412,18 @@ function eblastReducer(state, action) {
         zIndex: 0,
         fit: 'cover',
       };
-      
+
       return {
         ...state,
-        eblasts: state.eblasts.map(eblast => {
+        eblasts: state.eblasts.map((eblast) => {
           if (eblast.id !== eblastId) return eblast;
           return {
             ...eblast,
-            sections: eblast.sections.map(section =>
+            sections: eblast.sections.map((section) =>
               section.id === sectionId ? { ...section, imageLayer: newImageLayer } : section
-            )
+            ),
           };
-        })
+        }),
       };
     }
 
@@ -426,16 +431,16 @@ function eblastReducer(state, action) {
       const { eblastId, sectionId, updates } = action;
       return {
         ...state,
-        eblasts: state.eblasts.map(eblast => {
+        eblasts: state.eblasts.map((eblast) => {
           if (eblast.id !== eblastId) return eblast;
           return {
             ...eblast,
-            sections: eblast.sections.map(section => {
+            sections: eblast.sections.map((section) => {
               if (section.id !== sectionId || !section.imageLayer) return section;
               return { ...section, imageLayer: { ...section.imageLayer, ...updates } };
-            })
+            }),
           };
-        })
+        }),
       };
     }
 
@@ -443,17 +448,17 @@ function eblastReducer(state, action) {
       const { eblastId, sectionId } = action;
       return {
         ...state,
-        eblasts: state.eblasts.map(eblast => {
+        eblasts: state.eblasts.map((eblast) => {
           if (eblast.id !== eblastId) return eblast;
           return {
             ...eblast,
-            sections: eblast.sections.map(section => {
+            sections: eblast.sections.map((section) => {
               if (section.id !== sectionId) return section;
               const { imageLayer, ...rest } = section;
               return rest;
-            })
+            }),
           };
-        })
+        }),
       };
     }
 
@@ -473,22 +478,18 @@ function loadFromStorage(initialData) {
       }
     }
   } catch (e) {
-    console.warn('Failed to load eblasts from localStorage:', e);
+    logger.warn('Failed to load eblasts from localStorage:', e);
   }
   return initialData;
 }
 
 export default function useEblasts(initialData) {
   const [initialized, setInitialized] = useState(false);
-  const [state, dispatch] = useReducer(
-    eblastReducer,
-    loadFromStorage(initialData),
-    createInitialState
-  );
+  const [state, dispatch] = useReducer(eblastReducer, loadFromStorage(initialData), createInitialState);
 
   // Computed values
-  const selectedEblast = state.eblasts.find(e => e.id === state.selectedEblastId);
-  const selectedSection = selectedEblast?.sections?.find(s => s.id === state.selectedSectionId);
+  const selectedEblast = state.eblasts.find((e) => e.id === state.selectedEblastId);
+  const selectedSection = selectedEblast?.sections?.find((s) => s.id === state.selectedSectionId);
 
   // Save to localStorage
   useEffect(() => {
@@ -499,86 +500,129 @@ export default function useEblasts(initialData) {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state.eblasts));
     } catch (e) {
-      console.warn('Failed to save eblasts to localStorage:', e);
+      logger.warn('Failed to save eblasts to localStorage:', e);
     }
   }, [state.eblasts, initialized]);
 
   // Memoized actions
   const actions = {
     clearSelection: useCallback(() => dispatch({ type: EBLAST_ACTIONS.CLEAR_SELECTION }), []),
-    
-    setActiveTextField: useCallback((field) => 
-      dispatch({ type: EBLAST_ACTIONS.SET_ACTIVE_TEXT_FIELD, field }), []),
-    
+
+    setActiveTextField: useCallback((field) => dispatch({ type: EBLAST_ACTIONS.SET_ACTIVE_TEXT_FIELD, field }), []),
+
     handleSelectSection: useCallback((eblastId, sectionId, closeAllDropdowns) => {
       if (closeAllDropdowns) closeAllDropdowns();
       dispatch({ type: EBLAST_ACTIONS.SELECT_SECTION, eblastId, sectionId });
     }, []),
-    
+
     handleSelectEblast: useCallback((eblastId, closeAllDropdowns) => {
       if (closeAllDropdowns) closeAllDropdowns();
       dispatch({ type: EBLAST_ACTIONS.SELECT_EBLAST, eblastId });
     }, []),
-    
-    handleSetVariant: useCallback((eblastId, sectionId, variantIndex) =>
-      dispatch({ type: EBLAST_ACTIONS.SET_VARIANT, eblastId, sectionId, variantIndex }), []),
-    
-    handleSetLayout: useCallback((eblastId, sectionId, layoutIndex) =>
-      dispatch({ type: EBLAST_ACTIONS.SET_LAYOUT, eblastId, sectionId, layoutIndex }), []),
-    
-    handleShuffleLayoutVariant: useCallback((eblastId, sectionId) =>
-      dispatch({ type: EBLAST_ACTIONS.SHUFFLE_LAYOUT_VARIANT, eblastId, sectionId }), []),
-    
-    handleUpdateText: useCallback((eblastId, sectionId, field, value) =>
-      dispatch({ type: EBLAST_ACTIONS.UPDATE_TEXT, eblastId, sectionId, field, value }), []),
-    
-    handleUpdateFormatting: useCallback((eblastId, sectionId, field, key, value) =>
-      dispatch({ type: EBLAST_ACTIONS.UPDATE_FORMATTING, eblastId, sectionId, field, key, value }), []),
-    
-    handleAddSection: useCallback((eblastId, position) =>
-      dispatch({ type: EBLAST_ACTIONS.ADD_SECTION, eblastId, position }), []),
-    
-    handleRemoveSection: useCallback((eblastId, sectionId) =>
-      dispatch({ type: EBLAST_ACTIONS.REMOVE_SECTION, eblastId, sectionId }), []),
-    
-    handleReorderSections: useCallback((eblastId, oldIndex, newIndex) =>
-      dispatch({ type: EBLAST_ACTIONS.REORDER_SECTIONS, eblastId, oldIndex, newIndex }), []),
-    
-    handleAddEblast: useCallback((name) =>
-      dispatch({ type: EBLAST_ACTIONS.ADD_EBLAST, name }), []),
-    
-    handleRemoveEblast: useCallback((eblastId) =>
-      dispatch({ type: EBLAST_ACTIONS.REMOVE_EBLAST, eblastId }), []),
-    
+
+    handleSetVariant: useCallback(
+      (eblastId, sectionId, variantIndex) =>
+        dispatch({ type: EBLAST_ACTIONS.SET_VARIANT, eblastId, sectionId, variantIndex }),
+      []
+    ),
+
+    handleSetLayout: useCallback(
+      (eblastId, sectionId, layoutIndex) =>
+        dispatch({ type: EBLAST_ACTIONS.SET_LAYOUT, eblastId, sectionId, layoutIndex }),
+      []
+    ),
+
+    handleShuffleLayoutVariant: useCallback(
+      (eblastId, sectionId) => dispatch({ type: EBLAST_ACTIONS.SHUFFLE_LAYOUT_VARIANT, eblastId, sectionId }),
+      []
+    ),
+
+    handleUpdateText: useCallback(
+      (eblastId, sectionId, field, value) =>
+        dispatch({ type: EBLAST_ACTIONS.UPDATE_TEXT, eblastId, sectionId, field, value }),
+      []
+    ),
+
+    handleUpdateFormatting: useCallback(
+      (eblastId, sectionId, field, key, value) =>
+        dispatch({ type: EBLAST_ACTIONS.UPDATE_FORMATTING, eblastId, sectionId, field, key, value }),
+      []
+    ),
+
+    handleAddSection: useCallback(
+      (eblastId, position) => dispatch({ type: EBLAST_ACTIONS.ADD_SECTION, eblastId, position }),
+      []
+    ),
+
+    handleRemoveSection: useCallback(
+      (eblastId, sectionId) => dispatch({ type: EBLAST_ACTIONS.REMOVE_SECTION, eblastId, sectionId }),
+      []
+    ),
+
+    handleReorderSections: useCallback(
+      (eblastId, oldIndex, newIndex) =>
+        dispatch({ type: EBLAST_ACTIONS.REORDER_SECTIONS, eblastId, oldIndex, newIndex }),
+      []
+    ),
+
+    handleAddEblast: useCallback((name) => dispatch({ type: EBLAST_ACTIONS.ADD_EBLAST, name }), []),
+
+    handleRemoveEblast: useCallback((eblastId) => dispatch({ type: EBLAST_ACTIONS.REMOVE_EBLAST, eblastId }), []),
+
     // Background Layer Actions
-    handleSetSectionBackground: useCallback((eblastId, sectionId, background) =>
-      dispatch({ type: EBLAST_ACTIONS.SET_SECTION_BACKGROUND, eblastId, sectionId, background }), []),
-    
-    handleSetStretchedBackground: useCallback((eblastId, background, startIdx, endIdx) =>
-      dispatch({ type: EBLAST_ACTIONS.SET_STRETCHED_BACKGROUND, eblastId, background, startIdx, endIdx }), []),
-    
+    handleSetSectionBackground: useCallback(
+      (eblastId, sectionId, background) =>
+        dispatch({ type: EBLAST_ACTIONS.SET_SECTION_BACKGROUND, eblastId, sectionId, background }),
+      []
+    ),
+
+    handleSetStretchedBackground: useCallback(
+      (eblastId, background, startIdx, endIdx) =>
+        dispatch({ type: EBLAST_ACTIONS.SET_STRETCHED_BACKGROUND, eblastId, background, startIdx, endIdx }),
+      []
+    ),
+
     // Pattern Layer Actions
-    handleAddPatternToSection: useCallback((eblastId, sectionId, patternId) =>
-      dispatch({ type: EBLAST_ACTIONS.ADD_PATTERN_TO_SECTION, eblastId, sectionId, patternId }), []),
-    
-    handleUpdatePatternLayer: useCallback((eblastId, sectionId, updates) =>
-      dispatch({ type: EBLAST_ACTIONS.UPDATE_PATTERN_LAYER, eblastId, sectionId, updates }), []),
-    
-    handleRemovePatternFromSection: useCallback((eblastId, sectionId) =>
-      dispatch({ type: EBLAST_ACTIONS.REMOVE_PATTERN_FROM_SECTION, eblastId, sectionId }), []),
-    
-    handleSetStretchedPattern: useCallback((eblastId, patternId, startIdx, endIdx) =>
-      dispatch({ type: EBLAST_ACTIONS.SET_STRETCHED_PATTERN, eblastId, patternId, startIdx, endIdx }), []),
-    
+    handleAddPatternToSection: useCallback(
+      (eblastId, sectionId, patternId) =>
+        dispatch({ type: EBLAST_ACTIONS.ADD_PATTERN_TO_SECTION, eblastId, sectionId, patternId }),
+      []
+    ),
+
+    handleUpdatePatternLayer: useCallback(
+      (eblastId, sectionId, updates) =>
+        dispatch({ type: EBLAST_ACTIONS.UPDATE_PATTERN_LAYER, eblastId, sectionId, updates }),
+      []
+    ),
+
+    handleRemovePatternFromSection: useCallback(
+      (eblastId, sectionId) => dispatch({ type: EBLAST_ACTIONS.REMOVE_PATTERN_FROM_SECTION, eblastId, sectionId }),
+      []
+    ),
+
+    handleSetStretchedPattern: useCallback(
+      (eblastId, patternId, startIdx, endIdx) =>
+        dispatch({ type: EBLAST_ACTIONS.SET_STRETCHED_PATTERN, eblastId, patternId, startIdx, endIdx }),
+      []
+    ),
+
     // Image Layer Actions
-    handleAddImageToSection: useCallback((eblastId, sectionId, imageSrc) =>
-      dispatch({ type: EBLAST_ACTIONS.ADD_IMAGE_TO_SECTION, eblastId, sectionId, imageSrc }), []),
-    
-    handleUpdateImageLayer: useCallback((eblastId, sectionId, updates) =>
-      dispatch({ type: EBLAST_ACTIONS.UPDATE_IMAGE_LAYER, eblastId, sectionId, updates }), []),
-    
-    handleRemoveImageFromSection: useCallback((eblastId, sectionId) =>
-      dispatch({ type: EBLAST_ACTIONS.REMOVE_IMAGE_FROM_SECTION, eblastId, sectionId }), []),
+    handleAddImageToSection: useCallback(
+      (eblastId, sectionId, imageSrc) =>
+        dispatch({ type: EBLAST_ACTIONS.ADD_IMAGE_TO_SECTION, eblastId, sectionId, imageSrc }),
+      []
+    ),
+
+    handleUpdateImageLayer: useCallback(
+      (eblastId, sectionId, updates) =>
+        dispatch({ type: EBLAST_ACTIONS.UPDATE_IMAGE_LAYER, eblastId, sectionId, updates }),
+      []
+    ),
+
+    handleRemoveImageFromSection: useCallback(
+      (eblastId, sectionId) => dispatch({ type: EBLAST_ACTIONS.REMOVE_IMAGE_FROM_SECTION, eblastId, sectionId }),
+      []
+    ),
   };
 
   return {
@@ -595,5 +639,3 @@ export default function useEblasts(initialData) {
     ...actions,
   };
 }
-
-

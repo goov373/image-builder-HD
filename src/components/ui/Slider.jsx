@@ -1,7 +1,7 @@
 /**
  * Slider Component
  * Range input for values like opacity, zoom, rotation
- * 
+ *
  * @example
  * <Slider value={opacity} onChange={setOpacity} min={0} max={100} />
  * <Slider value={zoom} onChange={setZoom} min={50} max={200} label="Zoom" suffix="%" />
@@ -26,11 +26,7 @@ const Slider = ({
 
   return (
     <div className={`flex items-center gap-2 ${className}`}>
-      {label && (
-        <span className="text-[10px] text-[--text-tertiary] min-w-[40px]">
-          {label}
-        </span>
-      )}
+      {label && <span className="text-[10px] text-[--text-tertiary] min-w-[40px]">{label}</span>}
       <input
         type="range"
         value={value}
@@ -56,12 +52,15 @@ const Slider = ({
           [&::-moz-range-thumb]:border-none
           [&::-moz-range-thumb]:hover:bg-[--text-primary]
           ${disabled ? 'opacity-40 cursor-not-allowed' : ''}
-        `.replace(/\s+/g, ' ').trim()}
+        `
+          .replace(/\s+/g, ' ')
+          .trim()}
         {...props}
       />
       {showValue && (
         <span className="text-[10px] text-[--text-tertiary] min-w-[32px] text-right tabular-nums">
-          {value}{suffix}
+          {value}
+          {suffix}
         </span>
       )}
     </div>
@@ -69,4 +68,3 @@ const Slider = ({
 };
 
 export default Slider;
-

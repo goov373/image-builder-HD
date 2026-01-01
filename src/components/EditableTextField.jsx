@@ -13,12 +13,22 @@ const stripHtmlTags = (text) => {
   return tmp.textContent || tmp.innerText || '';
 };
 
-const EditableTextField = ({ children, field, isFrameSelected, isActive, onActivate, onUpdateText, formatting = {}, className = '', style = {} }) => {
+const EditableTextField = ({
+  children,
+  field,
+  isFrameSelected,
+  isActive,
+  onActivate,
+  onUpdateText,
+  formatting = {},
+  className = '',
+  style = {},
+}) => {
   // Clean any HTML tags from the content
   const cleanChildren = stripHtmlTags(children);
-  
+
   const isHighlight = formatting.underline && formatting.underlineStyle === 'highlight';
-  
+
   const getUnderlineStyles = () => {
     if (!formatting.underline) return {};
     const underlineColor = formatting.underlineColor || formatting.color || '#fff';
@@ -56,30 +66,34 @@ const EditableTextField = ({ children, field, isFrameSelected, isActive, onActiv
     whiteSpace: 'pre-wrap',
     ...getUnderlineStyles(),
   };
-  
+
   // Layer selection outline styles using CSS variable tokens
   // Orange accent is ONLY for editable content layers (per design spec)
-  const outlineStyle = !isFrameSelected ? {} : isActive 
-    ? { outline: '2px solid var(--accent-layer)', outlineOffset: '2px' }
-    : { outline: '1px dashed var(--accent-layer-subtle)', outlineOffset: '2px' };
-  
+  const outlineStyle = !isFrameSelected
+    ? {}
+    : isActive
+      ? { outline: '2px solid var(--accent-layer)', outlineOffset: '2px' }
+      : { outline: '1px dashed var(--accent-layer-subtle)', outlineOffset: '2px' };
+
   const highlightColor = formatting.underlineColor || formatting.color || '#fbbf24';
-  const highlightStyle = isHighlight ? {
-    backgroundColor: `${highlightColor}40`,
-    paddingLeft: '0.15em',
-    paddingRight: '0.15em',
-    marginLeft: '-0.15em',
-    marginRight: '-0.15em',
-    boxDecorationBreak: 'clone',
-    WebkitBoxDecorationBreak: 'clone',
-  } : {};
-  
+  const highlightStyle = isHighlight
+    ? {
+        backgroundColor: `${highlightColor}40`,
+        paddingLeft: '0.15em',
+        paddingRight: '0.15em',
+        marginLeft: '-0.15em',
+        marginRight: '-0.15em',
+        boxDecorationBreak: 'clone',
+        WebkitBoxDecorationBreak: 'clone',
+      }
+    : {};
+
   // Handle keyboard events when editing
   const handleKeyDown = (e) => {
     if (isActive) {
       // Stop propagation for all keys when editing to prevent parent handlers from intercepting
       e.stopPropagation();
-      
+
       // Explicitly allow space key - some browsers may block it in contentEditable spans
       if (e.key === ' ' || e.code === 'Space') {
         // Don't prevent default - let the space character be inserted
@@ -94,9 +108,16 @@ const EditableTextField = ({ children, field, isFrameSelected, isActive, onActiv
       style={{ ...displayStyle, ...outlineStyle }}
       contentEditable={isActive}
       suppressContentEditableWarning
-      onClick={(e) => { if (isFrameSelected) { e.stopPropagation(); onActivate?.(field); } }}
+      onClick={(e) => {
+        if (isFrameSelected) {
+          e.stopPropagation();
+          onActivate?.(field);
+        }
+      }}
       onKeyDown={handleKeyDown}
-      onBlur={(e) => { if (isActive) onUpdateText?.(field, e.target.innerText); }}
+      onBlur={(e) => {
+        if (isActive) onUpdateText?.(field, e.target.innerText);
+      }}
     >
       {isHighlight ? <span style={highlightStyle}>{cleanChildren}</span> : cleanChildren}
     </span>
@@ -104,5 +125,3 @@ const EditableTextField = ({ children, field, isFrameSelected, isActive, onActiv
 };
 
 export default EditableTextField;
-
-

@@ -1,19 +1,13 @@
 /**
  * Badge Component
  * Counter chips and status indicators
- * 
+ *
  * @example
  * <Badge>16</Badge>
  * <Badge variant="success">Active</Badge>
  */
 
-const Badge = ({
-  variant = 'default',
-  size = 'sm',
-  children,
-  className = '',
-  ...props
-}) => {
+const Badge = ({ variant = 'default', size = 'sm', children, className = '', ...props }) => {
   const baseStyles = `
     inline-flex items-center justify-center
     font-medium
@@ -43,7 +37,9 @@ const Badge = ({
         ${variants[variant]}
         ${sizes[size]}
         ${className}
-      `.replace(/\s+/g, ' ').trim()}
+      `
+        .replace(/\s+/g, ' ')
+        .trim()}
       {...props}
     >
       {children}
@@ -52,4 +48,3 @@ const Badge = ({
 };
 
 export default Badge;
-

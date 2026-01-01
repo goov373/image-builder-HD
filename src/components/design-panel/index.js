@@ -5,14 +5,13 @@
 
 export { default as ImageUploader } from './ImageUploader';
 export { default as ImageGrid, ImageCard } from './ImageGrid';
-export { 
-  default as GradientPicker, 
-  ApplyModeToggle, 
-  FrameRangeSlider, 
-  GradientSwatch, 
-  ColorSwatch 
+export {
+  default as GradientPicker,
+  ApplyModeToggle,
+  FrameRangeSlider,
+  GradientSwatch,
+  ColorSwatch,
 } from './GradientPicker';
 
 // Extracted sections
 export * from './sections';
-

@@ -17,7 +17,7 @@ const SectionTypeBadge = ({ type }) => {
     cta: 'bg-orange-500/20 text-orange-400',
     footer: 'bg-gray-500/20 text-gray-400',
   };
-  
+
   return (
     <span className={`text-[9px] px-1.5 py-0.5 rounded font-medium uppercase ${colors[type] || colors.feature}`}>
       {type}
@@ -46,14 +46,14 @@ const EblastSection = ({
   onRemoveImageFromSection,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
-  
+
   const defaultStyle = getEblastSectionStyle(section.style, designSystem);
   const content = section.variants[section.currentVariant];
   const layoutIndex = section.currentLayout || 0;
   const size = frameSizes[section.size] || frameSizes.emailHero;
   const formatting = section.variants[section.currentVariant]?.formatting || {};
   const layoutVariant = section.layoutVariant || 0;
-  
+
   // Compute background style - handles both simple string and stretched gradient objects
   const getBackgroundStyle = () => {
     const bgOverride = section.backgroundOverride;
@@ -72,13 +72,13 @@ const EblastSection = ({
     return { background: bgOverride };
   };
   const backgroundStyle = getBackgroundStyle();
-  
+
   // Use default style for text colors
   const style = { ...defaultStyle, ...backgroundStyle };
-  
+
   const handleUpdateText = (field, value) => onUpdateText?.(eblastId, section.id, field, value);
   const handleActivateField = (field) => onActivateTextField?.(field);
-  
+
   const renderLayout = () => {
     const fontSizes = getFontSizes(section.size);
     const props = {
@@ -98,21 +98,28 @@ const EblastSection = ({
       ctaText: section.ctaText,
       isLandscape: true, // Email sections are always landscape-ish
     };
-    
+
     // Use eblast-specific layouts first, fall back to core layouts
     switch (layoutIndex) {
-      case 3: return <EblastHeroOverlay {...props} />;
-      case 4: return <EblastSplit5050 {...props} />;
-      case 5: return <EblastCTABanner {...props} />;
-      case 6: return <EblastTextBlock {...props} />;
-      case 1: return <LayoutCenterDrama {...props} />;
-      case 2: return <LayoutEditorialLeft {...props} />;
-      default: return <LayoutBottomStack {...props} />;
+      case 3:
+        return <EblastHeroOverlay {...props} />;
+      case 4:
+        return <EblastSplit5050 {...props} />;
+      case 5:
+        return <EblastCTABanner {...props} />;
+      case 6:
+        return <EblastTextBlock {...props} />;
+      case 1:
+        return <LayoutCenterDrama {...props} />;
+      case 2:
+        return <LayoutEditorialLeft {...props} />;
+      default:
+        return <LayoutBottomStack {...props} />;
     }
   };
-  
+
   return (
-    <div 
+    <div
       className={`relative transition-all duration-150 ${isSectionSelected ? '' : ''}`}
       style={{ width: size.width }}
     >
@@ -123,37 +130,32 @@ const EblastSection = ({
           <SectionTypeBadge type={section.sectionType} />
         </div>
         {isSectionSelected && (
-          <span className="text-[9px] bg-gray-600 text-gray-300 px-1.5 py-0.5 rounded font-medium">
-            EDITING
-          </span>
+          <span className="text-[9px] bg-gray-600 text-gray-300 px-1.5 py-0.5 rounded font-medium">EDITING</span>
         )}
       </div>
-      
+
       {/* Section Frame */}
-      <div 
+      <div
         className={`relative overflow-hidden shadow-lg cursor-pointer transition-all rounded border ${
-          isSectionSelected 
-            ? 'ring-2 ring-gray-400/50 border-gray-400' 
-            : 'border-gray-600 hover:border-gray-500'
+          isSectionSelected ? 'ring-2 ring-gray-400/50 border-gray-400' : 'border-gray-600 hover:border-gray-500'
         }`}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        style={{ 
-          ...backgroundStyle, 
-          width: size.width, 
-          height: size.height 
+        style={{
+          ...backgroundStyle,
+          width: size.width,
+          height: size.height,
         }}
-        onClick={(e) => { e.stopPropagation(); onSelectSection?.(section.id); }}
+        onClick={(e) => {
+          e.stopPropagation();
+          onSelectSection?.(section.id);
+        }}
       >
         {/* Pattern Layer - absolute backmost (z-index: -2) */}
         {section.patternLayer && (
-          <PatternLayer
-            patternLayer={section.patternLayer}
-            frameWidth={size.width}
-            frameHeight={size.height}
-          />
+          <PatternLayer patternLayer={section.patternLayer} frameWidth={size.width} frameHeight={size.height} />
         )}
-        
+
         {/* Image Layer - behind text (z-index: 0) */}
         {section.imageLayer && (
           <ImageLayer
@@ -165,17 +167,18 @@ const EblastSection = ({
             onRemove={() => onRemoveImageFromSection?.(eblastId, section.id)}
           />
         )}
-        
+
         {/* Text Layout - z-index: 10 */}
-        <div className="absolute inset-0 z-10">
-          {renderLayout()}
-        </div>
-        
+        <div className="absolute inset-0 z-10">{renderLayout()}</div>
+
         {/* Remove Button */}
         {totalSections > 1 && (
-          <button 
+          <button
             type="button"
-            onClick={(e) => { e.stopPropagation(); onRemove?.(section.id); }} 
+            onClick={(e) => {
+              e.stopPropagation();
+              onRemove?.(section.id);
+            }}
             className={`absolute top-2 right-2 z-20 w-6 h-6 bg-black/70 hover:bg-red-500 rounded-full flex items-center justify-center transition-opacity duration-150 ${
               isHovered ? 'opacity-100' : 'opacity-0'
             }`}
@@ -191,4 +194,3 @@ const EblastSection = ({
 };
 
 export default EblastSection;
-

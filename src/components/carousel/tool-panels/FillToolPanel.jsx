@@ -3,17 +3,10 @@ import { Button, IconButton } from '../../ui';
 /**
  * Fill Tool Panel Component
  * Controls for editing fill color layer (opacity and rotation)
- * 
+ *
  * @see ARCHITECTURE-CONTEXT.md for behavioral rules
  */
-const FillToolPanel = ({
-  frame,
-  carouselId,
-  onUpdateFillLayer,
-  onDelete,
-  onCancel,
-  onDone,
-}) => {
+const FillToolPanel = ({ frame, carouselId, onUpdateFillLayer, onDelete, onCancel, onDone }) => {
   const fillOpacity = frame.fillOpacity ?? 1;
   const fillRotation = frame.fillRotation ?? 0;
 
@@ -22,8 +15,8 @@ const FillToolPanel = ({
   };
 
   return (
-    <div 
-      className="mt-1.5 flex items-center gap-2 flex-wrap" 
+    <div
+      className="mt-1.5 flex items-center gap-2 flex-wrap"
       data-fill-edit-controls
       onClick={(e) => e.stopPropagation()}
       onMouseDown={(e) => e.stopPropagation()}
@@ -59,7 +52,12 @@ const FillToolPanel = ({
           title="Reset opacity to 100%"
         >
           <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+            />
           </svg>
         </button>
       </div>
@@ -69,12 +67,17 @@ const FillToolPanel = ({
         <span className="text-[--text-quaternary] text-[10px] mr-1 min-w-[40px]">Rotate</span>
         <button
           type="button"
-          onClick={() => handleUpdate({ fillRotation: ((fillRotation - 90) + 360) % 360 })}
+          onClick={() => handleUpdate({ fillRotation: (fillRotation - 90 + 360) % 360 })}
           className="w-5 h-5 flex items-center justify-center text-[--text-tertiary] hover:text-[--text-primary] hover:bg-[--surface-overlay] rounded-[--radius-sm] transition-colors"
           title="Rotate -90°"
         >
           <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"
+            />
           </svg>
         </button>
         <span className="text-[--text-secondary] text-[10px] font-medium min-w-[32px] text-center tabular-nums">
@@ -87,7 +90,12 @@ const FillToolPanel = ({
           title="Rotate +90°"
         >
           <svg className="w-3.5 h-3.5 transform scale-x-[-1]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"
+            />
           </svg>
         </button>
         <button
@@ -97,7 +105,12 @@ const FillToolPanel = ({
           title="Reset rotation to 0°"
         >
           <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+            />
           </svg>
         </button>
       </div>
@@ -112,7 +125,12 @@ const FillToolPanel = ({
 
       <IconButton variant="danger" size="sm" onClick={onDelete} title="Remove fill color">
         <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+          />
         </svg>
       </IconButton>
     </div>
@@ -120,4 +138,3 @@ const FillToolPanel = ({
 };
 
 export default FillToolPanel;
-

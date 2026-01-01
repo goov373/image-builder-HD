@@ -8,13 +8,13 @@ const KeyboardShortcutsModal = ({ isOpen, onClose }) => {
   // Close on Escape key
   useEffect(() => {
     if (!isOpen) return;
-    
+
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') {
         onClose();
       }
     };
-    
+
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, onClose]);
@@ -71,14 +71,11 @@ const KeyboardShortcutsModal = ({ isOpen, onClose }) => {
   return (
     <>
       {/* Backdrop */}
-      <div 
-        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100]"
-        onClick={onClose}
-      />
-      
+      <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100]" onClick={onClose} />
+
       {/* Modal */}
       <div className="fixed inset-0 flex items-center justify-center z-[101] p-4 pointer-events-none">
-        <div 
+        <div
           className="bg-gray-900 border border-gray-700 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[80vh] overflow-hidden pointer-events-auto"
           onClick={(e) => e.stopPropagation()}
         >
@@ -87,7 +84,12 @@ const KeyboardShortcutsModal = ({ isOpen, onClose }) => {
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-gray-800 flex items-center justify-center">
                 <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.5}
+                    d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707"
+                  />
                 </svg>
               </div>
               <div>
@@ -105,18 +107,16 @@ const KeyboardShortcutsModal = ({ isOpen, onClose }) => {
               </svg>
             </button>
           </div>
-          
+
           {/* Content */}
           <div className="p-6 overflow-y-auto max-h-[calc(80vh-80px)]">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {shortcutCategories.map((category) => (
                 <div key={category.title}>
-                  <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-3">
-                    {category.title}
-                  </h3>
+                  <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-3">{category.title}</h3>
                   <div className="space-y-2">
                     {category.shortcuts.map((shortcut, idx) => (
-                      <div 
+                      <div
                         key={idx}
                         className="flex items-center justify-between py-2 px-3 rounded-lg bg-gray-800/50 border border-gray-800"
                       >
@@ -127,9 +127,7 @@ const KeyboardShortcutsModal = ({ isOpen, onClose }) => {
                               <kbd className="px-2 py-1 text-xs font-mono font-medium text-gray-300 bg-gray-700 border border-gray-600 rounded shadow-sm">
                                 {key}
                               </kbd>
-                              {keyIdx < shortcut.keys.length - 1 && (
-                                <span className="text-gray-600 mx-0.5">+</span>
-                              )}
+                              {keyIdx < shortcut.keys.length - 1 && <span className="text-gray-600 mx-0.5">+</span>}
                             </span>
                           ))}
                         </div>
@@ -140,11 +138,13 @@ const KeyboardShortcutsModal = ({ isOpen, onClose }) => {
               ))}
             </div>
           </div>
-          
+
           {/* Footer */}
           <div className="px-6 py-3 border-t border-gray-800 bg-gray-900/50">
             <p className="text-xs text-gray-600 text-center">
-              Press <kbd className="px-1.5 py-0.5 text-[10px] font-mono bg-gray-800 border border-gray-700 rounded">?</kbd> anytime to show this menu
+              Press{' '}
+              <kbd className="px-1.5 py-0.5 text-[10px] font-mono bg-gray-800 border border-gray-700 rounded">?</kbd>{' '}
+              anytime to show this menu
             </p>
           </div>
         </div>
@@ -154,4 +154,3 @@ const KeyboardShortcutsModal = ({ isOpen, onClose }) => {
 };
 
 export default KeyboardShortcutsModal;
-

@@ -1,11 +1,12 @@
 import { supabase, isSupabaseConfigured } from './supabase';
+import { logger } from '../utils';
 
 /**
  * Team Management API
  * Handles team members and invites with Supabase
- * 
+ *
  * Required Supabase Tables:
- * 
+ *
  * -- Team members table
  * CREATE TABLE team_members (
  *   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -18,7 +19,7 @@ import { supabase, isSupabaseConfigured } from './supabase';
  *   created_at TIMESTAMPTZ DEFAULT NOW(),
  *   updated_at TIMESTAMPTZ DEFAULT NOW()
  * );
- * 
+ *
  * -- Pending invites table
  * CREATE TABLE team_invites (
  *   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -31,21 +32,21 @@ import { supabase, isSupabaseConfigured } from './supabase';
  *   accepted_at TIMESTAMPTZ,
  *   created_at TIMESTAMPTZ DEFAULT NOW()
  * );
- * 
+ *
  * -- Enable RLS
  * ALTER TABLE team_members ENABLE ROW LEVEL SECURITY;
  * ALTER TABLE team_invites ENABLE ROW LEVEL SECURITY;
- * 
+ *
  * -- RLS Policies (users can only see their own team)
  * CREATE POLICY "Users can view their team" ON team_members
  *   FOR SELECT USING (owner_id = auth.uid() OR user_id = auth.uid());
- * 
+ *
  * CREATE POLICY "Owners can manage their team" ON team_members
  *   FOR ALL USING (owner_id = auth.uid());
- * 
+ *
  * CREATE POLICY "Users can view their invites" ON team_invites
  *   FOR SELECT USING (owner_id = auth.uid() OR email = auth.email());
- * 
+ *
  * CREATE POLICY "Owners can manage invites" ON team_invites
  *   FOR ALL USING (owner_id = auth.uid());
  */
@@ -66,9 +67,11 @@ const OWNER_EMAIL = 'gmaxwell@hellodata.ai';
  */
 export async function isTeamOwner() {
   if (!isSupabaseConfigured()) return false;
-  
+
   try {
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     return user?.email?.toLowerCase() === OWNER_EMAIL.toLowerCase();
   } catch {
     return false;
@@ -94,7 +97,9 @@ export async function getTeamMembers() {
   }
 
   try {
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     if (!user) {
       return { members: [], error: new Error('Not authenticated') };
     }
@@ -107,23 +112,25 @@ export async function getTeamMembers() {
       .order('created_at', { ascending: true });
 
     if (profilesError) {
-      console.warn('Profiles query failed, showing current user only:', profilesError.message);
+      logger.warn('Profiles query failed, showing current user only:', profilesError.message);
       return {
-        members: [{
-          id: user.id,
-          user_id: user.id,
-          email: user.email,
-          name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'You',
-          role: 'owner',
-          status: 'active',
-          isCurrentUser: true,
-        }],
+        members: [
+          {
+            id: user.id,
+            user_id: user.id,
+            email: user.email,
+            name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'You',
+            role: 'owner',
+            status: 'active',
+            isCurrentUser: true,
+          },
+        ],
         error: null,
       };
     }
 
     // Transform profiles to team member format
-    let members = (profiles || []).map(profile => ({
+    let members = (profiles || []).map((profile) => ({
       id: profile.id,
       user_id: profile.id,
       email: profile.email,
@@ -135,17 +142,20 @@ export async function getTeamMembers() {
     }));
 
     // Ensure current user is in the list (in case they don't match domain)
-    const currentUserInList = members.some(m => m.isCurrentUser);
+    const currentUserInList = members.some((m) => m.isCurrentUser);
     if (!currentUserInList) {
-      members = [{
-        id: user.id,
-        user_id: user.id,
-        email: user.email,
-        name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'You',
-        role: 'owner',
-        status: 'active',
-        isCurrentUser: true,
-      }, ...members];
+      members = [
+        {
+          id: user.id,
+          user_id: user.id,
+          email: user.email,
+          name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'You',
+          role: 'owner',
+          status: 'active',
+          isCurrentUser: true,
+        },
+        ...members,
+      ];
     }
 
     // Sort: current user first, then by name
@@ -157,7 +167,7 @@ export async function getTeamMembers() {
 
     return { members, error: null };
   } catch (error) {
-    console.error('Error fetching team members:', error);
+    logger.error('Error fetching team members:', error);
     return { members: [], error };
   }
 }
@@ -172,7 +182,9 @@ export async function getPendingInvites() {
   }
 
   try {
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     if (!user) {
       return { invites: [], error: new Error('Not authenticated') };
     }
@@ -189,7 +201,7 @@ export async function getPendingInvites() {
 
     return { invites: data || [], error: null };
   } catch (error) {
-    console.error('Error fetching invites:', error);
+    logger.error('Error fetching invites:', error);
     return { invites: [], error };
   }
 }
@@ -206,7 +218,9 @@ export async function sendInvite(email, role = 'editor') {
   }
 
   try {
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     if (!user) {
       return { invite: null, error: new Error('Not authenticated') };
     }
@@ -255,7 +269,7 @@ export async function sendInvite(email, role = 'editor') {
 
     return { invite: data, error: null };
   } catch (error) {
-    console.error('Error sending invite:', error);
+    logger.error('Error sending invite:', error);
     return { invite: null, error };
   }
 }
@@ -285,7 +299,7 @@ export async function resendInvite(inviteId) {
 
     return { invite: data, error: null };
   } catch (error) {
-    console.error('Error resending invite:', error);
+    logger.error('Error resending invite:', error);
     return { invite: null, error };
   }
 }
@@ -301,16 +315,13 @@ export async function cancelInvite(inviteId) {
   }
 
   try {
-    const { error } = await supabase
-      .from('team_invites')
-      .delete()
-      .eq('id', inviteId);
+    const { error } = await supabase.from('team_invites').delete().eq('id', inviteId);
 
     if (error) throw error;
 
     return { success: true, error: null };
   } catch (error) {
-    console.error('Error canceling invite:', error);
+    logger.error('Error canceling invite:', error);
     return { success: false, error };
   }
 }
@@ -339,7 +350,7 @@ export async function updateMemberRole(memberId, newRole) {
 
     return { member: data, error: null };
   } catch (error) {
-    console.error('Error updating member role:', error);
+    logger.error('Error updating member role:', error);
     return { member: null, error };
   }
 }
@@ -355,17 +366,13 @@ export async function removeMember(memberId) {
   }
 
   try {
-    const { error } = await supabase
-      .from('team_members')
-      .delete()
-      .eq('id', memberId)
-      .neq('role', 'owner'); // Can't remove owner
+    const { error } = await supabase.from('team_members').delete().eq('id', memberId).neq('role', 'owner'); // Can't remove owner
 
     if (error) throw error;
 
     return { success: true, error: null };
   } catch (error) {
-    console.error('Error removing member:', error);
+    logger.error('Error removing member:', error);
     return { success: false, error };
   }
 }
@@ -381,4 +388,3 @@ export default {
   isTeamOwner,
   isOwnerEmail,
 };
-

@@ -1,16 +1,17 @@
 import { useState, useEffect } from 'react';
-import { 
-  getTeamMembers, 
-  getPendingInvites, 
-  sendInvite, 
-  resendInvite, 
-  cancelInvite, 
-  updateMemberRole, 
+import {
+  getTeamMembers,
+  getPendingInvites,
+  sendInvite,
+  resendInvite,
+  cancelInvite,
+  updateMemberRole,
   removeMember,
   isTeamOwner,
   isOwnerEmail,
 } from '../lib/teams';
 import { isSupabaseConfigured } from '../lib/supabase';
+import { logger } from '../utils';
 
 /**
  * Account Management Panel
@@ -27,17 +28,17 @@ const AccountPanel = ({ onClose, isOpen, onSignOut = null, user = null }) => {
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [profileName, setProfileName] = useState('');
   const [isOwner, setIsOwner] = useState(false);
-  
+
   // Initialize profile name from user data
   useEffect(() => {
     if (user) {
       setProfileName(user.user_metadata?.full_name || user.email?.split('@')[0] || '');
     }
   }, [user]);
-  
+
   // Team members from Supabase
   const [teamMembers, setTeamMembers] = useState([]);
-  
+
   // Pending invites from Supabase
   const [pendingInvites, setPendingInvites] = useState([]);
 
@@ -58,22 +59,19 @@ const AccountPanel = ({ onClose, isOpen, onSignOut = null, user = null }) => {
   const loadTeamData = async () => {
     setIsLoading(true);
     setError(null);
-    
+
     try {
       // Check if current user is owner
       const ownerStatus = await isTeamOwner();
       setIsOwner(ownerStatus);
-      
-      const [membersResult, invitesResult] = await Promise.all([
-        getTeamMembers(),
-        getPendingInvites(),
-      ]);
+
+      const [membersResult, invitesResult] = await Promise.all([getTeamMembers(), getPendingInvites()]);
 
       if (membersResult.error) {
-        console.error('Error loading members:', membersResult.error);
+        logger.error('Error loading members:', membersResult.error);
       } else {
         // Mark owner in members list
-        const membersWithOwner = membersResult.members.map(m => ({
+        const membersWithOwner = membersResult.members.map((m) => ({
           ...m,
           role: isOwnerEmail(m.email) ? 'owner' : m.role,
         }));
@@ -81,7 +79,7 @@ const AccountPanel = ({ onClose, isOpen, onSignOut = null, user = null }) => {
       }
 
       if (invitesResult.error) {
-        console.error('Error loading invites:', invitesResult.error);
+        logger.error('Error loading invites:', invitesResult.error);
       } else {
         setPendingInvites(invitesResult.invites);
       }
@@ -94,78 +92,78 @@ const AccountPanel = ({ onClose, isOpen, onSignOut = null, user = null }) => {
 
   const handleInvite = async () => {
     if (!inviteEmail.trim()) return;
-    
+
     setError(null);
     const { invite, error } = await sendInvite(inviteEmail.trim(), inviteRole);
-    
+
     if (error) {
       setError(error.message);
       return;
     }
-    
+
     if (invite) {
-      setPendingInvites(prev => [invite, ...prev]);
+      setPendingInvites((prev) => [invite, ...prev]);
     }
-    
+
     setInviteEmail('');
     setShowInviteForm(false);
   };
 
   const handleResendInvite = async (inviteId) => {
     const { invite, error } = await resendInvite(inviteId);
-    
+
     if (error) {
       setError(error.message);
       return;
     }
-    
+
     if (invite) {
-      setPendingInvites(prev => prev.map(inv => inv.id === inviteId ? invite : inv));
+      setPendingInvites((prev) => prev.map((inv) => (inv.id === inviteId ? invite : inv)));
     }
   };
 
   const handleCancelInvite = async (inviteId) => {
     const { success, error } = await cancelInvite(inviteId);
-    
+
     if (error) {
       setError(error.message);
       return;
     }
-    
+
     if (success) {
-      setPendingInvites(prev => prev.filter(inv => inv.id !== inviteId));
+      setPendingInvites((prev) => prev.filter((inv) => inv.id !== inviteId));
     }
   };
 
   const handleRemoveMember = async (memberId) => {
-    const member = teamMembers.find(m => m.id === memberId);
+    const member = teamMembers.find((m) => m.id === memberId);
     if (member?.role === 'owner' || member?.isCurrentUser) return;
-    
+
     const { success, error } = await removeMember(memberId);
-    
+
     if (error) {
       setError(error.message);
       return;
     }
-    
+
     if (success) {
-      setTeamMembers(prev => prev.filter(m => m.id !== memberId));
+      setTeamMembers((prev) => prev.filter((m) => m.id !== memberId));
     }
   };
 
   const handleChangeRole = async (memberId, newRole) => {
-    const member = teamMembers.find(m => m.id === memberId);
+    const member = teamMembers.find((m) => m.id === memberId);
     if (member?.role === 'owner' || member?.isCurrentUser) return;
-    
+
     const { member: updatedMember, error } = await updateMemberRole(memberId, newRole);
-    
+
     if (error) {
       setError(error.message);
       return;
     }
-    
+
     if (updatedMember) {
-      setTeamMembers(prev => prev.map(m => m.id === memberId ? { ...m, role: newRole } : m));
+      setTeamMembers((prev) => prev.map((m) => (m.id === memberId ? { ...m, role: newRole } : m)));
     }
   };
 
@@ -179,13 +177,13 @@ const AccountPanel = ({ onClose, isOpen, onSignOut = null, user = null }) => {
   // Update user profile
   const handleUpdateProfile = async () => {
     if (!isSupabaseConfigured() || !user) return;
-    
+
     try {
       const { supabase } = await import('../lib/supabase');
       const { error } = await supabase.auth.updateUser({
-        data: { full_name: profileName }
+        data: { full_name: profileName },
       });
-      
+
       if (error) throw error;
       setIsEditingProfile(false);
     } catch (err) {
@@ -196,33 +194,45 @@ const AccountPanel = ({ onClose, isOpen, onSignOut = null, user = null }) => {
   // Get user display info
   const userDisplayName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'User';
   const userEmail = user?.email || 'No email';
-  const userInitials = userDisplayName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+  const userInitials = userDisplayName
+    .split(' ')
+    .map((n) => n[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2);
 
   return (
-    <div 
+    <div
       className={`fixed top-[56px] h-[calc(100%-56px)] w-80 bg-gray-900 border-r border-gray-800 z-40 flex flex-col ${isOpen ? 'pointer-events-auto' : 'pointer-events-none'}`}
       style={{ left: isOpen ? 64 : -256, transition: 'left 0.3s ease-out' }}
     >
       {/* Fixed Header */}
-      <div className="flex-shrink-0 p-4 border-b border-gray-800 flex items-center justify-between" style={{ height: 64 }}>
+      <div
+        className="flex-shrink-0 p-4 border-b border-gray-800 flex items-center justify-between"
+        style={{ height: 64 }}
+      >
         <h2 className="text-base font-semibold text-white">Account</h2>
-        <button type="button" onClick={onClose} className="p-1.5 rounded-lg hover:bg-gray-800 text-gray-400 hover:text-white transition-colors">
+        <button
+          type="button"
+          onClick={onClose}
+          className="p-1.5 rounded-lg hover:bg-gray-800 text-gray-400 hover:text-white transition-colors"
+        >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
       </div>
-      
+
       {/* Tab Navigation */}
       <div className="flex-shrink-0 flex border-b border-gray-800">
-        <button 
+        <button
           type="button"
           onClick={() => setActiveTab('team')}
           className={`flex-1 py-3 text-xs font-medium transition-colors ${activeTab === 'team' ? 'text-white border-b-2 border-gray-500' : 'text-gray-500 hover:text-gray-300'}`}
         >
           Team
         </button>
-        <button 
+        <button
           type="button"
           onClick={() => setActiveTab('invites')}
           className={`flex-1 py-3 text-xs font-medium transition-colors relative ${activeTab === 'invites' ? 'text-white border-b-2 border-gray-500' : 'text-gray-500 hover:text-gray-300'}`}
@@ -234,7 +244,7 @@ const AccountPanel = ({ onClose, isOpen, onSignOut = null, user = null }) => {
             </span>
           )}
         </button>
-        <button 
+        <button
           type="button"
           onClick={() => setActiveTab('settings')}
           className={`flex-1 py-3 text-xs font-medium transition-colors ${activeTab === 'settings' ? 'text-white border-b-2 border-gray-500' : 'text-gray-500 hover:text-gray-300'}`}
@@ -242,10 +252,9 @@ const AccountPanel = ({ onClose, isOpen, onSignOut = null, user = null }) => {
           Settings
         </button>
       </div>
-      
+
       {/* Scrollable Content */}
       <div className="flex-1 overflow-y-auto overflow-x-hidden p-4">
-        
         {/* Team Tab */}
         {activeTab === 'team' && (
           <div className="space-y-4">
@@ -262,7 +271,7 @@ const AccountPanel = ({ onClose, isOpen, onSignOut = null, user = null }) => {
                 Invite Team Member
               </button>
             )}
-            
+
             {/* Invite Form */}
             {showInviteForm && (
               <div className="p-3 rounded-lg bg-gray-800/50 border border-gray-700 space-y-3">
@@ -278,9 +287,13 @@ const AccountPanel = ({ onClose, isOpen, onSignOut = null, user = null }) => {
                   onChange={(e) => setInviteRole(e.target.value)}
                   className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-sm text-white focus:outline-none focus:border-gray-500"
                 >
-                  {roles.filter(r => r.id !== 'owner').map(role => (
-                    <option key={role.id} value={role.id}>{role.name}</option>
-                  ))}
+                  {roles
+                    .filter((r) => r.id !== 'owner')
+                    .map((role) => (
+                      <option key={role.id} value={role.id}>
+                        {role.name}
+                      </option>
+                    ))}
                 </select>
                 <div className="flex gap-2">
                   <button
@@ -301,18 +314,20 @@ const AccountPanel = ({ onClose, isOpen, onSignOut = null, user = null }) => {
                 </div>
               </div>
             )}
-            
+
             {/* Team Members List */}
             <div className="space-y-2">
-              <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wide">Team Members ({teamMembers.length})</h3>
-              
+              <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                Team Members ({teamMembers.length})
+              </h3>
+
               {/* Error message */}
               {error && (
                 <div className="p-2 rounded-lg bg-red-500/10 border border-red-500/20 text-xs text-red-400">
                   {error}
                 </div>
               )}
-              
+
               {/* Loading state */}
               {isLoading ? (
                 <div className="py-6 text-center">
@@ -325,21 +340,31 @@ const AccountPanel = ({ onClose, isOpen, onSignOut = null, user = null }) => {
                   <p className="text-[10px] text-gray-600 mt-1">Invite someone to get started</p>
                 </div>
               ) : (
-                teamMembers.map(member => (
-                  <div key={member.id} className="p-3 rounded-lg bg-gray-800/30 border border-gray-700/50 flex items-center gap-3">
+                teamMembers.map((member) => (
+                  <div
+                    key={member.id}
+                    className="p-3 rounded-lg bg-gray-800/30 border border-gray-700/50 flex items-center gap-3"
+                  >
                     <div className="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center text-xs font-medium text-white">
-                      {(member.name || member.email || '?').split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)}
+                      {(member.name || member.email || '?')
+                        .split(' ')
+                        .map((n) => n[0])
+                        .join('')
+                        .toUpperCase()
+                        .slice(0, 2)}
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium text-white truncate">
-                        {member.isCurrentUser ? 'You' : (member.name || member.email?.split('@')[0])}
+                        {member.isCurrentUser ? 'You' : member.name || member.email?.split('@')[0]}
                       </p>
                       <p className="text-xs text-gray-500 truncate">{member.email}</p>
                     </div>
                     <div className="flex items-center gap-2">
                       {/* Always show role badge for owner or if current user is viewing themselves */}
                       {member.role === 'owner' || member.isCurrentUser || !isOwner ? (
-                        <span className="text-[10px] px-2 py-0.5 rounded bg-gray-700 text-gray-400 capitalize">{member.role}</span>
+                        <span className="text-[10px] px-2 py-0.5 rounded bg-gray-700 text-gray-400 capitalize">
+                          {member.role}
+                        </span>
                       ) : (
                         /* Owner can manage other team members */
                         <>
@@ -348,9 +373,13 @@ const AccountPanel = ({ onClose, isOpen, onSignOut = null, user = null }) => {
                             onChange={(e) => handleChangeRole(member.id, e.target.value)}
                             className="text-[10px] px-2 py-1 rounded bg-gray-700 border-0 text-gray-300 focus:outline-none cursor-pointer"
                           >
-                            {roles.filter(r => r.id !== 'owner').map(role => (
-                              <option key={role.id} value={role.id}>{role.name}</option>
-                            ))}
+                            {roles
+                              .filter((r) => r.id !== 'owner')
+                              .map((role) => (
+                                <option key={role.id} value={role.id}>
+                                  {role.name}
+                                </option>
+                              ))}
                           </select>
                           <button
                             type="button"
@@ -359,7 +388,12 @@ const AccountPanel = ({ onClose, isOpen, onSignOut = null, user = null }) => {
                             title="Remove member"
                           >
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                              />
                             </svg>
                           </button>
                         </>
@@ -371,28 +405,51 @@ const AccountPanel = ({ onClose, isOpen, onSignOut = null, user = null }) => {
             </div>
           </div>
         )}
-        
+
         {/* Invites Tab */}
         {activeTab === 'invites' && (
           <div className="space-y-4">
             {!isOwner ? (
               /* Non-owners see a message */
               <div className="text-center py-8">
-                <svg className="w-12 h-12 mx-auto text-gray-600 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                <svg
+                  className="w-12 h-12 mx-auto text-gray-600 mb-3"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.5}
+                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                  />
                 </svg>
                 <p className="text-sm text-gray-500">Owner access required</p>
                 <p className="text-xs text-gray-600 mt-1">Only the team owner can manage invites</p>
               </div>
             ) : pendingInvites.length === 0 ? (
               <div className="text-center py-8">
-                <svg className="w-12 h-12 mx-auto text-gray-600 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                <svg
+                  className="w-12 h-12 mx-auto text-gray-600 mb-3"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.5}
+                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                  />
                 </svg>
                 <p className="text-sm text-gray-500">No pending invites</p>
                 <button
                   type="button"
-                  onClick={() => { setActiveTab('team'); setShowInviteForm(true); }}
+                  onClick={() => {
+                    setActiveTab('team');
+                    setShowInviteForm(true);
+                  }}
                   className="mt-3 text-xs text-gray-400 hover:text-white transition-colors"
                 >
                   Invite someone →
@@ -400,8 +457,10 @@ const AccountPanel = ({ onClose, isOpen, onSignOut = null, user = null }) => {
               </div>
             ) : (
               <div className="space-y-2">
-                <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wide">Pending Invites ({pendingInvites.length})</h3>
-                {pendingInvites.map(invite => (
+                <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                  Pending Invites ({pendingInvites.length})
+                </h3>
+                {pendingInvites.map((invite) => (
                   <div key={invite.id} className="p-3 rounded-lg bg-gray-800/30 border border-gray-700/50">
                     <div className="flex items-start justify-between mb-2">
                       <div>
@@ -435,14 +494,14 @@ const AccountPanel = ({ onClose, isOpen, onSignOut = null, user = null }) => {
             )}
           </div>
         )}
-        
+
         {/* Settings Tab */}
         {activeTab === 'settings' && (
           <div className="space-y-5">
             {/* Profile Section */}
             <div className="space-y-3">
               <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wide">Profile</h3>
-              
+
               {isEditingProfile ? (
                 /* Edit Mode */
                 <div className="p-3 rounded-lg bg-gray-800/30 border border-gray-700/50 space-y-3">
@@ -495,8 +554,8 @@ const AccountPanel = ({ onClose, isOpen, onSignOut = null, user = null }) => {
                     <p className="text-sm font-medium text-white">{userDisplayName}</p>
                     <p className="text-xs text-gray-500">{userEmail}</p>
                   </div>
-                  <button 
-                    type="button" 
+                  <button
+                    type="button"
                     onClick={() => setIsEditingProfile(true)}
                     className="text-xs text-gray-400 hover:text-white transition-colors"
                   >
@@ -505,7 +564,7 @@ const AccountPanel = ({ onClose, isOpen, onSignOut = null, user = null }) => {
                 </div>
               )}
             </div>
-            
+
             {/* Workspace Section */}
             <div className="space-y-3">
               <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wide">Workspace</h3>
@@ -520,35 +579,45 @@ const AccountPanel = ({ onClose, isOpen, onSignOut = null, user = null }) => {
                 </div>
               </div>
             </div>
-            
+
             {/* Sign Out */}
             {onSignOut && (
               <div className="space-y-3">
                 <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wide">Session</h3>
                 <div className="p-3 rounded-lg bg-gray-800/50 border border-gray-700 space-y-2">
                   {user?.email && (
-                    <p className="text-xs text-gray-400">Signed in as <span className="text-white">{user.email}</span></p>
+                    <p className="text-xs text-gray-400">
+                      Signed in as <span className="text-white">{user.email}</span>
+                    </p>
                   )}
-                  <button 
-                    type="button" 
+                  <button
+                    type="button"
                     onClick={onSignOut}
                     className="w-full py-2 rounded-lg bg-gray-700 hover:bg-gray-600 text-white text-xs font-medium transition-colors flex items-center justify-center gap-2"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                      />
                     </svg>
                     Sign Out
                   </button>
                 </div>
               </div>
             )}
-            
+
             {/* Danger Zone */}
             <div className="space-y-3">
               <h3 className="text-xs font-medium text-red-400/70 uppercase tracking-wide">Danger Zone</h3>
               <div className="p-3 rounded-lg bg-red-500/5 border border-red-500/20 space-y-2">
                 <p className="text-xs text-gray-400">Permanently delete your account and all associated data.</p>
-                <button type="button" className="w-full py-2 rounded-lg border border-red-500/30 text-red-400 hover:bg-red-500/10 text-xs font-medium transition-colors">
+                <button
+                  type="button"
+                  className="w-full py-2 rounded-lg border border-red-500/30 text-red-400 hover:bg-red-500/10 text-xs font-medium transition-colors"
+                >
                   Delete Account
                 </button>
               </div>
@@ -561,4 +630,3 @@ const AccountPanel = ({ onClose, isOpen, onSignOut = null, user = null }) => {
 };
 
 export default AccountPanel;
-

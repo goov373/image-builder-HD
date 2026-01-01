@@ -3,7 +3,7 @@ import { useEffect, useCallback } from 'react';
 /**
  * Global Keyboard Shortcuts Hook
  * Handles all keyboard shortcuts across the application
- * 
+ *
  * @param {Object} handlers - Object containing handler functions
  * @param {Function} handlers.onShowShortcuts - Show shortcuts modal
  * @param {Function} handlers.onUndo - Undo last action
@@ -35,102 +35,114 @@ export function useKeyboardShortcuts(handlers = {}, enabled = true) {
     onUnderline,
   } = handlers;
 
-  const handleKeyDown = useCallback((e) => {
-    // Don't trigger shortcuts when typing in inputs (except specific ones)
-    const isInputFocused = ['INPUT', 'TEXTAREA'].includes(e.target.tagName) || 
-                           e.target.isContentEditable;
-    
-    const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
-    const cmdKey = isMac ? e.metaKey : e.ctrlKey;
+  const handleKeyDown = useCallback(
+    (e) => {
+      // Don't trigger shortcuts when typing in inputs (except specific ones)
+      const isInputFocused = ['INPUT', 'TEXTAREA'].includes(e.target.tagName) || e.target.isContentEditable;
 
-    // ? - Show shortcuts (always works)
-    if (e.key === '?' && !cmdKey && !e.altKey) {
-      e.preventDefault();
-      onShowShortcuts?.();
-      return;
-    }
+      const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+      const cmdKey = isMac ? e.metaKey : e.ctrlKey;
 
-    // Escape - Deselect / Close
-    if (e.key === 'Escape') {
-      e.preventDefault();
-      onDeselect?.();
-      return;
-    }
+      // ? - Show shortcuts (always works)
+      if (e.key === '?' && !cmdKey && !e.altKey) {
+        e.preventDefault();
+        onShowShortcuts?.();
+        return;
+      }
 
-    // Skip other shortcuts if in input
-    if (isInputFocused && !cmdKey) return;
+      // Escape - Deselect / Close
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        onDeselect?.();
+        return;
+      }
 
-    // Cmd/Ctrl + Z - Undo
-    if (cmdKey && e.key === 'z' && !e.shiftKey) {
-      e.preventDefault();
-      onUndo?.();
-      return;
-    }
+      // Skip other shortcuts if in input
+      if (isInputFocused && !cmdKey) return;
 
-    // Cmd/Ctrl + Shift + Z - Redo
-    if (cmdKey && e.key === 'z' && e.shiftKey) {
-      e.preventDefault();
-      onRedo?.();
-      return;
-    }
+      // Cmd/Ctrl + Z - Undo
+      if (cmdKey && e.key === 'z' && !e.shiftKey) {
+        e.preventDefault();
+        onUndo?.();
+        return;
+      }
 
-    // Cmd/Ctrl + E - Export
-    if (cmdKey && e.key === 'e') {
-      e.preventDefault();
-      onOpenExport?.();
-      return;
-    }
+      // Cmd/Ctrl + Shift + Z - Redo
+      if (cmdKey && e.key === 'z' && e.shiftKey) {
+        e.preventDefault();
+        onRedo?.();
+        return;
+      }
 
-    // Cmd/Ctrl + Plus - Zoom In
-    if (cmdKey && (e.key === '=' || e.key === '+')) {
-      e.preventDefault();
-      onZoomIn?.();
-      return;
-    }
+      // Cmd/Ctrl + E - Export
+      if (cmdKey && e.key === 'e') {
+        e.preventDefault();
+        onOpenExport?.();
+        return;
+      }
 
-    // Cmd/Ctrl + Minus - Zoom Out
-    if (cmdKey && e.key === '-') {
-      e.preventDefault();
-      onZoomOut?.();
-      return;
-    }
+      // Cmd/Ctrl + Plus - Zoom In
+      if (cmdKey && (e.key === '=' || e.key === '+')) {
+        e.preventDefault();
+        onZoomIn?.();
+        return;
+      }
 
-    // Cmd/Ctrl + 0 - Reset Zoom
-    if (cmdKey && e.key === '0') {
-      e.preventDefault();
-      onZoomReset?.();
-      return;
-    }
+      // Cmd/Ctrl + Minus - Zoom Out
+      if (cmdKey && e.key === '-') {
+        e.preventDefault();
+        onZoomOut?.();
+        return;
+      }
 
-    // Delete/Backspace - Delete frame (when not in input)
-    if ((e.key === 'Delete' || e.key === 'Backspace') && !isInputFocused) {
-      e.preventDefault();
-      onDeleteFrame?.();
-      return;
-    }
+      // Cmd/Ctrl + 0 - Reset Zoom
+      if (cmdKey && e.key === '0') {
+        e.preventDefault();
+        onZoomReset?.();
+        return;
+      }
 
-    // Text formatting shortcuts (work in content editable)
-    if (cmdKey && e.key === 'b') {
-      e.preventDefault();
-      onBold?.();
-      return;
-    }
+      // Delete/Backspace - Delete frame (when not in input)
+      if ((e.key === 'Delete' || e.key === 'Backspace') && !isInputFocused) {
+        e.preventDefault();
+        onDeleteFrame?.();
+        return;
+      }
 
-    if (cmdKey && e.key === 'i') {
-      e.preventDefault();
-      onItalic?.();
-      return;
-    }
+      // Text formatting shortcuts (work in content editable)
+      if (cmdKey && e.key === 'b') {
+        e.preventDefault();
+        onBold?.();
+        return;
+      }
 
-    if (cmdKey && e.key === 'u') {
-      e.preventDefault();
-      onUnderline?.();
-      return;
-    }
-  }, [
-    onShowShortcuts, onUndo, onRedo, onZoomIn, onZoomOut, onZoomReset,
-    onOpenExport, onDeselect, onDeleteFrame, onBold, onItalic, onUnderline
-  ]);
+      if (cmdKey && e.key === 'i') {
+        e.preventDefault();
+        onItalic?.();
+        return;
+      }
+
+      if (cmdKey && e.key === 'u') {
+        e.preventDefault();
+        onUnderline?.();
+        return;
+      }
+    },
+    [
+      onShowShortcuts,
+      onUndo,
+      onRedo,
+      onZoomIn,
+      onZoomOut,
+      onZoomReset,
+      onOpenExport,
+      onDeselect,
+      onDeleteFrame,
+      onBold,
+      onItalic,
+      onUnderline,
+    ]
+  );
 
   useEffect(() => {
     if (!enabled) return;
@@ -141,4 +153,3 @@ export function useKeyboardShortcuts(handlers = {}, enabled = true) {
 }
 
 export default useKeyboardShortcuts;
-

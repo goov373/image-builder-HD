@@ -10,23 +10,29 @@
  */
 export function hexToRgb(hex) {
   if (!hex) return null;
-  
+
   // Remove # if present
   const cleanHex = hex.replace(/^#/, '');
-  
+
   // Handle 3-digit hex
-  const fullHex = cleanHex.length === 3
-    ? cleanHex.split('').map(c => c + c).join('')
-    : cleanHex;
-  
+  const fullHex =
+    cleanHex.length === 3
+      ? cleanHex
+          .split('')
+          .map((c) => c + c)
+          .join('')
+      : cleanHex;
+
   if (fullHex.length !== 6) return null;
-  
+
   const result = /^([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(fullHex);
-  return result ? {
-    r: parseInt(result[1], 16),
-    g: parseInt(result[2], 16),
-    b: parseInt(result[3], 16)
-  } : null;
+  return result
+    ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16),
+      }
+    : null;
 }
 
 /**
@@ -55,18 +61,18 @@ export function rgbToHsl(r, g, b) {
   const rNorm = r / 255;
   const gNorm = g / 255;
   const bNorm = b / 255;
-  
+
   const max = Math.max(rNorm, gNorm, bNorm);
   const min = Math.min(rNorm, gNorm, bNorm);
   const l = (max + min) / 2;
-  
+
   let h = 0;
   let s = 0;
-  
+
   if (max !== min) {
     const d = max - min;
     s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-    
+
     switch (max) {
       case rNorm:
         h = ((gNorm - bNorm) / d + (gNorm < bNorm ? 6 : 0)) / 6;
@@ -79,11 +85,11 @@ export function rgbToHsl(r, g, b) {
         break;
     }
   }
-  
+
   return {
     h: Math.round(h * 360),
     s: Math.round(s * 100),
-    l: Math.round(l * 100)
+    l: Math.round(l * 100),
   };
 }
 
@@ -98,9 +104,9 @@ export function hslToRgb(h, s, l) {
   const hNorm = h / 360;
   const sNorm = s / 100;
   const lNorm = l / 100;
-  
+
   let r, g, b;
-  
+
   if (sNorm === 0) {
     r = g = b = lNorm;
   } else {
@@ -108,23 +114,23 @@ export function hslToRgb(h, s, l) {
       let tNorm = t;
       if (tNorm < 0) tNorm += 1;
       if (tNorm > 1) tNorm -= 1;
-      if (tNorm < 1/6) return p + (q - p) * 6 * tNorm;
-      if (tNorm < 1/2) return q;
-      if (tNorm < 2/3) return p + (q - p) * (2/3 - tNorm) * 6;
+      if (tNorm < 1 / 6) return p + (q - p) * 6 * tNorm;
+      if (tNorm < 1 / 2) return q;
+      if (tNorm < 2 / 3) return p + (q - p) * (2 / 3 - tNorm) * 6;
       return p;
     };
-    
+
     const q = lNorm < 0.5 ? lNorm * (1 + sNorm) : lNorm + sNorm - lNorm * sNorm;
     const p = 2 * lNorm - q;
-    r = hue2rgb(p, q, hNorm + 1/3);
+    r = hue2rgb(p, q, hNorm + 1 / 3);
     g = hue2rgb(p, q, hNorm);
-    b = hue2rgb(p, q, hNorm - 1/3);
+    b = hue2rgb(p, q, hNorm - 1 / 3);
   }
-  
+
   return {
     r: Math.round(r * 255),
     g: Math.round(g * 255),
-    b: Math.round(b * 255)
+    b: Math.round(b * 255),
   };
 }
 
@@ -139,16 +145,16 @@ export function hslToRgb(h, s, l) {
 export function interpolateColor(color1, color2, ratio) {
   const rgb1 = hexToRgb(color1);
   const rgb2 = hexToRgb(color2);
-  
+
   if (!rgb1 || !rgb2) return color1 || color2 || '#000000';
-  
+
   const hsl1 = rgbToHsl(rgb1.r, rgb1.g, rgb1.b);
   const hsl2 = rgbToHsl(rgb2.r, rgb2.g, rgb2.b);
-  
+
   // Handle hue interpolation (shortest path around the circle)
   let h1 = hsl1.h;
   let h2 = hsl2.h;
-  
+
   if (Math.abs(h2 - h1) > 180) {
     if (h2 > h1) {
       h1 += 360;
@@ -156,11 +162,11 @@ export function interpolateColor(color1, color2, ratio) {
       h2 += 360;
     }
   }
-  
+
   const h = ((1 - ratio) * h1 + ratio * h2) % 360;
   const s = (1 - ratio) * hsl1.s + ratio * hsl2.s;
   const l = (1 - ratio) * hsl1.l + ratio * hsl2.l;
-  
+
   const rgb = hslToRgb(h, s, l);
   return rgbToHex(rgb.r, rgb.g, rgb.b);
 }
@@ -173,12 +179,12 @@ export function interpolateColor(color1, color2, ratio) {
 export function parseRgba(rgbaString) {
   const match = rgbaString.match(/rgba?\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)(?:\s*,\s*([\d.]+))?\s*\)/i);
   if (!match) return null;
-  
+
   return {
     r: parseInt(match[1], 10),
     g: parseInt(match[2], 10),
     b: parseInt(match[3], 10),
-    a: match[4] !== undefined ? parseFloat(match[4]) : 1
+    a: match[4] !== undefined ? parseFloat(match[4]) : 1,
   };
 }
 
@@ -190,7 +196,7 @@ export function parseRgba(rgbaString) {
 export function getColorBrightness(color) {
   const rgb = hexToRgb(color);
   if (!rgb) return 128;
-  
+
   // Using perceived brightness formula
   return (rgb.r * 299 + rgb.g * 587 + rgb.b * 114) / 1000;
 }
@@ -213,7 +219,7 @@ export function isLightColor(color) {
 export function darkenColor(color, amount) {
   const rgb = hexToRgb(color);
   if (!rgb) return color;
-  
+
   const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
   const newL = Math.max(0, hsl.l - amount);
   const newRgb = hslToRgb(hsl.h, hsl.s, newL);
@@ -229,10 +235,9 @@ export function darkenColor(color, amount) {
 export function lightenColor(color, amount) {
   const rgb = hexToRgb(color);
   if (!rgb) return color;
-  
+
   const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
   const newL = Math.min(100, hsl.l + amount);
   const newRgb = hslToRgb(hsl.h, hsl.s, newL);
   return rgbToHex(newRgb.r, newRgb.g, newRgb.b);
 }
-

@@ -4,223 +4,351 @@ import type { Carousel, DesignSystem, FrameStyle } from '../types';
 export const initialCarousels: Carousel[] = [
   {
     id: 1,
-    name: "The Deal That Got Away",
-    subtitle: "Investors / Acquisitions",
-    frameSize: "portrait",
+    name: 'The Deal That Got Away',
+    subtitle: 'Investors / Acquisitions',
+    frameSize: 'portrait',
     frames: [
       {
         id: 1,
         variants: [
-          { headline: "A 200-unit value-add hit the market at 9am.", body: "The clock starts now.", formatting: {} },
-          { headline: "The deal dropped at 9am. 200 units. Prime submarket.", body: "Everyone saw it.", formatting: {} },
-          { headline: "9:00 AM: New listing alert. 200 units.", body: "Your competition just woke up too.", formatting: {} }
+          { headline: 'A 200-unit value-add hit the market at 9am.', body: 'The clock starts now.', formatting: {} },
+          {
+            headline: 'The deal dropped at 9am. 200 units. Prime submarket.',
+            body: 'Everyone saw it.',
+            formatting: {},
+          },
+          {
+            headline: '9:00 AM: New listing alert. 200 units.',
+            body: 'Your competition just woke up too.',
+            formatting: {},
+          },
         ],
         currentVariant: 0,
         currentLayout: 0,
         layoutVariant: 0,
-        style: "dark-single-pin",
-        backgroundOverride: '#6466e9'
+        style: 'dark-single-pin',
+        backgroundOverride: '#6466e9',
       },
       {
         id: 2,
         variants: [
-          { headline: "By 2pm, you're still pulling comps manually.", body: "Spreadsheets. Browser tabs. Guesswork.", formatting: {} },
-          { headline: "Five hours later. Still no underwriting.", body: "Manual comps are killing your velocity.", formatting: {} },
-          { headline: "2:00 PM: You're on your third data source.", body: "Nothing matches. Nothing's current.", formatting: {} }
+          {
+            headline: "By 2pm, you're still pulling comps manually.",
+            body: 'Spreadsheets. Browser tabs. Guesswork.',
+            formatting: {},
+          },
+          {
+            headline: 'Five hours later. Still no underwriting.',
+            body: 'Manual comps are killing your velocity.',
+            formatting: {},
+          },
+          {
+            headline: "2:00 PM: You're on your third data source.",
+            body: "Nothing matches. Nothing's current.",
+            formatting: {},
+          },
         ],
         currentVariant: 0,
         currentLayout: 0,
         layoutVariant: 0,
-        style: "dark-chaos",
-        backgroundOverride: '#6466e9'
+        style: 'dark-chaos',
+        backgroundOverride: '#6466e9',
       },
       {
         id: 3,
         variants: [
-          { headline: "By 4pm, three groups have already toured.", body: "They moved faster. They had better data.", formatting: {} },
-          { headline: "The property manager says you're fourth in line.", body: "Three offers already on the table.", formatting: {} },
-          { headline: "4:00 PM: Your competitors aren't guessing.", body: "They're already submitting LOIs.", formatting: {} }
+          {
+            headline: 'By 4pm, three groups have already toured.',
+            body: 'They moved faster. They had better data.',
+            formatting: {},
+          },
+          {
+            headline: "The property manager says you're fourth in line.",
+            body: 'Three offers already on the table.',
+            formatting: {},
+          },
+          {
+            headline: "4:00 PM: Your competitors aren't guessing.",
+            body: "They're already submitting LOIs.",
+            formatting: {},
+          },
         ],
         currentVariant: 0,
         currentLayout: 0,
         layoutVariant: 0,
-        style: "dark-competition",
-        backgroundOverride: '#6466e9'
+        style: 'dark-competition',
+        backgroundOverride: '#6466e9',
       },
       {
         id: 4,
         variants: [
-          { headline: "What if you had comps, expenses, and NOI in 60 seconds?", body: "Rent comps. Expense benchmarks. Similarity scores. Instantly.", formatting: {} },
-          { headline: "Same deal. Different outcome.", body: "AI-powered underwriting from just an address.", formatting: {} },
-          { headline: "One address. Complete analysis.", body: "97% accuracy. 60 seconds. No manual work.", formatting: {} }
+          {
+            headline: 'What if you had comps, expenses, and NOI in 60 seconds?',
+            body: 'Rent comps. Expense benchmarks. Similarity scores. Instantly.',
+            formatting: {},
+          },
+          {
+            headline: 'Same deal. Different outcome.',
+            body: 'AI-powered underwriting from just an address.',
+            formatting: {},
+          },
+          {
+            headline: 'One address. Complete analysis.',
+            body: '97% accuracy. 60 seconds. No manual work.',
+            formatting: {},
+          },
         ],
         currentVariant: 0,
         currentLayout: 0,
         layoutVariant: 0,
-        style: "reveal-product",
-        backgroundOverride: '#6466e9'
+        style: 'reveal-product',
+        backgroundOverride: '#6466e9',
       },
       {
         id: 5,
         variants: [
-          { headline: "Screen faster. Bid smarter. Win more.", body: "Join 25,000+ multifamily professionals →", formatting: {} },
-          { headline: "Stop losing deals to slower data.", body: "Get a demo of HelloData →", formatting: {} },
-          { headline: "The fastest teams win the best deals.", body: "See HelloData in action →", formatting: {} }
+          {
+            headline: 'Screen faster. Bid smarter. Win more.',
+            body: 'Join 25,000+ multifamily professionals →',
+            formatting: {},
+          },
+          { headline: 'Stop losing deals to slower data.', body: 'Get a demo of HelloData →', formatting: {} },
+          { headline: 'The fastest teams win the best deals.', body: 'See HelloData in action →', formatting: {} },
         ],
         currentVariant: 0,
         currentLayout: 0,
         layoutVariant: 0,
-        style: "cta-win",
-        backgroundOverride: '#6466e9'
-      }
-    ]
+        style: 'cta-win',
+        backgroundOverride: '#6466e9',
+      },
+    ],
   },
   {
     id: 2,
-    name: "Where Rents Are Heading",
-    subtitle: "Rent Forecast Launch",
-    frameSize: "portrait",
+    name: 'Where Rents Are Heading',
+    subtitle: 'Rent Forecast Launch',
+    frameSize: 'portrait',
     frames: [
       {
         id: 1,
         variants: [
-          { headline: "Your rent projections are 90 days old.", body: "The moment you get them.", formatting: {} },
-          { headline: "Q3 forecast in Q4. Sound familiar?", body: "Static reports can't keep pace.", formatting: {} },
-          { headline: "That rent growth assumption in your model?", body: "It's already outdated.", formatting: {} }
+          { headline: 'Your rent projections are 90 days old.', body: 'The moment you get them.', formatting: {} },
+          { headline: 'Q3 forecast in Q4. Sound familiar?', body: "Static reports can't keep pace.", formatting: {} },
+          { headline: 'That rent growth assumption in your model?', body: "It's already outdated.", formatting: {} },
         ],
         currentVariant: 0,
         currentLayout: 0,
         layoutVariant: 0,
-        style: "static-gray",
-        backgroundOverride: '#6466e9'
+        style: 'static-gray',
+        backgroundOverride: '#6466e9',
       },
       {
         id: 2,
         variants: [
-          { headline: "Markets move daily. Static forecasts can't.", body: "Concessions shift. Demand spikes. Rents adjust.", formatting: {} },
-          { headline: "Last quarter's data. Today's decisions.", body: "That's the problem with traditional forecasts.", formatting: {} },
-          { headline: "The market moved 47 times since your last report.", body: "Your forecast didn't.", formatting: {} }
+          {
+            headline: "Markets move daily. Static forecasts can't.",
+            body: 'Concessions shift. Demand spikes. Rents adjust.',
+            formatting: {},
+          },
+          {
+            headline: "Last quarter's data. Today's decisions.",
+            body: "That's the problem with traditional forecasts.",
+            formatting: {},
+          },
+          {
+            headline: 'The market moved 47 times since your last report.',
+            body: "Your forecast didn't.",
+            formatting: {},
+          },
         ],
         currentVariant: 0,
         currentLayout: 0,
         layoutVariant: 0,
-        style: "cracking",
-        backgroundOverride: '#6466e9'
+        style: 'cracking',
+        backgroundOverride: '#6466e9',
       },
       {
         id: 3,
         variants: [
-          { headline: "What if your forecast updated every single day?", body: "Real-time market signals. Daily projections.", formatting: {} },
-          { headline: "Imagine seeing rent movement as it happens.", body: "Not quarterly. Daily.", formatting: {} },
-          { headline: "Live rent intelligence. Continuous updates.", body: "The forecast that never gets stale.", formatting: {} }
+          {
+            headline: 'What if your forecast updated every single day?',
+            body: 'Real-time market signals. Daily projections.',
+            formatting: {},
+          },
+          { headline: 'Imagine seeing rent movement as it happens.', body: 'Not quarterly. Daily.', formatting: {} },
+          {
+            headline: 'Live rent intelligence. Continuous updates.',
+            body: 'The forecast that never gets stale.',
+            formatting: {},
+          },
         ],
         currentVariant: 0,
         currentLayout: 0,
         layoutVariant: 0,
-        style: "heatmap-transform",
-        backgroundOverride: '#6466e9'
+        style: 'heatmap-transform',
+        backgroundOverride: '#6466e9',
       },
       {
         id: 4,
         variants: [
-          { headline: "Introducing Rent Forecast", body: "12-month projections powered by real-time market data.", formatting: {} },
-          { headline: "NEW: Rent Forecast by HelloData", body: "Forward-looking projections. Updated daily.", formatting: {} },
-          { headline: "Rent Forecast: See the next 12 months.", body: "Property, submarket, and market-level predictions.", formatting: {} }
+          {
+            headline: 'Introducing Rent Forecast',
+            body: '12-month projections powered by real-time market data.',
+            formatting: {},
+          },
+          {
+            headline: 'NEW: Rent Forecast by HelloData',
+            body: 'Forward-looking projections. Updated daily.',
+            formatting: {},
+          },
+          {
+            headline: 'Rent Forecast: See the next 12 months.',
+            body: 'Property, submarket, and market-level predictions.',
+            formatting: {},
+          },
         ],
         currentVariant: 0,
         currentLayout: 0,
         layoutVariant: 0,
-        style: "product-forecast",
-        backgroundOverride: '#6466e9'
+        style: 'product-forecast',
+        backgroundOverride: '#6466e9',
       },
       {
         id: 5,
         variants: [
-          { headline: "See where your market is heading.", body: "Get early access to Rent Forecast →", formatting: {} },
-          { headline: "Stop guessing. Start forecasting.", body: "Request your demo →", formatting: {} },
-          { headline: "The future of rent projections is here.", body: "Be first to see it →", formatting: {} }
+          {
+            headline: 'See where your market is heading.',
+            body: 'Get early access to Rent Forecast →',
+            formatting: {},
+          },
+          { headline: 'Stop guessing. Start forecasting.', body: 'Request your demo →', formatting: {} },
+          { headline: 'The future of rent projections is here.', body: 'Be first to see it →', formatting: {} },
         ],
         currentVariant: 0,
         currentLayout: 0,
         layoutVariant: 0,
-        style: "cta-forecast",
-        backgroundOverride: '#6466e9'
-      }
-    ]
+        style: 'cta-forecast',
+        backgroundOverride: '#6466e9',
+      },
+    ],
   },
   {
     id: 3,
     name: "5 Hours You'll Never Get Back",
-    subtitle: "Property Managers",
-    frameSize: "portrait",
+    subtitle: 'Property Managers',
+    frameSize: 'portrait',
     frames: [
       {
         id: 1,
         variants: [
-          { headline: "Monday: Call Oakwood Apartments.", body: "Wait on hold. Get voicemail.", formatting: {} },
-          { headline: "Monday 9am: Start your comp calls.", body: "First three go straight to voicemail.", formatting: {} },
-          { headline: "Another Monday. Another round of phone surveys.", body: "Let's see who actually picks up.", formatting: {} }
+          { headline: 'Monday: Call Oakwood Apartments.', body: 'Wait on hold. Get voicemail.', formatting: {} },
+          {
+            headline: 'Monday 9am: Start your comp calls.',
+            body: 'First three go straight to voicemail.',
+            formatting: {},
+          },
+          {
+            headline: 'Another Monday. Another round of phone surveys.',
+            body: "Let's see who actually picks up.",
+            formatting: {},
+          },
         ],
         currentVariant: 0,
         currentLayout: 0,
         layoutVariant: 0,
-        style: "monday",
-        backgroundOverride: '#6466e9'
+        style: 'monday',
+        backgroundOverride: '#6466e9',
       },
       {
         id: 2,
         variants: [
-          { headline: "Tuesday: Finally reach The Meridian.", body: "'We don't give out pricing over the phone.'", formatting: {} },
-          { headline: "Tuesday 2pm: Success! Someone answered.", body: "'That information is confidential.'", formatting: {} },
-          { headline: "Tuesday: Three callbacks. One useful number.", body: "And it might already be wrong.", formatting: {} }
+          {
+            headline: 'Tuesday: Finally reach The Meridian.',
+            body: "'We don't give out pricing over the phone.'",
+            formatting: {},
+          },
+          {
+            headline: 'Tuesday 2pm: Success! Someone answered.',
+            body: "'That information is confidential.'",
+            formatting: {},
+          },
+          {
+            headline: 'Tuesday: Three callbacks. One useful number.',
+            body: 'And it might already be wrong.',
+            formatting: {},
+          },
         ],
         currentVariant: 0,
         currentLayout: 0,
         layoutVariant: 0,
-        style: "tuesday",
-        backgroundOverride: '#6466e9'
+        style: 'tuesday',
+        backgroundOverride: '#6466e9',
       },
       {
         id: 3,
         variants: [
-          { headline: "Wednesday: Check 12 competitor websites.", body: "Pricing already changed on half of them.", formatting: {} },
-          { headline: "Wednesday: Manual website audits.", body: "Copy. Paste. Repeat. Repeat. Repeat.", formatting: {} },
-          { headline: "Wednesday: The spreadsheet grows.", body: "But is any of this data still accurate?", formatting: {} }
+          {
+            headline: 'Wednesday: Check 12 competitor websites.',
+            body: 'Pricing already changed on half of them.',
+            formatting: {},
+          },
+          {
+            headline: 'Wednesday: Manual website audits.',
+            body: 'Copy. Paste. Repeat. Repeat. Repeat.',
+            formatting: {},
+          },
+          {
+            headline: 'Wednesday: The spreadsheet grows.',
+            body: 'But is any of this data still accurate?',
+            formatting: {},
+          },
         ],
         currentVariant: 0,
         currentLayout: 0,
         layoutVariant: 0,
-        style: "wednesday",
-        backgroundOverride: '#6466e9'
+        style: 'wednesday',
+        backgroundOverride: '#6466e9',
       },
       {
         id: 4,
         variants: [
-          { headline: "Thursday: Enter everything into Excel.", body: "Friday: Half the data is already stale.", formatting: {} },
-          { headline: "Thursday-Friday: Format the report.", body: "Monday: Start over. Prices changed.", formatting: {} },
-          { headline: "End of week: Finally done.", body: "Just in time for the data to be outdated.", formatting: {} }
+          {
+            headline: 'Thursday: Enter everything into Excel.',
+            body: 'Friday: Half the data is already stale.',
+            formatting: {},
+          },
+          {
+            headline: 'Thursday-Friday: Format the report.',
+            body: 'Monday: Start over. Prices changed.',
+            formatting: {},
+          },
+          { headline: 'End of week: Finally done.', body: 'Just in time for the data to be outdated.', formatting: {} },
         ],
         currentVariant: 0,
         currentLayout: 0,
         layoutVariant: 0,
-        style: "thursday-friday",
-        backgroundOverride: '#6466e9'
+        style: 'thursday-friday',
+        backgroundOverride: '#6466e9',
       },
       {
         id: 5,
         variants: [
-          { headline: "Or get it all delivered to your inbox.", body: "Automatically. Every week. Try it free →", formatting: {} },
-          { headline: "5 hours back. Every single week.", body: "Automate your market surveys →", formatting: {} },
-          { headline: "Stop calling. Start automating.", body: "Free trial — no card required →", formatting: {} }
+          {
+            headline: 'Or get it all delivered to your inbox.',
+            body: 'Automatically. Every week. Try it free →',
+            formatting: {},
+          },
+          { headline: '5 hours back. Every single week.', body: 'Automate your market surveys →', formatting: {} },
+          { headline: 'Stop calling. Start automating.', body: 'Free trial — no card required →', formatting: {} },
         ],
         currentVariant: 0,
         currentLayout: 0,
         layoutVariant: 0,
-        style: "cta-automated",
-        backgroundOverride: '#6466e9'
-      }
-    ]
-  }
+        style: 'cta-automated',
+        backgroundOverride: '#6466e9',
+      },
+    ],
+  },
 ];
 
 // Frame background styles - HelloData brand-aligned
@@ -231,16 +359,15 @@ type FrameStyleResult = { background: string; text: string; accent: string };
 export const getFrameStyle = (carouselId: number, frameStyle: string, ds: DesignSystem): FrameStyleResult => {
   // Readable text colors
   const textWhite = '#ffffff';
-  
+
   // Default: solid purple background - users add gradients manually
-  const defaultStyle: FrameStyleResult = { 
+  const defaultStyle: FrameStyleResult = {
     background: ds.primary, // Solid purple (#6466e9)
-    text: textWhite, 
-    accent: ds.secondary 
+    text: textWhite,
+    accent: ds.secondary,
   };
-  
+
   // All frame styles now default to solid purple
   // Gradients are applied by users via the Design panel
   return defaultStyle;
 };
-

@@ -1,23 +1,26 @@
 import React, { useState } from 'react';
 
 // Import data from centralized location
-import {
-  defaultDesignSystem,
-  initialCarousels,
-  initialEblasts,
-  initialVideoCovers,
-  initialSingleImages
-} from './data';
+import { defaultDesignSystem, initialCarousels, initialEblasts, initialVideoCovers, initialSingleImages } from './data';
 
 // Import custom hooks
-import { useDropdowns, useTabs, useCarousels, useEblasts, useVideoCovers, useSingleImages, useDesignSystem, useKeyboardShortcuts } from './hooks';
+import {
+  useDropdowns,
+  useTabs,
+  useCarousels,
+  useEblasts,
+  useVideoCovers,
+  useSingleImages,
+  useDesignSystem,
+  useKeyboardShortcuts,
+} from './hooks';
 
 // Import context providers
 import { AppProvider, HistoryProvider } from './context';
 
 // Import components
-import { 
-  AccountPanel, 
+import {
+  AccountPanel,
   Sidebar,
   DesignSystemPanel,
   ExportPanel,
@@ -31,7 +34,16 @@ import KeyboardShortcutsModal from './components/KeyboardShortcutsModal';
 
 // Initial project tabs
 const INITIAL_TABS = [
-  { id: 1, name: 'HelloData Campaign', active: false, hasContent: true, createdAt: '2024-12-20', updatedAt: '2024-12-22', frameCount: 5, projectType: 'carousel' }
+  {
+    id: 1,
+    name: 'HelloData Campaign',
+    active: false,
+    hasContent: true,
+    createdAt: '2024-12-20',
+    updatedAt: '2024-12-22',
+    frameCount: 5,
+    projectType: 'carousel',
+  },
 ];
 
 // Main App Component
@@ -43,7 +55,7 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
   const [isAccountOpen, setIsAccountOpen] = useState(false);
   const [showShortcutsModal, setShowShortcutsModal] = useState(false);
   const [selectedDevice, setSelectedDevice] = useState('none');
-  
+
   // Design system with persistence
   const [designSystem, setDesignSystem] = useDesignSystem(defaultDesignSystem);
 
@@ -56,28 +68,31 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
   const dropdowns = useDropdowns();
 
   // Global keyboard shortcuts
-  useKeyboardShortcuts({
-    onShowShortcuts: () => setShowShortcutsModal(true),
-    onDeselect: () => {
-      if (showShortcutsModal) {
-        setShowShortcutsModal(false);
-      } else if (activePanel) {
-        setActivePanel(null);
-      } else {
-        carousels.clearSelection();
-        eblasts.clearSelection();
-        videoCovers.clearSelection();
-        singleImages.clearSelection();
-      }
+  useKeyboardShortcuts(
+    {
+      onShowShortcuts: () => setShowShortcutsModal(true),
+      onDeselect: () => {
+        if (showShortcutsModal) {
+          setShowShortcutsModal(false);
+        } else if (activePanel) {
+          setActivePanel(null);
+        } else {
+          carousels.clearSelection();
+          eblasts.clearSelection();
+          videoCovers.clearSelection();
+          singleImages.clearSelection();
+        }
+      },
+      onZoomIn: () => setZoom((z) => Math.min(250, z + 10)),
+      onZoomOut: () => setZoom((z) => Math.max(50, z - 10)),
+      onZoomReset: () => setZoom(100),
+      onOpenExport: () => setActivePanel(activePanel === 'export' ? null : 'export'),
+      // Undo/Redo - connected to carousels reducer
+      onUndo: () => carousels.handleUndo(),
+      onRedo: () => carousels.handleRedo(),
     },
-    onZoomIn: () => setZoom(z => Math.min(250, z + 10)),
-    onZoomOut: () => setZoom(z => Math.max(50, z - 10)),
-    onZoomReset: () => setZoom(100),
-    onOpenExport: () => setActivePanel(activePanel === 'export' ? null : 'export'),
-    // Undo/Redo - connected to carousels reducer
-    onUndo: () => carousels.handleUndo(),
-    onRedo: () => carousels.handleRedo(),
-  }, !showShortcutsModal); // Disable some shortcuts when modal is open
+    !showShortcutsModal
+  ); // Disable some shortcuts when modal is open
 
   // Handler to open Design panel and expand Product Imagery section
   const handleRequestAddProductImage = () => {
@@ -199,7 +214,7 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
 
   // Context values
   const designSystemContextValue = { designSystem, setDesignSystem };
-  
+
   const selectionContextValue = {
     // Carousel selection
     selectedCarouselId: carousels.selectedCarouselId,
@@ -220,16 +235,18 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
     selectedImage: singleImages.selectedImage,
     selectedLayer: singleImages.selectedLayer,
     // Shared
-    activeTextField: currentProjectType === 'carousel' 
-      ? carousels.activeTextField 
-      : currentProjectType === 'eblast'
-        ? eblasts.activeTextField
-        : videoCovers.activeTextField,
-    setActiveTextField: currentProjectType === 'carousel' 
-      ? carousels.setActiveTextField 
-      : currentProjectType === 'eblast'
-        ? eblasts.setActiveTextField
-        : videoCovers.setActiveTextField,
+    activeTextField:
+      currentProjectType === 'carousel'
+        ? carousels.activeTextField
+        : currentProjectType === 'eblast'
+          ? eblasts.activeTextField
+          : videoCovers.activeTextField,
+    setActiveTextField:
+      currentProjectType === 'carousel'
+        ? carousels.setActiveTextField
+        : currentProjectType === 'eblast'
+          ? eblasts.setActiveTextField
+          : videoCovers.setActiveTextField,
     handleSelectFrame,
     handleSelectCarousel,
     handleSelectSection,
@@ -347,191 +364,199 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
 
   return (
     <ErrorBoundary>
-    <HistoryProvider>
-      <AppProvider
-        designSystem={designSystemContextValue}
-        selection={selectionContextValue}
-        carousels={carouselsContextValue}
-        dropdowns={dropdowns}
-      >
-        <div className="h-screen text-white overflow-hidden" style={{ backgroundColor: '#0d1321' }}>
-        {/* Browser-style Tab Bar */}
-        <TabBar
-          tabs={tabs.tabs}
-          activeTabId={tabs.activeTabId}
-          currentView={tabs.currentView}
-          showNewTabMenu={dropdowns.showNewTabMenu}
-          setShowNewTabMenu={dropdowns.setShowNewTabMenu}
-          newTabMenuRef={dropdowns.newTabMenuRef}
-          closeAllDropdowns={dropdowns.closeAllDropdowns}
-          onOpenProject={handleOpenProject}
-          onCloseTab={tabs.handleCloseTab}
-          onAddTab={handleAddTab}
-          maxTabs={tabs.maxTabs}
-          sidebarOffset={totalOffset}
-          projects={tabs.projects}
-        />
-        
-        {/* Fixed Home Button - above sidebar */}
-        <div className="fixed top-0 left-0 z-[120] flex items-center justify-center border-b border-r border-gray-800" style={{ width: 64, height: 56, backgroundColor: '#0d1321' }}>
-          <button 
-            type="button"
-            onClick={handleGoHome}
-            className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all ${tabs.currentView === 'home' ? 'text-white bg-gray-800' : 'text-gray-400 hover:text-white hover:bg-gray-800'}`}
-            title="Go to Homepage"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-            </svg>
-          </button>
-        </div>
+      <HistoryProvider>
+        <AppProvider
+          designSystem={designSystemContextValue}
+          selection={selectionContextValue}
+          carousels={carouselsContextValue}
+          dropdowns={dropdowns}
+        >
+          <div className="h-screen text-white overflow-hidden" style={{ backgroundColor: '#0d1321' }}>
+            {/* Browser-style Tab Bar */}
+            <TabBar
+              tabs={tabs.tabs}
+              activeTabId={tabs.activeTabId}
+              currentView={tabs.currentView}
+              showNewTabMenu={dropdowns.showNewTabMenu}
+              setShowNewTabMenu={dropdowns.setShowNewTabMenu}
+              newTabMenuRef={dropdowns.newTabMenuRef}
+              closeAllDropdowns={dropdowns.closeAllDropdowns}
+              onOpenProject={handleOpenProject}
+              onCloseTab={tabs.handleCloseTab}
+              onAddTab={handleAddTab}
+              maxTabs={tabs.maxTabs}
+              sidebarOffset={totalOffset}
+              projects={tabs.projects}
+            />
 
-        {/* Sidebar */}
-        <Sidebar 
-          activePanel={activePanel} 
-          onPanelChange={setActivePanel} 
-          zoom={zoom} 
-          onZoomChange={setZoom} 
-          isHomePage={tabs.currentView === 'home'}
-          onAccountClick={() => { setActivePanel(null); setIsAccountOpen(!isAccountOpen); }}
-          isAccountOpen={isAccountOpen}
-          onCloseAccount={() => setIsAccountOpen(false)}
-          onShowShortcuts={() => setShowShortcutsModal(true)}
-          selectedDevice={selectedDevice}
-          onDeviceChange={setSelectedDevice}
-        />
-        
-        {/* Decorative Diagonal Lines Pattern - Separate from panel tabs, only moves when sidebar opens/closes */}
-        <div 
-          className="fixed top-0 h-[56px] w-72 z-30 border-r border-gray-800 pointer-events-none"
-          style={{ 
-            left: (activePanel === 'design' || activePanel === 'export') ? 64 : -224, 
-            transition: 'left 0.3s ease-out',
-            backgroundImage: `repeating-linear-gradient(
+            {/* Fixed Home Button - above sidebar */}
+            <div
+              className="fixed top-0 left-0 z-[120] flex items-center justify-center border-b border-r border-gray-800"
+              style={{ width: 64, height: 56, backgroundColor: '#0d1321' }}
+            >
+              <button
+                type="button"
+                onClick={handleGoHome}
+                className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all ${tabs.currentView === 'home' ? 'text-white bg-gray-800' : 'text-gray-400 hover:text-white hover:bg-gray-800'}`}
+                title="Go to Homepage"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.75}
+                    d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            {/* Sidebar */}
+            <Sidebar
+              activePanel={activePanel}
+              onPanelChange={setActivePanel}
+              zoom={zoom}
+              onZoomChange={setZoom}
+              isHomePage={tabs.currentView === 'home'}
+              onAccountClick={() => {
+                setActivePanel(null);
+                setIsAccountOpen(!isAccountOpen);
+              }}
+              isAccountOpen={isAccountOpen}
+              onCloseAccount={() => setIsAccountOpen(false)}
+              onShowShortcuts={() => setShowShortcutsModal(true)}
+              selectedDevice={selectedDevice}
+              onDeviceChange={setSelectedDevice}
+            />
+
+            {/* Decorative Diagonal Lines Pattern - Separate from panel tabs, only moves when sidebar opens/closes */}
+            <div
+              className="fixed top-0 h-[56px] w-72 z-30 border-r border-gray-800 pointer-events-none"
+              style={{
+                left: activePanel === 'design' || activePanel === 'export' ? 64 : -224,
+                transition: 'left 0.3s ease-out',
+                backgroundImage: `repeating-linear-gradient(
               -45deg,
               transparent,
               transparent 10px,
               rgba(100, 102, 233, 0.1) 10px,
               rgba(100, 102, 233, 0.1) 11px
             )`,
-          }}
-        />
-        
-        {/* Panels - wrapped in error boundaries for stability */}
-        <SectionErrorBoundary name="Design Panel">
-        <DesignSystemPanel 
-          designSystem={designSystem} 
-          onUpdate={setDesignSystem} 
-          onClose={() => setActivePanel(null)} 
-          isOpen={activePanel === 'design'}
-          projectType={currentProjectType}
-          // Carousel-specific props
-          selectedCarouselId={carousels.selectedCarouselId}
-          selectedFrameId={carousels.selectedFrameId}
-          selectedCarouselFrames={carousels.selectedCarousel?.frames || []}
-          onSetFrameBackground={carousels.handleSetFrameBackground}
-          onSetRowStretchedBackground={carousels.handleSetRowStretchedBackground}
-          onAddImageToFrame={carousels.handleAddImageToFrame}
-          onAddProductImageToFrame={carousels.handleAddProductImageToFrame}
-          onAddIconToFrame={carousels.handleAddIconToFrame}
-          onUpdateProgressIndicator={carousels.handleUpdateProgressIndicator}
-          onAddPatternToFrame={carousels.handleAddPatternToFrame}
-          onUpdatePatternLayer={carousels.handleUpdatePatternLayer}
-          onRemovePatternFromFrame={carousels.handleRemovePatternFromFrame}
-          onSetRowStretchedPattern={carousels.handleSetRowStretchedPattern}
-          expandSectionOnOpen={expandSectionOnOpen}
-          // Eblast-specific props
-          selectedEblastId={eblasts.selectedEblastId}
-          selectedSectionId={eblasts.selectedSectionId}
-          selectedEblastSections={eblasts.selectedEblast?.sections || []}
-          onSetSectionBackground={eblasts.handleSetSectionBackground}
-          onSetStretchedBackground={eblasts.handleSetStretchedBackground}
-          onAddImageToSection={eblasts.handleAddImageToSection}
-          onAddPatternToSection={eblasts.handleAddPatternToSection}
-          onUpdatePatternLayerEblast={eblasts.handleUpdatePatternLayer}
-          onRemovePatternFromSection={eblasts.handleRemovePatternFromSection}
-          onSetStretchedPattern={eblasts.handleSetStretchedPattern}
-          // Video Cover-specific props
-          selectedVideoCoverId={videoCovers.selectedVideoCoverId}
-          onSetVideoCoverBackground={videoCovers.handleSetBackground}
-          onAddVideoCoverPattern={videoCovers.handleAddPattern}
-          onUpdateVideoCoverPattern={videoCovers.handleUpdatePattern}
-          onRemoveVideoCoverPattern={videoCovers.handleRemovePattern}
-          onAddVideoCoverImage={videoCovers.handleAddImage}
-          // Single Image-specific props
-          selectedSingleImageId={singleImages.selectedImageId}
-          onSetSingleImageBackgroundGradient={singleImages.handleSetBackgroundGradient}
-          onAddSingleImagePattern={singleImages.handleAddPattern}
-          onUpdateSingleImagePattern={singleImages.handleUpdatePattern}
-          onRemoveSingleImagePattern={singleImages.handleRemovePattern}
-        />
-        </SectionErrorBoundary>
-        <SectionErrorBoundary name="Export Panel">
-        <ExportPanel 
-          onClose={() => setActivePanel(null)} 
-          isOpen={activePanel === 'export'} 
-          carousels={carousels.carousels}
-          eblasts={eblasts.eblasts}
-          videoCovers={videoCovers.videoCovers}
-          singleImages={singleImages.singleImages}
-          projectType={currentProjectType}
-        />
-        </SectionErrorBoundary>
-        <SectionErrorBoundary name="Account Panel">
-        <AccountPanel 
-          onClose={() => setIsAccountOpen(false)} 
-          isOpen={isAccountOpen && tabs.currentView === 'home'}
-          onSignOut={onSignOut}
-          user={user}
-        />
-        </SectionErrorBoundary>
-
-        {/* Homepage or Editor View */}
-        {tabs.currentView === 'home' ? (
-          <div 
-            className="absolute inset-0 top-[56px]" 
-            style={{ left: totalOffset, transition: 'left 0.3s ease-out' }}
-          >
-            <Homepage 
-              projects={tabs.projects} 
-              onOpenProject={handleOpenProject}
-              onCreateNew={handleCreateNewFromHome}
-              onDeleteProject={tabs.handleDeleteProject}
-              onDuplicateProject={tabs.handleDuplicateProject}
-              onRenameProject={tabs.handleRenameProject}
-              onQuickExport={(projectId) => {
-                // Open the project first, then open export panel
-                handleOpenProject(projectId);
-                setActivePanel('export');
               }}
             />
+
+            {/* Panels - wrapped in error boundaries for stability */}
+            <SectionErrorBoundary name="Design Panel">
+              <DesignSystemPanel
+                designSystem={designSystem}
+                onUpdate={setDesignSystem}
+                onClose={() => setActivePanel(null)}
+                isOpen={activePanel === 'design'}
+                projectType={currentProjectType}
+                // Carousel-specific props
+                selectedCarouselId={carousels.selectedCarouselId}
+                selectedFrameId={carousels.selectedFrameId}
+                selectedCarouselFrames={carousels.selectedCarousel?.frames || []}
+                onSetFrameBackground={carousels.handleSetFrameBackground}
+                onSetRowStretchedBackground={carousels.handleSetRowStretchedBackground}
+                onAddImageToFrame={carousels.handleAddImageToFrame}
+                onAddProductImageToFrame={carousels.handleAddProductImageToFrame}
+                onAddIconToFrame={carousels.handleAddIconToFrame}
+                onUpdateProgressIndicator={carousels.handleUpdateProgressIndicator}
+                onAddPatternToFrame={carousels.handleAddPatternToFrame}
+                onUpdatePatternLayer={carousels.handleUpdatePatternLayer}
+                onRemovePatternFromFrame={carousels.handleRemovePatternFromFrame}
+                onSetRowStretchedPattern={carousels.handleSetRowStretchedPattern}
+                expandSectionOnOpen={expandSectionOnOpen}
+                // Eblast-specific props
+                selectedEblastId={eblasts.selectedEblastId}
+                selectedSectionId={eblasts.selectedSectionId}
+                selectedEblastSections={eblasts.selectedEblast?.sections || []}
+                onSetSectionBackground={eblasts.handleSetSectionBackground}
+                onSetStretchedBackground={eblasts.handleSetStretchedBackground}
+                onAddImageToSection={eblasts.handleAddImageToSection}
+                onAddPatternToSection={eblasts.handleAddPatternToSection}
+                onUpdatePatternLayerEblast={eblasts.handleUpdatePatternLayer}
+                onRemovePatternFromSection={eblasts.handleRemovePatternFromSection}
+                onSetStretchedPattern={eblasts.handleSetStretchedPattern}
+                // Video Cover-specific props
+                selectedVideoCoverId={videoCovers.selectedVideoCoverId}
+                onSetVideoCoverBackground={videoCovers.handleSetBackground}
+                onAddVideoCoverPattern={videoCovers.handleAddPattern}
+                onUpdateVideoCoverPattern={videoCovers.handleUpdatePattern}
+                onRemoveVideoCoverPattern={videoCovers.handleRemovePattern}
+                onAddVideoCoverImage={videoCovers.handleAddImage}
+                // Single Image-specific props
+                selectedSingleImageId={singleImages.selectedImageId}
+                onSetSingleImageBackgroundGradient={singleImages.handleSetBackgroundGradient}
+                onAddSingleImagePattern={singleImages.handleAddPattern}
+                onUpdateSingleImagePattern={singleImages.handleUpdatePattern}
+                onRemoveSingleImagePattern={singleImages.handleRemovePattern}
+              />
+            </SectionErrorBoundary>
+            <SectionErrorBoundary name="Export Panel">
+              <ExportPanel
+                onClose={() => setActivePanel(null)}
+                isOpen={activePanel === 'export'}
+                carousels={carousels.carousels}
+                eblasts={eblasts.eblasts}
+                videoCovers={videoCovers.videoCovers}
+                singleImages={singleImages.singleImages}
+                projectType={currentProjectType}
+              />
+            </SectionErrorBoundary>
+            <SectionErrorBoundary name="Account Panel">
+              <AccountPanel
+                onClose={() => setIsAccountOpen(false)}
+                isOpen={isAccountOpen && tabs.currentView === 'home'}
+                onSignOut={onSignOut}
+                user={user}
+              />
+            </SectionErrorBoundary>
+
+            {/* Homepage or Editor View */}
+            {tabs.currentView === 'home' ? (
+              <div
+                className="absolute inset-0 top-[56px]"
+                style={{ left: totalOffset, transition: 'left 0.3s ease-out' }}
+              >
+                <Homepage
+                  projects={tabs.projects}
+                  onOpenProject={handleOpenProject}
+                  onCreateNew={handleCreateNewFromHome}
+                  onDeleteProject={tabs.handleDeleteProject}
+                  onDuplicateProject={tabs.handleDuplicateProject}
+                  onRenameProject={tabs.handleRenameProject}
+                  onQuickExport={(projectId) => {
+                    // Open the project first, then open export panel
+                    handleOpenProject(projectId);
+                    setActivePanel('export');
+                  }}
+                />
+              </div>
+            ) : (
+              <EditorView
+                totalOffset={totalOffset}
+                zoom={zoom}
+                activeTab={tabs.activeTab}
+                onUpdateProjectName={tabs.handleUpdateProjectName}
+                onCreateProject={tabs.handleCreateProject}
+                projectType={currentProjectType}
+                selectedDevice={selectedDevice}
+                onRequestAddProductImage={handleRequestAddProductImage}
+                onRequestAddIcon={handleRequestAddIcon}
+                onRequestAddFill={handleRequestAddFill}
+                onRequestAddPhoto={handleRequestAddPhoto}
+                onRequestAddPattern={handleRequestAddPattern}
+                onRequestAddPageIndicator={handleRequestAddPageIndicator}
+              />
+            )}
           </div>
-        ) : (
-          <EditorView
-            totalOffset={totalOffset}
-            zoom={zoom}
-            activeTab={tabs.activeTab}
-            onUpdateProjectName={tabs.handleUpdateProjectName}
-            onCreateProject={tabs.handleCreateProject}
-            projectType={currentProjectType}
-            selectedDevice={selectedDevice}
-            onRequestAddProductImage={handleRequestAddProductImage}
-            onRequestAddIcon={handleRequestAddIcon}
-            onRequestAddFill={handleRequestAddFill}
-            onRequestAddPhoto={handleRequestAddPhoto}
-            onRequestAddPattern={handleRequestAddPattern}
-            onRequestAddPageIndicator={handleRequestAddPageIndicator}
-          />
-        )}
-        </div>
-        
-        {/* Keyboard Shortcuts Modal */}
-        <KeyboardShortcutsModal 
-          isOpen={showShortcutsModal} 
-          onClose={() => setShowShortcutsModal(false)} 
-        />
-      </AppProvider>
-    </HistoryProvider>
+
+          {/* Keyboard Shortcuts Modal */}
+          <KeyboardShortcutsModal isOpen={showShortcutsModal} onClose={() => setShowShortcutsModal(false)} />
+        </AppProvider>
+      </HistoryProvider>
     </ErrorBoundary>
   );
 }

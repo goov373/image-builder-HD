@@ -1,7 +1,7 @@
 /**
  * Background Gradients Data
  * Centralized gradient definitions for easy maintenance and AI agent updates
- * 
+ *
  * Naming Convention:
  * - Each gradient has an id, name, and css value
  * - Grouped by category for organization
@@ -164,16 +164,14 @@ export const allGradients: GradientDefinition[] = [
 ];
 
 // Get CSS values array (for backward compatibility)
-export const getAllGradientCSSValues = (): string[] => allGradients.map(g => g.css);
+export const getAllGradientCSSValues = (): string[] => allGradients.map((g) => g.css);
 
 // Get solid color hex values array (for backward compatibility)
-export const getSolidColorHexValues = (): string[] => solidColors.map(c => c.hex);
+export const getSolidColorHexValues = (): string[] => solidColors.map((c) => c.hex);
 
 // Utility: Find gradient by ID
-export const findGradientById = (id: string): GradientDefinition | undefined => 
-  allGradients.find(g => g.id === id);
+export const findGradientById = (id: string): GradientDefinition | undefined => allGradients.find((g) => g.id === id);
 
 // Utility: Get gradients by category
 export const getGradientsByCategory = (category: GradientDefinition['category']): GradientDefinition[] =>
-  allGradients.filter(g => g.category === category);
-
+  allGradients.filter((g) => g.category === category);

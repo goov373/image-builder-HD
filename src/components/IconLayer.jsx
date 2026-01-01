@@ -12,13 +12,13 @@ const IconLayer = ({
   onClick,
 }) => {
   if (!iconLayer) return null;
-  
+
   const { path, scale = 1, color = '#ffffff', borderColor = null, backgroundColor = null } = iconLayer;
-  
+
   // Position: left-aligned, above text area (same as icon placeholder)
   const iconSize = 36 * scale;
   const horizontalPadding = frameWidth * 0.075;
-  
+
   // Determine border style - user-defined border takes precedence over selection indicators
   // Orange accent is used ONLY for editable content layers (per design spec)
   // When selected (clicked), show solid orange like text fields
@@ -36,7 +36,7 @@ const IconLayer = ({
     // No border when only row is selected or nothing is selected
     return 'none';
   };
-  
+
   const handleClick = (e) => {
     // Only open tool panel if frame is already selected
     // This enforces a two-step selection: first select frame, then select layer
@@ -46,9 +46,9 @@ const IconLayer = ({
     }
     // If frame not selected, let click bubble up to select the frame
   };
-  
+
   return (
-    <div 
+    <div
       className="absolute cursor-pointer"
       onClick={handleClick}
       style={{
@@ -65,19 +65,8 @@ const IconLayer = ({
         backgroundColor: backgroundColor || 'transparent',
       }}
     >
-      <svg 
-        className="w-full h-full"
-        fill="none" 
-        stroke={color}
-        viewBox="0 0 24 24"
-        style={{ padding: '4px' }}
-      >
-        <path 
-          strokeLinecap="round" 
-          strokeLinejoin="round" 
-          strokeWidth={2} 
-          d={path} 
-        />
+      <svg className="w-full h-full" fill="none" stroke={color} viewBox="0 0 24 24" style={{ padding: '4px' }}>
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={path} />
       </svg>
     </div>
   );

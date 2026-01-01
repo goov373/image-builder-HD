@@ -19,5 +19,3 @@ export const DECORATOR_COMPONENTS = {
   'avatar-group': 'AvatarGroup',
   progress: 'ProgressRing',
 };
-
-

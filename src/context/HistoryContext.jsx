@@ -3,7 +3,7 @@ import { createContext, useContext, useReducer, useCallback, useRef } from 'reac
 /**
  * History Context
  * Provides undo/redo functionality across the application
- * 
+ *
  * Architecture:
  * - Stores state snapshots in a stack (max 50)
  * - Uses debouncing for rapid text input (300ms)
@@ -23,9 +23,9 @@ const HISTORY_ACTIONS = {
 
 // History state structure
 const initialHistoryState = {
-  past: [],      // Stack of past states
+  past: [], // Stack of past states
   present: null, // Current state (managed externally)
-  future: [],    // Stack of undone states (for redo)
+  future: [], // Stack of undone states (for redo)
 };
 
 function historyReducer(state, action) {
@@ -35,48 +35,46 @@ function historyReducer(state, action) {
       if (state.present && JSON.stringify(state.present) === JSON.stringify(action.state)) {
         return state;
       }
-      
-      const newPast = state.present 
-        ? [...state.past, state.present].slice(-MAX_HISTORY_SIZE)
-        : state.past;
-      
+
+      const newPast = state.present ? [...state.past, state.present].slice(-MAX_HISTORY_SIZE) : state.past;
+
       return {
         past: newPast,
         present: action.state,
         future: [], // Clear future on new action
       };
     }
-    
+
     case HISTORY_ACTIONS.UNDO: {
       if (state.past.length === 0) return state;
-      
+
       const previous = state.past[state.past.length - 1];
       const newPast = state.past.slice(0, -1);
-      
+
       return {
         past: newPast,
         present: previous,
         future: state.present ? [state.present, ...state.future] : state.future,
       };
     }
-    
+
     case HISTORY_ACTIONS.REDO: {
       if (state.future.length === 0) return state;
-      
+
       const next = state.future[0];
       const newFuture = state.future.slice(1);
-      
+
       return {
         past: state.present ? [...state.past, state.present] : state.past,
         present: next,
         future: newFuture,
       };
     }
-    
+
     case HISTORY_ACTIONS.CLEAR: {
       return initialHistoryState;
     }
-    
+
     default:
       return state;
   }
@@ -107,7 +105,7 @@ export function HistoryProvider({ children, onStateChange }) {
 
     // Debounce text-related actions
     const shouldDebounce = actionType.includes('TEXT') || actionType.includes('FORMATTING');
-    
+
     if (shouldDebounce && lastActionRef.current === actionType) {
       debounceRef.current = setTimeout(() => {
         dispatch({ type: HISTORY_ACTIONS.PUSH, state: structuredClone(state) });
@@ -116,16 +114,16 @@ export function HistoryProvider({ children, onStateChange }) {
     } else {
       dispatch({ type: HISTORY_ACTIONS.PUSH, state: structuredClone(state) });
     }
-    
+
     lastActionRef.current = actionType;
   }, []);
 
   // Undo - restore previous state
   const undo = useCallback(() => {
     if (historyState.past.length === 0) return;
-    
+
     dispatch({ type: HISTORY_ACTIONS.UNDO });
-    
+
     // Notify parent of state change
     const previousState = historyState.past[historyState.past.length - 1];
     if (onStateChange && previousState) {
@@ -136,9 +134,9 @@ export function HistoryProvider({ children, onStateChange }) {
   // Redo - restore future state
   const redo = useCallback(() => {
     if (historyState.future.length === 0) return;
-    
+
     dispatch({ type: HISTORY_ACTIONS.REDO });
-    
+
     // Notify parent of state change
     const nextState = historyState.future[0];
     if (onStateChange && nextState) {
@@ -163,11 +161,7 @@ export function HistoryProvider({ children, onStateChange }) {
     currentState: historyState.present,
   };
 
-  return (
-    <HistoryContext.Provider value={value}>
-      {children}
-    </HistoryContext.Provider>
-  );
+  return <HistoryContext.Provider value={value}>{children}</HistoryContext.Provider>;
 }
 
 export function useHistory() {
@@ -179,4 +173,3 @@ export function useHistory() {
 }
 
 export default HistoryContext;
-

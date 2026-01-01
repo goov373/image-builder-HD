@@ -14,9 +14,7 @@ const GradientPicker = ({
   totalFrames = 0,
 }) => {
   // Calculate effective end for range display
-  const effectiveEnd = stretchRange?.end !== null 
-    ? Math.min(stretchRange.end, totalFrames - 1) 
-    : totalFrames - 1;
+  const effectiveEnd = stretchRange?.end !== null ? Math.min(stretchRange.end, totalFrames - 1) : totalFrames - 1;
 
   return (
     <div className="p-4 border-b border-gray-800">
@@ -31,15 +29,10 @@ const GradientPicker = ({
           <span className="text-[10px] text-gray-500">Select a frame first</span>
         )}
       </div>
-      
+
       {/* Apply Mode Toggle */}
-      {hasSelection && onApplyModeChange && (
-        <ApplyModeToggle 
-          mode={applyMode} 
-          onChange={onApplyModeChange} 
-        />
-      )}
-      
+      {hasSelection && onApplyModeChange && <ApplyModeToggle mode={applyMode} onChange={onApplyModeChange} />}
+
       {/* Frame Range Selector */}
       {applyMode === 'row' && hasSelection && totalFrames > 1 && (
         <FrameRangeSlider
@@ -49,33 +42,23 @@ const GradientPicker = ({
           onChange={onStretchRangeChange}
         />
       )}
-      
+
       {/* Gradient Swatches */}
       <div className="mb-4">
         <p className="text-[10px] text-gray-500 mb-2">Gradients</p>
         <div className="grid grid-cols-3 gap-2">
           {gradients.map((gradient, idx) => (
-            <GradientSwatch
-              key={idx}
-              gradient={gradient}
-              onClick={() => onSelect(gradient)}
-              disabled={!hasSelection}
-            />
+            <GradientSwatch key={idx} gradient={gradient} onClick={() => onSelect(gradient)} disabled={!hasSelection} />
           ))}
         </div>
       </div>
-      
+
       {/* Solid Colors */}
       <div>
         <p className="text-[10px] text-gray-500 mb-2">Solid Colors</p>
         <div className="grid grid-cols-6 gap-2">
           {solidColors.map((color, idx) => (
-            <ColorSwatch
-              key={idx}
-              color={color}
-              onClick={() => onSelect(color)}
-              disabled={!hasSelection}
-            />
+            <ColorSwatch key={idx} color={color} onClick={() => onSelect(color)} disabled={!hasSelection} />
           ))}
         </div>
       </div>
@@ -94,9 +77,7 @@ const ApplyModeToggle = ({ mode, onChange }) => (
         type="button"
         onClick={() => onChange('frame')}
         className={`px-3 py-1 text-[10px] font-medium transition-colors duration-150 ${
-          mode === 'frame' 
-            ? 'bg-gray-700 text-white' 
-            : 'bg-transparent text-gray-400 hover:text-gray-300'
+          mode === 'frame' ? 'bg-gray-700 text-white' : 'bg-transparent text-gray-400 hover:text-gray-300'
         }`}
       >
         Frame
@@ -105,9 +86,7 @@ const ApplyModeToggle = ({ mode, onChange }) => (
         type="button"
         onClick={() => onChange('row')}
         className={`px-3 py-1 text-[10px] font-medium transition-colors duration-150 ${
-          mode === 'row' 
-            ? 'bg-gray-700 text-white' 
-            : 'bg-transparent text-gray-400 hover:text-gray-300'
+          mode === 'row' ? 'bg-gray-700 text-white' : 'bg-transparent text-gray-400 hover:text-gray-300'
         }`}
       >
         Row (Stretch)
@@ -127,21 +106,21 @@ const FrameRangeSlider = ({ start, end, total, onChange }) => (
         {start + 1} – {end + 1}
       </span>
     </div>
-    
+
     {/* Dual Range Slider */}
     <div className="relative h-6 mb-2">
       {/* Track background */}
       <div className="absolute top-1/2 -translate-y-1/2 left-0 right-0 h-1.5 bg-gray-700 rounded-full" />
-      
+
       {/* Selected range highlight */}
-      <div 
+      <div
         className="absolute top-1/2 -translate-y-1/2 h-1.5 bg-gray-500 rounded-full"
         style={{
           left: `${(start / (total - 1)) * 100}%`,
           width: `${((end - start) / (total - 1)) * 100}%`,
         }}
       />
-      
+
       {/* Start handle */}
       <input
         type="range"
@@ -157,7 +136,7 @@ const FrameRangeSlider = ({ start, end, total, onChange }) => (
         className="absolute inset-0 w-full appearance-none bg-transparent cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:shadow-md [&::-webkit-slider-thumb]:cursor-grab pointer-events-auto"
         style={{ zIndex: start > total - 2 ? 5 : 4 }}
       />
-      
+
       {/* End handle */}
       <input
         type="range"
@@ -174,14 +153,11 @@ const FrameRangeSlider = ({ start, end, total, onChange }) => (
         style={{ zIndex: 3 }}
       />
     </div>
-    
+
     {/* Frame markers */}
     <div className="flex justify-between px-1">
       {Array.from({ length: total }, (_, i) => (
-        <span 
-          key={i} 
-          className={`text-[9px] ${i >= start && i <= end ? 'text-white font-medium' : 'text-gray-600'}`}
-        >
+        <span key={i} className={`text-[9px] ${i >= start && i <= end ? 'text-white font-medium' : 'text-gray-600'}`}>
           {i + 1}
         </span>
       ))}
@@ -198,9 +174,7 @@ const GradientSwatch = ({ gradient, onClick, disabled }) => (
     onClick={onClick}
     disabled={disabled}
     className={`w-full aspect-square rounded-lg transition-all duration-200 ${
-      disabled 
-        ? 'opacity-50 cursor-not-allowed' 
-        : 'hover:ring-2 hover:ring-gray-400 hover:scale-105 cursor-pointer'
+      disabled ? 'opacity-50 cursor-not-allowed' : 'hover:ring-2 hover:ring-gray-400 hover:scale-105 cursor-pointer'
     }`}
     style={{ background: gradient }}
     title="Click to apply"
@@ -211,8 +185,9 @@ const GradientSwatch = ({ gradient, onClick, disabled }) => (
  * ColorSwatch - Individual solid color button
  */
 const ColorSwatch = ({ color, onClick, disabled }) => {
-  const isLight = color.toLowerCase() === '#ffffff' || color.toLowerCase() === '#eef1f9' || color.toLowerCase() === '#eef2ff';
-  
+  const isLight =
+    color.toLowerCase() === '#ffffff' || color.toLowerCase() === '#eef1f9' || color.toLowerCase() === '#eef2ff';
+
   return (
     <button
       type="button"
@@ -221,9 +196,7 @@ const ColorSwatch = ({ color, onClick, disabled }) => {
       className={`w-full aspect-square rounded-lg transition-all duration-200 ${
         isLight ? 'ring-1 ring-gray-600' : ''
       } ${
-        disabled 
-          ? 'opacity-50 cursor-not-allowed' 
-          : 'hover:ring-2 hover:ring-gray-400 hover:scale-105 cursor-pointer'
+        disabled ? 'opacity-50 cursor-not-allowed' : 'hover:ring-2 hover:ring-gray-400 hover:scale-105 cursor-pointer'
       }`}
       style={{ backgroundColor: color }}
       title={color}
@@ -233,4 +206,3 @@ const ColorSwatch = ({ color, onClick, disabled }) => {
 
 export { ApplyModeToggle, FrameRangeSlider, GradientSwatch, ColorSwatch };
 export default GradientPicker;
-

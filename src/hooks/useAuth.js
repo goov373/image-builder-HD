@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
+import { logger } from '../utils';
 
 /**
  * Authentication Hook
@@ -21,11 +22,14 @@ export default function useAuth() {
     // Get initial session
     const getSession = async () => {
       try {
-        const { data: { session }, error } = await supabase.auth.getSession();
+        const {
+          data: { session },
+          error,
+        } = await supabase.auth.getSession();
         if (error) throw error;
         setUser(session?.user ?? null);
       } catch (err) {
-        console.error('Error getting session:', err);
+        logger.error('Error getting session:', err);
         setError(err.message);
       } finally {
         setLoading(false);
@@ -35,12 +39,12 @@ export default function useAuth() {
     getSession();
 
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        setUser(session?.user ?? null);
-        setLoading(false);
-      }
-    );
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+      setLoading(false);
+    });
 
     return () => subscription.unsubscribe();
   }, []);
@@ -102,4 +106,3 @@ export default function useAuth() {
     isConfigured: isSupabaseConfigured(),
   };
 }
-

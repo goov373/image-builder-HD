@@ -1,7 +1,7 @@
 /**
  * Undoable Higher-Order Reducer
  * Wraps any reducer to add undo/redo functionality
- * 
+ *
  * Based on the redux-undo pattern used by many production apps
  */
 
@@ -12,9 +12,9 @@ export const CLEAR_HISTORY = 'CLEAR_HISTORY';
 
 // Default configuration
 const defaultConfig = {
-  limit: 50,                    // Max history entries
-  filter: () => true,           // Which actions to track (return true to track)
-  groupBy: null,                // Optional: group rapid actions by type
+  limit: 50, // Max history entries
+  filter: () => true, // Which actions to track (return true to track)
+  groupBy: null, // Optional: group rapid actions by type
   undoType: UNDO,
   redoType: REDO,
   clearHistoryType: CLEAR_HISTORY,
@@ -27,13 +27,7 @@ const defaultConfig = {
  * @returns {Function} The wrapped reducer with undo/redo support
  */
 export function undoable(reducer, config = {}) {
-  const {
-    limit,
-    filter,
-    undoType,
-    redoType,
-    clearHistoryType,
-  } = { ...defaultConfig, ...config };
+  const { limit, filter, undoType, redoType, clearHistoryType } = { ...defaultConfig, ...config };
 
   // Default initial state - will be overridden by useReducer's initial state argument
   const defaultInitialState = {
@@ -142,4 +136,3 @@ export function getHistoryCounts(state) {
 }
 
 export default undoable;
-

@@ -35,4 +35,3 @@ export {
   type FontWeight,
   type FontSizeOption,
 } from './constants';
-

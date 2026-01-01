@@ -1,7 +1,7 @@
 /**
  * Logger Utility
  * Provides environment-aware logging that silences non-critical logs in production.
- * 
+ *
  * Usage:
  * import { logger } from '../utils';
  * logger.log('Debug message');  // Only shows in development
@@ -71,4 +71,3 @@ export const logger = {
 };
 
 export default logger;
-

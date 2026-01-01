@@ -112,7 +112,7 @@ export function useDropdowns() {
     setShowNewTabMenu,
     showSnippetsPicker,
     setShowSnippetsPicker,
-    
+
     // Refs
     colorPickerRef,
     fontSizeRef,
@@ -125,11 +125,8 @@ export function useDropdowns() {
     layoutPickerRef,
     newTabMenuRef,
     snippetsPickerRef,
-    
+
     // Helper
     closeAllDropdowns,
   };
 }
-
-
-

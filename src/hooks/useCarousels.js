@@ -3,6 +3,7 @@ import { arrayMove } from '@dnd-kit/sortable';
 import { STORAGE_KEYS } from '../config';
 import { createPatternLayer, findPatternById } from '../data';
 import { undoable, UNDO, REDO, canUndo, canRedo } from '../utils/undoable';
+import { logger } from '../utils';
 
 const STORAGE_KEY = STORAGE_KEYS.CAROUSELS;
 
@@ -94,8 +95,9 @@ function carouselReducer(state, action) {
     case CAROUSEL_ACTIONS.SELECT_CAROUSEL: {
       const { carouselId } = action;
       const isOpening = carouselId !== null && carouselId !== state.selectedCarouselId;
-      const isClosing = carouselId === null || (carouselId === state.selectedCarouselId && state.selectedCarouselId !== null);
-      
+      const isClosing =
+        carouselId === null || (carouselId === state.selectedCarouselId && state.selectedCarouselId !== null);
+
       if (isOpening) {
         return { ...state, selectedCarouselId: carouselId, selectedFrameId: null, activeTextField: null };
       } else if (isClosing && carouselId === state.selectedCarouselId) {
@@ -110,8 +112,14 @@ function carouselReducer(state, action) {
     case CAROUSEL_ACTIONS.SELECT_FRAME: {
       const { carouselId, frameId } = action;
       const newSelectedCarouselId = carouselId !== state.selectedCarouselId ? carouselId : state.selectedCarouselId;
-      const newSelectedFrameId = (state.selectedFrameId === frameId && carouselId === state.selectedCarouselId) ? null : frameId;
-      return { ...state, selectedCarouselId: newSelectedCarouselId, selectedFrameId: newSelectedFrameId, activeTextField: null };
+      const newSelectedFrameId =
+        state.selectedFrameId === frameId && carouselId === state.selectedCarouselId ? null : frameId;
+      return {
+        ...state,
+        selectedCarouselId: newSelectedCarouselId,
+        selectedFrameId: newSelectedFrameId,
+        activeTextField: null,
+      };
     }
 
     case CAROUSEL_ACTIONS.SET_ACTIVE_TEXT_FIELD:
@@ -127,73 +135,73 @@ function carouselReducer(state, action) {
     case CAROUSEL_ACTIONS.SET_VARIANT:
       return {
         ...state,
-        carousels: state.carousels.map(carousel => {
+        carousels: state.carousels.map((carousel) => {
           if (carousel.id !== action.carouselId) return carousel;
           return {
             ...carousel,
-            frames: carousel.frames.map(frame =>
+            frames: carousel.frames.map((frame) =>
               frame.id !== action.frameId ? frame : { ...frame, currentVariant: action.variantIndex }
-            )
+            ),
           };
-        })
+        }),
       };
 
     case CAROUSEL_ACTIONS.SET_LAYOUT:
       return {
         ...state,
-        carousels: state.carousels.map(carousel => {
+        carousels: state.carousels.map((carousel) => {
           if (carousel.id !== action.carouselId) return carousel;
           return {
             ...carousel,
-            frames: carousel.frames.map(frame =>
+            frames: carousel.frames.map((frame) =>
               frame.id !== action.frameId ? frame : { ...frame, currentLayout: action.layoutIndex, layoutVariant: 0 }
-            )
+            ),
           };
-        })
+        }),
       };
 
     case CAROUSEL_ACTIONS.SHUFFLE_LAYOUT_VARIANT:
       return {
         ...state,
-        carousels: state.carousels.map(carousel => {
+        carousels: state.carousels.map((carousel) => {
           if (carousel.id !== action.carouselId) return carousel;
           return {
             ...carousel,
-            frames: carousel.frames.map(frame =>
+            frames: carousel.frames.map((frame) =>
               frame.id !== action.frameId ? frame : { ...frame, layoutVariant: ((frame.layoutVariant || 0) + 1) % 3 }
-            )
+            ),
           };
-        })
+        }),
       };
 
     case CAROUSEL_ACTIONS.UPDATE_TEXT:
       return {
         ...state,
-        carousels: state.carousels.map(carousel => {
+        carousels: state.carousels.map((carousel) => {
           if (carousel.id !== action.carouselId) return carousel;
           return {
             ...carousel,
-            frames: carousel.frames.map(frame => {
+            frames: carousel.frames.map((frame) => {
               if (frame.id !== action.frameId) return frame;
               const updatedVariants = [...frame.variants];
               updatedVariants[frame.currentVariant] = {
                 ...updatedVariants[frame.currentVariant],
-                [action.field]: action.value
+                [action.field]: action.value,
               };
               return { ...frame, variants: updatedVariants };
-            })
+            }),
           };
-        })
+        }),
       };
 
     case CAROUSEL_ACTIONS.UPDATE_FORMATTING:
       return {
         ...state,
-        carousels: state.carousels.map(carousel => {
+        carousels: state.carousels.map((carousel) => {
           if (carousel.id !== action.carouselId) return carousel;
           return {
             ...carousel,
-            frames: carousel.frames.map(frame => {
+            frames: carousel.frames.map((frame) => {
               if (frame.id !== action.frameId) return frame;
               const updatedVariants = [...frame.variants];
               const currentVariant = updatedVariants[frame.currentVariant];
@@ -203,33 +211,33 @@ function carouselReducer(state, action) {
                 ...currentVariant,
                 formatting: {
                   ...currentFormatting,
-                  [action.field]: { ...fieldFormatting, [action.key]: action.value }
-                }
+                  [action.field]: { ...fieldFormatting, [action.key]: action.value },
+                },
               };
               return { ...frame, variants: updatedVariants };
-            })
+            }),
           };
-        })
+        }),
       };
 
     case CAROUSEL_ACTIONS.ADD_FRAME: {
       return {
         ...state,
-        carousels: state.carousels.map(carousel => {
+        carousels: state.carousels.map((carousel) => {
           if (carousel.id !== action.carouselId) return carousel;
           const insertIndex = action.position !== null ? action.position : carousel.frames.length;
           const adjacentFrame = carousel.frames[Math.max(0, insertIndex - 1)] || carousel.frames[0];
           const newFrame = {
             id: Date.now(),
             variants: [
-              { headline: "Add your headline", body: "Add your supporting copy here.", formatting: {} },
-              { headline: "Alternative headline", body: "Alternative supporting copy.", formatting: {} },
-              { headline: "Third option", body: "Third copy variation.", formatting: {} }
+              { headline: 'Add your headline', body: 'Add your supporting copy here.', formatting: {} },
+              { headline: 'Alternative headline', body: 'Alternative supporting copy.', formatting: {} },
+              { headline: 'Third option', body: 'Third copy variation.', formatting: {} },
             ],
             currentVariant: 0,
             currentLayout: 0,
             layoutVariant: 0,
-            style: adjacentFrame?.style || "dark-single-pin",
+            style: adjacentFrame?.style || 'dark-single-pin',
             backgroundOverride: '#6466e9', // Default to primary purple
             backgroundLayerOrder: ['fill', 'pattern', 'image'], // Default layer order (backmost to topmost)
           };
@@ -237,64 +245,69 @@ function carouselReducer(state, action) {
           newFrames.splice(insertIndex, 0, newFrame);
           const renumberedFrames = newFrames.map((f, idx) => ({ ...f, id: idx + 1 }));
           return { ...carousel, frames: renumberedFrames };
-        })
+        }),
       };
     }
 
     case CAROUSEL_ACTIONS.REMOVE_FRAME: {
-      const shouldClearFrameSelection = state.selectedCarouselId === action.carouselId && state.selectedFrameId === action.frameId;
+      const shouldClearFrameSelection =
+        state.selectedCarouselId === action.carouselId && state.selectedFrameId === action.frameId;
       return {
         ...state,
         selectedFrameId: shouldClearFrameSelection ? null : state.selectedFrameId,
-        carousels: state.carousels.map(carousel => {
+        carousels: state.carousels.map((carousel) => {
           if (carousel.id !== action.carouselId) return carousel;
           if (carousel.frames.length <= 1) return carousel;
           const newFrames = carousel.frames
-            .filter(f => f.id !== action.frameId)
+            .filter((f) => f.id !== action.frameId)
             .map((f, idx) => ({ ...f, id: idx + 1 }));
           return { ...carousel, frames: newFrames };
-        })
+        }),
       };
     }
 
     case CAROUSEL_ACTIONS.CHANGE_FRAME_SIZE:
       return {
         ...state,
-        carousels: state.carousels.map(carousel =>
+        carousels: state.carousels.map((carousel) =>
           carousel.id === action.carouselId ? { ...carousel, frameSize: action.newSize } : carousel
-        )
+        ),
       };
 
     case CAROUSEL_ACTIONS.REORDER_FRAMES:
       return {
         ...state,
-        carousels: state.carousels.map(carousel => {
+        carousels: state.carousels.map((carousel) => {
           if (carousel.id !== action.carouselId) return carousel;
-          const newFrames = arrayMove(carousel.frames, action.oldIndex, action.newIndex)
-            .map((f, idx) => ({ ...f, id: idx + 1 }));
+          const newFrames = arrayMove(carousel.frames, action.oldIndex, action.newIndex).map((f, idx) => ({
+            ...f,
+            id: idx + 1,
+          }));
           return { ...carousel, frames: newFrames };
-        })
+        }),
       };
 
     case CAROUSEL_ACTIONS.ADD_ROW: {
       const newId = Date.now();
       const newCarousel = {
         id: newId,
-        name: "New Row",
-        subtitle: "Click to edit",
-        frameSize: "portrait",
-        frames: [{
-          id: 1,
-          variants: [
-            { headline: "Your headline here", body: "Your body text here.", formatting: {} },
-            { headline: "Alternative headline", body: "Alternative body text.", formatting: {} },
-            { headline: "Third variation", body: "Third body option.", formatting: {} }
-          ],
-          currentVariant: 0,
-          currentLayout: 0,
-          layoutVariant: 0,
-          style: "dark-single-pin"
-        }]
+        name: 'New Row',
+        subtitle: 'Click to edit',
+        frameSize: 'portrait',
+        frames: [
+          {
+            id: 1,
+            variants: [
+              { headline: 'Your headline here', body: 'Your body text here.', formatting: {} },
+              { headline: 'Alternative headline', body: 'Alternative body text.', formatting: {} },
+              { headline: 'Third variation', body: 'Third body option.', formatting: {} },
+            ],
+            currentVariant: 0,
+            currentLayout: 0,
+            layoutVariant: 0,
+            style: 'dark-single-pin',
+          },
+        ],
       };
       const newCarousels = [...state.carousels];
       newCarousels.splice(action.afterIndex + 1, 0, newCarousel);
@@ -309,7 +322,7 @@ function carouselReducer(state, action) {
         selectedCarouselId: shouldClearSelection ? null : state.selectedCarouselId,
         selectedFrameId: shouldClearSelection ? null : state.selectedFrameId,
         activeTextField: shouldClearSelection ? null : state.activeTextField,
-        carousels: state.carousels.filter(c => c.id !== action.carouselId)
+        carousels: state.carousels.filter((c) => c.id !== action.carouselId),
       };
     }
 
@@ -319,9 +332,7 @@ function carouselReducer(state, action) {
       if (!originalCarousel) return state;
       return {
         ...state,
-        carousels: state.carousels.map(c => 
-          c.id === carouselId ? { ...originalCarousel } : c
-        )
+        carousels: state.carousels.map((c) => (c.id === carouselId ? { ...originalCarousel } : c)),
       };
     }
 
@@ -329,15 +340,15 @@ function carouselReducer(state, action) {
       const { carouselId, frameId, background } = action;
       return {
         ...state,
-        carousels: state.carousels.map(carousel => {
+        carousels: state.carousels.map((carousel) => {
           if (carousel.id !== carouselId) return carousel;
           return {
             ...carousel,
-            frames: carousel.frames.map(frame =>
+            frames: carousel.frames.map((frame) =>
               frame.id === frameId ? { ...frame, backgroundOverride: background } : frame
-            )
+            ),
           };
-        })
+        }),
       };
     }
 
@@ -347,15 +358,15 @@ function carouselReducer(state, action) {
       const { carouselId, background, startIdx = 0, endIdx } = action;
       return {
         ...state,
-        carousels: state.carousels.map(carousel => {
+        carousels: state.carousels.map((carousel) => {
           if (carousel.id !== carouselId) return carousel;
           const numFrames = carousel.frames.length;
           if (numFrames === 0) return carousel;
-          
+
           // Calculate the actual end index (default to last frame)
           const actualEndIdx = endIdx !== undefined ? endIdx : numFrames - 1;
           const selectedCount = actualEndIdx - startIdx + 1;
-          
+
           return {
             ...carousel,
             frames: carousel.frames.map((frame, index) => {
@@ -363,17 +374,15 @@ function carouselReducer(state, action) {
               if (index < startIdx || index > actualEndIdx) {
                 return frame; // Leave unselected frames unchanged
               }
-              
+
               // Calculate position relative to the selected range
               const relativeIndex = index - startIdx;
-              
+
               // CSS background-position percentage when bg > container:
               // 0% = left aligned, 100% = right aligned
               // For N frames, frame i should be at position: i/(N-1)*100%
-              const positionPercent = selectedCount > 1 
-                ? (relativeIndex / (selectedCount - 1)) * 100 
-                : 0;
-              
+              const positionPercent = selectedCount > 1 ? (relativeIndex / (selectedCount - 1)) * 100 : 0;
+
               return {
                 ...frame,
                 backgroundOverride: {
@@ -381,41 +390,41 @@ function carouselReducer(state, action) {
                   size: `${selectedCount * 100}% 100%`,
                   position: `${positionPercent}% 0%`,
                   isStretched: true,
-                }
+                },
               };
-            })
+            }),
           };
-        })
+        }),
       };
     }
 
     // ===== Image Layer Actions =====
-    
+
     case CAROUSEL_ACTIONS.ADD_IMAGE_TO_FRAME: {
       const { carouselId, frameId, imageSrc } = action;
       const newImageLayer = {
         id: `img-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
         src: imageSrc,
-        x: 0,           // Centered
-        y: 0,           // Centered
-        scale: 1,       // Fit to frame
-        opacity: 1,     // Fully visible
-        rotation: 0,    // No rotation
-        zIndex: 0,      // Behind text
-        fit: 'cover',   // Cover the frame
+        x: 0, // Centered
+        y: 0, // Centered
+        scale: 1, // Fit to frame
+        opacity: 1, // Fully visible
+        rotation: 0, // No rotation
+        zIndex: 0, // Behind text
+        fit: 'cover', // Cover the frame
       };
-      
+
       return {
         ...state,
-        carousels: state.carousels.map(carousel => {
+        carousels: state.carousels.map((carousel) => {
           if (carousel.id !== carouselId) return carousel;
           return {
             ...carousel,
-            frames: carousel.frames.map(frame =>
+            frames: carousel.frames.map((frame) =>
               frame.id === frameId ? { ...frame, imageLayer: newImageLayer } : frame
-            )
+            ),
           };
-        })
+        }),
       };
     }
 
@@ -423,19 +432,19 @@ function carouselReducer(state, action) {
       const { carouselId, frameId, updates } = action;
       return {
         ...state,
-        carousels: state.carousels.map(carousel => {
+        carousels: state.carousels.map((carousel) => {
           if (carousel.id !== carouselId) return carousel;
           return {
             ...carousel,
-            frames: carousel.frames.map(frame => {
+            frames: carousel.frames.map((frame) => {
               if (frame.id !== frameId || !frame.imageLayer) return frame;
               return {
                 ...frame,
-                imageLayer: { ...frame.imageLayer, ...updates }
+                imageLayer: { ...frame.imageLayer, ...updates },
               };
-            })
+            }),
           };
-        })
+        }),
       };
     }
 
@@ -443,17 +452,17 @@ function carouselReducer(state, action) {
       const { carouselId, frameId } = action;
       return {
         ...state,
-        carousels: state.carousels.map(carousel => {
+        carousels: state.carousels.map((carousel) => {
           if (carousel.id !== carouselId) return carousel;
           return {
             ...carousel,
-            frames: carousel.frames.map(frame => {
+            frames: carousel.frames.map((frame) => {
               if (frame.id !== frameId) return frame;
               const { imageLayer, ...rest } = frame;
               return rest;
-            })
+            }),
           };
-        })
+        }),
       };
     }
 
@@ -461,40 +470,40 @@ function carouselReducer(state, action) {
       // Sync all images with the same linkedGroupId across all carousels/frames
       const { linkedGroupId, updates } = action;
       if (!linkedGroupId) return state;
-      
+
       return {
         ...state,
-        carousels: state.carousels.map(carousel => ({
+        carousels: state.carousels.map((carousel) => ({
           ...carousel,
-          frames: carousel.frames.map(frame => {
+          frames: carousel.frames.map((frame) => {
             if (!frame.imageLayer || frame.imageLayer.linkedGroupId !== linkedGroupId) return frame;
             return {
               ...frame,
-              imageLayer: { ...frame.imageLayer, ...updates }
+              imageLayer: { ...frame.imageLayer, ...updates },
             };
-          })
-        }))
+          }),
+        })),
       };
     }
 
     // ===== Pattern Layer Actions =====
-    
+
     case CAROUSEL_ACTIONS.ADD_PATTERN_TO_FRAME: {
       const { carouselId, frameId, patternId } = action;
       const newPatternLayer = createPatternLayer(patternId);
       if (!newPatternLayer) return state;
-      
+
       return {
         ...state,
-        carousels: state.carousels.map(carousel => {
+        carousels: state.carousels.map((carousel) => {
           if (carousel.id !== carouselId) return carousel;
           return {
             ...carousel,
-            frames: carousel.frames.map(frame =>
+            frames: carousel.frames.map((frame) =>
               frame.id === frameId ? { ...frame, patternLayer: newPatternLayer } : frame
-            )
+            ),
           };
-        })
+        }),
       };
     }
 
@@ -502,19 +511,19 @@ function carouselReducer(state, action) {
       const { carouselId, frameId, updates } = action;
       return {
         ...state,
-        carousels: state.carousels.map(carousel => {
+        carousels: state.carousels.map((carousel) => {
           if (carousel.id !== carouselId) return carousel;
           return {
             ...carousel,
-            frames: carousel.frames.map(frame => {
+            frames: carousel.frames.map((frame) => {
               if (frame.id !== frameId || !frame.patternLayer) return frame;
               return {
                 ...frame,
-                patternLayer: { ...frame.patternLayer, ...updates }
+                patternLayer: { ...frame.patternLayer, ...updates },
               };
-            })
+            }),
           };
-        })
+        }),
       };
     }
 
@@ -522,17 +531,17 @@ function carouselReducer(state, action) {
       const { carouselId, frameId } = action;
       return {
         ...state,
-        carousels: state.carousels.map(carousel => {
+        carousels: state.carousels.map((carousel) => {
           if (carousel.id !== carouselId) return carousel;
           return {
             ...carousel,
-            frames: carousel.frames.map(frame => {
+            frames: carousel.frames.map((frame) => {
               if (frame.id !== frameId) return frame;
               const { patternLayer, ...rest } = frame;
               return rest;
-            })
+            }),
           };
-        })
+        }),
       };
     }
 
@@ -541,26 +550,26 @@ function carouselReducer(state, action) {
       const { carouselId, patternId, startIdx = 0, endIdx } = action;
       const basePatternLayer = createPatternLayer(patternId);
       if (!basePatternLayer) return state;
-      
+
       return {
         ...state,
-        carousels: state.carousels.map(carousel => {
+        carousels: state.carousels.map((carousel) => {
           if (carousel.id !== carouselId) return carousel;
           const numFrames = carousel.frames.length;
           if (numFrames === 0) return carousel;
-          
+
           const actualEndIdx = endIdx !== undefined ? endIdx : numFrames - 1;
           const selectedCount = actualEndIdx - startIdx + 1;
-          
+
           return {
             ...carousel,
             frames: carousel.frames.map((frame, index) => {
               if (index < startIdx || index > actualEndIdx) {
                 return frame;
               }
-              
+
               const relativeIndex = index - startIdx;
-              
+
               return {
                 ...frame,
                 patternLayer: {
@@ -569,11 +578,11 @@ function carouselReducer(state, action) {
                   isStretched: true,
                   stretchSize: `${selectedCount * 100}% 100%`,
                   stretchPosition: `${-relativeIndex * 100}% 0%`,
-                }
+                },
               };
-            })
+            }),
           };
-        })
+        }),
       };
     }
 
@@ -581,33 +590,33 @@ function carouselReducer(state, action) {
       const { carouselId, frameId, updates } = action;
       return {
         ...state,
-        carousels: state.carousels.map(carousel => {
+        carousels: state.carousels.map((carousel) => {
           if (carousel.id !== carouselId) return carousel;
           return {
             ...carousel,
-            frames: carousel.frames.map(frame => {
+            frames: carousel.frames.map((frame) => {
               if (frame.id !== frameId) return frame;
               return {
                 ...frame,
                 fillOpacity: updates.fillOpacity !== undefined ? updates.fillOpacity : frame.fillOpacity,
                 fillRotation: updates.fillRotation !== undefined ? updates.fillRotation : frame.fillRotation,
               };
-            })
+            }),
           };
-        })
+        }),
       };
     }
 
     // ===== Product Image Layer Actions =====
-    
+
     case CAROUSEL_ACTIONS.ADD_PRODUCT_IMAGE_TO_FRAME: {
       const { carouselId, frameId, imageSrc, layoutIndex, layoutVariant } = action;
-      
+
       // Determine position based on layout
       // 'top' = product image above text (text at bottom)
       // 'bottom' = product image below text (text at top)
       let position = 'top';
-      
+
       if (layoutIndex === 0 && layoutVariant === 0) {
         // Bottom Stack: text at bottom, product at top
         position = 'top';
@@ -618,28 +627,28 @@ function carouselReducer(state, action) {
         // Upper Drama: text in upper area, product below
         position = 'bottom';
       }
-      
+
       const newProductImageLayer = {
         id: `product-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
         src: imageSrc,
-        position,          // 'top' or 'bottom' - which area of the layout
-        scale: 1,          // Zoom level (1 = 100%)
-        borderRadius: 8,   // Corner rounding in pixels
-        offsetX: 0,        // Horizontal offset for positioning
-        offsetY: 0,        // Vertical offset for positioning
+        position, // 'top' or 'bottom' - which area of the layout
+        scale: 1, // Zoom level (1 = 100%)
+        borderRadius: 8, // Corner rounding in pixels
+        offsetX: 0, // Horizontal offset for positioning
+        offsetY: 0, // Vertical offset for positioning
       };
-      
+
       return {
         ...state,
-        carousels: state.carousels.map(carousel => {
+        carousels: state.carousels.map((carousel) => {
           if (carousel.id !== carouselId) return carousel;
           return {
             ...carousel,
-            frames: carousel.frames.map(frame =>
+            frames: carousel.frames.map((frame) =>
               frame.id === frameId ? { ...frame, productImageLayer: newProductImageLayer } : frame
-            )
+            ),
           };
-        })
+        }),
       };
     }
 
@@ -647,19 +656,19 @@ function carouselReducer(state, action) {
       const { carouselId, frameId, updates } = action;
       return {
         ...state,
-        carousels: state.carousels.map(carousel => {
+        carousels: state.carousels.map((carousel) => {
           if (carousel.id !== carouselId) return carousel;
           return {
             ...carousel,
-            frames: carousel.frames.map(frame => {
+            frames: carousel.frames.map((frame) => {
               if (frame.id !== frameId || !frame.productImageLayer) return frame;
               return {
                 ...frame,
-                productImageLayer: { ...frame.productImageLayer, ...updates }
+                productImageLayer: { ...frame.productImageLayer, ...updates },
               };
-            })
+            }),
           };
-        })
+        }),
       };
     }
 
@@ -667,25 +676,25 @@ function carouselReducer(state, action) {
       const { carouselId, frameId } = action;
       return {
         ...state,
-        carousels: state.carousels.map(carousel => {
+        carousels: state.carousels.map((carousel) => {
           if (carousel.id !== carouselId) return carousel;
           return {
             ...carousel,
-            frames: carousel.frames.map(frame => {
+            frames: carousel.frames.map((frame) => {
               if (frame.id !== frameId) return frame;
               const { productImageLayer, ...rest } = frame;
               return rest;
-            })
+            }),
           };
-        })
+        }),
       };
     }
 
     // ===== Icon Layer Actions =====
-    
+
     case CAROUSEL_ACTIONS.ADD_ICON_TO_FRAME: {
       const { carouselId, frameId, iconId, iconPath, iconName } = action;
-      
+
       const newIconLayer = {
         id: `icon-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
         iconId,
@@ -696,18 +705,18 @@ function carouselReducer(state, action) {
         borderColor: null, // No border by default
         backgroundColor: null, // No background by default
       };
-      
+
       return {
         ...state,
-        carousels: state.carousels.map(carousel => {
+        carousels: state.carousels.map((carousel) => {
           if (carousel.id !== carouselId) return carousel;
           return {
             ...carousel,
-            frames: carousel.frames.map(frame =>
+            frames: carousel.frames.map((frame) =>
               frame.id === frameId ? { ...frame, iconLayer: newIconLayer } : frame
-            )
+            ),
           };
-        })
+        }),
       };
     }
 
@@ -715,19 +724,19 @@ function carouselReducer(state, action) {
       const { carouselId, frameId, updates } = action;
       return {
         ...state,
-        carousels: state.carousels.map(carousel => {
+        carousels: state.carousels.map((carousel) => {
           if (carousel.id !== carouselId) return carousel;
           return {
             ...carousel,
-            frames: carousel.frames.map(frame => {
+            frames: carousel.frames.map((frame) => {
               if (frame.id !== frameId || !frame.iconLayer) return frame;
               return {
                 ...frame,
-                iconLayer: { ...frame.iconLayer, ...updates }
+                iconLayer: { ...frame.iconLayer, ...updates },
               };
-            })
+            }),
           };
-        })
+        }),
       };
     }
 
@@ -735,65 +744,63 @@ function carouselReducer(state, action) {
       const { carouselId, frameId } = action;
       return {
         ...state,
-        carousels: state.carousels.map(carousel => {
+        carousels: state.carousels.map((carousel) => {
           if (carousel.id !== carouselId) return carousel;
           return {
             ...carousel,
-            frames: carousel.frames.map(frame => {
+            frames: carousel.frames.map((frame) => {
               if (frame.id !== frameId) return frame;
               const { iconLayer, ...rest } = frame;
               return rest;
-            })
+            }),
           };
-        })
+        }),
       };
     }
 
     // ===== Progress Indicator Actions =====
-    
+
     case CAROUSEL_ACTIONS.UPDATE_PROGRESS_INDICATOR: {
       const { carouselId, frameId, updates } = action;
       return {
         ...state,
-        carousels: state.carousels.map(carousel => {
+        carousels: state.carousels.map((carousel) => {
           if (carousel.id !== carouselId) return carousel;
           return {
             ...carousel,
-            frames: carousel.frames.map(frame => {
+            frames: carousel.frames.map((frame) => {
               if (frame.id !== frameId) return frame;
               return {
                 ...frame,
-                progressIndicator: { 
+                progressIndicator: {
                   type: 'dots', // default
                   color: '#ffffff', // default white
                   isHidden: false, // default visible
                   ...(frame.progressIndicator || {}),
-                  ...updates 
-                }
+                  ...updates,
+                },
               };
-            })
+            }),
           };
-        })
+        }),
       };
     }
 
     // ===== Background Layer Order Actions =====
-    
+
     case CAROUSEL_ACTIONS.REORDER_BACKGROUND_LAYERS: {
       const { carouselId, frameId, newOrder } = action;
       return {
         ...state,
-        carousels: state.carousels.map(carousel => {
+        carousels: state.carousels.map((carousel) => {
           if (carousel.id !== carouselId) return carousel;
           return {
             ...carousel,
-            frames: carousel.frames.map(frame =>
-              frame.id === frameId 
-                ? { ...frame, backgroundLayerOrder: newOrder } 
-                : frame
-            )
+            frames: carousel.frames.map((frame) =>
+              frame.id === frameId ? { ...frame, backgroundLayerOrder: newOrder } : frame
+            ),
           };
-        })
+        }),
       };
     }
 
@@ -810,41 +817,43 @@ function loadFromStorage(initialData) {
       const parsed = JSON.parse(saved);
       if (Array.isArray(parsed) && parsed.length > 0) {
         // Migration: Set defaults for frames
-        const migrated = parsed.map(carousel => ({
+        const migrated = parsed.map((carousel) => ({
           ...carousel,
-          frames: carousel.frames?.map(frame => ({
-            ...frame,
-            backgroundOverride: frame.backgroundOverride || '#6466e9', // Default to primary purple if not set
-            backgroundLayerOrder: frame.backgroundLayerOrder || ['fill', 'pattern', 'image'], // Default layer order
-          })) || []
+          frames:
+            carousel.frames?.map((frame) => ({
+              ...frame,
+              backgroundOverride: frame.backgroundOverride || '#6466e9', // Default to primary purple if not set
+              backgroundLayerOrder: frame.backgroundLayerOrder || ['fill', 'pattern', 'image'], // Default layer order
+            })) || [],
         }));
         // Force save the migrated data immediately
         localStorage.setItem(STORAGE_KEY, JSON.stringify(migrated));
-        console.log('Migration: Cleared all background overrides from frames');
+        logger.log('Migration: Cleared all background overrides from frames');
         return migrated;
       }
     }
   } catch (e) {
-    console.warn('Failed to load carousels from localStorage:', e);
+    logger.warn('Failed to load carousels from localStorage:', e);
   }
   return initialData;
 }
 
 export default function useCarousels(initialData) {
   const [initialized, setInitialized] = useState(false);
-  
+
   // Use undoable reducer wrapper for undo/redo support
-  const [undoableState, dispatch] = useReducer(
-    undoableCarouselReducer,
-    { past: [], present: createInitialState(loadFromStorage(initialData)), future: [] }
-  );
-  
+  const [undoableState, dispatch] = useReducer(undoableCarouselReducer, {
+    past: [],
+    present: createInitialState(loadFromStorage(initialData)),
+    future: [],
+  });
+
   // Access present state through the undoable wrapper
   const state = undoableState.present;
 
   // Computed values
-  const selectedCarousel = state.carousels.find(c => c.id === state.selectedCarouselId) || state.carousels[0];
-  const selectedFrame = selectedCarousel?.frames?.find(f => f.id === state.selectedFrameId);
+  const selectedCarousel = state.carousels.find((c) => c.id === state.selectedCarouselId) || state.carousels[0];
+  const selectedFrame = selectedCarousel?.frames?.find((f) => f.id === state.selectedFrameId);
 
   // Save to localStorage whenever carousels change
   useEffect(() => {
@@ -855,136 +864,219 @@ export default function useCarousels(initialData) {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state.carousels));
     } catch (e) {
-      console.warn('Failed to save carousels to localStorage:', e);
+      logger.warn('Failed to save carousels to localStorage:', e);
     }
   }, [state.carousels, initialized]);
 
   // Memoized action creators for backwards compatibility
   const actions = {
     clearSelection: useCallback(() => dispatch({ type: CAROUSEL_ACTIONS.CLEAR_SELECTION }), []),
-    
+
     deselectFrame: useCallback(() => dispatch({ type: CAROUSEL_ACTIONS.DESELECT_FRAME }), []),
-    
+
     // Undo/Redo handlers
     handleUndo: useCallback(() => dispatch({ type: UNDO }), []),
     handleRedo: useCallback(() => dispatch({ type: REDO }), []),
-    
-    setActiveTextField: useCallback((field) => 
-      dispatch({ type: CAROUSEL_ACTIONS.SET_ACTIVE_TEXT_FIELD, field }), []),
-    
+
+    setActiveTextField: useCallback((field) => dispatch({ type: CAROUSEL_ACTIONS.SET_ACTIVE_TEXT_FIELD, field }), []),
+
     handleSelectFrame: useCallback((carouselId, frameId, closeAllDropdowns) => {
       if (closeAllDropdowns) closeAllDropdowns();
       dispatch({ type: CAROUSEL_ACTIONS.SELECT_FRAME, carouselId, frameId });
     }, []),
-    
+
     handleSelectCarousel: useCallback((carouselId, closeAllDropdowns) => {
       if (closeAllDropdowns) closeAllDropdowns();
       dispatch({ type: CAROUSEL_ACTIONS.SELECT_CAROUSEL, carouselId });
     }, []),
-    
-    handleSetVariant: useCallback((carouselId, frameId, variantIndex) =>
-      dispatch({ type: CAROUSEL_ACTIONS.SET_VARIANT, carouselId, frameId, variantIndex }), []),
-    
-    handleSetLayout: useCallback((carouselId, frameId, layoutIndex) =>
-      dispatch({ type: CAROUSEL_ACTIONS.SET_LAYOUT, carouselId, frameId, layoutIndex }), []),
-    
-    handleShuffleLayoutVariant: useCallback((carouselId, frameId) =>
-      dispatch({ type: CAROUSEL_ACTIONS.SHUFFLE_LAYOUT_VARIANT, carouselId, frameId }), []),
-    
-    handleUpdateText: useCallback((carouselId, frameId, field, value) =>
-      dispatch({ type: CAROUSEL_ACTIONS.UPDATE_TEXT, carouselId, frameId, field, value }), []),
-    
-    handleUpdateFormatting: useCallback((carouselId, frameId, field, key, value) =>
-      dispatch({ type: CAROUSEL_ACTIONS.UPDATE_FORMATTING, carouselId, frameId, field, key, value }), []),
-    
-    handleAddFrame: useCallback((carouselId, position = null) =>
-      dispatch({ type: CAROUSEL_ACTIONS.ADD_FRAME, carouselId, position }), []),
-    
-    handleChangeFrameSize: useCallback((carouselId, newSize) =>
-      dispatch({ type: CAROUSEL_ACTIONS.CHANGE_FRAME_SIZE, carouselId, newSize }), []),
-    
-    handleRemoveFrame: useCallback((carouselId, frameId) =>
-      dispatch({ type: CAROUSEL_ACTIONS.REMOVE_FRAME, carouselId, frameId }), []),
-    
-    handleReorderFrames: useCallback((carouselId, oldIndex, newIndex) =>
-      dispatch({ type: CAROUSEL_ACTIONS.REORDER_FRAMES, carouselId, oldIndex, newIndex }), []),
-    
-    handleAddRow: useCallback((afterIndex) =>
-      dispatch({ type: CAROUSEL_ACTIONS.ADD_ROW, afterIndex }), []),
-    
-    handleRemoveRow: useCallback((carouselId) =>
-      dispatch({ type: CAROUSEL_ACTIONS.REMOVE_ROW, carouselId }), []),
-    
-    handleResetCarousel: useCallback((carouselId) => {
-      const originalCarousel = initialData.find(c => c.id === carouselId);
-      if (originalCarousel) {
-        dispatch({ type: CAROUSEL_ACTIONS.RESET_CAROUSEL, carouselId, originalCarousel });
-      }
-    }, [initialData]),
-    
-    handleSetFrameBackground: useCallback((carouselId, frameId, background) =>
-      dispatch({ type: CAROUSEL_ACTIONS.SET_FRAME_BACKGROUND, carouselId, frameId, background }), []),
-    
-    handleSetRowStretchedBackground: useCallback((carouselId, background, startIdx, endIdx) =>
-      dispatch({ type: CAROUSEL_ACTIONS.SET_ROW_STRETCHED_BACKGROUND, carouselId, background, startIdx, endIdx }), []),
+
+    handleSetVariant: useCallback(
+      (carouselId, frameId, variantIndex) =>
+        dispatch({ type: CAROUSEL_ACTIONS.SET_VARIANT, carouselId, frameId, variantIndex }),
+      []
+    ),
+
+    handleSetLayout: useCallback(
+      (carouselId, frameId, layoutIndex) =>
+        dispatch({ type: CAROUSEL_ACTIONS.SET_LAYOUT, carouselId, frameId, layoutIndex }),
+      []
+    ),
+
+    handleShuffleLayoutVariant: useCallback(
+      (carouselId, frameId) => dispatch({ type: CAROUSEL_ACTIONS.SHUFFLE_LAYOUT_VARIANT, carouselId, frameId }),
+      []
+    ),
+
+    handleUpdateText: useCallback(
+      (carouselId, frameId, field, value) =>
+        dispatch({ type: CAROUSEL_ACTIONS.UPDATE_TEXT, carouselId, frameId, field, value }),
+      []
+    ),
+
+    handleUpdateFormatting: useCallback(
+      (carouselId, frameId, field, key, value) =>
+        dispatch({ type: CAROUSEL_ACTIONS.UPDATE_FORMATTING, carouselId, frameId, field, key, value }),
+      []
+    ),
+
+    handleAddFrame: useCallback(
+      (carouselId, position = null) => dispatch({ type: CAROUSEL_ACTIONS.ADD_FRAME, carouselId, position }),
+      []
+    ),
+
+    handleChangeFrameSize: useCallback(
+      (carouselId, newSize) => dispatch({ type: CAROUSEL_ACTIONS.CHANGE_FRAME_SIZE, carouselId, newSize }),
+      []
+    ),
+
+    handleRemoveFrame: useCallback(
+      (carouselId, frameId) => dispatch({ type: CAROUSEL_ACTIONS.REMOVE_FRAME, carouselId, frameId }),
+      []
+    ),
+
+    handleReorderFrames: useCallback(
+      (carouselId, oldIndex, newIndex) =>
+        dispatch({ type: CAROUSEL_ACTIONS.REORDER_FRAMES, carouselId, oldIndex, newIndex }),
+      []
+    ),
+
+    handleAddRow: useCallback((afterIndex) => dispatch({ type: CAROUSEL_ACTIONS.ADD_ROW, afterIndex }), []),
+
+    handleRemoveRow: useCallback((carouselId) => dispatch({ type: CAROUSEL_ACTIONS.REMOVE_ROW, carouselId }), []),
+
+    handleResetCarousel: useCallback(
+      (carouselId) => {
+        const originalCarousel = initialData.find((c) => c.id === carouselId);
+        if (originalCarousel) {
+          dispatch({ type: CAROUSEL_ACTIONS.RESET_CAROUSEL, carouselId, originalCarousel });
+        }
+      },
+      [initialData]
+    ),
+
+    handleSetFrameBackground: useCallback(
+      (carouselId, frameId, background) =>
+        dispatch({ type: CAROUSEL_ACTIONS.SET_FRAME_BACKGROUND, carouselId, frameId, background }),
+      []
+    ),
+
+    handleSetRowStretchedBackground: useCallback(
+      (carouselId, background, startIdx, endIdx) =>
+        dispatch({ type: CAROUSEL_ACTIONS.SET_ROW_STRETCHED_BACKGROUND, carouselId, background, startIdx, endIdx }),
+      []
+    ),
 
     // Image Layer Actions
-    handleAddImageToFrame: useCallback((carouselId, frameId, imageSrc) =>
-      dispatch({ type: CAROUSEL_ACTIONS.ADD_IMAGE_TO_FRAME, carouselId, frameId, imageSrc }), []),
-    
-    handleUpdateImageLayer: useCallback((carouselId, frameId, updates) =>
-      dispatch({ type: CAROUSEL_ACTIONS.UPDATE_IMAGE_LAYER, carouselId, frameId, updates }), []),
-    
-    handleRemoveImageFromFrame: useCallback((carouselId, frameId) =>
-      dispatch({ type: CAROUSEL_ACTIONS.REMOVE_IMAGE_FROM_FRAME, carouselId, frameId }), []),
-    
-    handleSyncLinkedImages: useCallback((linkedGroupId, updates) =>
-      dispatch({ type: CAROUSEL_ACTIONS.SYNC_LINKED_IMAGES, linkedGroupId, updates }), []),
-    
+    handleAddImageToFrame: useCallback(
+      (carouselId, frameId, imageSrc) =>
+        dispatch({ type: CAROUSEL_ACTIONS.ADD_IMAGE_TO_FRAME, carouselId, frameId, imageSrc }),
+      []
+    ),
+
+    handleUpdateImageLayer: useCallback(
+      (carouselId, frameId, updates) =>
+        dispatch({ type: CAROUSEL_ACTIONS.UPDATE_IMAGE_LAYER, carouselId, frameId, updates }),
+      []
+    ),
+
+    handleRemoveImageFromFrame: useCallback(
+      (carouselId, frameId) => dispatch({ type: CAROUSEL_ACTIONS.REMOVE_IMAGE_FROM_FRAME, carouselId, frameId }),
+      []
+    ),
+
+    handleSyncLinkedImages: useCallback(
+      (linkedGroupId, updates) => dispatch({ type: CAROUSEL_ACTIONS.SYNC_LINKED_IMAGES, linkedGroupId, updates }),
+      []
+    ),
+
     // Pattern Layer Actions
-    handleAddPatternToFrame: useCallback((carouselId, frameId, patternId) =>
-      dispatch({ type: CAROUSEL_ACTIONS.ADD_PATTERN_TO_FRAME, carouselId, frameId, patternId }), []),
-    
-    handleUpdatePatternLayer: useCallback((carouselId, frameId, updates) =>
-      dispatch({ type: CAROUSEL_ACTIONS.UPDATE_PATTERN_LAYER, carouselId, frameId, updates }), []),
-    
-    handleRemovePatternFromFrame: useCallback((carouselId, frameId) =>
-      dispatch({ type: CAROUSEL_ACTIONS.REMOVE_PATTERN_FROM_FRAME, carouselId, frameId }), []),
-    
-    handleSetRowStretchedPattern: useCallback((carouselId, patternId, startIdx, endIdx) =>
-      dispatch({ type: CAROUSEL_ACTIONS.SET_ROW_STRETCHED_PATTERN, carouselId, patternId, startIdx, endIdx }), []),
-    
+    handleAddPatternToFrame: useCallback(
+      (carouselId, frameId, patternId) =>
+        dispatch({ type: CAROUSEL_ACTIONS.ADD_PATTERN_TO_FRAME, carouselId, frameId, patternId }),
+      []
+    ),
+
+    handleUpdatePatternLayer: useCallback(
+      (carouselId, frameId, updates) =>
+        dispatch({ type: CAROUSEL_ACTIONS.UPDATE_PATTERN_LAYER, carouselId, frameId, updates }),
+      []
+    ),
+
+    handleRemovePatternFromFrame: useCallback(
+      (carouselId, frameId) => dispatch({ type: CAROUSEL_ACTIONS.REMOVE_PATTERN_FROM_FRAME, carouselId, frameId }),
+      []
+    ),
+
+    handleSetRowStretchedPattern: useCallback(
+      (carouselId, patternId, startIdx, endIdx) =>
+        dispatch({ type: CAROUSEL_ACTIONS.SET_ROW_STRETCHED_PATTERN, carouselId, patternId, startIdx, endIdx }),
+      []
+    ),
+
     // Fill Layer Actions
-    handleUpdateFillLayer: useCallback((carouselId, frameId, updates) =>
-      dispatch({ type: CAROUSEL_ACTIONS.UPDATE_FILL_LAYER, carouselId, frameId, updates }), []),
-    
+    handleUpdateFillLayer: useCallback(
+      (carouselId, frameId, updates) =>
+        dispatch({ type: CAROUSEL_ACTIONS.UPDATE_FILL_LAYER, carouselId, frameId, updates }),
+      []
+    ),
+
     // Product Image Layer Actions
-    handleAddProductImageToFrame: useCallback((carouselId, frameId, imageSrc, layoutIndex, layoutVariant) =>
-      dispatch({ type: CAROUSEL_ACTIONS.ADD_PRODUCT_IMAGE_TO_FRAME, carouselId, frameId, imageSrc, layoutIndex, layoutVariant }), []),
-    
-    handleUpdateProductImageLayer: useCallback((carouselId, frameId, updates) =>
-      dispatch({ type: CAROUSEL_ACTIONS.UPDATE_PRODUCT_IMAGE_LAYER, carouselId, frameId, updates }), []),
-    
-    handleRemoveProductImageFromFrame: useCallback((carouselId, frameId) =>
-      dispatch({ type: CAROUSEL_ACTIONS.REMOVE_PRODUCT_IMAGE_FROM_FRAME, carouselId, frameId }), []),
-    
+    handleAddProductImageToFrame: useCallback(
+      (carouselId, frameId, imageSrc, layoutIndex, layoutVariant) =>
+        dispatch({
+          type: CAROUSEL_ACTIONS.ADD_PRODUCT_IMAGE_TO_FRAME,
+          carouselId,
+          frameId,
+          imageSrc,
+          layoutIndex,
+          layoutVariant,
+        }),
+      []
+    ),
+
+    handleUpdateProductImageLayer: useCallback(
+      (carouselId, frameId, updates) =>
+        dispatch({ type: CAROUSEL_ACTIONS.UPDATE_PRODUCT_IMAGE_LAYER, carouselId, frameId, updates }),
+      []
+    ),
+
+    handleRemoveProductImageFromFrame: useCallback(
+      (carouselId, frameId) =>
+        dispatch({ type: CAROUSEL_ACTIONS.REMOVE_PRODUCT_IMAGE_FROM_FRAME, carouselId, frameId }),
+      []
+    ),
+
     // Icon Layer Actions
-    handleAddIconToFrame: useCallback((carouselId, frameId, iconId, iconPath, iconName) =>
-      dispatch({ type: CAROUSEL_ACTIONS.ADD_ICON_TO_FRAME, carouselId, frameId, iconId, iconPath, iconName }), []),
-    
-    handleUpdateIconLayer: useCallback((carouselId, frameId, updates) =>
-      dispatch({ type: CAROUSEL_ACTIONS.UPDATE_ICON_LAYER, carouselId, frameId, updates }), []),
-    
-    handleRemoveIconFromFrame: useCallback((carouselId, frameId) =>
-      dispatch({ type: CAROUSEL_ACTIONS.REMOVE_ICON_FROM_FRAME, carouselId, frameId }), []),
-    
+    handleAddIconToFrame: useCallback(
+      (carouselId, frameId, iconId, iconPath, iconName) =>
+        dispatch({ type: CAROUSEL_ACTIONS.ADD_ICON_TO_FRAME, carouselId, frameId, iconId, iconPath, iconName }),
+      []
+    ),
+
+    handleUpdateIconLayer: useCallback(
+      (carouselId, frameId, updates) =>
+        dispatch({ type: CAROUSEL_ACTIONS.UPDATE_ICON_LAYER, carouselId, frameId, updates }),
+      []
+    ),
+
+    handleRemoveIconFromFrame: useCallback(
+      (carouselId, frameId) => dispatch({ type: CAROUSEL_ACTIONS.REMOVE_ICON_FROM_FRAME, carouselId, frameId }),
+      []
+    ),
+
     // Progress Indicator Actions
-    handleUpdateProgressIndicator: useCallback((carouselId, frameId, updates) =>
-      dispatch({ type: CAROUSEL_ACTIONS.UPDATE_PROGRESS_INDICATOR, carouselId, frameId, updates }), []),
-    
+    handleUpdateProgressIndicator: useCallback(
+      (carouselId, frameId, updates) =>
+        dispatch({ type: CAROUSEL_ACTIONS.UPDATE_PROGRESS_INDICATOR, carouselId, frameId, updates }),
+      []
+    ),
+
     // Background Layer Order Actions
-    handleReorderBackgroundLayers: useCallback((carouselId, frameId, newOrder) =>
-      dispatch({ type: CAROUSEL_ACTIONS.REORDER_BACKGROUND_LAYERS, carouselId, frameId, newOrder }), []),
+    handleReorderBackgroundLayers: useCallback(
+      (carouselId, frameId, newOrder) =>
+        dispatch({ type: CAROUSEL_ACTIONS.REORDER_BACKGROUND_LAYERS, carouselId, frameId, newOrder }),
+      []
+    ),
   };
 
   return {
