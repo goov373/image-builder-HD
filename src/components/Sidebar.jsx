@@ -14,7 +14,7 @@ const Sidebar = ({ activePanel, onPanelChange, zoom, onZoomChange, isHomePage, o
   };
   
   return (
-    <div className="fixed left-0 top-[56px] h-[calc(100%-56px)] w-16 bg-gray-900 border-r border-gray-800 flex flex-col items-center py-4 z-50">
+    <div className="fixed left-0 top-[56px] h-[calc(100%-56px)] w-16 bg-[--surface-default] border-r border-[--border-default] flex flex-col items-center py-4 z-50">
       {/* Panel Buttons */}
       <div className="flex flex-col gap-3">
         {panels.map(panel => (
@@ -22,7 +22,7 @@ const Sidebar = ({ activePanel, onPanelChange, zoom, onZoomChange, isHomePage, o
             type="button"
             key={panel.id}
             onClick={() => handlePanelClick(panel.id)}
-            className={`w-11 h-11 rounded-xl flex items-center justify-center transition-all ${activePanel === panel.id ? 'bg-gray-700 text-white' : 'text-gray-400 hover:text-white hover:bg-gray-700'}`}
+            className={`w-11 h-11 rounded-[--radius-md] flex items-center justify-center transition-all duration-[--duration-fast] ${activePanel === panel.id ? 'bg-[--surface-overlay] text-[--text-primary]' : 'text-[--text-tertiary] hover:text-[--text-primary] hover:bg-[--surface-raised]'}`}
             title={panel.label}
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -38,7 +38,7 @@ const Sidebar = ({ activePanel, onPanelChange, zoom, onZoomChange, isHomePage, o
         <button 
           type="button"
           onClick={onShowShortcuts}
-          className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-500 hover:text-white hover:bg-gray-700 transition-colors mb-2"
+          className="w-8 h-8 rounded-[--radius-md] flex items-center justify-center text-[--text-quaternary] hover:text-[--text-primary] hover:bg-[--surface-raised] transition-colors duration-[--duration-fast] mb-2"
           title="Keyboard shortcuts (?)"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -51,7 +51,7 @@ const Sidebar = ({ activePanel, onPanelChange, zoom, onZoomChange, isHomePage, o
           <button 
             type="button"
             onClick={onAccountClick}
-            className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors border ${isAccountOpen ? 'text-white bg-gray-700 border-gray-600' : 'text-gray-400 hover:text-white hover:bg-gray-700 border-gray-700'}`}
+            className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-[--duration-fast] border ${isAccountOpen ? 'text-[--text-primary] bg-[--surface-overlay] border-[--border-emphasis]' : 'text-[--text-tertiary] hover:text-[--text-primary] hover:bg-[--surface-raised] border-[--border-default]'}`}
             title="Profile & Settings"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -64,20 +64,20 @@ const Sidebar = ({ activePanel, onPanelChange, zoom, onZoomChange, isHomePage, o
             <button 
               type="button"
               onClick={() => onZoomChange(Math.min(250, zoom + 10))} 
-              className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-700 transition-colors"
+              className="w-8 h-8 rounded-[--radius-md] flex items-center justify-center text-[--text-tertiary] hover:text-[--text-primary] hover:bg-[--surface-raised] transition-colors duration-[--duration-fast]"
               title="Zoom in"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
               </svg>
             </button>
-            <span className="text-[10px] font-mono font-medium text-gray-400">
+            <span className="text-[10px] font-mono font-medium text-[--text-tertiary] tabular-nums">
               {zoom}%
             </span>
             <button 
               type="button"
               onClick={() => onZoomChange(Math.max(50, zoom - 10))} 
-              className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-700 transition-colors"
+              className="w-8 h-8 rounded-[--radius-md] flex items-center justify-center text-[--text-tertiary] hover:text-[--text-primary] hover:bg-[--surface-raised] transition-colors duration-[--duration-fast]"
               title="Zoom out"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -87,7 +87,7 @@ const Sidebar = ({ activePanel, onPanelChange, zoom, onZoomChange, isHomePage, o
             <button 
               type="button"
               onClick={() => onZoomChange(100)}
-              className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-700 transition-colors"
+              className="w-8 h-8 rounded-[--radius-md] flex items-center justify-center text-[--text-tertiary] hover:text-[--text-primary] hover:bg-[--surface-raised] transition-colors duration-[--duration-fast]"
               title="Reset to 100%"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -102,5 +102,3 @@ const Sidebar = ({ activePanel, onPanelChange, zoom, onZoomChange, isHomePage, o
 };
 
 export default Sidebar;
-
-
