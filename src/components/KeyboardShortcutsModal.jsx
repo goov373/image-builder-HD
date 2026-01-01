@@ -71,19 +71,19 @@ const KeyboardShortcutsModal = ({ isOpen, onClose }) => {
   return (
     <>
       {/* Backdrop */}
-      <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100]" onClick={onClose} />
+      <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[100]" onClick={onClose} />
 
       {/* Modal */}
       <div className="fixed inset-0 flex items-center justify-center z-[101] p-4 pointer-events-none">
         <div
-          className="bg-gray-900 border border-gray-700 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[80vh] overflow-hidden pointer-events-auto"
+          className="bg-[--surface-canvas] border border-[--border-default] rounded-[--radius-lg] shadow-2xl max-w-2xl w-full max-h-[80vh] overflow-hidden pointer-events-auto"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
-          <div className="flex items-center justify-between px-6 py-4 border-b border-gray-800">
+          <div className="flex items-center justify-between px-6 py-4 border-b border-[--border-default]">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gray-800 flex items-center justify-center">
-                <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-10 h-10 rounded-[--radius-md] bg-[--surface-raised] flex items-center justify-center">
+                <svg className="w-5 h-5 text-[--text-tertiary]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -93,14 +93,14 @@ const KeyboardShortcutsModal = ({ isOpen, onClose }) => {
                 </svg>
               </div>
               <div>
-                <h2 className="text-lg font-semibold text-white">Keyboard Shortcuts</h2>
-                <p className="text-xs text-gray-500">Quick actions to speed up your workflow</p>
+                <h2 className="text-lg font-semibold text-[--text-primary]">Keyboard Shortcuts</h2>
+                <p className="text-xs text-[--text-tertiary]">Quick actions to speed up your workflow</p>
               </div>
             </div>
             <button
               type="button"
               onClick={onClose}
-              className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-500 hover:text-white hover:bg-gray-800 transition-colors"
+              className="w-8 h-8 rounded-[--radius-md] flex items-center justify-center text-[--text-tertiary] hover:text-[--text-primary] hover:bg-[--surface-raised] transition-colors"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -113,21 +113,25 @@ const KeyboardShortcutsModal = ({ isOpen, onClose }) => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {shortcutCategories.map((category) => (
                 <div key={category.title}>
-                  <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-3">{category.title}</h3>
+                  <h3 className="text-xs font-medium text-[--text-tertiary] uppercase tracking-wide mb-3">
+                    {category.title}
+                  </h3>
                   <div className="space-y-2">
                     {category.shortcuts.map((shortcut, idx) => (
                       <div
                         key={idx}
-                        className="flex items-center justify-between py-2 px-3 rounded-lg bg-gray-800/50 border border-gray-800"
+                        className="flex items-center justify-between py-2 px-3 rounded-[--radius-md] bg-[--surface-default] border border-[--border-default]"
                       >
-                        <span className="text-sm text-gray-300">{shortcut.description}</span>
+                        <span className="text-sm text-[--text-secondary]">{shortcut.description}</span>
                         <div className="flex items-center gap-1">
                           {shortcut.keys.map((key, keyIdx) => (
                             <span key={keyIdx}>
-                              <kbd className="px-2 py-1 text-xs font-mono font-medium text-gray-300 bg-gray-700 border border-gray-600 rounded shadow-sm">
+                              <kbd className="px-2 py-1 text-xs font-mono font-medium text-[--text-secondary] bg-[--surface-raised] border border-[--border-emphasis] rounded-[--radius-sm] shadow-sm">
                                 {key}
                               </kbd>
-                              {keyIdx < shortcut.keys.length - 1 && <span className="text-gray-600 mx-0.5">+</span>}
+                              {keyIdx < shortcut.keys.length - 1 && (
+                                <span className="text-[--text-quaternary] mx-0.5">+</span>
+                              )}
                             </span>
                           ))}
                         </div>
@@ -140,10 +144,12 @@ const KeyboardShortcutsModal = ({ isOpen, onClose }) => {
           </div>
 
           {/* Footer */}
-          <div className="px-6 py-3 border-t border-gray-800 bg-gray-900/50">
-            <p className="text-xs text-gray-600 text-center">
+          <div className="px-6 py-3 border-t border-[--border-default] bg-[--surface-default]">
+            <p className="text-xs text-[--text-quaternary] text-center">
               Press{' '}
-              <kbd className="px-1.5 py-0.5 text-[10px] font-mono bg-gray-800 border border-gray-700 rounded">?</kbd>{' '}
+              <kbd className="px-1.5 py-0.5 text-[10px] font-mono bg-[--surface-raised] border border-[--border-default] rounded-[--radius-sm]">
+                ?
+              </kbd>{' '}
               anytime to show this menu
             </p>
           </div>
