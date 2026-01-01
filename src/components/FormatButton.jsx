@@ -20,8 +20,6 @@ const FormatButton = ({ formatKey, size, isSelected, onClick }) => {
         {formatKey === 'portrait' && <svg className="w-3 h-4" viewBox="0 0 12 16" fill="currentColor"><rect x="1" y="1" width="10" height="14" rx="1" stroke="currentColor" strokeWidth="1.5" fill="none"/></svg>}
         {formatKey === 'square' && <svg className="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor"><rect x="1" y="1" width="12" height="12" rx="1" stroke="currentColor" strokeWidth="1.5" fill="none"/></svg>}
         {formatKey === 'landscape' && <svg className="w-4 h-3" viewBox="0 0 16 12" fill="currentColor"><rect x="1" y="1" width="14" height="10" rx="1" stroke="currentColor" strokeWidth="1.5" fill="none"/></svg>}
-        {formatKey === 'story' && <svg className="w-2.5 h-4" viewBox="0 0 9 16" fill="currentColor"><rect x="1" y="1" width="7" height="14" rx="1" stroke="currentColor" strokeWidth="1.5" fill="none"/></svg>}
-        {formatKey === 'pin' && <svg className="w-3 h-4" viewBox="0 0 10 16" fill="currentColor"><rect x="1" y="1" width="8" height="14" rx="1" stroke="currentColor" strokeWidth="1.5" fill="none"/></svg>}
         {formatKey === 'slides' && <svg className="w-4 h-2.5" viewBox="0 0 16 9" fill="currentColor"><rect x="1" y="1" width="14" height="7" rx="1" stroke="currentColor" strokeWidth="1.5" fill="none"/></svg>}
         <span>{size.ratio}</span>
       </button>

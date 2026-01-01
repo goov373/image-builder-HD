@@ -2,9 +2,7 @@ import type { FrameSizeKey } from '../types';
 
 // Frame size specifications for different aspect ratios
 export const frameSizes: Record<string, { name: string; ratio: string; width: number; height: number; spec: string; platforms: string; category: string }> = {
-  // Carousel sizes
-  story: { name: "Story", ratio: "9:16", width: 135, height: 240, spec: "1080 × 1920px", platforms: "TikTok · Reels · Shorts", category: "carousel" },
-  pin: { name: "Pin", ratio: "2:3", width: 160, height: 240, spec: "1000 × 1500px", platforms: "Pinterest · RedNote", category: "carousel" },
+  // Carousel sizes (B2B focused)
   portrait: { name: "Portrait", ratio: "4:5", width: 192, height: 240, spec: "1080 × 1350px", platforms: "Instagram · Facebook", category: "carousel" },
   square: { name: "Square", ratio: "1:1", width: 192, height: 192, spec: "1080 × 1080px", platforms: "Instagram · X · LinkedIn", category: "carousel" },
   landscape: { name: "Landscape", ratio: "1.91:1", width: 280, height: 147, spec: "1200 × 628px", platforms: "LinkedIn · X · Ads", category: "carousel" },
@@ -67,7 +65,7 @@ export const getFontSizes = (frameSize: FrameSizeKey | string): FontSizes => {
     };
   }
   
-  // Portrait/Square/Story/Pin - scale based on width
+  // Portrait/Square - scale based on width
   return {
     headline: Math.max(12, Math.round(14 * (size.width / baseWidth))), // 12-16px
     body: Math.max(10, Math.round(12 * (size.width / baseWidth))),     // 10-14px

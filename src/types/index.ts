@@ -90,7 +90,7 @@ export interface Carousel {
   frames: Frame[];
 }
 
-export type FrameSizeKey = 'portrait' | 'square' | 'story' | 'powerpoint' | 'landscape';
+export type FrameSizeKey = 'portrait' | 'square' | 'powerpoint' | 'landscape' | 'slides';
 
 export interface FrameSize {
   name: string;
