@@ -35,17 +35,15 @@ export function undoable(reducer, config = {}) {
     clearHistoryType,
   } = { ...defaultConfig, ...config };
 
-  // Get initial state from the wrapped reducer
-  const initialPresent = reducer(undefined, { type: '@@INIT' });
-
-  const initialState = {
+  // Default initial state - will be overridden by useReducer's initial state argument
+  const defaultInitialState = {
     past: [],
-    present: initialPresent,
+    present: null,
     future: [],
   };
 
-  return function undoableReducer(state = initialState, action) {
-    const { past, present, future } = state;
+  return function undoableReducer(state = defaultInitialState, action) {
+    const { past = [], present, future = [] } = state;
 
     switch (action.type) {
       case undoType: {
@@ -98,7 +96,9 @@ export function undoable(reducer, config = {}) {
         }
 
         // Check if this action should be tracked in history
-        if (!filter(action, newPresent, present)) {
+        const shouldTrack = filter(action, newPresent, present);
+
+        if (!shouldTrack) {
           // Don't track, but still update present
           return {
             ...state,

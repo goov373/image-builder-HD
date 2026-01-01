@@ -222,6 +222,13 @@ export interface CarouselsContextValue {
   handleAddImageToFrame: (carouselId: number, frameId: number, imageSrc: string) => void;
   handleUpdateImageLayer: (carouselId: number, frameId: number, updates: Partial<ImageLayer>) => void;
   handleRemoveImageFromFrame: (carouselId: number, frameId: number) => void;
+  // Undo/Redo
+  handleUndo: () => void;
+  handleRedo: () => void;
+  canUndo: boolean;
+  canRedo: boolean;
+  historyLength: number;
+  futureLength: number;
 }
 
 // ===== Component Props Types =====
