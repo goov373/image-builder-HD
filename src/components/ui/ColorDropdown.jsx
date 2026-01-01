@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import PropTypes from 'prop-types';
 
 /**
  * ColorDropdown Component
@@ -115,6 +116,28 @@ const ColorDropdown = ({ label, value, onChange, colors, allowNone = false, none
       )}
     </div>
   );
+};
+
+ColorDropdown.propTypes = {
+  /** Label for the dropdown button */
+  label: PropTypes.string.isRequired,
+  /** Current selected color value */
+  value: PropTypes.string,
+  /** Change handler */
+  onChange: PropTypes.func.isRequired,
+  /** Array of color options */
+  colors: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      color: PropTypes.string.isRequired,
+    })
+  ).isRequired,
+  /** Allow "None" option */
+  allowNone: PropTypes.bool,
+  /** Label for the None option */
+  noneLabel: PropTypes.string,
+  /** Additional CSS classes */
+  className: PropTypes.string,
 };
 
 export default ColorDropdown;

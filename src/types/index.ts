@@ -1,3 +1,6 @@
+// Re-export shared layer types
+export * from './layers';
+
 // ===== Project Types =====
 export type ProjectType = 'carousel' | 'eblast' | 'videoCover' | 'singleImage';
 

@@ -6,10 +6,10 @@
  * Internal utility functions remain in their modules but are not re-exported.
  */
 
-// Color utilities - only commonly used ones
-export { hexToRgb, rgbToHex, interpolateColor } from './colorUtils';
+// Color utilities - only commonly used ones (now TypeScript)
+export { hexToRgb, rgbToHex, interpolateColor } from './colorUtils.ts';
 
-// Gradient utilities - only commonly used ones
+// Gradient utilities - only commonly used ones (now TypeScript)
 export {
   isSolidColor,
   isGradient,
@@ -17,13 +17,13 @@ export {
   getStartColor,
   getEndColor,
   getDominantColor,
-} from './gradientParser';
+} from './gradientParser.ts';
 
-// Image compression - main functions
-export { compressImages, formatFileSize, COMPRESSION_PRESETS } from './imageCompression';
+// Image compression - main functions (now TypeScript)
+export { compressImages, formatFileSize, COMPRESSION_PRESETS } from './imageCompression.ts';
 
-// Undo/Redo utilities
-export { undoable, canUndo, canRedo, getHistoryCounts, UNDO, REDO, CLEAR_HISTORY } from './undoable';
+// Undo/Redo utilities (now TypeScript)
+export { undoable, canUndo, canRedo, getHistoryCounts, UNDO, REDO, CLEAR_HISTORY } from './undoable.ts';
 
 // Browser Export utilities - WYSIWYG exports using browser rendering
 // 🏆 GOLDEN RULE: Always use browser rendering for exports
@@ -39,5 +39,5 @@ export {
   RESOLUTION_SCALES,
 } from './browserExport';
 
-// Logger utility - environment-aware logging
-export { logger } from './logger';
+// Logger utility - environment-aware logging (now TypeScript)
+export { logger } from './logger.ts';

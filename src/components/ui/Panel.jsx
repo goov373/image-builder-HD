@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 /**
  * Panel Component
@@ -184,5 +185,88 @@ export const PanelEmptyState = ({ icon, title, description, action }) => (
     {action && <div className="mt-3">{action}</div>}
   </div>
 );
+
+Panel.propTypes = {
+  /** Whether the panel is open */
+  isOpen: PropTypes.bool.isRequired,
+  /** Close handler */
+  onClose: PropTypes.func,
+  /** Panel title */
+  title: PropTypes.string,
+  /** Panel subtitle */
+  subtitle: PropTypes.string,
+  /** Panel position */
+  position: PropTypes.oneOf(['left', 'right']),
+  /** Width class */
+  width: PropTypes.string,
+  /** Top offset in pixels */
+  top: PropTypes.number,
+  /** Left offset in pixels */
+  offsetLeft: PropTypes.number,
+  /** Panel content */
+  children: PropTypes.node,
+  /** Footer content */
+  footer: PropTypes.node,
+  /** Additional CSS classes */
+  className: PropTypes.string,
+};
+
+PanelHeader.propTypes = {
+  /** Header title */
+  title: PropTypes.string,
+  /** Header subtitle */
+  subtitle: PropTypes.string,
+  /** Close handler */
+  onClose: PropTypes.func,
+  /** Action buttons */
+  actions: PropTypes.node,
+  /** Header height in pixels */
+  height: PropTypes.number,
+};
+
+PanelSection.propTypes = {
+  /** Section title */
+  title: PropTypes.string,
+  /** Section subtitle */
+  subtitle: PropTypes.string,
+  /** Section content */
+  children: PropTypes.node,
+  /** Whether section is collapsible */
+  collapsible: PropTypes.bool,
+  /** Default open state for collapsible sections */
+  defaultOpen: PropTypes.bool,
+  /** Action buttons */
+  actions: PropTypes.node,
+  /** Disable padding */
+  noPadding: PropTypes.bool,
+  /** Disable border */
+  noBorder: PropTypes.bool,
+};
+
+PanelTabs.propTypes = {
+  /** Array of tab objects */
+  tabs: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      label: PropTypes.string.isRequired,
+      badge: PropTypes.number,
+    })
+  ).isRequired,
+  /** Currently active tab ID */
+  activeTab: PropTypes.string.isRequired,
+  /** Tab change handler */
+  onChange: PropTypes.func.isRequired,
+};
+
+PanelEmptyState.propTypes = {
+  /** Icon element */
+  icon: PropTypes.node,
+  /** Title text */
+  title: PropTypes.string.isRequired,
+  /** Description text */
+  description: PropTypes.string,
+  /** Action button/element */
+  action: PropTypes.node,
+};
 
 export default Panel;

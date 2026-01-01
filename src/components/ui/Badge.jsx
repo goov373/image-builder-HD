@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 /**
  * Badge Component
  * Counter chips and status indicators
@@ -45,6 +47,17 @@ const Badge = ({ variant = 'default', size = 'sm', children, className = '', ...
       {children}
     </span>
   );
+};
+
+Badge.propTypes = {
+  /** Style variant */
+  variant: PropTypes.oneOf(['default', 'muted', 'success', 'warning', 'error', 'info', 'brand']),
+  /** Size of the badge */
+  size: PropTypes.oneOf(['xs', 'sm', 'md']),
+  /** Badge content */
+  children: PropTypes.node.isRequired,
+  /** Additional CSS classes */
+  className: PropTypes.string,
 };
 
 export default Badge;

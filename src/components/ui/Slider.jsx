@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 /**
  * Slider Component
  * Range input for values like opacity, zoom, rotation
@@ -65,6 +67,29 @@ const Slider = ({
       )}
     </div>
   );
+};
+
+Slider.propTypes = {
+  /** Current value */
+  value: PropTypes.number.isRequired,
+  /** Change handler */
+  onChange: PropTypes.func,
+  /** Minimum value */
+  min: PropTypes.number,
+  /** Maximum value */
+  max: PropTypes.number,
+  /** Step increment */
+  step: PropTypes.number,
+  /** Label text */
+  label: PropTypes.string,
+  /** Value suffix (e.g., '%', 'px') */
+  suffix: PropTypes.string,
+  /** Show the current value */
+  showValue: PropTypes.bool,
+  /** Disabled state */
+  disabled: PropTypes.bool,
+  /** Additional CSS classes */
+  className: PropTypes.string,
 };
 
 export default Slider;

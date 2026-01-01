@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 /**
  * Input Component
  * Text and number input primitive
@@ -56,5 +58,29 @@ export const InputGroup = ({ label, error, children, className = '' }) => (
     {error && <span className="text-[10px] text-[--semantic-error]">{error}</span>}
   </div>
 );
+
+Input.propTypes = {
+  /** Input type */
+  type: PropTypes.string,
+  /** Size variant */
+  size: PropTypes.oneOf(['xs', 'sm', 'md', 'lg']),
+  /** Disabled state */
+  disabled: PropTypes.bool,
+  /** Error state */
+  error: PropTypes.bool,
+  /** Additional CSS classes */
+  className: PropTypes.string,
+};
+
+InputGroup.propTypes = {
+  /** Label text */
+  label: PropTypes.string,
+  /** Error message */
+  error: PropTypes.string,
+  /** Input element */
+  children: PropTypes.node.isRequired,
+  /** Additional CSS classes */
+  className: PropTypes.string,
+};
 
 export default Input;
