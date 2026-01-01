@@ -223,14 +223,14 @@ const Homepage = ({
       <div className="max-w-6xl mx-auto">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-4">
-            <h2 className="text-xl font-semibold text-white">All Projects</h2>
+            <h2 className="text-xl font-semibold text-[--text-primary]">All Projects</h2>
 
             {/* Search and Filter Controls */}
             <div className="flex items-center gap-2">
               {/* Search Bar */}
               <div className="relative">
                 <svg
-                  className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-500"
+                  className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[--text-quaternary]"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -247,7 +247,7 @@ const Homepage = ({
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search projects..."
-                  className="w-40 bg-gray-800 border border-gray-700 rounded pl-8 pr-3 py-1.5 text-xs text-gray-300 placeholder-gray-500 hover:border-gray-600 focus:border-gray-500 focus:outline-none transition-colors"
+                  className="w-40 bg-[--surface-raised] border border-[--border-default] rounded-[--radius-md] pl-8 pr-3 py-1.5 text-xs text-[--text-secondary] placeholder-[--text-quaternary] hover:border-[--border-emphasis] focus:border-[--border-strong] focus:outline-none transition-colors"
                 />
               </div>
 
@@ -255,7 +255,7 @@ const Homepage = ({
               <select
                 value={filterType}
                 onChange={(e) => setFilterType(e.target.value)}
-                className="bg-gray-800 border border-gray-700 rounded px-3 py-1.5 text-xs text-gray-300 hover:border-gray-600 focus:border-gray-500 focus:outline-none transition-colors cursor-pointer"
+                className="bg-[--surface-raised] border border-[--border-default] rounded-[--radius-md] px-3 py-1.5 text-xs text-[--text-secondary] hover:border-[--border-emphasis] focus:border-[--border-strong] focus:outline-none transition-colors cursor-pointer"
               >
                 <option value="all">All Types</option>
                 <option value="carousel">Carousels</option>
@@ -268,7 +268,7 @@ const Homepage = ({
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="bg-gray-800 border border-gray-700 rounded px-3 py-1.5 text-xs text-gray-300 hover:border-gray-600 focus:border-gray-500 focus:outline-none transition-colors cursor-pointer"
+                className="bg-[--surface-raised] border border-[--border-default] rounded-[--radius-md] px-3 py-1.5 text-xs text-[--text-secondary] hover:border-[--border-emphasis] focus:border-[--border-strong] focus:outline-none transition-colors cursor-pointer"
               >
                 <option value="updated">Last Updated</option>
                 <option value="created">Date Created</option>
@@ -309,10 +309,10 @@ const Homepage = ({
                 tabIndex={0}
                 onClick={() => onOpenProject(project.id)}
                 onKeyDown={(e) => e.key === 'Enter' && onOpenProject(project.id)}
-                className="group bg-gray-900 border border-gray-800 rounded-md overflow-hidden hover:border-gray-600 hover:bg-gray-800/50 transition-all cursor-pointer"
+                className="group bg-[--surface-default] border border-[--border-default] rounded-[--radius-md] overflow-hidden hover:border-[--border-emphasis] hover:bg-[--surface-raised] transition-all cursor-pointer"
               >
                 {/* Thumbnail - Project Type Icon */}
-                <div className="h-40 bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center relative overflow-hidden">
+                <div className="h-40 bg-[--surface-raised] flex items-center justify-center relative overflow-hidden">
                   <div className="transform group-hover:scale-105 transition-transform">
                     {/* Carousel Icon */}
                     {(project.projectType === 'carousel' || !project.projectType) && (
@@ -320,7 +320,7 @@ const Homepage = ({
                         {[0, 1, 2].map((i) => (
                           <div
                             key={i}
-                            className={`w-12 h-16 rounded bg-gray-700 border border-gray-600 ${i > 0 ? 'opacity-50' : ''}`}
+                            className={`w-12 h-16 rounded-[--radius-sm] bg-[--surface-overlay] border border-[--border-default] ${i > 0 ? 'opacity-50' : ''}`}
                           />
                         ))}
                       </div>
@@ -328,15 +328,15 @@ const Homepage = ({
 
                     {/* Single Image Icon */}
                     {project.projectType === 'singleImage' && (
-                      <div className="w-20 h-14 rounded border border-gray-600 bg-gray-700 relative overflow-hidden">
-                        <div className="absolute inset-1.5 rounded bg-gray-800">
+                      <div className="w-20 h-14 rounded-[--radius-sm] border border-[--border-default] bg-[--surface-overlay] relative overflow-hidden">
+                        <div className="absolute inset-1.5 rounded-[--radius-sm] bg-[--surface-raised]">
                           <div className="flex gap-1 p-1.5 h-full">
-                            <div className="w-2 h-full rounded-sm bg-gray-600" />
+                            <div className="w-2 h-full rounded-sm bg-[--surface-elevated]" />
                             <div className="flex-1 flex flex-col gap-1">
-                              <div className="h-1.5 rounded-full bg-gray-500" />
+                              <div className="h-1.5 rounded-full bg-[--text-quaternary]" />
                               <div className="flex-1 flex gap-1">
-                                <div className="flex-1 rounded-sm bg-gray-700" />
-                                <div className="flex-1 rounded-sm bg-gray-700" />
+                                <div className="flex-1 rounded-sm bg-[--surface-overlay]" />
+                                <div className="flex-1 rounded-sm bg-[--surface-overlay]" />
                               </div>
                             </div>
                           </div>
@@ -346,18 +346,18 @@ const Homepage = ({
 
                     {/* Eblast Icon */}
                     {project.projectType === 'eblast' && (
-                      <div className="w-20 h-14 rounded border border-gray-600 bg-gray-700 p-2.5 flex flex-col gap-1.5">
-                        <div className="h-2 rounded-full w-1/2 bg-gray-500" />
-                        <div className="flex-1 rounded bg-gray-600" />
-                        <div className="h-1.5 rounded-full w-2/3 bg-gray-600" />
+                      <div className="w-20 h-14 rounded-[--radius-sm] border border-[--border-default] bg-[--surface-overlay] p-2.5 flex flex-col gap-1.5">
+                        <div className="h-2 rounded-full w-1/2 bg-[--text-quaternary]" />
+                        <div className="flex-1 rounded-[--radius-sm] bg-[--surface-elevated]" />
+                        <div className="h-1.5 rounded-full w-2/3 bg-[--surface-elevated]" />
                       </div>
                     )}
 
                     {/* Video Cover Icon */}
                     {project.projectType === 'videoCover' && (
-                      <div className="w-20 h-14 rounded border border-gray-600 bg-gray-700 flex items-center justify-center">
-                        <div className="w-8 h-8 rounded-full bg-gray-500 flex items-center justify-center">
-                          <svg className="w-4 h-4 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+                      <div className="w-20 h-14 rounded-[--radius-sm] border border-[--border-default] bg-[--surface-overlay] flex items-center justify-center">
+                        <div className="w-8 h-8 rounded-full bg-[--surface-elevated] flex items-center justify-center">
+                          <svg className="w-4 h-4 text-[--text-primary] ml-0.5" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M8 5v14l11-7z" />
                           </svg>
                         </div>
@@ -366,9 +366,9 @@ const Homepage = ({
                   </div>
 
                   {/* Hover overlay */}
-                  <div className="absolute inset-0 bg-gray-700/0 group-hover:bg-gray-700/20 transition-colors flex items-center justify-center">
+                  <div className="absolute inset-0 bg-[--surface-overlay]/0 group-hover:bg-[--surface-overlay]/30 transition-colors flex items-center justify-center">
                     <div className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-2">
-                      <div className="px-4 py-2 bg-gray-700 border border-gray-500 rounded text-white text-sm font-medium">
+                      <div className="px-4 py-2 bg-[--surface-overlay] border border-[--border-emphasis] rounded-[--radius-md] text-[--text-primary] text-sm font-medium">
                         Open Project
                       </div>
                       {onQuickExport && (
@@ -378,7 +378,7 @@ const Homepage = ({
                             e.stopPropagation();
                             onQuickExport(project.id);
                           }}
-                          className="px-3 py-2 bg-gray-800 hover:bg-gray-600 border border-gray-600 rounded text-white text-sm font-medium transition-colors flex items-center gap-1.5"
+                          className="px-3 py-2 bg-[--surface-raised] hover:bg-[--surface-elevated] border border-[--border-default] rounded-[--radius-md] text-[--text-primary] text-sm font-medium transition-colors flex items-center gap-1.5"
                           title="Export with last-used settings"
                         >
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -413,24 +413,24 @@ const Homepage = ({
                             }}
                             onBlur={(e) => handleRenameSubmit(e, project.id)}
                             onKeyDown={(e) => handleRenameKeyDown(e, project.id)}
-                            className={`w-full text-white font-semibold bg-transparent border-b-2 outline-none py-0.5 ${
-                              renameError ? 'border-red-500' : 'border-gray-400'
+                            className={`w-full text-[--text-primary] font-semibold bg-transparent border-b-2 outline-none py-0.5 ${
+                              renameError ? 'border-red-500' : 'border-[--border-strong]'
                             }`}
                           />
                           {renameError && <p className="text-red-400 text-[10px] mt-1">{renameError}</p>}
                         </div>
                       ) : (
-                        <h3 className="text-white font-semibold mb-1 group-hover:text-gray-300 transition-colors truncate">
+                        <h3 className="text-[--text-primary] font-semibold mb-1 group-hover:text-[--text-secondary] transition-colors truncate">
                           {project.name}
                         </h3>
                       )}
-                      <div className="flex items-center gap-3 text-xs text-gray-500">
+                      <div className="flex items-center gap-3 text-xs text-[--text-quaternary]">
                         <span>{project.hasContent ? `${project.frameCount || 5} frames` : 'Empty'}</span>
                         <span>•</span>
                         <span>Updated {project.updatedAt}</span>
                       </div>
                       {project.lastEditedBy && (
-                        <div className="text-[10px] text-gray-600 mt-1.5 truncate">
+                        <div className="text-[10px] text-[--text-quaternary] mt-1.5 truncate">
                           Last edited by: {project.lastEditedBy}
                         </div>
                       )}
@@ -441,7 +441,7 @@ const Homepage = ({
                       <button
                         type="button"
                         onClick={(e) => handleMenuClick(e, project.id)}
-                        className="w-8 h-8 rounded flex items-center justify-center text-gray-500 hover:text-white hover:bg-gray-700 transition-colors opacity-0 group-hover:opacity-100"
+                        className="w-8 h-8 rounded-[--radius-sm] flex items-center justify-center text-[--text-quaternary] hover:text-[--text-primary] hover:bg-[--surface-overlay] transition-colors opacity-0 group-hover:opacity-100"
                       >
                         <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                           <circle cx="12" cy="5" r="2" />
@@ -454,14 +454,14 @@ const Homepage = ({
                       {openMenuId === project.id && (
                         <div
                           role="menu"
-                          className="absolute right-0 bottom-full mb-1 py-1 bg-gray-800 border border-gray-700 rounded shadow-xl z-50 min-w-[160px]"
+                          className="absolute right-0 bottom-full mb-1 py-1 bg-[--surface-raised] border border-[--border-default] rounded-[--radius-md] shadow-xl z-50 min-w-[160px]"
                           onClick={(e) => e.stopPropagation()}
                           onKeyDown={(e) => e.stopPropagation()}
                         >
                           <button
                             type="button"
                             onClick={(e) => handleOpenInNewTab(e, project.id)}
-                            className="w-full flex items-center gap-2.5 px-3 py-2 text-xs text-gray-300 hover:bg-gray-700 hover:text-white transition-colors text-left"
+                            className="w-full flex items-center gap-2.5 px-3 py-2 text-xs text-[--text-secondary] hover:bg-[--surface-overlay] hover:text-[--text-primary] transition-colors text-left"
                           >
                             <svg
                               className="w-3.5 h-3.5"
@@ -482,7 +482,7 @@ const Homepage = ({
                           <button
                             type="button"
                             onClick={(e) => handleStartRename(e, project)}
-                            className="w-full flex items-center gap-2.5 px-3 py-2 text-xs text-gray-300 hover:bg-gray-700 hover:text-white transition-colors text-left"
+                            className="w-full flex items-center gap-2.5 px-3 py-2 text-xs text-[--text-secondary] hover:bg-[--surface-overlay] hover:text-[--text-primary] transition-colors text-left"
                           >
                             <svg
                               className="w-3.5 h-3.5"
@@ -503,7 +503,7 @@ const Homepage = ({
                           <button
                             type="button"
                             onClick={(e) => handleDuplicate(e, project.id)}
-                            className="w-full flex items-center gap-2.5 px-3 py-2 text-xs text-gray-300 hover:bg-gray-700 hover:text-white transition-colors text-left"
+                            className="w-full flex items-center gap-2.5 px-3 py-2 text-xs text-[--text-secondary] hover:bg-[--surface-overlay] hover:text-[--text-primary] transition-colors text-left"
                           >
                             <svg
                               className="w-3.5 h-3.5"
@@ -521,7 +521,7 @@ const Homepage = ({
                             </svg>
                             Duplicate
                           </button>
-                          <div className="my-1 border-t border-gray-700" />
+                          <div className="my-1 border-t border-[--border-default]" />
                           <button
                             type="button"
                             onClick={(e) => handleDelete(e, project.id)}
@@ -557,11 +557,11 @@ const Homepage = ({
             tabIndex={0}
             onClick={onCreateNew}
             onKeyDown={(e) => e.key === 'Enter' && onCreateNew()}
-            className="group bg-gray-900/50 border-2 border-dashed border-gray-700 rounded-md overflow-hidden hover:border-gray-500 hover:bg-gray-800/30 transition-all cursor-pointer flex flex-col items-center justify-center min-h-[240px]"
+            className="group bg-[--surface-default] border-2 border-dashed border-[--border-default] rounded-[--radius-md] overflow-hidden hover:border-[--border-emphasis] hover:bg-[--surface-raised] transition-all cursor-pointer flex flex-col items-center justify-center min-h-[240px]"
           >
-            <div className="w-16 h-16 rounded-full bg-gray-800 group-hover:bg-gray-700 flex items-center justify-center transition-colors mb-3">
+            <div className="w-16 h-16 rounded-full bg-[--surface-raised] group-hover:bg-[--surface-overlay] flex items-center justify-center transition-colors mb-3">
               <svg
-                className="w-8 h-8 text-gray-600 group-hover:text-white transition-colors"
+                className="w-8 h-8 text-[--text-quaternary] group-hover:text-[--text-primary] transition-colors"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -570,7 +570,7 @@ const Homepage = ({
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
               </svg>
             </div>
-            <span className="text-gray-500 group-hover:text-white font-medium transition-colors">
+            <span className="text-[--text-tertiary] group-hover:text-[--text-primary] font-medium transition-colors">
               Create New Project
             </span>
           </div>
