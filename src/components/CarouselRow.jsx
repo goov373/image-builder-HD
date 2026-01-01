@@ -48,15 +48,18 @@ const CarouselRow = ({ carousel, designSystem, isSelected, hasAnySelection, sele
   };
 
   const handleDragEnd = (event) => {
-    setIsDraggingAny(false);
     const { active, over } = event;
     if (active.id !== over?.id && over) {
       const oldIndex = carousel.frames.findIndex(f => `frame-${f.id}` === active.id);
       const newIndex = carousel.frames.findIndex(f => `frame-${f.id}` === over.id);
       if (oldIndex !== -1 && newIndex !== -1) {
         onReorderFrames(carousel.id, oldIndex, newIndex);
+        // Deselect frame after reorder to ensure panels stay closed
+        onDeselectFrame?.();
       }
     }
+    // Reset drag state after a short delay to allow animations to complete
+    setTimeout(() => setIsDraggingAny(false), 150);
   };
 
   const frameIds = carousel.frames.map(f => `frame-${f.id}`);
