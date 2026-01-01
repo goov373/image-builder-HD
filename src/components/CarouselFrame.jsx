@@ -751,12 +751,11 @@ export const CarouselFrame = ({
   const prevPatternRef = useRef(frame.patternLayer);
   
   // Auto-open Progress tool panel when indicator is added (close others first)
-  // Skip during drag operations to prevent panels opening when cards swap
+  // Skip opening panel during drag, but always update ref to prevent false positives
   useEffect(() => {
-    if (isDraggingAny) return;
     const wasEmpty = !prevProgressRef.current || prevProgressRef.current.isHidden !== false;
     const nowHasContent = frame.progressIndicator?.isHidden === false;
-    if (wasEmpty && nowHasContent) {
+    if (!isDraggingAny && wasEmpty && nowHasContent) {
       closeAllToolPanels();
       setIsProgressEditing(true);
     }
@@ -764,12 +763,11 @@ export const CarouselFrame = ({
   }, [frame.progressIndicator, isDraggingAny]);
   
   // Auto-open Icon tool panel when icon is added (close others first)
-  // Skip during drag operations to prevent panels opening when cards swap
+  // Skip opening panel during drag, but always update ref to prevent false positives
   useEffect(() => {
-    if (isDraggingAny) return;
     const wasEmpty = !prevIconRef.current;
     const nowHasContent = !!frame.iconLayer;
-    if (wasEmpty && nowHasContent) {
+    if (!isDraggingAny && wasEmpty && nowHasContent) {
       closeAllToolPanels();
       setIsIconEditing(true);
       setInitialIconState({ ...frame.iconLayer });
@@ -778,12 +776,11 @@ export const CarouselFrame = ({
   }, [frame.iconLayer, isDraggingAny]);
   
   // Auto-open Product Image tool panel when product image is added (close others first)
-  // Skip during drag operations to prevent panels opening when cards swap
+  // Skip opening panel during drag, but always update ref to prevent false positives
   useEffect(() => {
-    if (isDraggingAny) return;
     const wasEmpty = !prevProductImageRef.current;
     const nowHasContent = !!frame.productImageLayer;
-    if (wasEmpty && nowHasContent) {
+    if (!isDraggingAny && wasEmpty && nowHasContent) {
       closeAllToolPanels();
       setIsProductImageEditing(true);
       setInitialProductImageState({ ...frame.productImageLayer });
@@ -792,12 +789,11 @@ export const CarouselFrame = ({
   }, [frame.productImageLayer, isDraggingAny]);
   
   // Auto-open Fill tool panel when fill color is added (close others first)
-  // Skip during drag operations to prevent panels opening when cards swap
+  // Skip opening panel during drag, but always update ref to prevent false positives
   useEffect(() => {
-    if (isDraggingAny) return;
     const wasEmpty = !prevFillRef.current;
     const nowHasContent = !!frame.backgroundOverride;
-    if (wasEmpty && nowHasContent) {
+    if (!isDraggingAny && wasEmpty && nowHasContent) {
       closeAllToolPanels();
       setIsFillEditing(true);
       setInitialFillState({
@@ -810,12 +806,11 @@ export const CarouselFrame = ({
   }, [frame.backgroundOverride, isDraggingAny]);
   
   // Auto-open Image tool panel when background photo is added (close others first)
-  // Skip during drag operations to prevent panels opening when cards swap
+  // Skip opening panel during drag, but always update ref to prevent false positives
   useEffect(() => {
-    if (isDraggingAny) return;
     const wasEmpty = !prevImageRef.current;
     const nowHasContent = !!frame.imageLayer;
-    if (wasEmpty && nowHasContent) {
+    if (!isDraggingAny && wasEmpty && nowHasContent) {
       closeAllToolPanels();
       handleImageEditModeChange(true);
     }
@@ -823,12 +818,11 @@ export const CarouselFrame = ({
   }, [frame.imageLayer, isDraggingAny]);
   
   // Auto-open Pattern tool panel when pattern is added (close others first)
-  // Skip during drag operations to prevent panels opening when cards swap
+  // Skip opening panel during drag, but always update ref to prevent false positives
   useEffect(() => {
-    if (isDraggingAny) return;
     const wasEmpty = !prevPatternRef.current;
     const nowHasContent = !!frame.patternLayer;
-    if (wasEmpty && nowHasContent) {
+    if (!isDraggingAny && wasEmpty && nowHasContent) {
       closeAllToolPanels();
       setIsPatternEditing(true);
       setInitialPatternState({ ...frame.patternLayer });
