@@ -1387,7 +1387,7 @@ const DesignSystemPanel = ({
                                   );
                                 }
                               }}
-                              className={`relative group aspect-square rounded overflow-hidden bg-[--surface-raised] ring-1 ring-[--border-default] hover:ring-purple-400 transition-colors ${hasFrameSelected ? 'cursor-pointer' : 'cursor-default opacity-50'}`}
+                              className={`relative group aspect-square rounded overflow-hidden bg-[--surface-raised] ring-1 ring-[--border-default] hover:ring-[--border-strong] transition-colors ${hasFrameSelected ? 'cursor-pointer' : 'cursor-default opacity-50'}`}
                               title={
                                 hasFrameSelected
                                   ? 'Click to add product image to selected frame'
@@ -1710,7 +1710,7 @@ const DesignSystemPanel = ({
                           <button
                             key={pattern.file}
                             type="button"
-                            className={`group relative aspect-square rounded overflow-hidden border border-[--border-default] hover:border-purple-500 transition-all ${!selectedCarouselId && !selectedEblastId ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            className={`group relative aspect-square rounded overflow-hidden border border-[--border-default] hover:border-[--border-strong] transition-all ${!selectedCarouselId && !selectedEblastId ? 'opacity-50 cursor-not-allowed' : ''}`}
                             style={{
                               backgroundImage: `url(/patterns/${pattern.file})`,
                               backgroundSize: 'cover',
@@ -1776,7 +1776,7 @@ const DesignSystemPanel = ({
                           <button
                             key={pattern.file}
                             type="button"
-                            className={`group relative aspect-square rounded overflow-hidden border border-[--border-default] hover:border-purple-500 transition-all ${!selectedCarouselId && !selectedEblastId ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            className={`group relative aspect-square rounded overflow-hidden border border-[--border-default] hover:border-[--border-strong] transition-all ${!selectedCarouselId && !selectedEblastId ? 'opacity-50 cursor-not-allowed' : ''}`}
                             style={{
                               backgroundImage: `url(/patterns/${pattern.file})`,
                               backgroundSize: 'cover',
@@ -1832,7 +1832,7 @@ const DesignSystemPanel = ({
                           <button
                             key={pattern.file}
                             type="button"
-                            className={`group relative aspect-square rounded overflow-hidden border border-[--border-default] hover:border-purple-500 transition-all ${!selectedCarouselId && !selectedEblastId ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            className={`group relative aspect-square rounded overflow-hidden border border-[--border-default] hover:border-[--border-strong] transition-all ${!selectedCarouselId && !selectedEblastId ? 'opacity-50 cursor-not-allowed' : ''}`}
                             style={{
                               backgroundImage: `url(/patterns/${pattern.file})`,
                               backgroundSize: 'cover',

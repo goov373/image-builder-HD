@@ -49,7 +49,7 @@ const BrandIconsSection = ({
               <button
                 key={icon.id}
                 type="button"
-                className={`group relative aspect-square rounded-[--radius-md] overflow-hidden bg-[--surface-raised] border border-[--border-default] hover:border-purple-500 hover:bg-[--surface-overlay] transition-all flex items-center justify-center ${hasFrameSelected ? 'cursor-pointer' : 'cursor-default opacity-60'}`}
+                className={`group relative aspect-square rounded-[--radius-md] overflow-hidden bg-[--surface-raised] border border-[--border-default] hover:border-[--border-strong] hover:bg-[--surface-overlay] transition-all flex items-center justify-center ${hasFrameSelected ? 'cursor-pointer' : 'cursor-default opacity-60'}`}
                 title={hasFrameSelected ? `Click to add ${icon.name} to frame` : `${icon.name} - Select a frame first`}
                 disabled={!hasFrameSelected}
                 onClick={() => {
