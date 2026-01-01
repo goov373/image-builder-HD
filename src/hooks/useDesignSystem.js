@@ -2,8 +2,9 @@ import { useState, useEffect } from 'react';
 import { logger } from '../utils';
 
 // HelloData brand colors - these are the required defaults
-const HELLODATA_PRIMARY = '#6466e9';
-const HELLODATA_ACCENT = '#eef1f9';
+// (Retained for reference but not currently used in code)
+const _HELLODATA_PRIMARY = '#6466e9';
+const _HELLODATA_ACCENT = '#eef1f9';
 const STORAGE_KEY = 'carousel-tool-design-system-v8';
 
 // Load from localStorage or use initial data
@@ -16,7 +17,9 @@ function loadFromStorage(initialData) {
         localStorage.removeItem(key);
       }
     });
-  } catch (e) {}
+  } catch (_e) {
+    // Silently fail - localStorage may be unavailable or blocked
+  }
 
   // Always return fresh defaults - no caching issues
   return initialData;

@@ -15,10 +15,10 @@ const ProductImageLayer = ({
   productImageLayer,
   frameWidth,
   frameHeight,
-  isEditing = false,
+  isEditing: _isEditing = false,
   position = 'top', // 'top' = product above text, 'bottom' = product below text
   textContent = null, // { headline, subhead } for calculating text height
-  isRowSelected = false, // Show faint dotted border when row is selected
+  isRowSelected: _isRowSelected = false, // Show faint dotted border when row is selected
   isFrameSelected = false, // Show solid border when frame is selected
   isSelected = false, // When this layer is actively selected (clicked)
   onUpdateLayer = null, // Callback to update layer properties
@@ -30,9 +30,8 @@ const ProductImageLayer = ({
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const containerRef = useRef(null);
 
-  if (!productImageLayer) return null;
-
-  const { src, scale = 1, borderRadius = 8, offsetX = 0, offsetY = 0 } = productImageLayer;
+  // Extract values from productImageLayer (or defaults if null)
+  const { src = null, scale = 1, borderRadius = 8, offsetX = 0, offsetY = 0 } = productImageLayer || {};
 
   // Handle mouse down to start dragging
   const handleMouseDown = (e) => {
@@ -46,6 +45,7 @@ const ProductImageLayer = ({
   };
 
   // Handle mouse move while dragging
+  // IMPORTANT: This hook must be called unconditionally (before any early returns)
   useEffect(() => {
     if (!isDragging) return;
 
@@ -74,7 +74,11 @@ const ProductImageLayer = ({
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [isDragging, dragStart, dragOffset, onUpdateLayer]);
+  }, [isDragging, dragStart, dragOffset, onUpdateLayer, onDragStateChange]);
+
+  // Early return AFTER all hooks are called
+  if (!productImageLayer) return null;
+
   const pos = productImageLayer.position || position;
 
   // Horizontal padding (matches text blocks - about 7.5% on each side)

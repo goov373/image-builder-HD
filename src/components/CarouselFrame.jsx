@@ -9,15 +9,7 @@ import ImageLayer from './ImageLayer';
 import PatternLayer from './PatternLayer';
 import ProductImageLayer from './ProductImageLayer';
 import IconLayer from './IconLayer';
-import { ColorDropdown } from './ui';
-import {
-  IconToolPanel,
-  ProgressToolPanel,
-  FillToolPanel,
-  PatternToolPanel,
-  ImageToolPanel,
-  ProductImageToolPanel,
-} from './carousel/tool-panels';
+import { IconToolPanel, ProgressToolPanel } from './carousel/tool-panels';
 
 /**
  * SortableLayerRow Component

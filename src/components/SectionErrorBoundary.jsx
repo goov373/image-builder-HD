@@ -22,6 +22,7 @@ class SectionErrorBoundary extends React.Component {
 
   componentDidCatch(error, errorInfo) {
     // Log error with section context
+    // eslint-disable-next-line no-console
     console.error(`[${this.props.name || 'Section'}] Error:`, error, errorInfo);
 
     if (this.props.onError) {

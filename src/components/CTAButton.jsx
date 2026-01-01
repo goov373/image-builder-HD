@@ -6,13 +6,13 @@ import { useState } from 'react';
  */
 const CTAButton = ({
   text = 'Learn More →',
-  url = '#',
+  url: _url = '#',
   backgroundColor,
   textColor = '#ffffff',
   isEditable = false,
   isSelected = false,
   onChange,
-  onUrlChange,
+  onUrlChange: _onUrlChange,
   size = 'medium', // small, medium, large
   variant = 'filled', // filled, outline, ghost
   borderRadius = 'rounded-lg',

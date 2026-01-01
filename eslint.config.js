@@ -42,10 +42,18 @@ export default [
         MouseEvent: 'readonly',
         KeyboardEvent: 'readonly',
         Event: 'readonly',
+        alert: 'readonly',
+        confirm: 'readonly',
+        prompt: 'readonly',
+        getComputedStyle: 'readonly',
+        requestAnimationFrame: 'readonly',
+        cancelAnimationFrame: 'readonly',
         // Node/Build globals
         process: 'readonly',
         module: 'readonly',
         __dirname: 'readonly',
+        // Modern browser globals
+        structuredClone: 'readonly',
       },
     },
     settings: {
@@ -54,8 +62,9 @@ export default [
       },
     },
     rules: {
-      // React rules
-      'react/jsx-uses-react': 'off', // Not needed with React 17+
+      // React rules - mark JSX components as "used" so no-unused-vars doesn't flag them
+      'react/jsx-uses-react': 'error', // Mark React as used when JSX is present
+      'react/jsx-uses-vars': 'error', // Mark component imports as used when in JSX
       'react/react-in-jsx-scope': 'off', // Not needed with React 17+
       'react/prop-types': 'off', // Using TypeScript for type checking
       'react/jsx-key': 'warn',
@@ -93,6 +102,10 @@ export default [
       'vite.config.js',
       'tailwind.config.js',
       'postcss.config.js',
+      // TypeScript files - ESLint needs TypeScript parser for these
+      // These files are for IDE type hints and are handled by TypeScript compiler
+      '**/*.ts',
+      '**/*.tsx',
     ],
   },
 ];

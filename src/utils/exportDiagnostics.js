@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /**
  * Export Panel Diagnostic Tests
  * Run these in browser console to diagnose export issues
@@ -16,6 +17,7 @@
  *   - window.exportDiag.testTextRendering()
  *   - window.exportDiag.runAllTests()
  */
+/* global html2canvas */
 
 const exportDiagnostics = {
   /**
@@ -117,7 +119,7 @@ const exportDiagnostics = {
     console.group('🔤 Font Loading Check');
 
     try {
-      const ready = await document.fonts.ready;
+      await document.fonts.ready;
       console.log('Font loading status: ready');
       console.log(`Loaded fonts: ${document.fonts.size}`);
 
@@ -173,7 +175,7 @@ const exportDiagnostics = {
       const canvas = await html2canvas(frame, {
         scale: 2,
         logging: true,
-        onclone: (doc, el) => {
+        onclone: () => {
           console.log('Cloned element for rendering');
         },
       });

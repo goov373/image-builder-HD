@@ -4,6 +4,7 @@ const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 if (!supabaseUrl || !supabaseAnonKey) {
+  // eslint-disable-next-line no-console
   console.warn(
     'Supabase credentials not found. Running in local-only mode.\n' +
       'To enable cloud features, add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to your .env file.'

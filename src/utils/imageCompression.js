@@ -8,6 +8,7 @@
  * - Quality optimization for crisp output
  * - Maintains aspect ratio
  */
+import { logger } from './index';
 
 // Compression presets for different use cases
 export const COMPRESSION_PRESETS = {
@@ -220,7 +221,7 @@ export const compressImages = async (files, options = {}, onProgress = null) => 
       const result = await compressImage(file, options);
       results.push(result);
     } catch (error) {
-      console.error(`Failed to compress ${file.name}:`, error);
+      logger.error(`Failed to compress ${file.name}:`, error);
       // Include original file on error
       results.push({
         file,

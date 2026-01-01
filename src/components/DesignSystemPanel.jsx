@@ -12,7 +12,7 @@ import {
   deleteDoc,
 } from '../lib/storage';
 import { isSupabaseConfigured } from '../lib/supabase';
-import { getAllGradientCSSValues, allGradients, solidColors, brandIcons } from '../data';
+import { getAllGradientCSSValues, allGradients } from '../data';
 import { LIMITS } from '../config';
 import ImageUploader from './design-panel/ImageUploader';
 import ImageGrid from './design-panel/ImageGrid';
@@ -43,9 +43,9 @@ const DesignSystemPanel = ({
   onUpdateProgressIndicator,
   // Pattern layer handlers (carousel)
   onAddPatternToFrame,
-  onUpdatePatternLayer,
-  onRemovePatternFromFrame,
-  onSetRowStretchedPattern,
+  onUpdatePatternLayer: _onUpdatePatternLayer,
+  onRemovePatternFromFrame: _onRemovePatternFromFrame,
+  onSetRowStretchedPattern: _onSetRowStretchedPattern,
   // Control which section to expand when panel opens
   expandSectionOnOpen,
   // Eblast-specific props
@@ -57,22 +57,22 @@ const DesignSystemPanel = ({
   onAddImageToSection,
   // Pattern layer handlers (eblast)
   onAddPatternToSection,
-  onUpdatePatternLayerEblast,
-  onRemovePatternFromSection,
-  onSetStretchedPattern,
+  onUpdatePatternLayerEblast: _onUpdatePatternLayerEblast,
+  onRemovePatternFromSection: _onRemovePatternFromSection,
+  onSetStretchedPattern: _onSetStretchedPattern,
   // Video Cover-specific props
   selectedVideoCoverId,
   onSetVideoCoverBackground,
-  onAddVideoCoverPattern,
-  onUpdateVideoCoverPattern,
-  onRemoveVideoCoverPattern,
+  onAddVideoCoverPattern: _onAddVideoCoverPattern,
+  onUpdateVideoCoverPattern: _onUpdateVideoCoverPattern,
+  onRemoveVideoCoverPattern: _onRemoveVideoCoverPattern,
   onAddVideoCoverImage,
   // Single Image-specific props
   selectedSingleImageId,
   onSetSingleImageBackgroundGradient,
-  onAddSingleImagePattern,
-  onUpdateSingleImagePattern,
-  onRemoveSingleImagePattern,
+  onAddSingleImagePattern: _onAddSingleImagePattern,
+  onUpdateSingleImagePattern: _onUpdateSingleImagePattern,
+  onRemoveSingleImagePattern: _onRemoveSingleImagePattern,
 }) => {
   // Normalize selection based on project type
   const isCarousel = projectType === 'carousel' || !projectType;

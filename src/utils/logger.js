@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /**
  * Logger Utility
  * Provides environment-aware logging that silences non-critical logs in production.

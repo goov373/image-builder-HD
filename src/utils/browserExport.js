@@ -22,7 +22,8 @@
  *   → Uses actual browser rendering, preserving exact appearance
  */
 
-import { toPng, toJpeg, toBlob, toCanvas, toSvg } from 'html-to-image';
+import { toPng, toJpeg, toBlob, toCanvas } from 'html-to-image';
+import { logger } from './index';
 
 /**
  * Export configuration defaults
@@ -73,7 +74,7 @@ const ensureFontsLoaded = async () => {
     // Small delay to ensure fonts are rendered
     await new Promise((resolve) => setTimeout(resolve, 50));
   } catch (e) {
-    console.warn('Font loading check failed:', e);
+    logger.warn('Font loading check failed:', e);
   }
 };
 
@@ -97,7 +98,7 @@ export const exportToPng = async (element, options = {}) => {
   try {
     return await toPng(element, config);
   } catch (error) {
-    console.error('PNG export failed:', error);
+    logger.error('PNG export failed:', error);
     // Retry with minimal options
     return await toPng(element, { pixelRatio: config.pixelRatio });
   }
@@ -125,7 +126,7 @@ export const exportToJpeg = async (element, options = {}) => {
   try {
     return await toJpeg(element, config);
   } catch (error) {
-    console.error('JPEG export failed:', error);
+    logger.error('JPEG export failed:', error);
     return await toJpeg(element, {
       pixelRatio: config.pixelRatio,
       backgroundColor: config.backgroundColor,
