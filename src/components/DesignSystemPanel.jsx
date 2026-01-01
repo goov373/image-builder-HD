@@ -632,7 +632,7 @@ const DesignSystemPanel = ({
       >
         {/* Fixed Header */}
         <div
-          className="flex-shrink-0 px-4 border-b border-gray-800 flex items-center justify-between"
+          className="flex-shrink-0 px-4 border-b border-[--border-default] flex items-center justify-between"
           style={{ height: 64 }}
         >
           <h2 className="text-sm font-semibold text-white">Design & Assets</h2>
@@ -644,18 +644,18 @@ const DesignSystemPanel = ({
         </div>
 
         {/* Fixed Tab Navigation */}
-        <div className="flex-shrink-0 flex border-b border-gray-800">
+        <div className="flex-shrink-0 flex border-b border-[--border-default]">
           <button
             type="button"
             onClick={() => setActiveTab('design')}
-            className={`flex-1 py-3 text-xs font-medium transition-colors ${activeTab === 'design' ? 'text-white border-b-2 border-gray-400' : 'text-gray-500 hover:text-gray-300'}`}
+            className={`flex-1 py-3 text-xs font-medium transition-colors ${activeTab === 'design' ? 'text-white border-b-2 border-[--border-strong]' : 'text-gray-500 hover:text-gray-300'}`}
           >
             Design
           </button>
           <button
             type="button"
             onClick={() => setActiveTab('assets')}
-            className={`flex-1 py-3 text-xs font-medium transition-colors ${activeTab === 'assets' ? 'text-white border-b-2 border-gray-400' : 'text-gray-500 hover:text-gray-300'}`}
+            className={`flex-1 py-3 text-xs font-medium transition-colors ${activeTab === 'assets' ? 'text-white border-b-2 border-[--border-strong]' : 'text-gray-500 hover:text-gray-300'}`}
           >
             Assets
             {uploadedFiles.length > 0 && (
@@ -669,7 +669,7 @@ const DesignSystemPanel = ({
           {activeTab === 'assets' ? (
             <>
               {/* Upload Section - Using extracted ImageUploader component */}
-              <div className="border-b border-gray-800">
+              <div className="border-b border-[--border-default]">
                 <ImageUploader
                   onUpload={handleImageUpload}
                   onDrop={handleDrop}
@@ -683,7 +683,7 @@ const DesignSystemPanel = ({
               </div>
 
               {/* File Browser - Collapsible Your Images section */}
-              <div className="border-b border-gray-800">
+              <div className="border-b border-[--border-default]">
                 <button
                   type="button"
                   onClick={() => toggleSection('yourImages')}
@@ -713,7 +713,7 @@ const DesignSystemPanel = ({
               </div>
 
               {/* Product Imagery Upload Section */}
-              <div className="p-4 border-t border-gray-800">
+              <div className="p-4 border-t border-[--border-default]">
                 <div className="flex items-center justify-between mb-3">
                   <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Upload Product Images</h3>
                 </div>
@@ -754,7 +754,7 @@ const DesignSystemPanel = ({
               </div>
 
               {/* Your Product Images - Collapsible */}
-              <div className="border-t border-gray-800">
+              <div className="border-t border-[--border-default]">
                 <button
                   type="button"
                   onClick={() => toggleSection('yourProductImages')}
@@ -829,7 +829,7 @@ const DesignSystemPanel = ({
               </div>
 
               {/* Upload Docs Section */}
-              <div className="p-4 border-t border-gray-800">
+              <div className="p-4 border-t border-[--border-default]">
                 <div className="flex items-center justify-between mb-3">
                   <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Upload Docs</h3>
                   <span className="text-[10px] text-gray-500">
@@ -873,7 +873,7 @@ const DesignSystemPanel = ({
               </div>
 
               {/* Your Docs Browser - Collapsible */}
-              <div className="border-t border-gray-800">
+              <div className="border-t border-[--border-default]">
                 <button
                   type="button"
                   onClick={() => toggleSection('yourDocs')}
@@ -983,7 +983,7 @@ const DesignSystemPanel = ({
               {/* Dynamic Dropdown Sections - rendered in order based on sectionOrder */}
               <div className="flex flex-col">
                 {/* Page Indicators Section */}
-                <div className="border-b border-gray-800" style={{ order: sectionOrder.indexOf('pageIndicators') }}>
+                <div className="border-b border-[--border-default]" style={{ order: sectionOrder.indexOf('pageIndicators') }}>
                   <button
                     type="button"
                     onClick={() => toggleSection('pageIndicators')}
@@ -1035,7 +1035,7 @@ const DesignSystemPanel = ({
                               className={`group relative p-3 rounded border transition-all ${
                                 hasFrameSelected
                                   ? isSelected
-                                    ? 'border-gray-400 bg-gray-600/30'
+                                    ? 'border-[--border-strong] bg-gray-600/30'
                                     : 'border-gray-700 hover:border-gray-500 bg-gray-800/50'
                                   : 'border-gray-700/50 opacity-50 cursor-not-allowed'
                               }`}
@@ -1214,7 +1214,7 @@ const DesignSystemPanel = ({
                 </div>
 
                 {/* Backgrounds Section */}
-                <div className="border-b border-gray-800" style={{ order: sectionOrder.indexOf('backgrounds') }}>
+                <div className="border-b border-[--border-default]" style={{ order: sectionOrder.indexOf('backgrounds') }}>
                   <button
                     type="button"
                     onClick={() => toggleSection('backgrounds')}
@@ -1316,7 +1316,7 @@ const DesignSystemPanel = ({
                 </div>
 
                 {/* Product Imagery Section - Display only, upload in Assets tab */}
-                <div className="border-b border-gray-800" style={{ order: sectionOrder.indexOf('productImagery') }}>
+                <div className="border-b border-[--border-default]" style={{ order: sectionOrder.indexOf('productImagery') }}>
                   <button
                     type="button"
                     onClick={() => toggleSection('productImagery')}
@@ -1422,7 +1422,7 @@ const DesignSystemPanel = ({
                 </div>
 
                 {/* Photography Section - Displays images from Assets tab */}
-                <div className="border-b border-gray-800" style={{ order: sectionOrder.indexOf('photography') }}>
+                <div className="border-b border-[--border-default]" style={{ order: sectionOrder.indexOf('photography') }}>
                   <button
                     type="button"
                     onClick={() => toggleSection('photography')}
@@ -1640,7 +1640,7 @@ const DesignSystemPanel = ({
                 </div>
 
                 {/* Brand Patterns Section */}
-                <div className="border-b border-gray-800" style={{ order: sectionOrder.indexOf('patterns') }}>
+                <div className="border-b border-[--border-default]" style={{ order: sectionOrder.indexOf('patterns') }}>
                   <button
                     type="button"
                     onClick={() => toggleSection('patterns')}

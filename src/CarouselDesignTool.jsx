@@ -443,7 +443,7 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
 
             {/* Decorative Diagonal Lines Pattern - Separate from panel tabs, only moves when sidebar opens/closes */}
             <div
-              className="fixed top-0 h-[56px] w-72 z-30 border-r border-gray-800 pointer-events-none"
+              className="fixed top-0 h-[56px] w-72 z-30 border-r border-[--border-default] pointer-events-none"
               style={{
                 left: activePanel === 'design' || activePanel === 'export' ? 64 : -224,
                 transition: 'left 0.3s ease-out',
@@ -451,8 +451,8 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
               -45deg,
               transparent,
               transparent 10px,
-              rgba(100, 102, 233, 0.1) 10px,
-              rgba(100, 102, 233, 0.1) 11px
+              rgba(255, 255, 255, 0.03) 10px,
+              rgba(255, 255, 255, 0.03) 11px
             )`,
               }}
             />
