@@ -23,6 +23,10 @@ const CarouselRow = ({ carousel, designSystem, isSelected, hasAnySelection, sele
   const totalFrames = carousel.frames.length;
   const isFaded = hasAnySelection && !isSelected;
   
+  // Get card dimensions for consistent add-button alignment
+  const cardWidth = frameSizes[carousel.frameSize]?.width || 192;
+  const cardHeight = frameSizes[carousel.frameSize]?.height || 240;
+  
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
@@ -111,7 +115,7 @@ const CarouselRow = ({ carousel, designSystem, isSelected, hasAnySelection, sele
                     activeTextField={isSelected && selectedFrameId === frame.id ? activeTextField : null}
                     onActivateTextField={onActivateTextField}
                     isRowSelected={isSelected}
-                    cardWidth={frameSizes[carousel.frameSize]?.width || 192}
+                    cardWidth={cardWidth}
                     onUpdateImageLayer={onUpdateImageLayer}
                     onRemoveImageFromFrame={onRemoveImageFromFrame}
                     onUpdateFillLayer={onUpdateFillLayer}
@@ -134,10 +138,10 @@ const CarouselRow = ({ carousel, designSystem, isSelected, hasAnySelection, sele
                     nextFrameImage={index < totalFrames - 1 ? carousel.frames[index + 1]?.imageLayer : null}
                   />
               
-                  {/* Add Button After Each Frame */}
+                  {/* Add Button After Each Frame - Fixed height to align with card center */}
                   <div 
-                    className={`flex items-center justify-center self-stretch transition-all duration-150 ease-out ${isSelected ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
-                    style={{ width: isSelected ? 32 : 0, paddingTop: 24, overflow: 'hidden' }}
+                    className={`flex items-center justify-center transition-all duration-150 ease-out ${isSelected ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+                    style={{ width: isSelected ? 32 : 0, height: cardHeight, overflow: 'hidden' }}
                   >
                     <button
                       type="button"
