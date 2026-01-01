@@ -987,7 +987,7 @@ const DesignSystemPanel = ({
                       )}
                     </div>
                     {/* Label */}
-                    <span className={`text-[10px] font-medium block text-center ${isSelected ? 'text-purple-300' : 'text-gray-400 group-hover:text-white'}`}>
+                    <span className={`text-[10px] font-medium block text-center ${isSelected ? 'text-white' : 'text-gray-400 group-hover:text-white'}`}>
                       {indicator.name}
                     </span>
                   </button>
