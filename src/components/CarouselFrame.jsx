@@ -1592,7 +1592,7 @@ export const CarouselFrame = ({
           <button
             type="button"
             onClick={handleDoneEdit}
-            className="bg-orange-500/90 hover:bg-orange-500 rounded-lg px-2.5 py-1.5 text-white text-[10px] font-medium transition-colors"
+            className="bg-gray-600/90 hover:bg-gray-500 rounded-lg px-2.5 py-1.5 text-white text-[10px] font-medium transition-colors"
             title="Done editing"
           >
             Done
@@ -1708,7 +1708,7 @@ export const CarouselFrame = ({
           <button
             type="button"
             onClick={handleDoneFillEdit}
-            className="bg-orange-500/90 hover:bg-orange-500 rounded-lg px-2.5 py-1.5 text-white text-[10px] font-medium transition-colors"
+            className="bg-gray-600/90 hover:bg-gray-500 rounded-lg px-2.5 py-1.5 text-white text-[10px] font-medium transition-colors"
             title="Done editing"
           >
             Done
@@ -1824,7 +1824,7 @@ export const CarouselFrame = ({
           <button
             type="button"
             onClick={handleDonePatternEdit}
-            className="bg-orange-500/90 hover:bg-orange-500 rounded-lg px-2.5 py-1.5 text-white text-[10px] font-medium transition-colors"
+            className="bg-gray-600/90 hover:bg-gray-500 rounded-lg px-2.5 py-1.5 text-white text-[10px] font-medium transition-colors"
             title="Done editing"
           >
             Done
@@ -1938,7 +1938,7 @@ export const CarouselFrame = ({
           <button
             type="button"
             onClick={handleDoneProductImageEdit}
-            className="bg-orange-500/90 hover:bg-orange-500 rounded-lg px-2.5 py-1.5 text-white text-[10px] font-medium transition-colors"
+            className="bg-gray-600/90 hover:bg-gray-500 rounded-lg px-2.5 py-1.5 text-white text-[10px] font-medium transition-colors"
             title="Done editing"
           >
             Done
