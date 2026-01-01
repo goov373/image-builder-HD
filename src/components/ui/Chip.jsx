@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 /**
  * Chip Component
  * For swatches, grid items, toggles, and small interactive elements
@@ -59,5 +61,31 @@ export const ChipGrid = ({ columns = 4, gap = 'gap-2', children, className = '' 
     {children}
   </div>
 );
+
+Chip.propTypes = {
+  /** Selected/active state */
+  selected: PropTypes.bool,
+  /** Disabled state */
+  disabled: PropTypes.bool,
+  /** Size variant */
+  size: PropTypes.oneOf(['sm', 'md', 'lg']),
+  /** Chip content */
+  children: PropTypes.node.isRequired,
+  /** Additional CSS classes */
+  className: PropTypes.string,
+  /** Click handler */
+  onClick: PropTypes.func,
+};
+
+ChipGrid.propTypes = {
+  /** Number of columns */
+  columns: PropTypes.number,
+  /** Gap class (Tailwind) */
+  gap: PropTypes.string,
+  /** Grid content */
+  children: PropTypes.node.isRequired,
+  /** Additional CSS classes */
+  className: PropTypes.string,
+};
 
 export default Chip;

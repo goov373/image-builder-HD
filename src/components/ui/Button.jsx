@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 /**
  * Button Component
  * Universal button primitive with variants and sizes
@@ -81,6 +83,23 @@ const Button = ({
       {children}
     </button>
   );
+};
+
+Button.propTypes = {
+  /** Button style variant */
+  variant: PropTypes.oneOf(['primary', 'secondary', 'ghost', 'danger']),
+  /** Button size */
+  size: PropTypes.oneOf(['xs', 'sm', 'md', 'lg']),
+  /** Disabled state */
+  disabled: PropTypes.bool,
+  /** Active/pressed state */
+  active: PropTypes.bool,
+  /** Button content */
+  children: PropTypes.node.isRequired,
+  /** Additional CSS classes */
+  className: PropTypes.string,
+  /** Click handler */
+  onClick: PropTypes.func,
 };
 
 export default Button;

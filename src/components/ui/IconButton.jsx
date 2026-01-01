@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 /**
  * IconButton Component
  * Square icon-only button for toolbars and actions
@@ -92,6 +94,27 @@ const IconButton = ({
       {children}
     </button>
   );
+};
+
+IconButton.propTypes = {
+  /** Button size */
+  size: PropTypes.oneOf(['xs', 'sm', 'md', 'lg', 'xl']),
+  /** Style variant */
+  variant: PropTypes.oneOf(['ghost', 'subtle', 'danger']),
+  /** Disabled state */
+  disabled: PropTypes.bool,
+  /** Active/pressed state */
+  active: PropTypes.bool,
+  /** Accessible label (for screen readers) */
+  'aria-label': PropTypes.string,
+  /** Tooltip text */
+  title: PropTypes.string,
+  /** Icon content */
+  children: PropTypes.node.isRequired,
+  /** Additional CSS classes */
+  className: PropTypes.string,
+  /** Click handler */
+  onClick: PropTypes.func,
 };
 
 export default IconButton;
