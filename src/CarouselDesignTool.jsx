@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, Suspense, lazy } from 'react';
 
 // Import data from centralized location
 import { defaultDesignSystem, initialCarousels, initialEblasts, initialVideoCovers, initialSingleImages } from './data';
@@ -18,12 +18,9 @@ import {
 // Import context providers
 import { AppProvider, HistoryProvider } from './context';
 
-// Import components
+// Import components (core always loaded)
 import {
-  AccountPanel,
   Sidebar,
-  DesignSystemPanel,
-  ExportPanel,
   Homepage,
   TabBar,
   EditorView,
@@ -31,6 +28,21 @@ import {
   SectionErrorBoundary,
 } from './components';
 import KeyboardShortcutsModal from './components/KeyboardShortcutsModal';
+
+// Lazy-loaded panels (code splitting)
+const AccountPanel = lazy(() => import('./components/AccountPanel'));
+const DesignSystemPanel = lazy(() => import('./components/DesignSystemPanel'));
+const ExportPanel = lazy(() => import('./components/ExportPanel'));
+
+// Loading fallback for lazy panels
+const PanelLoading = () => (
+  <div className="flex items-center justify-center h-48 text-gray-500">
+    <svg className="w-6 h-6 animate-spin" fill="none" viewBox="0 0 24 24">
+      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+    </svg>
+  </div>
+);
 
 // Initial project tabs
 const INITIAL_TABS = [
@@ -445,9 +457,10 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
               }}
             />
 
-            {/* Panels - wrapped in error boundaries for stability */}
-            <SectionErrorBoundary name="Design Panel">
-              <DesignSystemPanel
+            {/* Panels - wrapped in Suspense and error boundaries for stability */}
+            <Suspense fallback={<PanelLoading />}>
+              <SectionErrorBoundary name="Design Panel">
+                <DesignSystemPanel
                 designSystem={designSystem}
                 onUpdate={setDesignSystem}
                 onClose={() => setActivePanel(null)}
@@ -492,10 +505,12 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
                 onAddSingleImagePattern={singleImages.handleAddPattern}
                 onUpdateSingleImagePattern={singleImages.handleUpdatePattern}
                 onRemoveSingleImagePattern={singleImages.handleRemovePattern}
-              />
-            </SectionErrorBoundary>
-            <SectionErrorBoundary name="Export Panel">
-              <ExportPanel
+                />
+              </SectionErrorBoundary>
+            </Suspense>
+            <Suspense fallback={<PanelLoading />}>
+              <SectionErrorBoundary name="Export Panel">
+                <ExportPanel
                 onClose={() => setActivePanel(null)}
                 isOpen={activePanel === 'export'}
                 carousels={carousels.carousels}
@@ -503,16 +518,19 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
                 videoCovers={videoCovers.videoCovers}
                 singleImages={singleImages.singleImages}
                 projectType={currentProjectType}
-              />
-            </SectionErrorBoundary>
-            <SectionErrorBoundary name="Account Panel">
-              <AccountPanel
+                />
+              </SectionErrorBoundary>
+            </Suspense>
+            <Suspense fallback={<PanelLoading />}>
+              <SectionErrorBoundary name="Account Panel">
+                <AccountPanel
                 onClose={() => setIsAccountOpen(false)}
                 isOpen={isAccountOpen && tabs.currentView === 'home'}
                 onSignOut={onSignOut}
-                user={user}
-              />
-            </SectionErrorBoundary>
+                  user={user}
+                />
+              </SectionErrorBoundary>
+            </Suspense>
 
             {/* Homepage or Editor View */}
             {tabs.currentView === 'home' ? (

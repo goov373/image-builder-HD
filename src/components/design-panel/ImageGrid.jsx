@@ -1,16 +1,18 @@
+import { memo } from 'react';
 import { formatFileSize } from '../../utils';
 
 /**
  * ImageGrid Component
  * Displays uploaded images in a grid with metadata and actions
+ * Memoized to prevent re-renders when parent state changes
  */
-const ImageGrid = ({
+const ImageGrid = memo(function ImageGrid({
   images,
   isLoading,
   onRemove,
   emptyMessage = 'No images uploaded yet',
   emptySubtext = 'Upload images to use in your designs',
-}) => {
+}) {
   if (isLoading) {
     return (
       <div className="p-4">
@@ -67,13 +69,14 @@ const ImageGrid = ({
       </div>
     </div>
   );
-};
+});
 
 /**
  * ImageCard Component
  * Individual image display card with header/footer metadata
+ * Memoized to prevent re-renders when sibling cards change
  */
-const ImageCard = ({ file, onRemove }) => {
+const ImageCard = memo(function ImageCard({ file, onRemove }) {
   return (
     <div className="bg-gray-800 rounded-lg overflow-hidden hover:ring-2 hover:ring-gray-400 transition-all">
       {/* Header bar */}
@@ -135,7 +138,7 @@ const ImageCard = ({ file, onRemove }) => {
       </div>
     </div>
   );
-};
+});
 
 export { ImageCard };
 export default ImageGrid;

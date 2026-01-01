@@ -4,13 +4,12 @@
 export { default as ErrorBoundary } from './ErrorBoundary';
 export { default as SectionErrorBoundary } from './SectionErrorBoundary';
 
-export { default as AccountPanel } from './AccountPanel';
+// Note: AccountPanel, DesignSystemPanel, ExportPanel are lazy-loaded in CarouselDesignTool
+
 export { default as FormatButton } from './FormatButton';
 export { default as EditableTextField } from './EditableTextField';
 export { LayoutBottomStack, LayoutCenterDrama, LayoutEditorialLeft } from './Layouts';
 export { default as Sidebar } from './Sidebar';
-export { default as DesignSystemPanel } from './DesignSystemPanel';
-export { default as ExportPanel } from './ExportPanel';
 export { default as Homepage } from './Homepage';
 export { default as ProjectHeader } from './ProjectHeader';
 export { default as NewProjectView } from './NewProjectView';
