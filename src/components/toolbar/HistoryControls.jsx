@@ -1,18 +1,27 @@
-import { useHistory } from '../../context/HistoryContext';
+import { useCarouselsContext } from '../../context';
 
 /**
  * History Controls Component
  * Undo/Redo buttons for the Toolbar
+ * 
+ * Now connected to the carousels reducer's built-in undo/redo system
  */
 const HistoryControls = ({ className = '' }) => {
-  const { canUndo, canRedo, undo, redo, historyLength, futureLength } = useHistory();
+  const { 
+    canUndo, 
+    canRedo, 
+    handleUndo, 
+    handleRedo, 
+    historyLength, 
+    futureLength 
+  } = useCarouselsContext();
 
   return (
     <div className={`flex items-center gap-1 ${className}`}>
       {/* Undo Button */}
       <button
         type="button"
-        onClick={undo}
+        onClick={handleUndo}
         disabled={!canUndo}
         className={`p-2 rounded-lg border transition-all duration-200 ${
           canUndo
@@ -29,7 +38,7 @@ const HistoryControls = ({ className = '' }) => {
       {/* Redo Button */}
       <button
         type="button"
-        onClick={redo}
+        onClick={handleRedo}
         disabled={!canRedo}
         className={`p-2 rounded-lg border transition-all duration-200 ${
           canRedo
@@ -47,4 +56,3 @@ const HistoryControls = ({ className = '' }) => {
 };
 
 export default HistoryControls;
-

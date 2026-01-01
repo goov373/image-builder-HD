@@ -72,9 +72,9 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
     onZoomOut: () => setZoom(z => Math.max(50, z - 10)),
     onZoomReset: () => setZoom(100),
     onOpenExport: () => setActivePanel(activePanel === 'export' ? null : 'export'),
-    // Undo/redo will be added in Phase 5
-    onUndo: () => console.log('Undo - coming in Phase 5'),
-    onRedo: () => console.log('Redo - coming in Phase 5'),
+    // Undo/Redo - connected to carousels reducer
+    onUndo: () => carousels.handleUndo(),
+    onRedo: () => carousels.handleRedo(),
   }, !showShortcutsModal); // Disable some shortcuts when modal is open
 
   // Handler to open Design panel and expand Product Imagery section
@@ -277,6 +277,13 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
     handleUpdateProgressIndicator: carousels.handleUpdateProgressIndicator,
     // Background layer order methods
     handleReorderBackgroundLayers: carousels.handleReorderBackgroundLayers,
+    // Undo/Redo
+    handleUndo: carousels.handleUndo,
+    handleRedo: carousels.handleRedo,
+    canUndo: carousels.canUndo,
+    canRedo: carousels.canRedo,
+    historyLength: carousels.historyLength,
+    futureLength: carousels.futureLength,
     // Eblast methods
     eblasts: eblasts.eblasts,
     handleEblastSetVariant: eblasts.handleSetVariant,

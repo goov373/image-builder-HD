@@ -6,7 +6,6 @@ import {
   useSelectionContext, 
   useCarouselsContext,
   useDropdownsContext,
-  useHistory,
 } from '../context';
 import { HistoryControls, ToolbarButtonGroup } from './toolbar/index.js';
 

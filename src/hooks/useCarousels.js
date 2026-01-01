@@ -2,8 +2,30 @@ import { useReducer, useEffect, useState, useCallback } from 'react';
 import { arrayMove } from '@dnd-kit/sortable';
 import { STORAGE_KEYS } from '../config';
 import { createPatternLayer, findPatternById } from '../data';
+import { undoable, UNDO, REDO, canUndo, canRedo } from '../utils/undoable';
 
 const STORAGE_KEY = STORAGE_KEYS.CAROUSELS;
+
+// Actions that should NOT create history entries (selection/UI only)
+const NON_UNDOABLE_ACTIONS = [
+  'SELECT_CAROUSEL',
+  'SELECT_FRAME',
+  'SET_ACTIVE_TEXT_FIELD',
+  'CLEAR_SELECTION',
+  'DESELECT_FRAME',
+  'SET_CAROUSELS', // Initial load shouldn't create history
+];
+
+// Filter function for undoable reducer
+const shouldTrackAction = (action) => {
+  return !NON_UNDOABLE_ACTIONS.includes(action.type);
+};
+
+// Wrap the carousel reducer with undo/redo support
+const undoableCarouselReducer = undoable(carouselReducer, {
+  filter: shouldTrackAction,
+  limit: 50,
+});
 
 // Action types
 export const CAROUSEL_ACTIONS = {
@@ -810,11 +832,15 @@ function loadFromStorage(initialData) {
 
 export default function useCarousels(initialData) {
   const [initialized, setInitialized] = useState(false);
-  const [state, dispatch] = useReducer(
-    carouselReducer,
-    loadFromStorage(initialData),
-    createInitialState
+  
+  // Use undoable reducer wrapper for undo/redo support
+  const [undoableState, dispatch] = useReducer(
+    undoableCarouselReducer,
+    { past: [], present: createInitialState(loadFromStorage(initialData)), future: [] }
   );
+  
+  // Access present state through the undoable wrapper
+  const state = undoableState.present;
 
   // Computed values
   const selectedCarousel = state.carousels.find(c => c.id === state.selectedCarouselId) || state.carousels[0];
@@ -838,6 +864,10 @@ export default function useCarousels(initialData) {
     clearSelection: useCallback(() => dispatch({ type: CAROUSEL_ACTIONS.CLEAR_SELECTION }), []),
     
     deselectFrame: useCallback(() => dispatch({ type: CAROUSEL_ACTIONS.DESELECT_FRAME }), []),
+    
+    // Undo/Redo handlers
+    handleUndo: useCallback(() => dispatch({ type: UNDO }), []),
+    handleRedo: useCallback(() => dispatch({ type: REDO }), []),
     
     setActiveTextField: useCallback((field) => 
       dispatch({ type: CAROUSEL_ACTIONS.SET_ACTIVE_TEXT_FIELD, field }), []),
@@ -966,6 +996,11 @@ export default function useCarousels(initialData) {
     // Computed
     selectedCarousel,
     selectedFrame,
+    // Undo/Redo state
+    canUndo: canUndo(undoableState),
+    canRedo: canRedo(undoableState),
+    historyLength: undoableState.past.length,
+    futureLength: undoableState.future.length,
     // Actions
     dispatch,
     ...actions,

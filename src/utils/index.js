@@ -29,3 +29,14 @@ export {
   formatFileSize,
   COMPRESSION_PRESETS,
 } from './imageCompression';
+
+// Undo/Redo utilities
+export {
+  undoable,
+  canUndo,
+  canRedo,
+  getHistoryCounts,
+  UNDO,
+  REDO,
+  CLEAR_HISTORY,
+} from './undoable';
