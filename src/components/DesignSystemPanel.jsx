@@ -636,7 +636,7 @@ const DesignSystemPanel = ({
           style={{ height: 64 }}
         >
           <h2 className="text-sm font-semibold text-white">Design & Assets</h2>
-          <button type="button" onClick={onClose} className="text-gray-400 hover:text-white">
+          <button type="button" onClick={onClose} className="text-[--text-tertiary] hover:text-white">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
@@ -648,14 +648,14 @@ const DesignSystemPanel = ({
           <button
             type="button"
             onClick={() => setActiveTab('design')}
-            className={`flex-1 py-3 text-xs font-medium transition-colors ${activeTab === 'design' ? 'text-white border-b-2 border-[--border-strong]' : 'text-gray-500 hover:text-gray-300'}`}
+            className={`flex-1 py-3 text-xs font-medium transition-colors ${activeTab === 'design' ? 'text-white border-b-2 border-[--border-strong]' : 'text-[--text-quaternary] hover:text-[--text-secondary]'}`}
           >
             Design
           </button>
           <button
             type="button"
             onClick={() => setActiveTab('assets')}
-            className={`flex-1 py-3 text-xs font-medium transition-colors ${activeTab === 'assets' ? 'text-white border-b-2 border-[--border-strong]' : 'text-gray-500 hover:text-gray-300'}`}
+            className={`flex-1 py-3 text-xs font-medium transition-colors ${activeTab === 'assets' ? 'text-white border-b-2 border-[--border-strong]' : 'text-[--text-quaternary] hover:text-[--text-secondary]'}`}
           >
             Assets
             {uploadedFiles.length > 0 && (
@@ -687,9 +687,9 @@ const DesignSystemPanel = ({
                 <button
                   type="button"
                   onClick={() => toggleSection('yourImages')}
-                  className="w-full p-4 flex items-center justify-between hover:bg-gray-800/50 transition-colors"
+                  className="w-full p-4 flex items-center justify-between hover:bg-[--surface-default] transition-colors"
                 >
-                  <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Your Images</h3>
+                  <h3 className="text-xs font-medium text-[--text-tertiary] uppercase tracking-wide">Your Images</h3>
                   <div className="flex items-center gap-2">
                     {uploadedFiles.length > 0 && (
                       <span className="px-1.5 py-0.5 bg-[--surface-raised] rounded-[--radius-sm] text-[10px] text-[--text-tertiary]">
@@ -697,7 +697,7 @@ const DesignSystemPanel = ({
                       </span>
                     )}
                     <svg
-                      className={`w-4 h-4 text-gray-500 transition-transform ${collapsedSections.yourImages ? '' : 'rotate-180'}`}
+                      className={`w-4 h-4 text-[--text-quaternary] transition-transform ${collapsedSections.yourImages ? '' : 'rotate-180'}`}
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -715,10 +715,10 @@ const DesignSystemPanel = ({
               {/* Product Imagery Upload Section */}
               <div className="p-4 border-t border-[--border-default]">
                 <div className="flex items-center justify-between mb-3">
-                  <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Upload Product Images</h3>
+                  <h3 className="text-xs font-medium text-[--text-tertiary] uppercase tracking-wide">Upload Product Images</h3>
                 </div>
                 <div
-                  className="border-2 border-dashed border-gray-700 rounded p-4 text-center hover:border-gray-600 transition-colors cursor-pointer"
+                  className="border-2 border-dashed border-[--border-default] rounded p-4 text-center hover:border-[--border-emphasis] transition-colors cursor-pointer"
                   onClick={() => document.getElementById('product-imagery-input')?.click()}
                 >
                   <input
@@ -730,7 +730,7 @@ const DesignSystemPanel = ({
                     className="hidden"
                   />
                   <svg
-                    className="w-8 h-8 mx-auto mb-2 text-gray-600"
+                    className="w-8 h-8 mx-auto mb-2 text-[--text-quaternary]"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -742,14 +742,14 @@ const DesignSystemPanel = ({
                       d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
                     />
                   </svg>
-                  <p className="text-xs text-gray-400 mb-1">Product shots & mockups</p>
+                  <p className="text-xs text-[--text-tertiary] mb-1">Product shots & mockups</p>
                   <button
                     type="button"
-                    className="px-3 py-1.5 bg-gray-700 hover:bg-gray-600 text-xs text-white rounded transition-colors"
+                    className="px-3 py-1.5 bg-[--surface-overlay] hover:bg-[--surface-elevated] text-xs text-white rounded transition-colors"
                   >
                     Upload imagery
                   </button>
-                  <p className="text-[10px] text-gray-600 mt-2">PNG with transparent background</p>
+                  <p className="text-[10px] text-[--text-quaternary] mt-2">PNG with transparent background</p>
                 </div>
               </div>
 
@@ -758,9 +758,9 @@ const DesignSystemPanel = ({
                 <button
                   type="button"
                   onClick={() => toggleSection('yourProductImages')}
-                  className="w-full p-4 flex items-center justify-between hover:bg-gray-800/50 transition-colors"
+                  className="w-full p-4 flex items-center justify-between hover:bg-[--surface-default] transition-colors"
                 >
-                  <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Your Product Images</h3>
+                  <h3 className="text-xs font-medium text-[--text-tertiary] uppercase tracking-wide">Your Product Images</h3>
                   <div className="flex items-center gap-2">
                     {uploadedProductImages.length > 0 && (
                       <span className="px-1.5 py-0.5 bg-[--surface-raised] rounded-[--radius-sm] text-[10px] text-[--text-tertiary]">
@@ -768,7 +768,7 @@ const DesignSystemPanel = ({
                       </span>
                     )}
                     <svg
-                      className={`w-4 h-4 text-gray-500 transition-transform ${collapsedSections.yourProductImages ? '' : 'rotate-180'}`}
+                      className={`w-4 h-4 text-[--text-quaternary] transition-transform ${collapsedSections.yourProductImages ? '' : 'rotate-180'}`}
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -783,7 +783,7 @@ const DesignSystemPanel = ({
                     {uploadedProductImages.length === 0 ? (
                       <div className="text-center py-6">
                         <svg
-                          className="w-10 h-10 mx-auto mb-2 text-gray-700"
+                          className="w-10 h-10 mx-auto mb-2 text-[--text-quaternary]"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -795,15 +795,15 @@ const DesignSystemPanel = ({
                             d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
                           />
                         </svg>
-                        <p className="text-xs text-gray-500">No product images yet</p>
-                        <p className="text-[10px] text-gray-600 mt-1">Upload product shots above</p>
+                        <p className="text-xs text-[--text-quaternary]">No product images yet</p>
+                        <p className="text-[10px] text-[--text-quaternary] mt-1">Upload product shots above</p>
                       </div>
                     ) : (
                       <div className="grid grid-cols-2 gap-2">
                         {uploadedProductImages.map((img) => (
                           <div
                             key={img.id}
-                            className="relative group aspect-square rounded overflow-hidden bg-gray-800"
+                            className="relative group aspect-square rounded overflow-hidden bg-[--surface-raised]"
                           >
                             <img src={img.url} alt={img.name} className="w-full h-full object-contain" />
                             <button
@@ -831,13 +831,13 @@ const DesignSystemPanel = ({
               {/* Upload Docs Section */}
               <div className="p-4 border-t border-[--border-default]">
                 <div className="flex items-center justify-between mb-3">
-                  <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Upload Docs</h3>
-                  <span className="text-[10px] text-gray-500">
+                  <h3 className="text-xs font-medium text-[--text-tertiary] uppercase tracking-wide">Upload Docs</h3>
+                  <span className="text-[10px] text-[--text-quaternary]">
                     {uploadedDocs.length}/{MAX_DOCS}
                   </span>
                 </div>
                 <div
-                  className="border-2 border-dashed border-gray-700 rounded p-4 text-center hover:border-gray-600 transition-colors cursor-pointer"
+                  className="border-2 border-dashed border-[--border-default] rounded p-4 text-center hover:border-[--border-emphasis] transition-colors cursor-pointer"
                   onClick={() => document.getElementById('docs-input')?.click()}
                 >
                   <input
@@ -849,7 +849,7 @@ const DesignSystemPanel = ({
                     className="hidden"
                   />
                   <svg
-                    className="w-8 h-8 mx-auto mb-2 text-gray-600"
+                    className="w-8 h-8 mx-auto mb-2 text-[--text-quaternary]"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -861,14 +861,14 @@ const DesignSystemPanel = ({
                       d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                     />
                   </svg>
-                  <p className="text-xs text-gray-400 mb-1">Drop docs here</p>
+                  <p className="text-xs text-[--text-tertiary] mb-1">Drop docs here</p>
                   <button
                     type="button"
-                    className="px-3 py-1.5 bg-gray-700 hover:bg-gray-600 text-xs text-white rounded transition-colors"
+                    className="px-3 py-1.5 bg-[--surface-overlay] hover:bg-[--surface-elevated] text-xs text-white rounded transition-colors"
                   >
                     Browse files
                   </button>
-                  <p className="text-[10px] text-gray-600 mt-2">PDF, DOCX, TXT, MD up to 10MB each</p>
+                  <p className="text-[10px] text-[--text-quaternary] mt-2">PDF, DOCX, TXT, MD up to 10MB each</p>
                 </div>
               </div>
 
@@ -877,9 +877,9 @@ const DesignSystemPanel = ({
                 <button
                   type="button"
                   onClick={() => toggleSection('yourDocs')}
-                  className="w-full p-4 flex items-center justify-between hover:bg-gray-800/50 transition-colors"
+                  className="w-full p-4 flex items-center justify-between hover:bg-[--surface-default] transition-colors"
                 >
-                  <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Your Docs</h3>
+                  <h3 className="text-xs font-medium text-[--text-tertiary] uppercase tracking-wide">Your Docs</h3>
                   <div className="flex items-center gap-2">
                     {uploadedDocs.length > 0 && (
                       <span className="px-1.5 py-0.5 bg-[--surface-raised] rounded-[--radius-sm] text-[10px] text-[--text-tertiary]">
@@ -887,7 +887,7 @@ const DesignSystemPanel = ({
                       </span>
                     )}
                     <svg
-                      className={`w-4 h-4 text-gray-500 transition-transform ${collapsedSections.yourDocs ? '' : 'rotate-180'}`}
+                      className={`w-4 h-4 text-[--text-quaternary] transition-transform ${collapsedSections.yourDocs ? '' : 'rotate-180'}`}
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -902,7 +902,7 @@ const DesignSystemPanel = ({
                     {uploadedDocs.length === 0 ? (
                       <div className="text-center py-8">
                         <svg
-                          className="w-12 h-12 mx-auto mb-3 text-gray-700"
+                          className="w-12 h-12 mx-auto mb-3 text-[--text-quaternary]"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -914,15 +914,15 @@ const DesignSystemPanel = ({
                             d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                           />
                         </svg>
-                        <p className="text-xs text-gray-500">No docs uploaded yet</p>
-                        <p className="text-[10px] text-gray-600 mt-1">Upload docs to use in your designs</p>
+                        <p className="text-xs text-[--text-quaternary]">No docs uploaded yet</p>
+                        <p className="text-[10px] text-[--text-quaternary] mt-1">Upload docs to use in your designs</p>
                       </div>
                     ) : (
                       <div className="space-y-1.5">
                         {uploadedDocs.map((doc) => (
                           <div
                             key={doc.id}
-                            className="flex items-center gap-2 px-2.5 py-2 bg-gray-800/50 rounded group hover:bg-gray-800 transition-colors"
+                            className="flex items-center gap-2 px-2.5 py-2 bg-[--surface-default] rounded group hover:bg-[--surface-raised] transition-colors"
                           >
                             <svg
                               className="w-4 h-4 text-purple-400 flex-shrink-0"
@@ -937,11 +937,11 @@ const DesignSystemPanel = ({
                                 d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                               />
                             </svg>
-                            <span className="text-[11px] text-gray-300 flex-1 truncate">{doc.name}</span>
+                            <span className="text-[11px] text-[--text-secondary] flex-1 truncate">{doc.name}</span>
                             <button
                               type="button"
                               onClick={() => handleRemoveDoc(doc.id)}
-                              className="p-1 text-gray-600 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all"
+                              className="p-1 text-[--text-quaternary] hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all"
                             >
                               <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path
@@ -987,14 +987,14 @@ const DesignSystemPanel = ({
                   <button
                     type="button"
                     onClick={() => toggleSection('pageIndicators')}
-                    className="w-full p-4 flex items-center justify-between hover:bg-gray-800/50 transition-colors"
+                    className="w-full p-4 flex items-center justify-between hover:bg-[--surface-default] transition-colors"
                   >
                     <div className="flex items-center gap-2">
-                      <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Add Indicator</h3>
+                      <h3 className="text-xs font-medium text-[--text-tertiary] uppercase tracking-wide">Add Indicator</h3>
                       <span className="px-1.5 py-0.5 bg-[--surface-raised] rounded-[--radius-sm] text-[10px] text-[--text-tertiary]">6</span>
                     </div>
                     <svg
-                      className={`w-4 h-4 text-gray-500 transition-transform ${collapsedSections.pageIndicators ? '' : 'rotate-180'}`}
+                      className={`w-4 h-4 text-[--text-quaternary] transition-transform ${collapsedSections.pageIndicators ? '' : 'rotate-180'}`}
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -1005,7 +1005,7 @@ const DesignSystemPanel = ({
 
                   {!collapsedSections.pageIndicators && (
                     <div className="px-4 pt-2 pb-4">
-                      <p className="text-[10px] text-gray-500 mb-3">Choose a style for frame position indicators</p>
+                      <p className="text-[10px] text-[--text-quaternary] mb-3">Choose a style for frame position indicators</p>
 
                       {/* Indicator Style Grid - 2 columns */}
                       <div className="grid grid-cols-2 gap-2">
@@ -1032,12 +1032,12 @@ const DesignSystemPanel = ({
                                 }
                               }}
                               disabled={!hasFrameSelected}
-                              className={`group relative p-3 rounded border transition-all ${
+                              className={`group relative p-3 rounded-[--radius-md] border transition-all ${
                                 hasFrameSelected
                                   ? isSelected
-                                    ? 'border-[--border-strong] bg-gray-600/30'
-                                    : 'border-gray-700 hover:border-gray-500 bg-gray-800/50'
-                                  : 'border-gray-700/50 opacity-50 cursor-not-allowed'
+                                    ? 'border-[--border-strong] bg-[--surface-raised]'
+                                    : 'border-[--border-default] hover:border-[--border-emphasis] bg-[--surface-default]'
+                                  : 'border-[--border-subtle] opacity-50 cursor-not-allowed'
                               }`}
                               title={indicator.desc}
                             >
@@ -1195,7 +1195,7 @@ const DesignSystemPanel = ({
                               </div>
                               {/* Label */}
                               <span
-                                className={`text-[10px] font-medium block text-center ${isSelected ? 'text-white' : 'text-gray-400 group-hover:text-white'}`}
+                                className={`text-[10px] font-medium block text-center ${isSelected ? 'text-white' : 'text-[--text-tertiary] group-hover:text-white'}`}
                               >
                                 {indicator.name}
                               </span>
@@ -1205,7 +1205,7 @@ const DesignSystemPanel = ({
                       </div>
 
                       {!hasFrameSelected && (
-                        <p className="text-[10px] text-gray-600 text-center mt-3">
+                        <p className="text-[10px] text-[--text-quaternary] text-center mt-3">
                           Select a frame to apply an indicator style
                         </p>
                       )}
@@ -1218,10 +1218,10 @@ const DesignSystemPanel = ({
                   <button
                     type="button"
                     onClick={() => toggleSection('backgrounds')}
-                    className="w-full p-4 flex items-center justify-between hover:bg-gray-800/50 transition-colors"
+                    className="w-full p-4 flex items-center justify-between hover:bg-[--surface-default] transition-colors"
                   >
                     <div className="flex items-center gap-2">
-                      <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Set Background</h3>
+                      <h3 className="text-xs font-medium text-[--text-tertiary] uppercase tracking-wide">Set Background</h3>
                       <span className="px-1.5 py-0.5 bg-[--surface-raised] rounded-[--radius-sm] text-[10px] text-[--text-tertiary]">
                         {allGradients.length + solidColors.length}
                       </span>
@@ -1234,7 +1234,7 @@ const DesignSystemPanel = ({
                         </span>
                       )}
                       <svg
-                        className={`w-4 h-4 text-gray-500 transition-transform ${collapsedSections.backgrounds ? '' : 'rotate-180'}`}
+                        className={`w-4 h-4 text-[--text-quaternary] transition-transform ${collapsedSections.backgrounds ? '' : 'rotate-180'}`}
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -1258,7 +1258,7 @@ const DesignSystemPanel = ({
                             total={totalFrames}
                             onChange={({ start, end }) => setStretchRange({ start, end })}
                           />
-                          <div className="mb-3 -mt-1 text-[10px] text-gray-500 text-center">
+                          <div className="mb-3 -mt-1 text-[10px] text-[--text-quaternary] text-center">
                             Stretching across {selectedFrameCount} frame{selectedFrameCount > 1 ? 's' : ''}
                           </div>
                         </>
@@ -1266,11 +1266,11 @@ const DesignSystemPanel = ({
 
                       {/* Single frame message */}
                       {applyMode === 'row' && hasRowSelected && totalFrames === 1 && (
-                        <div className="mb-3 p-2 bg-gray-800/50 rounded text-[10px] text-gray-500 text-center">
+                        <div className="mb-3 p-2 bg-[--surface-default] rounded text-[10px] text-[--text-quaternary] text-center">
                           Add more frames to use stretch mode
                         </div>
                       )}
-                      <h4 className="text-[10px] text-gray-500 uppercase tracking-wide mb-2">Gradients</h4>
+                      <h4 className="text-[10px] text-[--text-quaternary] uppercase tracking-wide mb-2">Gradients</h4>
                       <div className="grid grid-cols-3 gap-2 mb-4">
                         {gradients.map((gradient, idx) => (
                           <button
@@ -1280,15 +1280,15 @@ const DesignSystemPanel = ({
                             disabled={!hasFrameSelected}
                             className={`w-full aspect-square rounded transition-colors overflow-hidden ${
                               hasFrameSelected
-                                ? 'ring-1 ring-gray-700 hover:ring-gray-400 hover:scale-105 cursor-pointer'
-                                : 'ring-1 ring-gray-700/50 opacity-50 cursor-not-allowed'
+                                ? 'ring-1 ring-[--border-default] hover:ring-[--border-strong] hover:scale-105 cursor-pointer'
+                                : 'ring-1 ring-[--border-default]/50 opacity-50 cursor-not-allowed'
                             }`}
                             style={{ background: gradient }}
                             title={hasFrameSelected ? 'Click to apply this background' : 'Select a frame first'}
                           />
                         ))}
                       </div>
-                      <h4 className="text-[10px] text-gray-500 uppercase tracking-wide mb-2">Solid Colors</h4>
+                      <h4 className="text-[10px] text-[--text-quaternary] uppercase tracking-wide mb-2">Solid Colors</h4>
                       <div className="grid grid-cols-3 gap-2">
                         {solidColors.map((color) => (
                           <div key={color} className="relative group">
@@ -1298,15 +1298,15 @@ const DesignSystemPanel = ({
                               disabled={!hasFrameSelected}
                               className={`w-full aspect-square rounded transition-colors overflow-hidden ${
                                 hasFrameSelected
-                                  ? 'ring-1 ring-gray-700 hover:ring-gray-400 hover:scale-105 cursor-pointer'
-                                  : 'ring-1 ring-gray-700/50 opacity-50 cursor-not-allowed'
+                                  ? 'ring-1 ring-[--border-default] hover:ring-[--border-strong] hover:scale-105 cursor-pointer'
+                                  : 'ring-1 ring-[--border-default]/50 opacity-50 cursor-not-allowed'
                               }`}
                               style={{ backgroundColor: color }}
                               title={hasFrameSelected ? 'Click to apply this background' : 'Select a frame first'}
                             />
-                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-2 py-1 bg-gray-950 text-white text-[10px] font-mono rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50">
+                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-2 py-1 bg-[--surface-sunken] text-white text-[10px] font-mono rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50">
                               {color.toUpperCase()}
-                              <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-950" />
+                              <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-[--surface-sunken]" />
                             </div>
                           </div>
                         ))}
@@ -1320,9 +1320,9 @@ const DesignSystemPanel = ({
                   <button
                     type="button"
                     onClick={() => toggleSection('productImagery')}
-                    className="w-full p-4 flex items-center justify-between hover:bg-gray-800/50 transition-colors"
+                    className="w-full p-4 flex items-center justify-between hover:bg-[--surface-default] transition-colors"
                   >
-                    <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Add Product Image</h3>
+                    <h3 className="text-xs font-medium text-[--text-tertiary] uppercase tracking-wide">Add Product Image</h3>
                     <div className="flex items-center gap-2">
                       {uploadedProductImages.length > 0 && (
                         <span className="px-1.5 py-0.5 bg-[--surface-raised] rounded-[--radius-sm] text-[10px] text-[--text-tertiary]">
@@ -1330,7 +1330,7 @@ const DesignSystemPanel = ({
                         </span>
                       )}
                       <svg
-                        className={`w-4 h-4 text-gray-500 transition-transform ${collapsedSections.productImagery ? '' : 'rotate-180'}`}
+                        className={`w-4 h-4 text-[--text-quaternary] transition-transform ${collapsedSections.productImagery ? '' : 'rotate-180'}`}
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -1345,7 +1345,7 @@ const DesignSystemPanel = ({
                       {uploadedProductImages.length === 0 ? (
                         <div className="text-center py-6">
                           <svg
-                            className="w-10 h-10 mx-auto mb-2 text-gray-700"
+                            className="w-10 h-10 mx-auto mb-2 text-[--text-quaternary]"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -1357,11 +1357,11 @@ const DesignSystemPanel = ({
                               d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
                             />
                           </svg>
-                          <p className="text-xs text-gray-500">No product images yet</p>
+                          <p className="text-xs text-[--text-quaternary]">No product images yet</p>
                           <button
                             type="button"
                             onClick={() => setActiveTab('assets')}
-                            className="mt-2 text-[10px] text-white hover:text-gray-300 transition-colors"
+                            className="mt-2 text-[10px] text-white hover:text-[--text-secondary] transition-colors"
                           >
                             Upload in Assets →
                           </button>
@@ -1387,7 +1387,7 @@ const DesignSystemPanel = ({
                                   );
                                 }
                               }}
-                              className={`relative group aspect-square rounded overflow-hidden bg-gray-800 ring-1 ring-gray-700 hover:ring-purple-400 transition-colors ${hasFrameSelected ? 'cursor-pointer' : 'cursor-default opacity-50'}`}
+                              className={`relative group aspect-square rounded overflow-hidden bg-[--surface-raised] ring-1 ring-[--border-default] hover:ring-purple-400 transition-colors ${hasFrameSelected ? 'cursor-pointer' : 'cursor-default opacity-50'}`}
                               title={
                                 hasFrameSelected
                                   ? 'Click to add product image to selected frame'
@@ -1426,10 +1426,10 @@ const DesignSystemPanel = ({
                   <button
                     type="button"
                     onClick={() => toggleSection('photography')}
-                    className="w-full p-4 flex items-center justify-between hover:bg-gray-800/50 transition-colors"
+                    className="w-full p-4 flex items-center justify-between hover:bg-[--surface-default] transition-colors"
                   >
                     <div className="flex items-center gap-2">
-                      <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Add Photo</h3>
+                      <h3 className="text-xs font-medium text-[--text-tertiary] uppercase tracking-wide">Add Photo</h3>
                       {uploadedFiles.length > 0 && (
                         <span className="px-1.5 py-0.5 bg-[--surface-raised] rounded-[--radius-sm] text-[10px] text-[--text-tertiary]">
                           {uploadedFiles.length}
@@ -1437,7 +1437,7 @@ const DesignSystemPanel = ({
                       )}
                     </div>
                     <svg
-                      className={`w-4 h-4 text-gray-500 transition-transform ${collapsedSections.photography ? '' : 'rotate-180'}`}
+                      className={`w-4 h-4 text-[--text-quaternary] transition-transform ${collapsedSections.photography ? '' : 'rotate-180'}`}
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -1450,9 +1450,9 @@ const DesignSystemPanel = ({
                     <div className="px-4 pt-2 pb-4">
                       {/* Display uploaded images from Assets tab */}
                       {uploadedFiles.length === 0 ? (
-                        <div className="text-center py-6 border-2 border-dashed border-gray-700 rounded">
+                        <div className="text-center py-6 border-2 border-dashed border-[--border-default] rounded">
                           <svg
-                            className="w-8 h-8 mx-auto mb-2 text-gray-600"
+                            className="w-8 h-8 mx-auto mb-2 text-[--text-quaternary]"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -1464,11 +1464,11 @@ const DesignSystemPanel = ({
                               d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
                             />
                           </svg>
-                          <p className="text-[10px] text-gray-500 mb-2">No images uploaded yet</p>
+                          <p className="text-[10px] text-[--text-quaternary] mb-2">No images uploaded yet</p>
                           <button
                             type="button"
                             onClick={() => setActiveTab('assets')}
-                            className="px-3 py-1.5 bg-gray-700 hover:bg-gray-600 text-xs text-white rounded transition-colors"
+                            className="px-3 py-1.5 bg-[--surface-overlay] hover:bg-[--surface-elevated] text-xs text-white rounded transition-colors"
                           >
                             Go to Assets to upload
                           </button>
@@ -1480,7 +1480,7 @@ const DesignSystemPanel = ({
                               key={file.id}
                               type="button"
                               disabled={!hasFrameSelected}
-                              className={`bg-gray-800 rounded overflow-hidden transition-all text-left ${
+                              className={`bg-[--surface-raised] rounded overflow-hidden transition-all text-left ${
                                 hasFrameSelected
                                   ? 'hover:ring-2 hover:ring-blue-400 hover:scale-[1.02] cursor-pointer'
                                   : 'opacity-60 cursor-not-allowed'
@@ -1502,7 +1502,7 @@ const DesignSystemPanel = ({
                               }
                             >
                               {/* Header bar */}
-                              <div className="flex items-center justify-between px-2 py-1.5 bg-gray-900 border-b border-gray-700">
+                              <div className="flex items-center justify-between px-2 py-1.5 bg-[--surface-canvas] border-b border-[--border-default]">
                                 <div className="flex items-center gap-1.5">
                                   <span className="px-1.5 py-0.5 bg-[--surface-raised] rounded-[--radius-sm] text-[10px] text-[--text-tertiary] uppercase font-medium">
                                     {file.format}
@@ -1548,12 +1548,12 @@ const DesignSystemPanel = ({
                                 <img src={file.url} alt={file.name} className="w-full h-full object-cover" />
                               </div>
                               {/* Footer bar */}
-                              <div className="px-2 py-2 bg-gray-900 border-t border-gray-700">
-                                <p className="text-[11px] text-gray-300 truncate font-medium" title={file.name}>
+                              <div className="px-2 py-2 bg-[--surface-canvas] border-t border-[--border-default]">
+                                <p className="text-[11px] text-[--text-secondary] truncate font-medium" title={file.name}>
                                   {file.name}
                                 </p>
                                 <div className="flex items-center justify-between mt-1">
-                                  <span className="text-[10px] text-gray-500">{formatFileSize(file.size)}</span>
+                                  <span className="text-[10px] text-[--text-quaternary]">{formatFileSize(file.size)}</span>
                                   {file.savings > 0 && (
                                     <span className="text-[10px] text-green-400 font-medium">-{file.savings}%</span>
                                   )}
@@ -1565,22 +1565,22 @@ const DesignSystemPanel = ({
                       )}
 
                       {/* Stock Photo Sources */}
-                      <p className="text-[9px] text-gray-500 mb-2 uppercase tracking-wide">Free Stock Photos</p>
+                      <p className="text-[9px] text-[--text-quaternary] mb-2 uppercase tracking-wide">Free Stock Photos</p>
                       <div className="space-y-2">
                         <a
                           href="https://unsplash.com/s/photos/apartment-building"
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center gap-2 p-2 bg-gray-800/50 rounded hover:bg-gray-800 transition-colors group"
+                          className="flex items-center gap-2 p-2 bg-[--surface-default] rounded hover:bg-[--surface-raised] transition-colors group"
                         >
-                          <div className="w-8 h-8 bg-gray-700 rounded flex items-center justify-center">
+                          <div className="w-8 h-8 bg-[--surface-overlay] rounded flex items-center justify-center">
                             <span className="text-xs font-bold text-white">U</span>
                           </div>
                           <div className="flex-1">
                             <p className="text-xs text-white group-hover:text-purple-400 transition-colors">Unsplash</p>
-                            <p className="text-[10px] text-gray-500">Apartment buildings</p>
+                            <p className="text-[10px] text-[--text-quaternary]">Apartment buildings</p>
                           </div>
-                          <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-4 h-4 text-[--text-quaternary]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path
                               strokeLinecap="round"
                               strokeLinejoin="round"
@@ -1593,16 +1593,16 @@ const DesignSystemPanel = ({
                           href="https://www.pexels.com/search/apartment%20building/"
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center gap-2 p-2 bg-gray-800/50 rounded hover:bg-gray-800 transition-colors group"
+                          className="flex items-center gap-2 p-2 bg-[--surface-default] rounded hover:bg-[--surface-raised] transition-colors group"
                         >
-                          <div className="w-8 h-8 bg-gray-700 rounded flex items-center justify-center">
+                          <div className="w-8 h-8 bg-[--surface-overlay] rounded flex items-center justify-center">
                             <span className="text-xs font-bold text-white">P</span>
                           </div>
                           <div className="flex-1">
                             <p className="text-xs text-white group-hover:text-purple-400 transition-colors">Pexels</p>
-                            <p className="text-[10px] text-gray-500">Multifamily housing</p>
+                            <p className="text-[10px] text-[--text-quaternary]">Multifamily housing</p>
                           </div>
-                          <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-4 h-4 text-[--text-quaternary]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path
                               strokeLinecap="round"
                               strokeLinejoin="round"
@@ -1615,16 +1615,16 @@ const DesignSystemPanel = ({
                           href="https://pixabay.com/images/search/apartment%20building/"
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center gap-2 p-2 bg-gray-800/50 rounded hover:bg-gray-800 transition-colors group"
+                          className="flex items-center gap-2 p-2 bg-[--surface-default] rounded hover:bg-[--surface-raised] transition-colors group"
                         >
-                          <div className="w-8 h-8 bg-gray-700 rounded flex items-center justify-center">
+                          <div className="w-8 h-8 bg-[--surface-overlay] rounded flex items-center justify-center">
                             <span className="text-xs font-bold text-white">Px</span>
                           </div>
                           <div className="flex-1">
                             <p className="text-xs text-white group-hover:text-purple-400 transition-colors">Pixabay</p>
-                            <p className="text-[10px] text-gray-500">Urban apartments</p>
+                            <p className="text-[10px] text-[--text-quaternary]">Urban apartments</p>
                           </div>
-                          <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-4 h-4 text-[--text-quaternary]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path
                               strokeLinecap="round"
                               strokeLinejoin="round"
@@ -1634,7 +1634,7 @@ const DesignSystemPanel = ({
                           </svg>
                         </a>
                       </div>
-                      <p className="text-[9px] text-gray-600 mt-2 text-center">All free for commercial use</p>
+                      <p className="text-[9px] text-[--text-quaternary] mt-2 text-center">All free for commercial use</p>
                     </div>
                   )}
                 </div>
@@ -1644,14 +1644,14 @@ const DesignSystemPanel = ({
                   <button
                     type="button"
                     onClick={() => toggleSection('patterns')}
-                    className="w-full p-4 flex items-center justify-between hover:bg-gray-800/50 transition-colors"
+                    className="w-full p-4 flex items-center justify-between hover:bg-[--surface-default] transition-colors"
                   >
                     <div className="flex items-center gap-2">
-                      <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Add Pattern</h3>
+                      <h3 className="text-xs font-medium text-[--text-tertiary] uppercase tracking-wide">Add Pattern</h3>
                       <span className="px-1.5 py-0.5 bg-[--surface-raised] rounded-[--radius-sm] text-[10px] text-[--text-tertiary]">18</span>
                     </div>
                     <svg
-                      className={`w-4 h-4 text-gray-500 transition-transform ${collapsedSections.patterns ? '' : 'rotate-180'}`}
+                      className={`w-4 h-4 text-[--text-quaternary] transition-transform ${collapsedSections.patterns ? '' : 'rotate-180'}`}
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -1662,12 +1662,12 @@ const DesignSystemPanel = ({
 
                   {!collapsedSections.patterns && (
                     <div className="px-4 pt-2 pb-4">
-                      <p className="text-[10px] text-gray-500 mb-3">
+                      <p className="text-[10px] text-[--text-quaternary] mb-3">
                         Data-driven visuals that tell the HelloData story
                       </p>
 
                       {/* Pattern Grid - Data Visualizations */}
-                      <p className="text-[9px] text-gray-500 mb-2 uppercase tracking-wide">Data Visualizations</p>
+                      <p className="text-[9px] text-[--text-quaternary] mb-2 uppercase tracking-wide">Data Visualizations</p>
                       <div className="grid grid-cols-3 gap-2 mb-4">
                         {[
                           {
@@ -1710,7 +1710,7 @@ const DesignSystemPanel = ({
                           <button
                             key={pattern.file}
                             type="button"
-                            className={`group relative aspect-square rounded overflow-hidden border border-gray-700 hover:border-purple-500 transition-all ${!selectedCarouselId && !selectedEblastId ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            className={`group relative aspect-square rounded overflow-hidden border border-[--border-default] hover:border-purple-500 transition-all ${!selectedCarouselId && !selectedEblastId ? 'opacity-50 cursor-not-allowed' : ''}`}
                             style={{
                               backgroundImage: `url(/patterns/${pattern.file})`,
                               backgroundSize: 'cover',
@@ -1733,7 +1733,7 @@ const DesignSystemPanel = ({
                       </div>
 
                       {/* City Map Patterns */}
-                      <p className="text-[9px] text-gray-500 mb-2 uppercase tracking-wide">Neighborhood</p>
+                      <p className="text-[9px] text-[--text-quaternary] mb-2 uppercase tracking-wide">Neighborhood</p>
                       <div className="grid grid-cols-3 gap-2 mb-4">
                         {[
                           {
@@ -1776,7 +1776,7 @@ const DesignSystemPanel = ({
                           <button
                             key={pattern.file}
                             type="button"
-                            className={`group relative aspect-square rounded overflow-hidden border border-gray-700 hover:border-purple-500 transition-all ${!selectedCarouselId && !selectedEblastId ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            className={`group relative aspect-square rounded overflow-hidden border border-[--border-default] hover:border-purple-500 transition-all ${!selectedCarouselId && !selectedEblastId ? 'opacity-50 cursor-not-allowed' : ''}`}
                             style={{
                               backgroundImage: `url(/patterns/${pattern.file})`,
                               backgroundSize: 'cover',
@@ -1799,7 +1799,7 @@ const DesignSystemPanel = ({
                       </div>
 
                       {/* Metro/Submarket Patterns */}
-                      <p className="text-[9px] text-gray-500 mb-2 uppercase tracking-wide">Metro / Submarket</p>
+                      <p className="text-[9px] text-[--text-quaternary] mb-2 uppercase tracking-wide">Metro / Submarket</p>
                       <div className="grid grid-cols-3 gap-2 mb-4">
                         {[
                           { name: 'Beltway', file: 'metro-1.svg', id: 'pattern-metro-1', desc: 'Highway loop metro' },
@@ -1832,7 +1832,7 @@ const DesignSystemPanel = ({
                           <button
                             key={pattern.file}
                             type="button"
-                            className={`group relative aspect-square rounded overflow-hidden border border-gray-700 hover:border-purple-500 transition-all ${!selectedCarouselId && !selectedEblastId ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            className={`group relative aspect-square rounded overflow-hidden border border-[--border-default] hover:border-purple-500 transition-all ${!selectedCarouselId && !selectedEblastId ? 'opacity-50 cursor-not-allowed' : ''}`}
                             style={{
                               backgroundImage: `url(/patterns/${pattern.file})`,
                               backgroundSize: 'cover',
