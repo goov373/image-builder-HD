@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { frameSizes, layoutNames, layoutVariantNames, getFrameStyle } from '../data';
+import { frameSizes, layoutNames, layoutVariantNames, getFrameStyle, getFrameSizesByCategory } from '../data';
 import { FONT_WEIGHTS, SMOOTH_SETTINGS } from '../config';
 import { smoothCarouselBackgrounds } from '../utils';
 import { 
@@ -249,7 +249,7 @@ export default function Toolbar({ totalOffset, activeTab }) {
               </button>
               {showFormatPicker && (
                 <div className="absolute top-full left-0 mt-2 p-1.5 bg-gray-900 border border-gray-700 rounded-xl shadow-xl z-[200] min-w-[180px] overflow-hidden">
-                  {Object.entries(frameSizes).filter(([key]) => key !== 'landscape').map(([key, size]) => (
+                  {Object.entries(getFrameSizesByCategory(activeTab?.projectType || 'carousel')).map(([key, size]) => (
                     <button key={key} onClick={() => { handleChangeFrameSize(selectedCarouselId, key); setShowFormatPicker(false); }} className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-left text-xs transition-all duration-200 ${selectedCarousel?.frameSize === key ? 'bg-gray-700 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-gray-300'}`}>
                       <span className="font-medium">{size.name}</span>
                       <span className="text-gray-600">{size.ratio}</span>
