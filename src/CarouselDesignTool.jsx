@@ -383,7 +383,7 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
           carousels={carouselsContextValue}
           dropdowns={dropdowns}
         >
-          <div className="h-screen text-white overflow-hidden" style={{ backgroundColor: '#0d1321' }}>
+          <div className="h-screen text-white overflow-hidden" style={{ backgroundColor: 'var(--surface-canvas)' }}>
             {/* Browser-style Tab Bar */}
             <TabBar
               tabs={tabs.tabs}
