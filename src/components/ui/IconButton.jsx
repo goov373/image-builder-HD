@@ -13,10 +13,14 @@ const IconButton = ({
   variant = 'ghost',
   disabled = false,
   active = false,
+  'aria-label': ariaLabel,
+  title,
   children,
   className = '',
   ...props
 }) => {
+  // Ensure accessibility: aria-label falls back to title for screen readers
+  const accessibleLabel = ariaLabel || title;
   const baseStyles = `
     inline-flex items-center justify-center
     border transition-all
@@ -70,6 +74,8 @@ const IconButton = ({
     <button
       type="button"
       disabled={disabled}
+      aria-label={accessibleLabel}
+      title={title}
       className={`
         ${baseStyles}
         ${variants[variant]}
