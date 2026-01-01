@@ -11,6 +11,7 @@ import { LIMITS } from '../config';
 import ImageUploader from './design-panel/ImageUploader';
 import ImageGrid from './design-panel/ImageGrid';
 import { ApplyModeToggle, FrameRangeSlider } from './design-panel/GradientPicker';
+import { BrandColorsSection, FontsSection, BrandIconsSection } from './design-panel/sections';
 
 /**
  * Design & Assets Panel
@@ -806,72 +807,11 @@ const DesignSystemPanel = ({
       ) : (
         <>
       
-        {/* Colors Section */}
-        <div className="p-4 border-b border-gray-800">
-          <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-3">Brand Colors</h3>
-          <div className="grid grid-cols-3 gap-3">
-            {colorFields.map(field => (
-              <div key={field.key} className="flex flex-col items-center gap-1.5">
-                <div className="relative group">
-                  <div className="w-12 h-12 rounded-lg border border-gray-500/50 hover:border-gray-400 transition-colors overflow-hidden">
-                    <input
-                      type="color"
-                      value={designSystem[field.key]}
-                      onChange={(e) => onUpdate({ ...designSystem, [field.key]: e.target.value })}
-                      className="w-14 h-14 -m-1 cursor-pointer"
-                    />
-                  </div>
-                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-2 py-1 bg-gray-950 text-white text-[10px] font-mono rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50">
-                    {designSystem[field.key].toUpperCase()}
-                    <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-950" />
-                  </div>
-                </div>
-                <span className="text-[10px] text-gray-400 font-medium">{field.label}</span>
-              </div>
-            ))}
-          </div>
-        </div>
+        {/* Colors Section - Extracted */}
+        <BrandColorsSection designSystem={designSystem} onUpdate={onUpdate} />
         
-        {/* Fonts Section */}
-        <div className="p-4 border-b border-gray-800">
-          <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-3">Brand Font: Nunito Sans</h3>
-          <div className="space-y-3">
-            <div>
-              <label className="text-[10px] text-gray-400 font-medium block mb-1.5">Heading Weight</label>
-              <select
-                value={designSystem.headingWeight || '700'}
-                onChange={(e) => onUpdate({ ...designSystem, headingWeight: e.target.value })}
-                className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-xs text-white hover:border-gray-400 focus:border-gray-400 focus:outline-none transition-colors cursor-pointer"
-              >
-                <option value="200" style={{ fontFamily: 'Nunito Sans', fontWeight: 200 }}>ExtraLight (200)</option>
-                <option value="300" style={{ fontFamily: 'Nunito Sans', fontWeight: 300 }}>Light (300)</option>
-                <option value="400" style={{ fontFamily: 'Nunito Sans', fontWeight: 400 }}>Regular (400)</option>
-                <option value="500" style={{ fontFamily: 'Nunito Sans', fontWeight: 500 }}>Medium (500)</option>
-                <option value="600" style={{ fontFamily: 'Nunito Sans', fontWeight: 600 }}>SemiBold (600)</option>
-                <option value="700" style={{ fontFamily: 'Nunito Sans', fontWeight: 700 }}>Bold (700)</option>
-                <option value="800" style={{ fontFamily: 'Nunito Sans', fontWeight: 800 }}>ExtraBold (800)</option>
-                <option value="900" style={{ fontFamily: 'Nunito Sans', fontWeight: 900 }}>Black (900)</option>
-              </select>
-            </div>
-            <div>
-              <label className="text-[10px] text-gray-400 font-medium block mb-1.5">Body Weight</label>
-              <select
-                value={designSystem.bodyWeight || '400'}
-                onChange={(e) => onUpdate({ ...designSystem, bodyWeight: e.target.value })}
-                className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-xs text-white hover:border-gray-400 focus:border-gray-400 focus:outline-none transition-colors cursor-pointer"
-              >
-                <option value="200" style={{ fontFamily: 'Nunito Sans', fontWeight: 200 }}>ExtraLight (200)</option>
-                <option value="300" style={{ fontFamily: 'Nunito Sans', fontWeight: 300 }}>Light (300)</option>
-                <option value="400" style={{ fontFamily: 'Nunito Sans', fontWeight: 400 }}>Regular (400)</option>
-                <option value="500" style={{ fontFamily: 'Nunito Sans', fontWeight: 500 }}>Medium (500)</option>
-                <option value="600" style={{ fontFamily: 'Nunito Sans', fontWeight: 600 }}>SemiBold (600)</option>
-                <option value="700" style={{ fontFamily: 'Nunito Sans', fontWeight: 700 }}>Bold (700)</option>
-                <option value="800" style={{ fontFamily: 'Nunito Sans', fontWeight: 800 }}>ExtraBold (800)</option>
-                <option value="900" style={{ fontFamily: 'Nunito Sans', fontWeight: 900 }}>Black (900)</option>
-              </select>
-            </div>
-          </div>
-        </div>
+        {/* Fonts Section - Extracted */}
+        <FontsSection designSystem={designSystem} onUpdate={onUpdate} />
       
         {/* Dynamic Dropdown Sections - rendered in order based on sectionOrder */}
         <div className="flex flex-col">
@@ -1459,67 +1399,17 @@ const DesignSystemPanel = ({
           )}
         </div>
         
-        {/* Brand Icons Section */}
-        <div className="border-b border-gray-800" style={{ order: sectionOrder.indexOf('brandIcons') }}>
-          <button
-            type="button"
-            onClick={() => toggleSection('brandIcons')}
-            className="w-full p-4 flex items-center justify-between hover:bg-gray-800/50 transition-colors"
-          >
-            <div className="flex items-center gap-2">
-              <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Brand Icons</h3>
-              <span className="px-1.5 py-0.5 bg-gray-700 rounded text-[10px] text-gray-400">{brandIcons.length}</span>
-            </div>
-            <svg className={`w-4 h-4 text-gray-500 transition-transform ${collapsedSections.brandIcons ? '' : 'rotate-180'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
-          
-          {!collapsedSections.brandIcons && (
-          <div className="px-4 pt-2 pb-4">
-            <p className="text-[10px] text-gray-500 mb-3">HelloData brand icons • 2px stroke, rounded corners</p>
-            
-            {/* Icons Grid - 4 columns, 3+ rows */}
-            <div className="grid grid-cols-4 gap-2">
-              {brandIcons.map((icon) => (
-                <button
-                  key={icon.id}
-                  type="button"
-                  className={`group relative aspect-square rounded-lg overflow-hidden bg-gray-800/50 border border-gray-700 hover:border-purple-500 hover:bg-gray-800 transition-all flex items-center justify-center ${hasFrameSelected ? 'cursor-pointer' : 'cursor-default opacity-60'}`}
-                  title={hasFrameSelected ? `Click to add ${icon.name} to frame` : `${icon.name} - Select a frame first`}
-                  disabled={!hasFrameSelected}
-                  onClick={() => {
-                    if (isCarousel && hasFrameSelected && onAddIconToFrame) {
-                      onAddIconToFrame(selectedCarouselId, selectedFrameId, icon.id, icon.path, icon.name);
-                    }
-                  }}
-                >
-                  <svg 
-                    className="w-6 h-6 text-gray-400 group-hover:text-white transition-colors" 
-                    fill="none" 
-                    stroke="currentColor" 
-                    viewBox="0 0 24 24"
-                  >
-                    <path 
-                      strokeLinecap="round" 
-                      strokeLinejoin="round" 
-                      strokeWidth={2} 
-                      d={icon.path} 
-                    />
-                  </svg>
-                  {/* Hover tooltip */}
-                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-2 py-1 bg-gray-950 text-white text-[10px] font-medium rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50">
-                    {icon.name}
-                    <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-950" />
-                  </div>
-                </button>
-              ))}
-            </div>
-            
-            <p className="text-[9px] text-gray-600 mt-3 text-center">Click icon to copy SVG code</p>
-          </div>
-          )}
-        </div>
+        {/* Brand Icons Section - Extracted */}
+        <BrandIconsSection
+          isCollapsed={collapsedSections.brandIcons}
+          onToggle={() => toggleSection('brandIcons')}
+          hasFrameSelected={hasFrameSelected}
+          isCarousel={isCarousel}
+          selectedCarouselId={selectedCarouselId}
+          selectedFrameId={selectedFrameId}
+          onAddIconToFrame={onAddIconToFrame}
+          order={sectionOrder.indexOf('brandIcons')}
+        />
         </div>{/* End of dynamic dropdown sections flex container */}
         </>
       )}

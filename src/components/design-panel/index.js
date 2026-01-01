@@ -13,3 +13,6 @@ export {
   ColorSwatch 
 } from './GradientPicker';
 
+// Extracted sections
+export * from './sections';
+
