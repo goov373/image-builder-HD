@@ -21,7 +21,7 @@ export default function TabBar({
   return (
     <div
       className="fixed top-0 right-0 z-[110] border-b border-[--border-default]"
-      style={{ height: 56, left: sidebarOffset, backgroundColor: 'var(--surface-default)', transition: 'left 0.3s ease-out' }}
+      style={{ height: 56, left: sidebarOffset, backgroundColor: 'var(--surface-canvas)', transition: 'left 0.3s ease-out' }}
     >
       <div className="flex items-end h-full pl-5">
         {/* Tabs */}
@@ -138,7 +138,7 @@ export default function TabBar({
                 <div
                   onClick={() => onOpenProject(tab.id)}
                   className={`group flex items-center gap-2 px-4 h-10 rounded-t-[--radius-md] cursor-pointer transition-colors duration-150 ${
-                    isTabActive ? 'bg-[--surface-raised] text-[--text-primary]' : 'bg-transparent text-[--text-tertiary] hover:text-[--text-secondary]'
+                    isTabActive ? 'bg-[--surface-default] text-[--text-primary]' : 'bg-transparent text-[--text-tertiary] hover:text-[--text-secondary]'
                   }`}
                   style={{ minWidth: 140, maxWidth: 220 }}
                 >
@@ -186,8 +186,8 @@ export default function TabBar({
                 tabs.length >= maxTabs
                   ? 'text-[--text-disabled] cursor-not-allowed'
                   : showNewTabMenu
-                    ? 'text-[--text-primary] bg-[--surface-raised]'
-                    : 'text-[--text-tertiary] hover:text-[--text-primary] hover:bg-[--surface-raised]'
+                    ? 'text-[--text-primary] bg-[--surface-default]'
+                    : 'text-[--text-tertiary] hover:text-[--text-primary] hover:bg-[--surface-default]'
               }`}
               title={tabs.length >= maxTabs ? 'Maximum tabs reached' : 'New tab'}
             >
