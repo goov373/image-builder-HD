@@ -30,7 +30,7 @@ const DesignSectionHeader = ({
       <div className="flex items-center gap-2">
         <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">{title}</h3>
         {count !== undefined && (
-          <span className="px-1.5 py-0.5 bg-gray-700 rounded text-[10px] text-gray-400">{count}</span>
+          <span className="px-1.5 py-0.5 bg-[--surface-raised] rounded-[--radius-sm] text-[10px] text-[--text-tertiary]">{count}</span>
         )}
       </div>
       <div className="flex items-center gap-2">

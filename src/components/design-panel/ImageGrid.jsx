@@ -82,7 +82,7 @@ const ImageCard = memo(function ImageCard({ file, onRemove }) {
       {/* Header bar */}
       <div className="flex items-center justify-between px-2 py-1.5 bg-gray-900 border-b border-gray-700">
         <div className="flex items-center gap-1.5">
-          <span className="px-1.5 py-0.5 bg-gray-700 rounded text-[10px] text-gray-300 uppercase font-medium">
+          <span className="px-1.5 py-0.5 bg-[--surface-raised] rounded-[--radius-sm] text-[10px] text-[--text-tertiary] uppercase font-medium">
             {file.format}
           </span>
           {file.isPersisted && (

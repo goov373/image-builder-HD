@@ -659,7 +659,7 @@ const DesignSystemPanel = ({
           >
             Assets
             {uploadedFiles.length > 0 && (
-              <span className="ml-1.5 px-1.5 py-0.5 bg-gray-700 rounded text-[10px]">{uploadedFiles.length}</span>
+              <span className="ml-1.5 px-1.5 py-0.5 bg-[--surface-raised] rounded-[--radius-sm] text-[10px] text-[--text-tertiary]">{uploadedFiles.length}</span>
             )}
           </button>
         </div>
@@ -692,7 +692,7 @@ const DesignSystemPanel = ({
                   <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Your Images</h3>
                   <div className="flex items-center gap-2">
                     {uploadedFiles.length > 0 && (
-                      <span className="px-1.5 py-0.5 bg-gray-700 rounded text-[10px] text-gray-300">
+                      <span className="px-1.5 py-0.5 bg-[--surface-raised] rounded-[--radius-sm] text-[10px] text-[--text-tertiary]">
                         {uploadedFiles.length}
                       </span>
                     )}
@@ -763,7 +763,7 @@ const DesignSystemPanel = ({
                   <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Your Product Images</h3>
                   <div className="flex items-center gap-2">
                     {uploadedProductImages.length > 0 && (
-                      <span className="px-1.5 py-0.5 bg-gray-700 rounded text-[10px] text-gray-300">
+                      <span className="px-1.5 py-0.5 bg-[--surface-raised] rounded-[--radius-sm] text-[10px] text-[--text-tertiary]">
                         {uploadedProductImages.length}
                       </span>
                     )}
@@ -882,7 +882,7 @@ const DesignSystemPanel = ({
                   <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Your Docs</h3>
                   <div className="flex items-center gap-2">
                     {uploadedDocs.length > 0 && (
-                      <span className="px-1.5 py-0.5 bg-gray-700 rounded text-[10px] text-gray-300">
+                      <span className="px-1.5 py-0.5 bg-[--surface-raised] rounded-[--radius-sm] text-[10px] text-[--text-tertiary]">
                         {uploadedDocs.length}
                       </span>
                     )}
@@ -991,7 +991,7 @@ const DesignSystemPanel = ({
                   >
                     <div className="flex items-center gap-2">
                       <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Add Indicator</h3>
-                      <span className="px-1.5 py-0.5 bg-gray-700 rounded text-[10px] text-gray-400">6</span>
+                      <span className="px-1.5 py-0.5 bg-[--surface-raised] rounded-[--radius-sm] text-[10px] text-[--text-tertiary]">6</span>
                     </div>
                     <svg
                       className={`w-4 h-4 text-gray-500 transition-transform ${collapsedSections.pageIndicators ? '' : 'rotate-180'}`}
@@ -1222,7 +1222,7 @@ const DesignSystemPanel = ({
                   >
                     <div className="flex items-center gap-2">
                       <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Set Background</h3>
-                      <span className="px-1.5 py-0.5 bg-gray-700 rounded text-[10px] text-gray-400">
+                      <span className="px-1.5 py-0.5 bg-[--surface-raised] rounded-[--radius-sm] text-[10px] text-[--text-tertiary]">
                         {allGradients.length + solidColors.length}
                       </span>
                     </div>
@@ -1325,7 +1325,7 @@ const DesignSystemPanel = ({
                     <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Add Product Image</h3>
                     <div className="flex items-center gap-2">
                       {uploadedProductImages.length > 0 && (
-                        <span className="px-1.5 py-0.5 bg-gray-700 rounded text-[10px] text-gray-300">
+                        <span className="px-1.5 py-0.5 bg-[--surface-raised] rounded-[--radius-sm] text-[10px] text-[--text-tertiary]">
                           {uploadedProductImages.length}
                         </span>
                       )}
@@ -1431,7 +1431,7 @@ const DesignSystemPanel = ({
                     <div className="flex items-center gap-2">
                       <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Add Photo</h3>
                       {uploadedFiles.length > 0 && (
-                        <span className="px-1.5 py-0.5 bg-gray-700 rounded text-[10px] text-gray-400">
+                        <span className="px-1.5 py-0.5 bg-[--surface-raised] rounded-[--radius-sm] text-[10px] text-[--text-tertiary]">
                           {uploadedFiles.length}
                         </span>
                       )}
@@ -1504,7 +1504,7 @@ const DesignSystemPanel = ({
                               {/* Header bar */}
                               <div className="flex items-center justify-between px-2 py-1.5 bg-gray-900 border-b border-gray-700">
                                 <div className="flex items-center gap-1.5">
-                                  <span className="px-1.5 py-0.5 bg-gray-700 rounded text-[10px] text-gray-300 uppercase font-medium">
+                                  <span className="px-1.5 py-0.5 bg-[--surface-raised] rounded-[--radius-sm] text-[10px] text-[--text-tertiary] uppercase font-medium">
                                     {file.format}
                                   </span>
                                   {file.isPersisted && (
@@ -1648,7 +1648,7 @@ const DesignSystemPanel = ({
                   >
                     <div className="flex items-center gap-2">
                       <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Add Pattern</h3>
-                      <span className="px-1.5 py-0.5 bg-gray-700 rounded text-[10px] text-gray-400">18</span>
+                      <span className="px-1.5 py-0.5 bg-[--surface-raised] rounded-[--radius-sm] text-[10px] text-[--text-tertiary]">18</span>
                     </div>
                     <svg
                       className={`w-4 h-4 text-gray-500 transition-transform ${collapsedSections.patterns ? '' : 'rotate-180'}`}
