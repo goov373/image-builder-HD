@@ -921,7 +921,7 @@ const DesignSystemPanel = ({
                     className={`group relative p-3 rounded-lg border transition-all ${
                       hasFrameSelected 
                         ? isSelected
-                          ? 'border-purple-500 bg-purple-500/10'
+                          ? 'border-gray-400 bg-gray-600/30'
                           : 'border-gray-700 hover:border-gray-500 bg-gray-800/50'
                         : 'border-gray-700/50 opacity-50 cursor-not-allowed'
                     }`}
