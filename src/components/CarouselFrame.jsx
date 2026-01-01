@@ -19,6 +19,15 @@ import ImageLayer from './ImageLayer';
 import PatternLayer from './PatternLayer';
 import ProductImageLayer from './ProductImageLayer';
 import IconLayer from './IconLayer';
+import { ColorDropdown } from './ui';
+import { 
+  IconToolPanel, 
+  ProgressToolPanel,
+  FillToolPanel,
+  PatternToolPanel,
+  ImageToolPanel,
+  ProductImageToolPanel,
+} from './carousel/tool-panels';
 
 /**
  * SortableLayerRow Component
@@ -266,317 +275,6 @@ const ProgressIndicatorOverlay = ({
   }
   
   return null;
-};
-
-/**
- * Color Dropdown Component
- * A dropdown selector for brand colors
- */
-const ColorDropdown = ({ 
-  label, 
-  value, 
-  onChange, 
-  colors, 
-  allowNone = false,
-  noneLabel = 'None'
-}) => {
-  const [isOpen, setIsOpen] = useState(false);
-  
-  return (
-    <div className="relative">
-      <button
-        type="button"
-        onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 bg-gray-800/90 hover:bg-gray-700/90 rounded-lg px-2.5 py-1.5 transition-colors"
-      >
-        <span className="text-gray-400 text-[10px]">{label}</span>
-        <div className="flex items-center gap-1.5">
-          {value ? (
-            <div 
-              className="w-4 h-4 rounded border border-gray-500"
-              style={{ backgroundColor: value }}
-            />
-          ) : (
-            <div className="w-4 h-4 rounded border border-gray-500 bg-gray-600 flex items-center justify-center">
-              <svg className="w-2.5 h-2.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </div>
-          )}
-          <svg className={`w-3 h-3 text-gray-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-          </svg>
-        </div>
-      </button>
-      
-      {isOpen && (
-        <div 
-          className="absolute top-full left-0 mt-1 bg-gray-800 rounded-lg shadow-xl border border-gray-700 p-1.5 z-50"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <div className="flex flex-wrap gap-1" style={{ width: '82px' }}>
-            {allowNone && (
-              <button
-                type="button"
-                onClick={() => { onChange(null); setIsOpen(false); }}
-                className={`w-6 h-6 rounded border-2 transition-all flex items-center justify-center ${!value ? 'border-white scale-110' : 'border-gray-600 hover:border-gray-400'}`}
-                style={{ backgroundColor: '#374151' }}
-                title={noneLabel}
-              >
-                <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            )}
-            {colors.map(({ name, color }) => (
-              <button
-                key={name}
-                type="button"
-                onClick={() => { onChange(color); setIsOpen(false); }}
-                className={`w-6 h-6 rounded border-2 transition-all ${value === color ? 'border-white scale-110' : 'border-gray-600 hover:border-gray-400'}`}
-                style={{ backgroundColor: color }}
-                title={name}
-              />
-            ))}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-};
-
-/**
- * Icon Edit Panel Component
- * Controls for editing icon layer properties
- */
-const IconEditPanel = ({
-  frame,
-  carouselId,
-  designSystem,
-  onUpdateIconLayer,
-  onRequestAddIcon,
-  handleDeleteIcon,
-  handleCancelIconEdit,
-  handleDoneIconEdit,
-}) => {
-  // Brand colors array
-  const brandColors = [
-    { name: 'Primary', color: designSystem.primary },
-    { name: 'Secondary', color: designSystem.secondary },
-    { name: 'Accent', color: designSystem.accent },
-    { name: 'Dark', color: designSystem.neutral1 },
-    { name: 'Mid Grey', color: designSystem.neutral2 },
-    { name: 'Light Grey', color: designSystem.neutral4 },
-    { name: 'Primary 2', color: designSystem.primary2 },
-    { name: 'Accent 2', color: designSystem.accent2 },
-    { name: 'White', color: designSystem.neutral3 },
-  ];
-
-  return (
-    <div 
-      className="mt-1.5 flex flex-col gap-1.5" 
-      data-icon-edit-controls
-      onClick={(e) => e.stopPropagation()}
-      onMouseDown={(e) => e.stopPropagation()}
-    >
-      {/* Row 1: Action buttons and color dropdowns */}
-      <div className="flex items-center gap-2 flex-wrap">
-        {/* Change Icon Button */}
-        <button
-          type="button"
-          onClick={() => { onRequestAddIcon?.(); }}
-          className="flex items-center gap-1.5 bg-gray-700/90 hover:bg-gray-600/90 rounded-lg px-2.5 py-1.5 text-gray-300 hover:text-white text-[10px] font-medium transition-colors"
-          title="Change icon"
-        >
-          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-          </svg>
-          Change
-        </button>
-
-        {/* Icon Color Dropdown */}
-        <ColorDropdown
-          label="Icon"
-          value={frame.iconLayer.color}
-          onChange={(color) => onUpdateIconLayer?.(carouselId, frame.id, { color: color || '#ffffff' })}
-          colors={brandColors}
-        />
-
-        {/* Border Color Dropdown */}
-        <ColorDropdown
-          label="Border"
-          value={frame.iconLayer.borderColor}
-          onChange={(color) => onUpdateIconLayer?.(carouselId, frame.id, { borderColor: color })}
-          colors={brandColors}
-          allowNone
-          noneLabel="None"
-        />
-
-        {/* Fill Color Dropdown */}
-        <ColorDropdown
-          label="Fill"
-          value={frame.iconLayer.backgroundColor}
-          onChange={(color) => onUpdateIconLayer?.(carouselId, frame.id, { backgroundColor: color })}
-          colors={brandColors}
-          allowNone
-          noneLabel="None"
-        />
-      </div>
-
-      {/* Row 2: Cancel, Done, Remove buttons */}
-      <div className="flex items-center gap-2">
-        {/* Cancel Button */}
-        <button
-          type="button"
-          onClick={handleCancelIconEdit}
-          className="bg-gray-800/90 hover:bg-gray-700 rounded-lg px-2.5 py-1.5 text-gray-400 hover:text-white text-[10px] font-medium transition-colors"
-          title="Cancel and revert changes"
-        >
-          Cancel
-        </button>
-
-        {/* Done Button */}
-        <button
-          type="button"
-          onClick={handleDoneIconEdit}
-          className="bg-gray-600/90 hover:bg-gray-500 rounded-lg px-2.5 py-1.5 text-white text-[10px] font-medium transition-colors"
-          title="Done editing"
-        >
-          Done
-        </button>
-
-        {/* Remove Icon Button */}
-        <button
-          type="button"
-          onClick={handleDeleteIcon}
-          className="flex items-center justify-center bg-gray-800/90 hover:bg-red-600 rounded-lg px-2 py-1.5 text-gray-400 hover:text-white transition-colors"
-          title="Remove icon"
-        >
-          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-          </svg>
-        </button>
-      </div>
-    </div>
-  );
-};
-
-/**
- * Progress Edit Panel Component
- * Controls for editing progress indicator properties
- */
-const ProgressEditPanel = ({
-  frame,
-  carouselId,
-  designSystem,
-  onUpdateProgressIndicator,
-  handleCancelProgressEdit,
-  handleDoneProgressEdit,
-}) => {
-  // Get current progress indicator settings (with defaults)
-  const progressIndicator = frame.progressIndicator || { type: 'dots', color: '#ffffff', isHidden: false };
-  
-  // Brand colors array
-  const brandColors = [
-    { name: 'Primary', color: designSystem.primary },
-    { name: 'Secondary', color: designSystem.secondary },
-    { name: 'Accent', color: designSystem.accent },
-    { name: 'Dark', color: designSystem.neutral1 },
-    { name: 'Mid Grey', color: designSystem.neutral2 },
-    { name: 'Light Grey', color: designSystem.neutral4 },
-    { name: 'Primary 2', color: designSystem.primary2 },
-    { name: 'Accent 2', color: designSystem.accent2 },
-    { name: 'White', color: designSystem.neutral3 },
-  ];
-
-  const progressTypes = [
-    { key: 'dots', label: 'Dots' },
-    { key: 'arrows', label: 'Arrows' },
-    { key: 'bar', label: 'Bar' },
-  ];
-
-  return (
-    <div 
-      className="mt-1.5 flex flex-col gap-1.5" 
-      data-progress-edit-controls
-      onClick={(e) => e.stopPropagation()}
-      onMouseDown={(e) => e.stopPropagation()}
-    >
-      {/* Row 1: Type selector and Color dropdown */}
-      <div className="flex items-center gap-2 flex-wrap">
-        {/* Type Selector */}
-        <div className="flex items-center gap-1 bg-gray-800/90 rounded-lg px-2 py-1.5">
-          <span className="text-gray-400 text-[10px] mr-1">Type</span>
-          {progressTypes.map(({ key, label }) => (
-            <button
-              key={key}
-              type="button"
-              onClick={() => onUpdateProgressIndicator?.(carouselId, frame.id, { type: key })}
-              className={`px-2 py-0.5 rounded text-[10px] transition-colors ${
-                progressIndicator.type === key 
-                  ? 'bg-gray-600 text-white' 
-                  : 'text-gray-400 hover:text-white hover:bg-gray-700'
-              }`}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-
-        {/* Color Dropdown */}
-        <ColorDropdown
-          label="Color"
-          value={progressIndicator.color || '#ffffff'}
-          onChange={(color) => onUpdateProgressIndicator?.(carouselId, frame.id, { color: color || '#ffffff' })}
-          colors={brandColors}
-        />
-
-        {/* Hide/Show Toggle */}
-        <button
-          type="button"
-          onClick={() => onUpdateProgressIndicator?.(carouselId, frame.id, { isHidden: !progressIndicator.isHidden })}
-          className={`flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[10px] font-medium transition-colors ${
-            progressIndicator.isHidden 
-              ? 'bg-gray-700/90 text-gray-400 hover:bg-gray-600/90 hover:text-white' 
-              : 'bg-gray-700/90 text-white hover:bg-gray-600/90'
-          }`}
-          title={progressIndicator.isHidden ? 'Show indicator' : 'Hide indicator'}
-        >
-          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            {progressIndicator.isHidden ? (
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-            ) : (
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
-            )}
-          </svg>
-          {progressIndicator.isHidden ? 'Show' : 'Hide'}
-        </button>
-      </div>
-
-      {/* Row 2: Cancel and Done buttons */}
-      <div className="flex items-center gap-2">
-        {/* Cancel Button */}
-        <button
-          type="button"
-          onClick={handleCancelProgressEdit}
-          className="bg-gray-800/90 hover:bg-gray-700 rounded-lg px-2.5 py-1.5 text-gray-400 hover:text-white text-[10px] font-medium transition-colors"
-          title="Cancel and revert changes"
-        >
-          Cancel
-        </button>
-
-        {/* Done Button */}
-        <button
-          type="button"
-          onClick={handleDoneProgressEdit}
-          className="bg-gray-600/90 hover:bg-gray-500 rounded-lg px-2.5 py-1.5 text-white text-[10px] font-medium transition-colors"
-          title="Done editing"
-        >
-          Done
-        </button>
-      </div>
-    </div>
-  );
 };
 
 /**
@@ -2017,27 +1715,27 @@ export const CarouselFrame = ({
       
       {/* Icon Edit Controls - appears below frame when editing icon, hidden during drag */}
       {isIconEditing && !isDraggingAny && frame.iconLayer && (
-        <IconEditPanel
+        <IconToolPanel
           frame={frame}
           carouselId={carouselId}
           designSystem={designSystem}
           onUpdateIconLayer={onUpdateIconLayer}
           onRequestAddIcon={onRequestAddIcon}
-          handleDeleteIcon={handleDeleteIcon}
-          handleCancelIconEdit={handleCancelIconEdit}
-          handleDoneIconEdit={handleDoneIconEdit}
+          onDelete={handleDeleteIcon}
+          onCancel={handleCancelIconEdit}
+          onDone={handleDoneIconEdit}
         />
       )}
       
       {/* Progress Edit Controls - appears below frame when editing progress indicator, hidden during drag */}
       {isProgressEditing && !isDraggingAny && (
-        <ProgressEditPanel
+        <ProgressToolPanel
           frame={frame}
           carouselId={carouselId}
           designSystem={designSystem}
           onUpdateProgressIndicator={onUpdateProgressIndicator}
-          handleCancelProgressEdit={handleCancelProgressEdit}
-          handleDoneProgressEdit={handleDoneProgressEdit}
+          onCancel={handleCancelProgressEdit}
+          onDone={handleDoneProgressEdit}
         />
       )}
       </div>
