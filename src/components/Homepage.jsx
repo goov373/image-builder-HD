@@ -114,9 +114,9 @@ const Homepage = ({
       {/* Header */}
       <div className="max-w-6xl mx-auto mb-12">
         <div className="flex items-center gap-4 mb-2">
-          <div className="w-12 h-12 rounded-md bg-gradient-to-br from-gray-600 to-gray-700 flex items-center justify-center">
+          <div className="w-12 h-12 rounded-[--radius-md] bg-[--surface-raised] border border-[--border-default] flex items-center justify-center">
             <svg
-              className="w-7 h-7 text-white"
+              className="w-7 h-7 text-[--text-tertiary]"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -131,21 +131,21 @@ const Homepage = ({
             </svg>
           </div>
           <div>
-            <h1 className="text-3xl font-bold text-white">Content Builder</h1>
+            <h1 className="text-3xl font-bold text-[--text-primary]">Content Builder</h1>
             <div className="flex flex-wrap items-center gap-2 mt-1">
-              <span className="px-2 py-0.5 bg-gray-800 border border-gray-700 rounded-full text-xs text-gray-300">
+              <span className="px-2 py-0.5 bg-[--surface-raised] border border-[--border-default] rounded-full text-xs text-[--text-tertiary]">
                 social carousels
               </span>
-              <span className="px-2 py-0.5 bg-gray-800 border border-gray-700 rounded-full text-xs text-gray-300">
+              <span className="px-2 py-0.5 bg-[--surface-raised] border border-[--border-default] rounded-full text-xs text-[--text-tertiary]">
                 product images
               </span>
-              <span className="px-2 py-0.5 bg-gray-800 border border-gray-700 rounded-full text-xs text-gray-300">
+              <span className="px-2 py-0.5 bg-[--surface-raised] border border-[--border-default] rounded-full text-xs text-[--text-tertiary]">
                 eblast graphics
               </span>
-              <span className="px-2 py-0.5 bg-gray-800 border border-gray-700 rounded-full text-xs text-gray-300">
+              <span className="px-2 py-0.5 bg-[--surface-raised] border border-[--border-default] rounded-full text-xs text-[--text-tertiary]">
                 animated gifs
               </span>
-              <span className="px-2 py-0.5 bg-gray-800 border border-gray-700 rounded-full text-xs text-gray-300">
+              <span className="px-2 py-0.5 bg-[--surface-raised] border border-[--border-default] rounded-full text-xs text-[--text-tertiary]">
                 website snippets
               </span>
             </div>
@@ -156,7 +156,7 @@ const Homepage = ({
       {/* Recent Projects Section - shows 6 most recent */}
       {projects.filter((p) => p.hasContent).length > 0 && (
         <div className="max-w-6xl mx-auto mb-10">
-          <h2 className="text-sm font-medium text-gray-400 uppercase tracking-wide mb-4">Recent</h2>
+          <h2 className="text-sm font-medium text-[--text-tertiary] uppercase tracking-wide mb-4">Recent</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {[...projects]
               .filter((p) => p.hasContent)
