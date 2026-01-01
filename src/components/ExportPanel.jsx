@@ -314,19 +314,19 @@ const ExportPanel = ({
   return (
     <>
       <div
-        className={`fixed top-[56px] h-[calc(100%-56px)] w-72 bg-gray-900 border-r border-t border-gray-800 z-40 flex flex-col ${isOpen ? 'pointer-events-auto' : 'pointer-events-none'}`}
+        className={`fixed top-[56px] h-[calc(100%-56px)] w-72 bg-[--surface-canvas] border-r border-t border-[--border-default] z-40 flex flex-col ${isOpen ? 'pointer-events-auto' : 'pointer-events-none'}`}
         style={{ left: isOpen ? 64 : -224, transition: 'left 0.3s ease-out' }}
       >
         {/* Fixed Header */}
         <div
-          className="flex-shrink-0 px-4 border-b border-gray-800 flex items-center justify-between"
+          className="flex-shrink-0 px-4 border-b border-[--border-default] flex items-center justify-between"
           style={{ height: 64 }}
         >
           <h2 className="text-sm font-semibold text-white">Export</h2>
           <button
             type="button"
             onClick={onClose}
-            className="w-8 h-8 rounded flex items-center justify-center text-gray-500 hover:text-white hover:bg-gray-700 transition-colors"
+            className="w-8 h-8 rounded flex items-center justify-center text-[--text-quaternary] hover:text-white hover:bg-[--surface-overlay] transition-colors"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -339,7 +339,7 @@ const ExportPanel = ({
           <div className="p-4 space-y-5">
             {/* Quick Export Presets */}
             <div>
-              <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">Quick Export</h3>
+              <h3 className="text-xs font-medium text-[--text-quaternary] uppercase tracking-wide mb-2">Quick Export</h3>
               <div className="flex gap-2 overflow-x-auto pb-2 -mx-1 px-1 hide-scrollbar">
                 {exportPresets.map((preset) => (
                   <button
@@ -348,8 +348,8 @@ const ExportPanel = ({
                     onClick={() => applyPreset(preset)}
                     className={`flex-shrink-0 flex items-center gap-2 px-3 py-2 rounded border transition-all ${
                       selectedPreset === preset.id
-                        ? 'bg-gray-700 border-gray-500 text-white'
-                        : 'bg-gray-800/50 border-gray-700 text-gray-400 hover:bg-gray-700 hover:border-gray-600 hover:text-gray-300'
+                        ? 'bg-[--surface-overlay] border-[--border-strong] text-white'
+                        : 'bg-[--surface-raised]/50 border-[--border-default] text-[--text-tertiary] hover:bg-[--surface-overlay] hover:border-[--border-emphasis] hover:text-[--text-secondary]'
                     }`}
                     title={preset.description}
                   >
@@ -361,33 +361,33 @@ const ExportPanel = ({
                 ))}
               </div>
               {selectedPreset && (
-                <p className="text-[10px] text-gray-500 mt-2">
+                <p className="text-[10px] text-[--text-quaternary] mt-2">
                   {exportPresets.find((p) => p.id === selectedPreset)?.description}
                 </p>
               )}
             </div>
 
             {/* Divider */}
-            <div className="border-t border-gray-800" />
+            <div className="border-t border-[--border-default]" />
 
             {/* Project & Frame Selection */}
             <div>
               <div className="flex items-center justify-between mb-2">
-                <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wide">Select Content</h3>
+                <h3 className="text-xs font-medium text-[--text-quaternary] uppercase tracking-wide">Select Content</h3>
                 {selectedProject && (
                   <div className="flex gap-2">
                     <button
                       type="button"
                       onClick={selectAll}
-                      className="text-[10px] text-gray-400 hover:text-white transition-colors"
+                      className="text-[10px] text-[--text-tertiary] hover:text-white transition-colors"
                     >
                       All
                     </button>
-                    <span className="text-gray-700">|</span>
+                    <span className="text-[--text-quaternary]">|</span>
                     <button
                       type="button"
                       onClick={deselectAll}
-                      className="text-[10px] text-gray-500 hover:text-gray-400 transition-colors"
+                      className="text-[10px] text-[--text-quaternary] hover:text-[--text-tertiary] transition-colors"
                     >
                       None
                     </button>
@@ -396,9 +396,9 @@ const ExportPanel = ({
               </div>
 
               {allProjects.length === 0 ? (
-                <div className="bg-gray-800/30 rounded border border-gray-700/50 p-4 text-center">
+                <div className="bg-[--surface-raised]/30 rounded border border-[--border-default]/50 p-4 text-center">
                   <svg
-                    className="w-6 h-6 mx-auto mb-2 text-gray-600"
+                    className="w-6 h-6 mx-auto mb-2 text-[--text-disabled]"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -410,12 +410,12 @@ const ExportPanel = ({
                       d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
                     />
                   </svg>
-                  <p className="text-xs text-gray-500">No projects available</p>
+                  <p className="text-xs text-[--text-quaternary]">No projects available</p>
                 </div>
               ) : (
-                <div className="bg-gray-800/30 rounded border border-gray-700/50 overflow-hidden transition-colors hover:border-gray-600/50">
+                <div className="bg-[--surface-raised]/30 rounded border border-[--border-default]/50 overflow-hidden transition-colors hover:border-[--border-emphasis]/50">
                   {/* Project Dropdown Row */}
-                  <div className="flex items-center gap-2 px-3 py-2.5 border-b border-gray-700/30">
+                  <div className="flex items-center gap-2 px-3 py-2.5 border-b border-[--border-default]/30">
                     {/* Select All Checkbox */}
                     <button
                       type="button"
@@ -428,10 +428,10 @@ const ExportPanel = ({
                       }}
                       className={`w-4 h-4 rounded flex-shrink-0 border flex items-center justify-center transition-all ${
                         selectedCount === totalItems && totalItems > 0
-                          ? 'bg-gray-600 border-gray-500'
+                          ? 'bg-[--surface-elevated] border-[--border-strong]'
                           : selectedCount > 0
-                            ? 'bg-gray-700 border-gray-500'
-                            : 'border-gray-600 hover:border-gray-500'
+                            ? 'bg-[--surface-overlay] border-[--border-strong]'
+                            : 'border-[--border-emphasis] hover:border-[--border-strong]'
                       }`}
                     >
                       {selectedCount === totalItems && totalItems > 0 && (
@@ -445,7 +445,7 @@ const ExportPanel = ({
                     </button>
 
                     {/* Type Icon */}
-                    <span className="text-gray-500 flex-shrink-0">
+                    <span className="text-[--text-quaternary] flex-shrink-0">
                       {selectedProject && getTypeIcon(selectedProject.type)}
                     </span>
 
@@ -454,16 +454,16 @@ const ExportPanel = ({
                       <select
                         value={selectedProjectKey}
                         onChange={(e) => handleProjectChange(e.target.value)}
-                        className="w-full bg-transparent pr-6 text-xs text-white hover:text-gray-300 focus:outline-none transition-colors cursor-pointer appearance-none"
+                        className="w-full bg-transparent pr-6 text-xs text-white hover:text-[--text-secondary] focus:outline-none transition-colors cursor-pointer appearance-none"
                       >
                         {allProjects.map((project) => (
-                          <option key={project.key} value={project.key} className="bg-gray-800 text-white">
+                          <option key={project.key} value={project.key} className="bg-[--surface-raised] text-white">
                             {project.name}
                           </option>
                         ))}
                       </select>
                       <svg
-                        className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 text-gray-500 pointer-events-none"
+                        className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 text-[--text-quaternary] pointer-events-none"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -473,7 +473,7 @@ const ExportPanel = ({
                     </div>
 
                     {/* Frame count badge */}
-                    <span className="text-[10px] text-gray-500 flex-shrink-0">
+                    <span className="text-[10px] text-[--text-quaternary] flex-shrink-0">
                       {totalItems} {itemLabel.toLowerCase()}
                       {totalItems !== 1 ? 's' : ''}
                     </span>
@@ -481,7 +481,7 @@ const ExportPanel = ({
 
                   {/* Frame Selection Sub-panel */}
                   {selectedProject && projectItems.length > 0 && (
-                    <div className="p-3 bg-gray-800/20">
+                    <div className="p-3 bg-[--surface-raised]/20">
                       <div className="flex flex-wrap gap-1.5">
                         {projectItems.map((item, index) => (
                           <button
@@ -490,8 +490,8 @@ const ExportPanel = ({
                             onClick={() => toggleItem(item.id)}
                             className={`px-2.5 py-1 rounded text-[10px] font-medium transition-all border ${
                               selectedItems[item.id]
-                                ? 'bg-gray-700 border-gray-500 text-white'
-                                : 'bg-gray-800/50 border-gray-700 text-gray-500 hover:bg-gray-700 hover:border-gray-600 hover:text-gray-300'
+                                ? 'bg-[--surface-overlay] border-[--border-strong] text-white'
+                                : 'bg-[--surface-raised]/50 border-[--border-default] text-[--text-quaternary] hover:bg-[--surface-overlay] hover:border-[--border-emphasis] hover:text-[--text-secondary]'
                             }`}
                           >
                             {itemLabel} {index + 1}
@@ -503,14 +503,14 @@ const ExportPanel = ({
 
                   {selectedProject && projectItems.length === 0 && (
                     <div className="p-3 text-center">
-                      <p className="text-[10px] text-gray-500">No {itemLabel.toLowerCase()}s in this project</p>
+                      <p className="text-[10px] text-[--text-quaternary]">No {itemLabel.toLowerCase()}s in this project</p>
                     </div>
                   )}
                 </div>
               )}
 
               {selectedProject && (
-                <p className="text-[10px] text-gray-600 mt-2">
+                <p className="text-[10px] text-[--text-disabled] mt-2">
                   {selectedCount} of {totalItems} {itemLabel.toLowerCase()}s selected
                 </p>
               )}
@@ -518,7 +518,7 @@ const ExportPanel = ({
 
             {/* Format Section */}
             <div>
-              <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">Format</h3>
+              <h3 className="text-xs font-medium text-[--text-quaternary] uppercase tracking-wide mb-2">Format</h3>
               <div className="grid grid-cols-3 gap-1.5">
                 {formats.map((f) => (
                   <button
@@ -535,15 +535,15 @@ const ExportPanel = ({
                     title={f.comingSoon ? 'Coming soon' : undefined}
                     className={`px-2 py-2 rounded text-xs font-medium transition-all border relative ${
                       !f.available
-                        ? 'bg-gray-800/30 border-gray-700/50 text-gray-600 cursor-not-allowed opacity-50'
+                        ? 'bg-[--surface-raised]/30 border-[--border-default]/50 text-[--text-disabled] cursor-not-allowed opacity-50'
                         : format === f.id
-                          ? 'bg-gray-700 border-gray-500 text-white'
-                          : 'bg-gray-800/50 border-gray-700 text-gray-500 hover:bg-gray-700 hover:border-gray-600 hover:text-gray-300'
+                          ? 'bg-[--surface-overlay] border-[--border-strong] text-white'
+                          : 'bg-[--surface-raised]/50 border-[--border-default] text-[--text-quaternary] hover:bg-[--surface-overlay] hover:border-[--border-emphasis] hover:text-[--text-secondary]'
                     }`}
                   >
                     {f.name}
                     {f.comingSoon && (
-                      <span className="absolute -top-1 -right-1 w-2 h-2 bg-gray-500 rounded-full" title="Coming soon" />
+                      <span className="absolute -top-1 -right-1 w-2 h-2 bg-[--surface-elevated] rounded-full" title="Coming soon" />
                     )}
                   </button>
                 ))}
@@ -552,7 +552,7 @@ const ExportPanel = ({
 
             {/* Resolution Section */}
             <div>
-              <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">Resolution</h3>
+              <h3 className="text-xs font-medium text-[--text-quaternary] uppercase tracking-wide mb-2">Resolution</h3>
               <div className="grid grid-cols-3 gap-1.5">
                 {resolutions.map((r) => (
                   <button
@@ -561,12 +561,12 @@ const ExportPanel = ({
                     onClick={() => setResolution(r.id)}
                     className={`px-2 py-2 rounded text-center transition-all border ${
                       resolution === r.id
-                        ? 'bg-gray-700 border-gray-500 text-white'
-                        : 'bg-gray-800/50 border-gray-700 text-gray-500 hover:bg-gray-700 hover:border-gray-600 hover:text-gray-300'
+                        ? 'bg-[--surface-overlay] border-[--border-strong] text-white'
+                        : 'bg-[--surface-raised]/50 border-[--border-default] text-[--text-quaternary] hover:bg-[--surface-overlay] hover:border-[--border-emphasis] hover:text-[--text-secondary]'
                     }`}
                   >
                     <div className="text-xs font-medium">{r.name}</div>
-                    <div className="text-[9px] text-gray-500">{r.desc}</div>
+                    <div className="text-[9px] text-[--text-quaternary]">{r.desc}</div>
                   </button>
                 ))}
               </div>
@@ -574,7 +574,7 @@ const ExportPanel = ({
 
             {/* Background Section */}
             <div>
-              <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">Background</h3>
+              <h3 className="text-xs font-medium text-[--text-quaternary] uppercase tracking-wide mb-2">Background</h3>
               <div className="space-y-1.5">
                 {backgroundOptions.map((bg) => (
                   <button
@@ -584,26 +584,26 @@ const ExportPanel = ({
                     disabled={bg.id === 'transparent' && !supportsTransparent}
                     className={`w-full flex items-center gap-3 px-3 py-2.5 rounded text-left transition-all border ${
                       background === bg.id
-                        ? 'bg-gray-800/80 border-gray-600'
+                        ? 'bg-[--surface-raised]/80 border-[--border-emphasis]'
                         : bg.id === 'transparent' && !supportsTransparent
-                          ? 'bg-gray-800/30 border-gray-700/50 opacity-40 cursor-not-allowed'
-                          : 'bg-gray-800/30 border-gray-700/50 hover:bg-gray-800/50 hover:border-gray-600'
+                          ? 'bg-[--surface-raised]/30 border-[--border-default]/50 opacity-40 cursor-not-allowed'
+                          : 'bg-[--surface-raised]/30 border-[--border-default]/50 hover:bg-[--surface-raised]/50 hover:border-[--border-emphasis]'
                     }`}
                   >
                     <div
                       className={`w-4 h-4 rounded-full border-2 flex items-center justify-center transition-colors ${
-                        background === bg.id ? 'border-gray-400' : 'border-gray-600'
+                        background === bg.id ? 'border-[--border-strong]' : 'border-[--border-emphasis]'
                       }`}
                     >
                       {background === bg.id && <div className="w-2 h-2 rounded-full bg-white" />}
                     </div>
                     <div className="flex-1">
                       <div
-                        className={`text-xs transition-colors ${background === bg.id ? 'text-white' : 'text-gray-400'}`}
+                        className={`text-xs transition-colors ${background === bg.id ? 'text-white' : 'text-[--text-tertiary]'}`}
                       >
                         {bg.name}
                       </div>
-                      <div className="text-[10px] text-gray-600">{bg.desc}</div>
+                      <div className="text-[10px] text-[--text-disabled]">{bg.desc}</div>
                     </div>
                     {bg.id === 'custom' && background === 'custom' && (
                       <input
@@ -611,7 +611,7 @@ const ExportPanel = ({
                         value={customBgColor}
                         onChange={(e) => setCustomBgColor(e.target.value)}
                         onClick={(e) => e.stopPropagation()}
-                        className="w-6 h-6 rounded cursor-pointer border border-gray-600"
+                        className="w-6 h-6 rounded cursor-pointer border border-[--border-emphasis]"
                       />
                     )}
                   </button>
@@ -622,13 +622,13 @@ const ExportPanel = ({
         </div>
 
         {/* Fixed Footer - Export Button */}
-        <div className="flex-shrink-0 p-4 border-t border-gray-800 bg-gray-900">
+        <div className="flex-shrink-0 p-4 border-t border-[--border-default] bg-[--surface-canvas]">
           {exportSuccess && (
-            <div className="mb-3 px-3 py-2 bg-gray-800/50 border border-gray-600 rounded flex items-center gap-2">
+            <div className="mb-3 px-3 py-2 bg-[--surface-raised]/50 border border-[--border-emphasis] rounded flex items-center gap-2">
               <svg className="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
-              <span className="text-xs text-gray-300">Export complete!</span>
+              <span className="text-xs text-[--text-secondary]">Export complete!</span>
             </div>
           )}
           <button
@@ -637,8 +637,8 @@ const ExportPanel = ({
             disabled={selectedCount === 0 || isExporting}
             className={`w-full py-2.5 rounded text-sm font-medium transition-all flex items-center justify-center gap-2 border ${
               selectedCount > 0 && !isExporting
-                ? 'bg-gray-700 hover:bg-gray-600 border-gray-600 hover:border-gray-500 text-white'
-                : 'bg-gray-800/50 border-gray-700 text-gray-600 cursor-not-allowed'
+                ? 'bg-[--surface-overlay] hover:bg-[--surface-elevated] border-[--border-emphasis] hover:border-[--border-strong] text-white'
+                : 'bg-[--surface-raised]/50 border-[--border-default] text-[--text-disabled] cursor-not-allowed'
             }`}
           >
             {isExporting ? (
