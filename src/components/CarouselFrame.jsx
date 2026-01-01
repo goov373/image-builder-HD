@@ -1299,33 +1299,33 @@ export const CarouselFrame = ({
             {/* Foreground Layers Section */}
             <div className="text-[9px] text-gray-500 uppercase tracking-wider px-1 pb-1">Foreground Layers</div>
             <div className="border-t border-gray-600/50">
-              {/* 1. Progress Indicator */}
+              {/* 1. Progress Indicator - visible by default, only hidden when explicitly isHidden: true */}
               <div 
                 className={`flex items-center gap-1.5 px-2 py-1.5 border-b border-gray-600/50 group cursor-pointer transition-colors hover:bg-gray-700/50 ${
-                  frame.progressIndicator?.isHidden !== false ? 'opacity-60' : ''
+                  frame.progressIndicator?.isHidden === true ? 'opacity-60' : ''
                 }`}
-                title={frame.progressIndicator?.isHidden !== false ? "Add progress indicator" : "Edit progress indicator"}
+                title={frame.progressIndicator?.isHidden === true ? "Add progress indicator" : "Edit progress indicator"}
                 onClick={(e) => { 
                   e.stopPropagation(); 
-                  if (frame.progressIndicator?.isHidden !== false) {
-                    // Empty - just open design menu, tool panel opens automatically after selection
+                  if (frame.progressIndicator?.isHidden === true) {
+                    // Hidden - just open design menu, tool panel opens automatically after selection
                     onRequestAddPageIndicator?.();
                   } else {
-                    // Has content - open both design menu and tool panel
+                    // Visible (default or explicit) - open both design menu and tool panel
                     onRequestAddPageIndicator?.();
                     handleStartProgressEdit();
                   }
                 }}
               >
-                <svg className={`w-3 h-3 ${frame.progressIndicator?.isHidden !== false ? 'text-gray-500' : 'text-gray-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className={`w-3 h-3 ${frame.progressIndicator?.isHidden === true ? 'text-gray-500' : 'text-gray-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
                 </svg>
                 <span className={`text-[10px] transition-colors ${
-                  frame.progressIndicator?.isHidden !== false 
+                  frame.progressIndicator?.isHidden === true 
                     ? 'text-gray-500 group-hover:text-gray-300' 
                     : 'text-gray-400 group-hover:text-white'
                 }`}>Progress</span>
-                {frame.progressIndicator?.isHidden !== false ? (
+                {frame.progressIndicator?.isHidden === true ? (
                   <span className="ml-auto text-[8px] text-gray-600 italic">empty</span>
                 ) : (
                   <span 
