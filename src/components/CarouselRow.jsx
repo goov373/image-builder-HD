@@ -38,6 +38,11 @@ const CarouselRow = ({ carousel, designSystem, isSelected, hasAnySelection, sele
     })
   );
 
+  // Deselect immediately when drag starts to close any open tool panels
+  const handleDragStart = () => {
+    onDeselect?.();
+  };
+
   const handleDragEnd = (event) => {
     const { active, over } = event;
     if (active.id !== over?.id && over) {
@@ -45,8 +50,6 @@ const CarouselRow = ({ carousel, designSystem, isSelected, hasAnySelection, sele
       const newIndex = carousel.frames.findIndex(f => `frame-${f.id}` === over.id);
       if (oldIndex !== -1 && newIndex !== -1) {
         onReorderFrames(carousel.id, oldIndex, newIndex);
-        // Deselect everything after reorder to close tool panels and layers panels
-        onDeselect?.();
       }
     }
   };
@@ -97,7 +100,7 @@ const CarouselRow = ({ carousel, designSystem, isSelected, hasAnySelection, sele
       </div>
         
       <div className="px-4" style={{ minHeight: 300 }}>
-        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
           <SortableContext items={frameIds} strategy={horizontalListSortingStrategy}>
             <div className={`flex items-start transition-all duration-150 ease-out`} style={{ width: 'auto', minWidth: 'fit-content', gap: isSelected ? '12px' : '10px' }}>
               {carousel.frames.map((frame, index) => (
