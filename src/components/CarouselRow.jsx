@@ -19,7 +19,7 @@ import { SortableFrame } from './CarouselFrame';
  * Carousel Row Component
  * Displays a row of frames with drag-and-drop reordering
  */
-const CarouselRow = ({ carousel, designSystem, isSelected, hasAnySelection, selectedFrameId, onSelect, onSelectFrame, onAddFrame, onRemoveFrame, onRemoveRow, onUpdateText, activeTextField, onActivateTextField, onReorderFrames, onUpdateImageLayer, onRemoveImageFromFrame, onUpdateFillLayer, onClearBackground, onUpdatePatternLayer, onRemovePatternFromFrame, onUpdateProductImageLayer, onRemoveProductImageFromFrame, onRequestAddProductImage, onUpdateIconLayer, onRemoveIconFromFrame, onRequestAddIcon, onUpdateProgressIndicator, onReorderBackgroundLayers, onRequestAddFill, onRequestAddPhoto, onRequestAddPattern, onRequestAddPageIndicator }) => {
+const CarouselRow = ({ carousel, designSystem, isSelected, hasAnySelection, selectedFrameId, onSelect, onSelectFrame, onAddFrame, onRemoveFrame, onRemoveRow, onUpdateText, activeTextField, onActivateTextField, onReorderFrames, onUpdateImageLayer, onRemoveImageFromFrame, onUpdateFillLayer, onClearBackground, onUpdatePatternLayer, onRemovePatternFromFrame, onUpdateProductImageLayer, onRemoveProductImageFromFrame, onRequestAddProductImage, onUpdateIconLayer, onRemoveIconFromFrame, onRequestAddIcon, onUpdateProgressIndicator, onReorderBackgroundLayers, onRequestAddFill, onRequestAddPhoto, onRequestAddPattern, onRequestAddPageIndicator, onDeselect }) => {
   const totalFrames = carousel.frames.length;
   const isFaded = hasAnySelection && !isSelected;
   
@@ -45,6 +45,8 @@ const CarouselRow = ({ carousel, designSystem, isSelected, hasAnySelection, sele
       const newIndex = carousel.frames.findIndex(f => `frame-${f.id}` === over.id);
       if (oldIndex !== -1 && newIndex !== -1) {
         onReorderFrames(carousel.id, oldIndex, newIndex);
+        // Deselect everything after reorder to close tool panels and layers panels
+        onDeselect?.();
       }
     }
   };

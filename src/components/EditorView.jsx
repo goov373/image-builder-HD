@@ -232,6 +232,7 @@ export default function EditorView({
                       onRequestAddPhoto={onRequestAddPhoto}
                       onRequestAddPattern={onRequestAddPattern}
                       onRequestAddPageIndicator={onRequestAddPageIndicator}
+                      onDeselect={handleDeselect}
                     />
                     {/* Add Row Button - only after last row */}
                     {index === carousels.length - 1 && (
