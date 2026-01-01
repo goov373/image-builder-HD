@@ -718,7 +718,7 @@ const DesignSystemPanel = ({
                   <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Upload Product Images</h3>
                 </div>
                 <div
-                  className="border-2 border-dashed border-gray-700 rounded-lg p-4 text-center hover:border-gray-600 transition-colors cursor-pointer"
+                  className="border-2 border-dashed border-gray-700 rounded p-4 text-center hover:border-gray-600 transition-colors cursor-pointer"
                   onClick={() => document.getElementById('product-imagery-input')?.click()}
                 >
                   <input
@@ -745,7 +745,7 @@ const DesignSystemPanel = ({
                   <p className="text-xs text-gray-400 mb-1">Product shots & mockups</p>
                   <button
                     type="button"
-                    className="px-3 py-1.5 bg-gray-700 hover:bg-gray-600 text-xs text-white rounded-lg transition-colors"
+                    className="px-3 py-1.5 bg-gray-700 hover:bg-gray-600 text-xs text-white rounded transition-colors"
                   >
                     Upload imagery
                   </button>
@@ -803,7 +803,7 @@ const DesignSystemPanel = ({
                         {uploadedProductImages.map((img) => (
                           <div
                             key={img.id}
-                            className="relative group aspect-square rounded-lg overflow-hidden bg-gray-800"
+                            className="relative group aspect-square rounded overflow-hidden bg-gray-800"
                           >
                             <img src={img.url} alt={img.name} className="w-full h-full object-contain" />
                             <button
@@ -837,7 +837,7 @@ const DesignSystemPanel = ({
                   </span>
                 </div>
                 <div
-                  className="border-2 border-dashed border-gray-700 rounded-lg p-4 text-center hover:border-gray-600 transition-colors cursor-pointer"
+                  className="border-2 border-dashed border-gray-700 rounded p-4 text-center hover:border-gray-600 transition-colors cursor-pointer"
                   onClick={() => document.getElementById('docs-input')?.click()}
                 >
                   <input
@@ -864,7 +864,7 @@ const DesignSystemPanel = ({
                   <p className="text-xs text-gray-400 mb-1">Drop docs here</p>
                   <button
                     type="button"
-                    className="px-3 py-1.5 bg-gray-700 hover:bg-gray-600 text-xs text-white rounded-lg transition-colors"
+                    className="px-3 py-1.5 bg-gray-700 hover:bg-gray-600 text-xs text-white rounded transition-colors"
                   >
                     Browse files
                   </button>
@@ -922,7 +922,7 @@ const DesignSystemPanel = ({
                         {uploadedDocs.map((doc) => (
                           <div
                             key={doc.id}
-                            className="flex items-center gap-2 px-2.5 py-2 bg-gray-800/50 rounded-lg group hover:bg-gray-800 transition-colors"
+                            className="flex items-center gap-2 px-2.5 py-2 bg-gray-800/50 rounded group hover:bg-gray-800 transition-colors"
                           >
                             <svg
                               className="w-4 h-4 text-purple-400 flex-shrink-0"
@@ -1032,7 +1032,7 @@ const DesignSystemPanel = ({
                                 }
                               }}
                               disabled={!hasFrameSelected}
-                              className={`group relative p-3 rounded-lg border transition-all ${
+                              className={`group relative p-3 rounded border transition-all ${
                                 hasFrameSelected
                                   ? isSelected
                                     ? 'border-gray-400 bg-gray-600/30'
@@ -1266,7 +1266,7 @@ const DesignSystemPanel = ({
 
                       {/* Single frame message */}
                       {applyMode === 'row' && hasRowSelected && totalFrames === 1 && (
-                        <div className="mb-3 p-2 bg-gray-800/50 rounded-lg text-[10px] text-gray-500 text-center">
+                        <div className="mb-3 p-2 bg-gray-800/50 rounded text-[10px] text-gray-500 text-center">
                           Add more frames to use stretch mode
                         </div>
                       )}
@@ -1278,7 +1278,7 @@ const DesignSystemPanel = ({
                             key={idx}
                             onClick={() => handleBackgroundClick(gradient)}
                             disabled={!hasFrameSelected}
-                            className={`w-full aspect-square rounded-lg transition-colors overflow-hidden ${
+                            className={`w-full aspect-square rounded transition-colors overflow-hidden ${
                               hasFrameSelected
                                 ? 'ring-1 ring-gray-700 hover:ring-gray-400 hover:scale-105 cursor-pointer'
                                 : 'ring-1 ring-gray-700/50 opacity-50 cursor-not-allowed'
@@ -1296,7 +1296,7 @@ const DesignSystemPanel = ({
                               type="button"
                               onClick={() => handleBackgroundClick(color)}
                               disabled={!hasFrameSelected}
-                              className={`w-full aspect-square rounded-lg transition-colors overflow-hidden ${
+                              className={`w-full aspect-square rounded transition-colors overflow-hidden ${
                                 hasFrameSelected
                                   ? 'ring-1 ring-gray-700 hover:ring-gray-400 hover:scale-105 cursor-pointer'
                                   : 'ring-1 ring-gray-700/50 opacity-50 cursor-not-allowed'
@@ -1387,7 +1387,7 @@ const DesignSystemPanel = ({
                                   );
                                 }
                               }}
-                              className={`relative group aspect-square rounded-lg overflow-hidden bg-gray-800 ring-1 ring-gray-700 hover:ring-purple-400 transition-colors ${hasFrameSelected ? 'cursor-pointer' : 'cursor-default opacity-50'}`}
+                              className={`relative group aspect-square rounded overflow-hidden bg-gray-800 ring-1 ring-gray-700 hover:ring-purple-400 transition-colors ${hasFrameSelected ? 'cursor-pointer' : 'cursor-default opacity-50'}`}
                               title={
                                 hasFrameSelected
                                   ? 'Click to add product image to selected frame'
@@ -1450,7 +1450,7 @@ const DesignSystemPanel = ({
                     <div className="px-4 pt-2 pb-4">
                       {/* Display uploaded images from Assets tab */}
                       {uploadedFiles.length === 0 ? (
-                        <div className="text-center py-6 border-2 border-dashed border-gray-700 rounded-lg">
+                        <div className="text-center py-6 border-2 border-dashed border-gray-700 rounded">
                           <svg
                             className="w-8 h-8 mx-auto mb-2 text-gray-600"
                             fill="none"
@@ -1468,7 +1468,7 @@ const DesignSystemPanel = ({
                           <button
                             type="button"
                             onClick={() => setActiveTab('assets')}
-                            className="px-3 py-1.5 bg-gray-700 hover:bg-gray-600 text-xs text-white rounded-lg transition-colors"
+                            className="px-3 py-1.5 bg-gray-700 hover:bg-gray-600 text-xs text-white rounded transition-colors"
                           >
                             Go to Assets to upload
                           </button>
@@ -1480,7 +1480,7 @@ const DesignSystemPanel = ({
                               key={file.id}
                               type="button"
                               disabled={!hasFrameSelected}
-                              className={`bg-gray-800 rounded-lg overflow-hidden transition-all text-left ${
+                              className={`bg-gray-800 rounded overflow-hidden transition-all text-left ${
                                 hasFrameSelected
                                   ? 'hover:ring-2 hover:ring-blue-400 hover:scale-[1.02] cursor-pointer'
                                   : 'opacity-60 cursor-not-allowed'
@@ -1571,7 +1571,7 @@ const DesignSystemPanel = ({
                           href="https://unsplash.com/s/photos/apartment-building"
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center gap-2 p-2 bg-gray-800/50 rounded-lg hover:bg-gray-800 transition-colors group"
+                          className="flex items-center gap-2 p-2 bg-gray-800/50 rounded hover:bg-gray-800 transition-colors group"
                         >
                           <div className="w-8 h-8 bg-gray-700 rounded flex items-center justify-center">
                             <span className="text-xs font-bold text-white">U</span>
@@ -1593,7 +1593,7 @@ const DesignSystemPanel = ({
                           href="https://www.pexels.com/search/apartment%20building/"
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center gap-2 p-2 bg-gray-800/50 rounded-lg hover:bg-gray-800 transition-colors group"
+                          className="flex items-center gap-2 p-2 bg-gray-800/50 rounded hover:bg-gray-800 transition-colors group"
                         >
                           <div className="w-8 h-8 bg-gray-700 rounded flex items-center justify-center">
                             <span className="text-xs font-bold text-white">P</span>
@@ -1615,7 +1615,7 @@ const DesignSystemPanel = ({
                           href="https://pixabay.com/images/search/apartment%20building/"
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center gap-2 p-2 bg-gray-800/50 rounded-lg hover:bg-gray-800 transition-colors group"
+                          className="flex items-center gap-2 p-2 bg-gray-800/50 rounded hover:bg-gray-800 transition-colors group"
                         >
                           <div className="w-8 h-8 bg-gray-700 rounded flex items-center justify-center">
                             <span className="text-xs font-bold text-white">Px</span>
@@ -1710,7 +1710,7 @@ const DesignSystemPanel = ({
                           <button
                             key={pattern.file}
                             type="button"
-                            className={`group relative aspect-square rounded-lg overflow-hidden border border-gray-700 hover:border-purple-500 transition-all ${!selectedCarouselId && !selectedEblastId ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            className={`group relative aspect-square rounded overflow-hidden border border-gray-700 hover:border-purple-500 transition-all ${!selectedCarouselId && !selectedEblastId ? 'opacity-50 cursor-not-allowed' : ''}`}
                             style={{
                               backgroundImage: `url(/patterns/${pattern.file})`,
                               backgroundSize: 'cover',
@@ -1776,7 +1776,7 @@ const DesignSystemPanel = ({
                           <button
                             key={pattern.file}
                             type="button"
-                            className={`group relative aspect-square rounded-lg overflow-hidden border border-gray-700 hover:border-purple-500 transition-all ${!selectedCarouselId && !selectedEblastId ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            className={`group relative aspect-square rounded overflow-hidden border border-gray-700 hover:border-purple-500 transition-all ${!selectedCarouselId && !selectedEblastId ? 'opacity-50 cursor-not-allowed' : ''}`}
                             style={{
                               backgroundImage: `url(/patterns/${pattern.file})`,
                               backgroundSize: 'cover',
@@ -1832,7 +1832,7 @@ const DesignSystemPanel = ({
                           <button
                             key={pattern.file}
                             type="button"
-                            className={`group relative aspect-square rounded-lg overflow-hidden border border-gray-700 hover:border-purple-500 transition-all ${!selectedCarouselId && !selectedEblastId ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            className={`group relative aspect-square rounded overflow-hidden border border-gray-700 hover:border-purple-500 transition-all ${!selectedCarouselId && !selectedEblastId ? 'opacity-50 cursor-not-allowed' : ''}`}
                             style={{
                               backgroundImage: `url(/patterns/${pattern.file})`,
                               backgroundSize: 'cover',

@@ -105,7 +105,7 @@ export default function Toolbar({ totalOffset, activeTab }) {
                   closeAllDropdowns();
                   if (!wasOpen) setShowFormatPicker(true);
                 }}
-                className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 border ${showFormatPicker ? 'bg-gray-700 border-gray-500' : 'bg-gray-800/50 border-gray-700 hover:bg-gray-700 hover:border-gray-600'}`}
+                className={`flex items-center gap-2 px-3 py-2 rounded transition-all duration-200 border ${showFormatPicker ? 'bg-gray-700 border-gray-500' : 'bg-gray-800/50 border-gray-700 hover:bg-gray-700 hover:border-gray-600'}`}
               >
                 <span className="text-xs font-medium text-gray-300">Format</span>
                 <span className="text-[11px] text-gray-500">
@@ -129,7 +129,7 @@ export default function Toolbar({ totalOffset, activeTab }) {
                         handleChangeFrameSize(selectedCarouselId, key);
                         setShowFormatPicker(false);
                       }}
-                      className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-left text-xs transition-all duration-200 ${selectedCarousel?.frameSize === key ? 'bg-gray-700 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-gray-300'}`}
+                      className={`w-full flex items-center justify-between px-3 py-2 rounded text-left text-xs transition-all duration-200 ${selectedCarousel?.frameSize === key ? 'bg-gray-700 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-gray-300'}`}
                     >
                       <span className="font-medium">{size.name}</span>
                       <span className="text-gray-600">{size.ratio}</span>
@@ -149,7 +149,7 @@ export default function Toolbar({ totalOffset, activeTab }) {
                   closeAllDropdowns();
                   if (!wasOpen) setShowLayoutPicker(true);
                 }}
-                className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 border ${showLayoutPicker ? 'bg-gray-700 border-gray-500' : 'bg-gray-800/50 border-gray-700 hover:bg-gray-700 hover:border-gray-600'}`}
+                className={`flex items-center gap-2 px-3 py-2 rounded transition-all duration-200 border ${showLayoutPicker ? 'bg-gray-700 border-gray-500' : 'bg-gray-800/50 border-gray-700 hover:bg-gray-700 hover:border-gray-600'}`}
               >
                 <span className="text-xs font-medium text-gray-300">Layout</span>
                 <span className="text-[11px] text-gray-500 w-[85px] text-left">
@@ -180,7 +180,7 @@ export default function Toolbar({ totalOffset, activeTab }) {
                         handleSetLayout(selectedCarouselId, selectedFrameId, idx);
                         setShowLayoutPicker(false);
                       }}
-                      className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-left text-xs transition-all duration-200 ${(selectedFrame?.currentLayout || 0) === idx ? 'bg-gray-700 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-gray-300'}`}
+                      className={`w-full flex items-center gap-2.5 px-3 py-2 rounded text-left text-xs transition-all duration-200 ${(selectedFrame?.currentLayout || 0) === idx ? 'bg-gray-700 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-gray-300'}`}
                     >
                       {idx === 0 && (
                         <div
@@ -221,7 +221,7 @@ export default function Toolbar({ totalOffset, activeTab }) {
                 closeAllDropdowns();
                 selectedFrame && handleShuffleLayoutVariant(selectedCarouselId, selectedFrameId);
               }}
-              className="p-2 rounded-lg border border-transparent hover:bg-gray-700 hover:border-gray-600 text-gray-500 hover:text-gray-300 transition-all duration-200"
+              className="p-2 rounded border border-transparent hover:bg-gray-700 hover:border-gray-600 text-gray-500 hover:text-gray-300 transition-all duration-200"
               title="Shuffle variant • Try different layouts quickly"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -246,7 +246,7 @@ export default function Toolbar({ totalOffset, activeTab }) {
                     setShowImageControls(false);
                     if (!wasOpen) setShowImageControls(true);
                   }}
-                  className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 border ${
+                  className={`flex items-center gap-2 px-3 py-2 rounded transition-all duration-200 border ${
                     showImageControls
                       ? 'bg-blue-600 border-blue-500'
                       : 'bg-gray-800/50 border-gray-700 hover:bg-gray-700 hover:border-gray-600'
@@ -283,7 +283,7 @@ export default function Toolbar({ totalOffset, activeTab }) {
                               scale: Math.max(0.5, (selectedFrame?.imageLayer?.scale || 1) - 0.2),
                             })
                           }
-                          className="w-7 h-7 flex items-center justify-center bg-gray-800 hover:bg-gray-700 rounded-lg border border-gray-700 text-gray-400 hover:text-white transition-colors"
+                          className="w-7 h-7 flex items-center justify-center bg-gray-800 hover:bg-gray-700 rounded border border-gray-700 text-gray-400 hover:text-white transition-colors"
                         >
                           <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
@@ -300,7 +300,7 @@ export default function Toolbar({ totalOffset, activeTab }) {
                               scale: Math.min(5, (selectedFrame?.imageLayer?.scale || 1) + 0.2),
                             })
                           }
-                          className="w-7 h-7 flex items-center justify-center bg-gray-800 hover:bg-gray-700 rounded-lg border border-gray-700 text-gray-400 hover:text-white transition-colors"
+                          className="w-7 h-7 flex items-center justify-center bg-gray-800 hover:bg-gray-700 rounded border border-gray-700 text-gray-400 hover:text-white transition-colors"
                         >
                           <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -339,7 +339,7 @@ export default function Toolbar({ totalOffset, activeTab }) {
                           onClick={() =>
                             handleUpdateImageLayer?.(selectedCarouselId, selectedFrameId, { fit: 'cover' })
                           }
-                          className={`flex-1 px-2 py-1.5 rounded-lg text-[11px] font-medium transition-all border ${
+                          className={`flex-1 px-2 py-1.5 rounded text-[11px] font-medium transition-all border ${
                             selectedFrame?.imageLayer?.fit === 'cover' || !selectedFrame?.imageLayer?.fit
                               ? 'bg-gray-700 border-gray-500 text-white'
                               : 'bg-gray-800/50 border-gray-700 text-gray-500 hover:bg-gray-800 hover:text-gray-300'
@@ -351,7 +351,7 @@ export default function Toolbar({ totalOffset, activeTab }) {
                           onClick={() =>
                             handleUpdateImageLayer?.(selectedCarouselId, selectedFrameId, { fit: 'contain' })
                           }
-                          className={`flex-1 px-2 py-1.5 rounded-lg text-[11px] font-medium transition-all border ${
+                          className={`flex-1 px-2 py-1.5 rounded text-[11px] font-medium transition-all border ${
                             selectedFrame?.imageLayer?.fit === 'contain'
                               ? 'bg-gray-700 border-gray-500 text-white'
                               : 'bg-gray-800/50 border-gray-700 text-gray-500 hover:bg-gray-800 hover:text-gray-300'
@@ -373,7 +373,7 @@ export default function Toolbar({ totalOffset, activeTab }) {
                             opacity: 1,
                           })
                         }
-                        className="flex-1 px-3 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg text-xs text-gray-300 transition-colors"
+                        className="flex-1 px-3 py-2 bg-gray-800 hover:bg-gray-700 rounded text-xs text-gray-300 transition-colors"
                       >
                         Reset
                       </button>
@@ -382,7 +382,7 @@ export default function Toolbar({ totalOffset, activeTab }) {
                           handleRemoveImageFromFrame?.(selectedCarouselId, selectedFrameId);
                           setShowImageControls(false);
                         }}
-                        className="flex-1 px-3 py-2 bg-red-900/50 hover:bg-red-600 rounded-lg text-xs text-red-300 hover:text-white transition-colors"
+                        className="flex-1 px-3 py-2 bg-red-900/50 hover:bg-red-600 rounded text-xs text-red-300 hover:text-white transition-colors"
                       >
                         Remove
                       </button>
@@ -409,7 +409,7 @@ export default function Toolbar({ totalOffset, activeTab }) {
                   closeAllDropdowns();
                   if (!wasOpen) setShowSnippetsPicker(true);
                 }}
-                className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 border ${showSnippetsPicker ? 'bg-gray-700 border-gray-500' : 'bg-gray-800/50 border-gray-700 hover:bg-gray-700 hover:border-gray-600'}`}
+                className={`flex items-center gap-2 px-3 py-2 rounded transition-all duration-200 border ${showSnippetsPicker ? 'bg-gray-700 border-gray-500' : 'bg-gray-800/50 border-gray-700 hover:bg-gray-700 hover:border-gray-600'}`}
               >
                 <span className="text-xs font-medium text-gray-300">Snippets</span>
                 <span className="text-[11px] text-gray-400 font-medium">
@@ -433,7 +433,7 @@ export default function Toolbar({ totalOffset, activeTab }) {
                         handleSetVariant(selectedCarouselId, selectedFrameId, idx);
                         setShowSnippetsPicker(false);
                       }}
-                      className={`w-full flex items-center justify-center gap-1 px-3 py-2 rounded-lg text-xs font-medium transition-all duration-200 ${selectedFrame?.currentVariant === idx ? 'bg-gray-700 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-gray-300'}`}
+                      className={`w-full flex items-center justify-center gap-1 px-3 py-2 rounded text-xs font-medium transition-all duration-200 ${selectedFrame?.currentVariant === idx ? 'bg-gray-700 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-gray-300'}`}
                     >
                       <span>S{idx + 1}</span>
                     </button>
@@ -442,7 +442,7 @@ export default function Toolbar({ totalOffset, activeTab }) {
               )}
             </div>
             <button
-              className="p-2 rounded-lg border border-transparent text-gray-500 hover:text-gray-300 hover:bg-gray-700 hover:border-gray-600 transition-all duration-200"
+              className="p-2 rounded border border-transparent text-gray-500 hover:text-gray-300 hover:bg-gray-700 hover:border-gray-600 transition-all duration-200"
               title="Rewrite with AI • Coming soon"
             >
               <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
@@ -462,7 +462,7 @@ export default function Toolbar({ totalOffset, activeTab }) {
                   closeAllDropdowns();
                   if (!wasOpen) setShowFontPicker(true);
                 }}
-                className="flex items-center gap-1.5 px-3 py-2 bg-gray-700/50 rounded-lg text-xs font-medium text-gray-300 hover:bg-gray-700 transition-colors duration-200"
+                className="flex items-center gap-1.5 px-3 py-2 bg-gray-700/50 rounded text-xs font-medium text-gray-300 hover:bg-gray-700 transition-colors duration-200"
               >
                 <span>Font</span>
                 <svg
@@ -476,7 +476,7 @@ export default function Toolbar({ totalOffset, activeTab }) {
               </button>
               {showFontPicker && activeTextField && (
                 <div
-                  className="absolute top-full left-0 mt-2 p-1.5 bg-gray-800 border border-gray-700 rounded-lg shadow-xl z-[200] max-h-64 overflow-y-auto min-w-[180px]"
+                  className="absolute top-full left-0 mt-2 p-1.5 bg-gray-800 border border-gray-700 rounded shadow-xl z-[200] max-h-64 overflow-y-auto min-w-[180px]"
                   onClick={(e) => e.stopPropagation()}
                 >
                   <div className="px-2 py-1.5 text-[10px] text-gray-500 uppercase tracking-wide border-b border-gray-700 mb-1">
@@ -505,7 +505,7 @@ export default function Toolbar({ totalOffset, activeTab }) {
                           );
                           setShowFontPicker(false);
                         }}
-                        className={`w-full px-3 py-2 rounded-lg text-xs text-left transition-colors duration-200 flex items-center justify-between ${isSelected ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-700'}`}
+                        className={`w-full px-3 py-2 rounded text-xs text-left transition-colors duration-200 flex items-center justify-between ${isSelected ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-700'}`}
                         style={{ fontFamily: '"Nunito Sans", sans-serif', fontWeight: weight.weight }}
                       >
                         <span>{weight.name}</span>
@@ -543,7 +543,7 @@ export default function Toolbar({ totalOffset, activeTab }) {
                   closeAllDropdowns();
                   if (!wasOpen) setShowFontSize(true);
                 }}
-                className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium text-gray-300 transition-all duration-200 border ${showFontSize ? 'bg-gray-700 border-gray-500' : 'bg-gray-800/50 border-gray-700 hover:bg-gray-700 hover:border-gray-600'}`}
+                className={`flex items-center gap-1.5 px-3 py-2 rounded text-xs font-medium text-gray-300 transition-all duration-200 border ${showFontSize ? 'bg-gray-700 border-gray-500' : 'bg-gray-800/50 border-gray-700 hover:bg-gray-700 hover:border-gray-600'}`}
               >
                 <span>Size</span>
                 <svg
@@ -580,7 +580,7 @@ export default function Toolbar({ totalOffset, activeTab }) {
                           );
                           setShowFontSize(false);
                         }}
-                        className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 border ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.fontSize === s.value ? 'bg-gray-700 border-gray-500 text-white' : 'bg-gray-800/50 border-gray-700 text-gray-400 hover:bg-gray-800 hover:border-gray-600 hover:text-gray-300'}`}
+                        className={`px-3 py-1.5 rounded text-xs font-medium transition-all duration-200 border ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.fontSize === s.value ? 'bg-gray-700 border-gray-500 text-white' : 'bg-gray-800/50 border-gray-700 text-gray-400 hover:bg-gray-800 hover:border-gray-600 hover:text-gray-300'}`}
                       >
                         {s.name}
                       </button>
@@ -599,7 +599,7 @@ export default function Toolbar({ totalOffset, activeTab }) {
                   closeAllDropdowns();
                   if (!wasOpen) setShowColorPicker(true);
                 }}
-                className={`flex items-center gap-1 p-2 rounded-lg transition-all duration-200 border ${showColorPicker ? 'bg-gray-700 border-gray-500' : 'bg-gray-800/50 border-gray-700 hover:bg-gray-700 hover:border-gray-600'}`}
+                className={`flex items-center gap-1 p-2 rounded transition-all duration-200 border ${showColorPicker ? 'bg-gray-700 border-gray-500' : 'bg-gray-800/50 border-gray-700 hover:bg-gray-700 hover:border-gray-600'}`}
                 title="Text color • Apply brand colors"
               >
                 <div
@@ -645,7 +645,7 @@ export default function Toolbar({ totalOffset, activeTab }) {
                           );
                           setShowColorPicker(false);
                         }}
-                        className="w-6 h-6 rounded-lg border-2 border-gray-600 hover:border-gray-400 hover:scale-110 transition-all duration-200"
+                        className="w-6 h-6 rounded border-2 border-gray-600 hover:border-gray-400 hover:scale-110 transition-all duration-200"
                         style={{ backgroundColor: c.value }}
                         title={c.name}
                       />
@@ -670,7 +670,7 @@ export default function Toolbar({ totalOffset, activeTab }) {
                 const newWeight = currentWeight === '700' ? '400' : '700';
                 handleUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'fontWeight', newWeight);
               }}
-              className={`w-9 h-9 rounded-lg flex items-center justify-center text-sm font-bold transition-all duration-200 border ${(() => {
+              className={`w-9 h-9 rounded flex items-center justify-center text-sm font-bold transition-all duration-200 border ${(() => {
                 const formatting =
                   selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField] || {};
                 const defaultWeight = activeTextField === 'headline' ? '700' : '400';
@@ -700,7 +700,7 @@ export default function Toolbar({ totalOffset, activeTab }) {
                   !formatting.italic
                 );
               }}
-              className={`w-9 h-9 rounded-lg flex items-center justify-center text-sm italic transition-all duration-200 border ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.italic ? 'bg-gray-700 border-gray-500 text-white' : 'bg-gray-800/50 border-gray-700 text-gray-400 hover:bg-gray-700 hover:border-gray-600 hover:text-gray-300'}`}
+              className={`w-9 h-9 rounded flex items-center justify-center text-sm italic transition-all duration-200 border ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.italic ? 'bg-gray-700 border-gray-500 text-white' : 'bg-gray-800/50 border-gray-700 text-gray-400 hover:bg-gray-700 hover:border-gray-600 hover:text-gray-300'}`}
               title={`Italic (${cmdKey}I)`}
             >
               I
@@ -715,7 +715,7 @@ export default function Toolbar({ totalOffset, activeTab }) {
                   closeAllDropdowns();
                   if (!wasOpen) setShowUnderlinePicker(true);
                 }}
-                className={`flex items-center gap-1 px-2 h-9 rounded-lg text-sm transition-all duration-200 border ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.underline ? 'bg-gray-700 border-gray-500 text-white' : 'bg-gray-800/50 border-gray-700 text-gray-400 hover:bg-gray-700 hover:border-gray-600 hover:text-gray-300'}`}
+                className={`flex items-center gap-1 px-2 h-9 rounded text-sm transition-all duration-200 border ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.underline ? 'bg-gray-700 border-gray-500 text-white' : 'bg-gray-800/50 border-gray-700 text-gray-400 hover:bg-gray-700 hover:border-gray-600 hover:text-gray-300'}`}
                 title={`Underline (${cmdKey}U)`}
               >
                 <span style={{ textDecoration: 'underline' }}>U</span>
@@ -761,7 +761,7 @@ export default function Toolbar({ totalOffset, activeTab }) {
                             true
                           );
                         }}
-                        className={`px-3 py-1.5 rounded-lg text-xs transition-all duration-200 border ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.underlineStyle === s.value ? 'bg-gray-700 border-gray-500 text-white' : 'bg-gray-800/50 border-gray-700 text-gray-400 hover:bg-gray-800 hover:border-gray-600 hover:text-gray-300'}`}
+                        className={`px-3 py-1.5 rounded text-xs transition-all duration-200 border ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.underlineStyle === s.value ? 'bg-gray-700 border-gray-500 text-white' : 'bg-gray-800/50 border-gray-700 text-gray-400 hover:bg-gray-800 hover:border-gray-600 hover:text-gray-300'}`}
                         title={s.name}
                       >
                         {s.value === 'solid' && (
@@ -825,7 +825,7 @@ export default function Toolbar({ totalOffset, activeTab }) {
                               'solid'
                             );
                         }}
-                        className={`w-6 h-6 rounded-lg border-2 hover:scale-110 transition-all duration-200 ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.underlineColor === c.value ? 'border-gray-400' : 'border-gray-600 hover:border-gray-500'}`}
+                        className={`w-6 h-6 rounded border-2 hover:scale-110 transition-all duration-200 ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.underlineColor === c.value ? 'border-gray-400' : 'border-gray-600 hover:border-gray-500'}`}
                         style={{ backgroundColor: c.value }}
                         title={c.name}
                       />
@@ -838,7 +838,7 @@ export default function Toolbar({ totalOffset, activeTab }) {
                       handleUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'underline', false);
                       setShowUnderlinePicker(false);
                     }}
-                    className="w-full px-3 py-2 rounded-lg text-xs text-gray-500 hover:text-gray-300 hover:bg-gray-800/50 transition-all duration-200 border border-gray-700/50 hover:border-gray-600"
+                    className="w-full px-3 py-2 rounded text-xs text-gray-500 hover:text-gray-300 hover:bg-gray-800/50 transition-all duration-200 border border-gray-700/50 hover:border-gray-600"
                   >
                     Remove Underline
                   </button>
@@ -858,7 +858,7 @@ export default function Toolbar({ totalOffset, activeTab }) {
                   closeAllDropdowns();
                   if (!wasOpen) setShowTextAlign(true);
                 }}
-                className={`flex items-center justify-center gap-1 w-[52px] h-9 rounded-lg transition-all duration-200 border ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.textAlign && selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.textAlign !== 'left' ? 'bg-gray-700 border-gray-500 text-white' : 'bg-gray-800/50 border-gray-700 text-gray-400 hover:bg-gray-700 hover:border-gray-600 hover:text-gray-300'}`}
+                className={`flex items-center justify-center gap-1 w-[52px] h-9 rounded transition-all duration-200 border ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.textAlign && selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.textAlign !== 'left' ? 'bg-gray-700 border-gray-500 text-white' : 'bg-gray-800/50 border-gray-700 text-gray-400 hover:bg-gray-700 hover:border-gray-600 hover:text-gray-300'}`}
                 title="Text alignment • Left, center, right"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -894,7 +894,7 @@ export default function Toolbar({ totalOffset, activeTab }) {
                           );
                           setShowTextAlign(false);
                         }}
-                        className={`p-2 rounded-lg transition-all duration-200 border ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.textAlign === a.value ? 'bg-gray-700 border-gray-500 text-white' : 'bg-gray-800/50 border-gray-700 text-gray-400 hover:bg-gray-800 hover:border-gray-600 hover:text-gray-300'}`}
+                        className={`p-2 rounded transition-all duration-200 border ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.textAlign === a.value ? 'bg-gray-700 border-gray-500 text-white' : 'bg-gray-800/50 border-gray-700 text-gray-400 hover:bg-gray-800 hover:border-gray-600 hover:text-gray-300'}`}
                         title={a.name}
                       >
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -916,7 +916,7 @@ export default function Toolbar({ totalOffset, activeTab }) {
                   closeAllDropdowns();
                   if (!wasOpen) setShowLineSpacing(true);
                 }}
-                className={`flex items-center justify-center gap-1 w-[52px] h-9 rounded-lg transition-all duration-200 border ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.lineHeight && selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.lineHeight !== 1.4 ? 'bg-gray-700 border-gray-500 text-white' : 'bg-gray-800/50 border-gray-700 text-gray-400 hover:bg-gray-700 hover:border-gray-600 hover:text-gray-300'}`}
+                className={`flex items-center justify-center gap-1 w-[52px] h-9 rounded transition-all duration-200 border ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.lineHeight && selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.lineHeight !== 1.4 ? 'bg-gray-700 border-gray-500 text-white' : 'bg-gray-800/50 border-gray-700 text-gray-400 hover:bg-gray-700 hover:border-gray-600 hover:text-gray-300'}`}
                 title="Line spacing • Adjust line height"
               >
                 <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
@@ -955,7 +955,7 @@ export default function Toolbar({ totalOffset, activeTab }) {
                         );
                         setShowLineSpacing(false);
                       }}
-                      className={`w-full px-3 py-2 rounded-lg text-xs text-left transition-all duration-200 ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.lineHeight === s.value ? 'bg-gray-700 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-gray-300'}`}
+                      className={`w-full px-3 py-2 rounded text-xs text-left transition-all duration-200 ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.lineHeight === s.value ? 'bg-gray-700 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-gray-300'}`}
                     >
                       {s.name}
                     </button>
@@ -973,7 +973,7 @@ export default function Toolbar({ totalOffset, activeTab }) {
                   closeAllDropdowns();
                   if (!wasOpen) setShowLetterSpacing(true);
                 }}
-                className={`flex items-center justify-center gap-1 w-[52px] h-9 rounded-lg transition-all duration-200 border ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.letterSpacing && selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.letterSpacing !== 0 ? 'bg-gray-700 border-gray-500 text-white' : 'bg-gray-800/50 border-gray-700 text-gray-400 hover:bg-gray-700 hover:border-gray-600 hover:text-gray-300'}`}
+                className={`flex items-center justify-center gap-1 w-[52px] h-9 rounded transition-all duration-200 border ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.letterSpacing && selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.letterSpacing !== 0 ? 'bg-gray-700 border-gray-500 text-white' : 'bg-gray-800/50 border-gray-700 text-gray-400 hover:bg-gray-700 hover:border-gray-600 hover:text-gray-300'}`}
                 title="Letter spacing • Adjust character spacing"
               >
                 <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
@@ -1012,7 +1012,7 @@ export default function Toolbar({ totalOffset, activeTab }) {
                         );
                         setShowLetterSpacing(false);
                       }}
-                      className={`w-full px-3 py-2 rounded-lg text-xs text-left transition-all duration-200 ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.letterSpacing === s.value ? 'bg-gray-700 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-gray-300'}`}
+                      className={`w-full px-3 py-2 rounded text-xs text-left transition-all duration-200 ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.letterSpacing === s.value ? 'bg-gray-700 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-gray-300'}`}
                     >
                       {s.name}
                     </button>
@@ -1038,7 +1038,7 @@ export default function Toolbar({ totalOffset, activeTab }) {
               handleDeselect();
             }}
             disabled={!selectedCarouselId && !selectedFrameId}
-            className={`px-4 py-2 text-xs font-medium rounded-lg transition-colors duration-200 ${selectedCarouselId || selectedFrameId ? 'bg-gray-700 hover:bg-gray-600 text-gray-300' : 'bg-gray-800 text-gray-600 cursor-not-allowed'}`}
+            className={`px-4 py-2 text-xs font-medium rounded transition-colors duration-200 ${selectedCarouselId || selectedFrameId ? 'bg-gray-700 hover:bg-gray-600 text-gray-300' : 'bg-gray-800 text-gray-600 cursor-not-allowed'}`}
           >
             Deselect Row
           </button>

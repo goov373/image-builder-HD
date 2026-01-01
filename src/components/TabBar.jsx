@@ -51,7 +51,7 @@ export default function TabBar({
 
               {/* Dropdown Menu for Ghost Tab */}
               {showNewTabMenu && (
-                <div className="absolute top-full left-0 mt-2 py-1.5 bg-gray-800 border border-gray-700 rounded-lg shadow-xl z-[200] min-w-[200px]">
+                <div className="absolute top-full left-0 mt-2 py-1.5 bg-gray-800 border border-gray-700 rounded shadow-xl z-[200] min-w-[200px]">
                   {/* New Project Option */}
                   <button
                     onClick={() => {
@@ -60,7 +60,7 @@ export default function TabBar({
                     }}
                     className="group w-full flex items-center gap-3 px-3 py-2.5 text-left text-sm text-gray-300 hover:bg-gray-700 transition-colors"
                   >
-                    <div className="w-8 h-8 rounded-lg bg-gray-700 border border-dashed border-gray-500 group-hover:bg-gray-600 group-hover:border-solid group-hover:border-gray-400 flex items-center justify-center transition-all">
+                    <div className="w-8 h-8 rounded bg-gray-700 border border-dashed border-gray-500 group-hover:bg-gray-600 group-hover:border-solid group-hover:border-gray-400 flex items-center justify-center transition-all">
                       <svg
                         className="w-4 h-4 text-gray-400 group-hover:text-white transition-colors"
                         fill="none"
@@ -99,7 +99,7 @@ export default function TabBar({
                             }}
                             className="w-full flex items-center gap-3 px-3 py-2 text-left text-sm text-gray-300 hover:bg-gray-700 transition-colors"
                           >
-                            <div className="w-8 h-8 rounded-lg bg-gray-700 flex items-center justify-center flex-shrink-0">
+                            <div className="w-8 h-8 rounded bg-gray-700 flex items-center justify-center flex-shrink-0">
                               <svg
                                 className="w-4 h-4 text-gray-400"
                                 fill="none"
@@ -182,7 +182,7 @@ export default function TabBar({
                 if (!wasOpen && tabs.length < maxTabs) setShowNewTabMenu(true);
               }}
               disabled={tabs.length >= maxTabs}
-              className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all ${
+              className={`w-8 h-8 rounded flex items-center justify-center transition-all ${
                 tabs.length >= maxTabs
                   ? 'text-gray-600 cursor-not-allowed'
                   : showNewTabMenu
@@ -198,7 +198,7 @@ export default function TabBar({
 
             {/* New Tab Dropdown Menu */}
             {showNewTabMenu && (
-              <div className="absolute top-full left-0 mt-2 py-1.5 bg-gray-800 border border-gray-700 rounded-lg shadow-xl z-[200] min-w-[200px]">
+              <div className="absolute top-full left-0 mt-2 py-1.5 bg-gray-800 border border-gray-700 rounded shadow-xl z-[200] min-w-[200px]">
                 {/* New Project Option */}
                 <button
                   onClick={() => {
@@ -207,7 +207,7 @@ export default function TabBar({
                   }}
                   className="group w-full flex items-center gap-3 px-3 py-2.5 text-left text-sm text-gray-300 hover:bg-gray-700 transition-colors"
                 >
-                  <div className="w-8 h-8 rounded-lg bg-gray-700 border border-dashed border-gray-500 group-hover:bg-gray-600 group-hover:border-solid group-hover:border-gray-400 flex items-center justify-center transition-all">
+                  <div className="w-8 h-8 rounded bg-gray-700 border border-dashed border-gray-500 group-hover:bg-gray-600 group-hover:border-solid group-hover:border-gray-400 flex items-center justify-center transition-all">
                     <svg
                       className="w-4 h-4 text-gray-400 group-hover:text-white transition-colors"
                       fill="none"
@@ -244,7 +244,7 @@ export default function TabBar({
                         className="w-full flex items-center gap-3 px-3 py-2 text-left text-sm transition-colors text-gray-300 hover:bg-gray-700"
                       >
                         <div
-                          className={`w-8 h-8 rounded-lg flex items-center justify-center ${project.hasContent ? 'bg-gray-700' : 'bg-gray-800 border border-gray-700'}`}
+                          className={`w-8 h-8 rounded flex items-center justify-center ${project.hasContent ? 'bg-gray-700' : 'bg-gray-800 border border-gray-700'}`}
                         >
                           <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path

@@ -112,7 +112,7 @@ const Homepage = ({
       {/* Header */}
       <div className="max-w-6xl mx-auto mb-12">
         <div className="flex items-center gap-4 mb-2">
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-gray-600 to-gray-700 flex items-center justify-center">
+          <div className="w-12 h-12 rounded-md bg-gradient-to-br from-gray-600 to-gray-700 flex items-center justify-center">
             <svg
               className="w-7 h-7 text-white"
               fill="none"
@@ -165,7 +165,7 @@ const Homepage = ({
                   key={project.id}
                   type="button"
                   onClick={() => onOpenProject(project.id)}
-                  className="group flex items-center gap-3 p-3 bg-gray-800/50 hover:bg-gray-800 border border-gray-800 hover:border-gray-700 rounded-lg transition-all text-left"
+                  className="group flex items-center gap-3 p-3 bg-gray-800/50 hover:bg-gray-800 border border-gray-800 hover:border-gray-700 rounded transition-all text-left"
                 >
                   {/* Mini thumbnail icon */}
                   <div className="w-10 h-10 rounded-md bg-gray-700 flex items-center justify-center flex-shrink-0">
@@ -245,7 +245,7 @@ const Homepage = ({
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search projects..."
-                  className="w-40 bg-gray-800 border border-gray-700 rounded-lg pl-8 pr-3 py-1.5 text-xs text-gray-300 placeholder-gray-500 hover:border-gray-600 focus:border-gray-500 focus:outline-none transition-colors"
+                  className="w-40 bg-gray-800 border border-gray-700 rounded pl-8 pr-3 py-1.5 text-xs text-gray-300 placeholder-gray-500 hover:border-gray-600 focus:border-gray-500 focus:outline-none transition-colors"
                 />
               </div>
 
@@ -253,7 +253,7 @@ const Homepage = ({
               <select
                 value={filterType}
                 onChange={(e) => setFilterType(e.target.value)}
-                className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-1.5 text-xs text-gray-300 hover:border-gray-600 focus:border-gray-500 focus:outline-none transition-colors cursor-pointer"
+                className="bg-gray-800 border border-gray-700 rounded px-3 py-1.5 text-xs text-gray-300 hover:border-gray-600 focus:border-gray-500 focus:outline-none transition-colors cursor-pointer"
               >
                 <option value="all">All Types</option>
                 <option value="carousel">Carousels</option>
@@ -266,7 +266,7 @@ const Homepage = ({
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-1.5 text-xs text-gray-300 hover:border-gray-600 focus:border-gray-500 focus:outline-none transition-colors cursor-pointer"
+                className="bg-gray-800 border border-gray-700 rounded px-3 py-1.5 text-xs text-gray-300 hover:border-gray-600 focus:border-gray-500 focus:outline-none transition-colors cursor-pointer"
               >
                 <option value="updated">Last Updated</option>
                 <option value="created">Date Created</option>
@@ -278,7 +278,7 @@ const Homepage = ({
           <button
             type="button"
             onClick={onCreateNew}
-            className="flex items-center gap-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-medium transition-colors border border-gray-600"
+            className="flex items-center gap-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded font-medium transition-colors border border-gray-600"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -306,7 +306,7 @@ const Homepage = ({
                 tabIndex={0}
                 onClick={() => onOpenProject(project.id)}
                 onKeyDown={(e) => e.key === 'Enter' && onOpenProject(project.id)}
-                className="group bg-gray-900 border border-gray-800 rounded-xl overflow-hidden hover:border-gray-600 hover:bg-gray-800/50 transition-all cursor-pointer"
+                className="group bg-gray-900 border border-gray-800 rounded-md overflow-hidden hover:border-gray-600 hover:bg-gray-800/50 transition-all cursor-pointer"
               >
                 {/* Thumbnail - Project Type Icon */}
                 <div className="h-40 bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center relative overflow-hidden">
@@ -317,7 +317,7 @@ const Homepage = ({
                         {[0, 1, 2].map((i) => (
                           <div
                             key={i}
-                            className={`w-12 h-16 rounded-lg bg-gray-700 border border-gray-600 ${i > 0 ? 'opacity-50' : ''}`}
+                            className={`w-12 h-16 rounded bg-gray-700 border border-gray-600 ${i > 0 ? 'opacity-50' : ''}`}
                           />
                         ))}
                       </div>
@@ -325,7 +325,7 @@ const Homepage = ({
 
                     {/* Single Image Icon */}
                     {project.projectType === 'singleImage' && (
-                      <div className="w-20 h-14 rounded-lg border border-gray-600 bg-gray-700 relative overflow-hidden">
+                      <div className="w-20 h-14 rounded border border-gray-600 bg-gray-700 relative overflow-hidden">
                         <div className="absolute inset-1.5 rounded bg-gray-800">
                           <div className="flex gap-1 p-1.5 h-full">
                             <div className="w-2 h-full rounded-sm bg-gray-600" />
@@ -343,7 +343,7 @@ const Homepage = ({
 
                     {/* Eblast Icon */}
                     {project.projectType === 'eblast' && (
-                      <div className="w-20 h-14 rounded-lg border border-gray-600 bg-gray-700 p-2.5 flex flex-col gap-1.5">
+                      <div className="w-20 h-14 rounded border border-gray-600 bg-gray-700 p-2.5 flex flex-col gap-1.5">
                         <div className="h-2 rounded-full w-1/2 bg-gray-500" />
                         <div className="flex-1 rounded bg-gray-600" />
                         <div className="h-1.5 rounded-full w-2/3 bg-gray-600" />
@@ -352,7 +352,7 @@ const Homepage = ({
 
                     {/* Video Cover Icon */}
                     {project.projectType === 'videoCover' && (
-                      <div className="w-20 h-14 rounded-lg border border-gray-600 bg-gray-700 flex items-center justify-center">
+                      <div className="w-20 h-14 rounded border border-gray-600 bg-gray-700 flex items-center justify-center">
                         <div className="w-8 h-8 rounded-full bg-gray-500 flex items-center justify-center">
                           <svg className="w-4 h-4 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M8 5v14l11-7z" />
@@ -365,7 +365,7 @@ const Homepage = ({
                   {/* Hover overlay */}
                   <div className="absolute inset-0 bg-gray-700/0 group-hover:bg-gray-700/20 transition-colors flex items-center justify-center">
                     <div className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-2">
-                      <div className="px-4 py-2 bg-gray-700 border border-gray-500 rounded-lg text-white text-sm font-medium">
+                      <div className="px-4 py-2 bg-gray-700 border border-gray-500 rounded text-white text-sm font-medium">
                         Open Project
                       </div>
                       {onQuickExport && (
@@ -375,7 +375,7 @@ const Homepage = ({
                             e.stopPropagation();
                             onQuickExport(project.id);
                           }}
-                          className="px-3 py-2 bg-gray-800 hover:bg-gray-600 border border-gray-600 rounded-lg text-white text-sm font-medium transition-colors flex items-center gap-1.5"
+                          className="px-3 py-2 bg-gray-800 hover:bg-gray-600 border border-gray-600 rounded text-white text-sm font-medium transition-colors flex items-center gap-1.5"
                           title="Export with last-used settings"
                         >
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -438,7 +438,7 @@ const Homepage = ({
                       <button
                         type="button"
                         onClick={(e) => handleMenuClick(e, project.id)}
-                        className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-500 hover:text-white hover:bg-gray-700 transition-colors opacity-0 group-hover:opacity-100"
+                        className="w-8 h-8 rounded flex items-center justify-center text-gray-500 hover:text-white hover:bg-gray-700 transition-colors opacity-0 group-hover:opacity-100"
                       >
                         <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                           <circle cx="12" cy="5" r="2" />
@@ -451,7 +451,7 @@ const Homepage = ({
                       {openMenuId === project.id && (
                         <div
                           role="menu"
-                          className="absolute right-0 bottom-full mb-1 py-1 bg-gray-800 border border-gray-700 rounded-lg shadow-xl z-50 min-w-[160px]"
+                          className="absolute right-0 bottom-full mb-1 py-1 bg-gray-800 border border-gray-700 rounded shadow-xl z-50 min-w-[160px]"
                           onClick={(e) => e.stopPropagation()}
                           onKeyDown={(e) => e.stopPropagation()}
                         >
@@ -554,7 +554,7 @@ const Homepage = ({
             tabIndex={0}
             onClick={onCreateNew}
             onKeyDown={(e) => e.key === 'Enter' && onCreateNew()}
-            className="group bg-gray-900/50 border-2 border-dashed border-gray-700 rounded-xl overflow-hidden hover:border-gray-500 hover:bg-gray-800/30 transition-all cursor-pointer flex flex-col items-center justify-center min-h-[240px]"
+            className="group bg-gray-900/50 border-2 border-dashed border-gray-700 rounded-md overflow-hidden hover:border-gray-500 hover:bg-gray-800/30 transition-all cursor-pointer flex flex-col items-center justify-center min-h-[240px]"
           >
             <div className="w-16 h-16 rounded-full bg-gray-800 group-hover:bg-gray-700 flex items-center justify-center transition-colors mb-3">
               <svg

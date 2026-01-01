@@ -1432,7 +1432,7 @@ export const CarouselFrame = ({
             onMouseDown={(e) => e.stopPropagation()}
           >
             {/* Zoom Controls */}
-            <div className="flex items-center gap-1 bg-gray-800/90 rounded-lg px-2 py-1.5">
+            <div className="flex items-center gap-1 bg-gray-800/90 rounded px-2 py-1.5">
               <span className="text-gray-500 text-[10px] mr-1 min-w-[40px]">Zoom</span>
               <button
                 type="button"
@@ -1477,7 +1477,7 @@ export const CarouselFrame = ({
             </div>
 
             {/* Opacity Control */}
-            <div className="flex items-center gap-1 bg-gray-800/90 rounded-lg px-2 py-1.5">
+            <div className="flex items-center gap-1 bg-gray-800/90 rounded px-2 py-1.5">
               <span className="text-gray-500 text-[10px] mr-1 min-w-[40px]">Opacity</span>
               <button
                 type="button"
@@ -1525,7 +1525,7 @@ export const CarouselFrame = ({
             <button
               type="button"
               onClick={handleCancelEdit}
-              className="bg-gray-700/90 hover:bg-gray-600 rounded-lg px-2.5 py-1.5 text-gray-300 hover:text-white text-[10px] font-medium transition-colors"
+              className="bg-gray-700/90 hover:bg-gray-600 rounded px-2.5 py-1.5 text-gray-300 hover:text-white text-[10px] font-medium transition-colors"
               title="Cancel and revert changes"
             >
               Cancel
@@ -1535,7 +1535,7 @@ export const CarouselFrame = ({
             <button
               type="button"
               onClick={handleDoneEdit}
-              className="bg-gray-600/90 hover:bg-gray-500 rounded-lg px-2.5 py-1.5 text-white text-[10px] font-medium transition-colors"
+              className="bg-gray-600/90 hover:bg-gray-500 rounded px-2.5 py-1.5 text-white text-[10px] font-medium transition-colors"
               title="Done editing"
             >
               Done
@@ -1549,7 +1549,7 @@ export const CarouselFrame = ({
                 handleImageEditModeChange(false);
                 onRemoveImageFromFrame?.(carouselId, frame.id);
               }}
-              className="bg-gray-800/90 hover:bg-red-600 rounded-lg px-2 py-1.5 text-gray-400 hover:text-white transition-colors"
+              className="bg-gray-800/90 hover:bg-red-600 rounded px-2 py-1.5 text-gray-400 hover:text-white transition-colors"
               title="Remove image"
             >
               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1573,7 +1573,7 @@ export const CarouselFrame = ({
             onMouseDown={(e) => e.stopPropagation()}
           >
             {/* Opacity Control */}
-            <div className="flex items-center gap-1 bg-gray-800/90 rounded-lg px-2 py-1.5">
+            <div className="flex items-center gap-1 bg-gray-800/90 rounded px-2 py-1.5">
               <span className="text-gray-500 text-[10px] mr-1 min-w-[40px]">Opacity</span>
               <button
                 type="button"
@@ -1622,7 +1622,7 @@ export const CarouselFrame = ({
             </div>
 
             {/* Rotation Control */}
-            <div className="flex items-center gap-1 bg-gray-800/90 rounded-lg px-2 py-1.5">
+            <div className="flex items-center gap-1 bg-gray-800/90 rounded px-2 py-1.5">
               <span className="text-gray-500 text-[10px] mr-1 min-w-[40px]">Rotate</span>
               <button
                 type="button"
@@ -1689,7 +1689,7 @@ export const CarouselFrame = ({
             <button
               type="button"
               onClick={handleCancelFillEdit}
-              className="bg-gray-700/90 hover:bg-gray-600 rounded-lg px-2.5 py-1.5 text-gray-300 hover:text-white text-[10px] font-medium transition-colors"
+              className="bg-gray-700/90 hover:bg-gray-600 rounded px-2.5 py-1.5 text-gray-300 hover:text-white text-[10px] font-medium transition-colors"
               title="Cancel and revert changes"
             >
               Cancel
@@ -1699,7 +1699,7 @@ export const CarouselFrame = ({
             <button
               type="button"
               onClick={handleDoneFillEdit}
-              className="bg-gray-600/90 hover:bg-gray-500 rounded-lg px-2.5 py-1.5 text-white text-[10px] font-medium transition-colors"
+              className="bg-gray-600/90 hover:bg-gray-500 rounded px-2.5 py-1.5 text-white text-[10px] font-medium transition-colors"
               title="Done editing"
             >
               Done
@@ -1709,7 +1709,7 @@ export const CarouselFrame = ({
             <button
               type="button"
               onClick={handleDeleteFill}
-              className="bg-gray-800/90 hover:bg-red-600 rounded-lg px-2 py-1.5 text-gray-400 hover:text-white transition-colors"
+              className="bg-gray-800/90 hover:bg-red-600 rounded px-2 py-1.5 text-gray-400 hover:text-white transition-colors"
               title="Remove fill color"
             >
               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1733,7 +1733,7 @@ export const CarouselFrame = ({
             onMouseDown={(e) => e.stopPropagation()}
           >
             {/* Opacity Control */}
-            <div className="flex items-center gap-1 bg-gray-800/90 rounded-lg px-2 py-1.5">
+            <div className="flex items-center gap-1 bg-gray-800/90 rounded px-2 py-1.5">
               <span className="text-gray-500 text-[10px] mr-1 min-w-[40px]">Opacity</span>
               <button
                 type="button"
@@ -1782,7 +1782,7 @@ export const CarouselFrame = ({
             </div>
 
             {/* Rotation Control */}
-            <div className="flex items-center gap-1 bg-gray-800/90 rounded-lg px-2 py-1.5">
+            <div className="flex items-center gap-1 bg-gray-800/90 rounded px-2 py-1.5">
               <span className="text-gray-500 text-[10px] mr-1 min-w-[40px]">Rotate</span>
               <button
                 type="button"
@@ -1851,7 +1851,7 @@ export const CarouselFrame = ({
             <button
               type="button"
               onClick={handleCancelPatternEdit}
-              className="bg-gray-700/90 hover:bg-gray-600 rounded-lg px-2.5 py-1.5 text-gray-300 hover:text-white text-[10px] font-medium transition-colors"
+              className="bg-gray-700/90 hover:bg-gray-600 rounded px-2.5 py-1.5 text-gray-300 hover:text-white text-[10px] font-medium transition-colors"
               title="Cancel and revert changes"
             >
               Cancel
@@ -1861,7 +1861,7 @@ export const CarouselFrame = ({
             <button
               type="button"
               onClick={handleDonePatternEdit}
-              className="bg-gray-600/90 hover:bg-gray-500 rounded-lg px-2.5 py-1.5 text-white text-[10px] font-medium transition-colors"
+              className="bg-gray-600/90 hover:bg-gray-500 rounded px-2.5 py-1.5 text-white text-[10px] font-medium transition-colors"
               title="Done editing"
             >
               Done
@@ -1871,7 +1871,7 @@ export const CarouselFrame = ({
             <button
               type="button"
               onClick={handleDeletePattern}
-              className="bg-gray-800/90 hover:bg-red-600 rounded-lg px-2 py-1.5 text-gray-400 hover:text-white transition-colors"
+              className="bg-gray-800/90 hover:bg-red-600 rounded px-2 py-1.5 text-gray-400 hover:text-white transition-colors"
               title="Remove pattern"
             >
               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1895,7 +1895,7 @@ export const CarouselFrame = ({
             onMouseDown={(e) => e.stopPropagation()}
           >
             {/* Zoom Control */}
-            <div className="flex items-center gap-1 bg-gray-800/90 rounded-lg px-2 py-1.5">
+            <div className="flex items-center gap-1 bg-gray-800/90 rounded px-2 py-1.5">
               <span className="text-gray-500 text-[10px] mr-1 min-w-[40px]">Zoom</span>
               <button
                 type="button"
@@ -1944,7 +1944,7 @@ export const CarouselFrame = ({
             </div>
 
             {/* Corner Rounding Control */}
-            <div className="flex items-center gap-1 bg-gray-800/90 rounded-lg px-2 py-1.5">
+            <div className="flex items-center gap-1 bg-gray-800/90 rounded px-2 py-1.5">
               <span className="text-gray-500 text-[10px] mr-1 min-w-[40px]">Corners</span>
               <button
                 type="button"
@@ -1996,7 +1996,7 @@ export const CarouselFrame = ({
             <button
               type="button"
               onClick={handleCancelProductImageEdit}
-              className="bg-gray-700/90 hover:bg-gray-600 rounded-lg px-2.5 py-1.5 text-gray-300 hover:text-white text-[10px] font-medium transition-colors"
+              className="bg-gray-700/90 hover:bg-gray-600 rounded px-2.5 py-1.5 text-gray-300 hover:text-white text-[10px] font-medium transition-colors"
               title="Cancel and revert changes"
             >
               Cancel
@@ -2006,7 +2006,7 @@ export const CarouselFrame = ({
             <button
               type="button"
               onClick={handleDoneProductImageEdit}
-              className="bg-gray-600/90 hover:bg-gray-500 rounded-lg px-2.5 py-1.5 text-white text-[10px] font-medium transition-colors"
+              className="bg-gray-600/90 hover:bg-gray-500 rounded px-2.5 py-1.5 text-white text-[10px] font-medium transition-colors"
               title="Done editing"
             >
               Done
@@ -2016,7 +2016,7 @@ export const CarouselFrame = ({
             <button
               type="button"
               onClick={handleDeleteProductImage}
-              className="bg-gray-800/90 hover:bg-red-600 rounded-lg px-2 py-1.5 text-gray-400 hover:text-white transition-colors"
+              className="bg-gray-800/90 hover:bg-red-600 rounded px-2 py-1.5 text-gray-400 hover:text-white transition-colors"
               title="Remove product image"
             >
               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

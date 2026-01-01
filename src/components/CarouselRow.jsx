@@ -90,7 +90,7 @@ const CarouselRow = ({
   return (
     <div
       data-carousel-id={carousel.id}
-      className={`mb-10 rounded-xl transition-all duration-150 cursor-pointer overflow-x-auto hide-scrollbar ${isSelected ? 'bg-gray-800/40 border border-gray-600 py-4' : 'hover:bg-gray-800/30 border border-transparent py-4'} ${isFaded ? 'opacity-20 hover:opacity-50' : 'opacity-100'}`}
+      className={`mb-10 rounded-md transition-all duration-150 cursor-pointer overflow-x-auto hide-scrollbar ${isSelected ? 'bg-gray-800/40 border border-gray-600 py-4' : 'hover:bg-gray-800/30 border border-transparent py-4'} ${isFaded ? 'opacity-20 hover:opacity-50' : 'opacity-100'}`}
       style={{
         marginLeft: '10px',
         marginRight: '10px',
@@ -111,7 +111,7 @@ const CarouselRow = ({
               e.stopPropagation();
               onSelect(isSelected ? null : carousel.id);
             }}
-            className={`w-11 h-11 rounded-xl border-2 flex items-center justify-center transition-all duration-150 ${isSelected ? 'border-gray-500 bg-gray-700 hover:bg-gray-600' : 'border-gray-600 hover:border-gray-500 hover:bg-gray-800'}`}
+            className={`w-11 h-11 rounded-md border-2 flex items-center justify-center transition-all duration-150 ${isSelected ? 'border-gray-500 bg-gray-700 hover:bg-gray-600' : 'border-gray-600 hover:border-gray-500 hover:bg-gray-800'}`}
           >
             {isSelected ? (
               <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">

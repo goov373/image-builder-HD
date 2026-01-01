@@ -215,7 +215,7 @@ const AccountPanel = ({ onClose, isOpen, onSignOut = null, user = null }) => {
         <button
           type="button"
           onClick={onClose}
-          className="p-1.5 rounded-lg hover:bg-gray-800 text-gray-400 hover:text-white transition-colors"
+          className="p-1.5 rounded hover:bg-gray-800 text-gray-400 hover:text-white transition-colors"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -263,7 +263,7 @@ const AccountPanel = ({ onClose, isOpen, onSignOut = null, user = null }) => {
               <button
                 type="button"
                 onClick={() => setShowInviteForm(true)}
-                className="w-full py-2.5 rounded-lg border border-dashed border-gray-600 text-gray-400 hover:border-gray-500 hover:text-white hover:bg-gray-800/50 transition-all text-sm font-medium flex items-center justify-center gap-2"
+                className="w-full py-2.5 rounded border border-dashed border-gray-600 text-gray-400 hover:border-gray-500 hover:text-white hover:bg-gray-800/50 transition-all text-sm font-medium flex items-center justify-center gap-2"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -274,18 +274,18 @@ const AccountPanel = ({ onClose, isOpen, onSignOut = null, user = null }) => {
 
             {/* Invite Form */}
             {showInviteForm && (
-              <div className="p-3 rounded-lg bg-gray-800/50 border border-gray-700 space-y-3">
+              <div className="p-3 rounded bg-gray-800/50 border border-gray-700 space-y-3">
                 <input
                   type="email"
                   value={inviteEmail}
                   onChange={(e) => setInviteEmail(e.target.value)}
                   placeholder="Email address"
-                  className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-sm text-white placeholder-gray-500 focus:outline-none focus:border-gray-500"
+                  className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded text-sm text-white placeholder-gray-500 focus:outline-none focus:border-gray-500"
                 />
                 <select
                   value={inviteRole}
                   onChange={(e) => setInviteRole(e.target.value)}
-                  className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-sm text-white focus:outline-none focus:border-gray-500"
+                  className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded text-sm text-white focus:outline-none focus:border-gray-500"
                 >
                   {roles
                     .filter((r) => r.id !== 'owner')
@@ -299,7 +299,7 @@ const AccountPanel = ({ onClose, isOpen, onSignOut = null, user = null }) => {
                   <button
                     type="button"
                     onClick={() => setShowInviteForm(false)}
-                    className="flex-1 py-2 rounded-lg bg-gray-700 text-gray-300 hover:bg-gray-600 text-sm font-medium transition-colors"
+                    className="flex-1 py-2 rounded bg-gray-700 text-gray-300 hover:bg-gray-600 text-sm font-medium transition-colors"
                   >
                     Cancel
                   </button>
@@ -307,7 +307,7 @@ const AccountPanel = ({ onClose, isOpen, onSignOut = null, user = null }) => {
                     type="button"
                     onClick={handleInvite}
                     disabled={!inviteEmail.trim()}
-                    className="flex-1 py-2 rounded-lg bg-white text-gray-900 hover:bg-gray-200 text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex-1 py-2 rounded bg-white text-gray-900 hover:bg-gray-200 text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Send Invite
                   </button>
@@ -323,7 +323,7 @@ const AccountPanel = ({ onClose, isOpen, onSignOut = null, user = null }) => {
 
               {/* Error message */}
               {error && (
-                <div className="p-2 rounded-lg bg-red-500/10 border border-red-500/20 text-xs text-red-400">
+                <div className="p-2 rounded bg-red-500/10 border border-red-500/20 text-xs text-red-400">
                   {error}
                 </div>
               )}
@@ -343,7 +343,7 @@ const AccountPanel = ({ onClose, isOpen, onSignOut = null, user = null }) => {
                 teamMembers.map((member) => (
                   <div
                     key={member.id}
-                    className="p-3 rounded-lg bg-gray-800/30 border border-gray-700/50 flex items-center gap-3"
+                    className="p-3 rounded bg-gray-800/30 border border-gray-700/50 flex items-center gap-3"
                   >
                     <div className="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center text-xs font-medium text-white">
                       {(member.name || member.email || '?')
@@ -461,7 +461,7 @@ const AccountPanel = ({ onClose, isOpen, onSignOut = null, user = null }) => {
                   Pending Invites ({pendingInvites.length})
                 </h3>
                 {pendingInvites.map((invite) => (
-                  <div key={invite.id} className="p-3 rounded-lg bg-gray-800/30 border border-gray-700/50">
+                  <div key={invite.id} className="p-3 rounded bg-gray-800/30 border border-gray-700/50">
                     <div className="flex items-start justify-between mb-2">
                       <div>
                         <p className="text-sm font-medium text-white">{invite.email}</p>
@@ -504,7 +504,7 @@ const AccountPanel = ({ onClose, isOpen, onSignOut = null, user = null }) => {
 
               {isEditingProfile ? (
                 /* Edit Mode */
-                <div className="p-3 rounded-lg bg-gray-800/30 border border-gray-700/50 space-y-3">
+                <div className="p-3 rounded bg-gray-800/30 border border-gray-700/50 space-y-3">
                   <div className="flex items-center gap-3">
                     <div className="w-12 h-12 rounded-full bg-gray-700 flex items-center justify-center text-lg font-medium text-white">
                       {userInitials}
@@ -515,14 +515,14 @@ const AccountPanel = ({ onClose, isOpen, onSignOut = null, user = null }) => {
                         type="text"
                         value={profileName}
                         onChange={(e) => setProfileName(e.target.value)}
-                        className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-sm text-white focus:outline-none focus:border-gray-500"
+                        className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded text-sm text-white focus:outline-none focus:border-gray-500"
                         placeholder="Your name"
                       />
                     </div>
                   </div>
                   <div>
                     <p className="text-xs text-gray-500 mb-1">Email (cannot be changed)</p>
-                    <p className="text-sm text-gray-400 px-3 py-2 bg-gray-800/50 rounded-lg">{userEmail}</p>
+                    <p className="text-sm text-gray-400 px-3 py-2 bg-gray-800/50 rounded">{userEmail}</p>
                   </div>
                   <div className="flex gap-2 pt-2">
                     <button
@@ -531,14 +531,14 @@ const AccountPanel = ({ onClose, isOpen, onSignOut = null, user = null }) => {
                         setIsEditingProfile(false);
                         setProfileName(userDisplayName);
                       }}
-                      className="flex-1 py-2 rounded-lg bg-gray-700 text-gray-300 hover:bg-gray-600 text-xs font-medium transition-colors"
+                      className="flex-1 py-2 rounded bg-gray-700 text-gray-300 hover:bg-gray-600 text-xs font-medium transition-colors"
                     >
                       Cancel
                     </button>
                     <button
                       type="button"
                       onClick={handleUpdateProfile}
-                      className="flex-1 py-2 rounded-lg bg-white text-gray-900 hover:bg-gray-200 text-xs font-medium transition-colors"
+                      className="flex-1 py-2 rounded bg-white text-gray-900 hover:bg-gray-200 text-xs font-medium transition-colors"
                     >
                       Save
                     </button>
@@ -546,7 +546,7 @@ const AccountPanel = ({ onClose, isOpen, onSignOut = null, user = null }) => {
                 </div>
               ) : (
                 /* View Mode */
-                <div className="flex items-center gap-3 p-3 rounded-lg bg-gray-800/30 border border-gray-700/50">
+                <div className="flex items-center gap-3 p-3 rounded bg-gray-800/30 border border-gray-700/50">
                   <div className="w-12 h-12 rounded-full bg-gray-700 flex items-center justify-center text-lg font-medium text-white">
                     {userInitials}
                   </div>
@@ -568,13 +568,13 @@ const AccountPanel = ({ onClose, isOpen, onSignOut = null, user = null }) => {
             {/* Workspace Section */}
             <div className="space-y-3">
               <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wide">Workspace</h3>
-              <div className="p-3 rounded-lg bg-gray-800/30 border border-gray-700/50 space-y-3">
+              <div className="p-3 rounded bg-gray-800/30 border border-gray-700/50 space-y-3">
                 <div>
                   <label className="text-xs text-gray-400 block mb-1">Workspace Name</label>
                   <input
                     type="text"
                     defaultValue="My Team"
-                    className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-sm text-white focus:outline-none focus:border-gray-500"
+                    className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded text-sm text-white focus:outline-none focus:border-gray-500"
                   />
                 </div>
               </div>
@@ -584,7 +584,7 @@ const AccountPanel = ({ onClose, isOpen, onSignOut = null, user = null }) => {
             {onSignOut && (
               <div className="space-y-3">
                 <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wide">Session</h3>
-                <div className="p-3 rounded-lg bg-gray-800/50 border border-gray-700 space-y-2">
+                <div className="p-3 rounded bg-gray-800/50 border border-gray-700 space-y-2">
                   {user?.email && (
                     <p className="text-xs text-gray-400">
                       Signed in as <span className="text-white">{user.email}</span>
@@ -593,7 +593,7 @@ const AccountPanel = ({ onClose, isOpen, onSignOut = null, user = null }) => {
                   <button
                     type="button"
                     onClick={onSignOut}
-                    className="w-full py-2 rounded-lg bg-gray-700 hover:bg-gray-600 text-white text-xs font-medium transition-colors flex items-center justify-center gap-2"
+                    className="w-full py-2 rounded bg-gray-700 hover:bg-gray-600 text-white text-xs font-medium transition-colors flex items-center justify-center gap-2"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path
@@ -612,11 +612,11 @@ const AccountPanel = ({ onClose, isOpen, onSignOut = null, user = null }) => {
             {/* Danger Zone */}
             <div className="space-y-3">
               <h3 className="text-xs font-medium text-red-400/70 uppercase tracking-wide">Danger Zone</h3>
-              <div className="p-3 rounded-lg bg-red-500/5 border border-red-500/20 space-y-2">
+              <div className="p-3 rounded bg-red-500/5 border border-red-500/20 space-y-2">
                 <p className="text-xs text-gray-400">Permanently delete your account and all associated data.</p>
                 <button
                   type="button"
-                  className="w-full py-2 rounded-lg border border-red-500/30 text-red-400 hover:bg-red-500/10 text-xs font-medium transition-colors"
+                  className="w-full py-2 rounded border border-red-500/30 text-red-400 hover:bg-red-500/10 text-xs font-medium transition-colors"
                 >
                   Delete Account
                 </button>

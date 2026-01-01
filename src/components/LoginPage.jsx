@@ -41,7 +41,7 @@ export default function LoginPage({ onLogin, error: externalError, loading: exte
     <div className="min-h-screen flex items-center justify-center p-4" style={{ backgroundColor: '#0d1321' }}>
       {/* Login Card - matching project card style */}
       <div
-        className={`relative w-full max-w-md bg-gray-900 border rounded-xl overflow-hidden transition-all duration-150 ${
+        className={`relative w-full max-w-md bg-gray-900 border rounded-md overflow-hidden transition-all duration-150 ${
           isHovered ? 'border-gray-600 bg-gray-800/50' : 'border-gray-800'
         }`}
         onMouseEnter={() => setIsHovered(true)}
@@ -54,7 +54,7 @@ export default function LoginPage({ onLogin, error: externalError, loading: exte
           >
             {/* Icon */}
             <div
-              className={`w-14 h-14 rounded-xl flex items-center justify-center transition-colors duration-150 ${
+              className={`w-14 h-14 rounded-md flex items-center justify-center transition-colors duration-150 ${
                 isHovered ? 'bg-gray-700' : 'bg-gray-700/50'
               } border border-gray-600`}
             >
@@ -100,7 +100,7 @@ export default function LoginPage({ onLogin, error: externalError, loading: exte
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-3.5 py-2.5 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-600 focus:outline-none focus:border-gray-500 focus:bg-gray-800 transition-all text-sm"
+                className="w-full px-3.5 py-2.5 bg-gray-800/50 border border-gray-700 rounded text-white placeholder-gray-600 focus:outline-none focus:border-gray-500 focus:bg-gray-800 transition-all text-sm"
                 placeholder="you@company.com"
                 disabled={loading}
                 autoComplete="email"
@@ -120,7 +120,7 @@ export default function LoginPage({ onLogin, error: externalError, loading: exte
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-3.5 py-2.5 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-600 focus:outline-none focus:border-gray-500 focus:bg-gray-800 transition-all text-sm"
+                className="w-full px-3.5 py-2.5 bg-gray-800/50 border border-gray-700 rounded text-white placeholder-gray-600 focus:outline-none focus:border-gray-500 focus:bg-gray-800 transition-all text-sm"
                 placeholder="••••••••"
                 disabled={loading}
                 autoComplete="current-password"
@@ -129,7 +129,7 @@ export default function LoginPage({ onLogin, error: externalError, loading: exte
 
             {/* Error Message */}
             {error && (
-              <div className="flex items-center gap-2 p-2.5 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 text-xs">
+              <div className="flex items-center gap-2 p-2.5 bg-red-500/10 border border-red-500/20 rounded text-red-400 text-xs">
                 <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
@@ -146,7 +146,7 @@ export default function LoginPage({ onLogin, error: externalError, loading: exte
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-2.5 bg-gray-700 hover:bg-gray-600 border border-gray-600 hover:border-gray-500 text-white font-medium rounded-lg transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm mt-2"
+              className="w-full py-2.5 bg-gray-700 hover:bg-gray-600 border border-gray-600 hover:border-gray-500 text-white font-medium rounded transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm mt-2"
             >
               {loading ? (
                 <>
