@@ -90,7 +90,7 @@ const CarouselRow = ({
   return (
     <div
       data-carousel-id={carousel.id}
-      className={`mb-10 rounded-md transition-all duration-150 cursor-pointer overflow-x-auto hide-scrollbar ${isSelected ? 'bg-gray-800/40 border border-gray-600 py-4' : 'hover:bg-gray-800/30 border border-transparent py-4'} ${isFaded ? 'opacity-20 hover:opacity-50' : 'opacity-100'}`}
+      className={`mb-10 rounded-[--radius-md] transition-all duration-150 cursor-pointer overflow-x-auto hide-scrollbar ${isSelected ? 'bg-[--surface-raised]/40 border border-[--border-emphasis] py-4' : 'hover:bg-[--surface-raised]/30 border border-transparent py-4'} ${isFaded ? 'opacity-20 hover:opacity-50' : 'opacity-100'}`}
       style={{
         marginLeft: '10px',
         marginRight: '10px',
@@ -111,14 +111,14 @@ const CarouselRow = ({
               e.stopPropagation();
               onSelect(isSelected ? null : carousel.id);
             }}
-            className={`w-11 h-11 rounded-md border-2 flex items-center justify-center transition-all duration-150 ${isSelected ? 'border-gray-500 bg-gray-700 hover:bg-gray-600' : 'border-gray-600 hover:border-gray-500 hover:bg-gray-800'}`}
+            className={`w-11 h-11 rounded-[--radius-md] border-2 flex items-center justify-center transition-all duration-150 ${isSelected ? 'border-[--border-strong] bg-[--surface-overlay] hover:bg-[--surface-elevated]' : 'border-[--border-emphasis] hover:border-[--border-strong] hover:bg-[--surface-raised]'}`}
           >
             {isSelected ? (
               <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             ) : (
-              <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 text-[--text-tertiary]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -134,7 +134,7 @@ const CarouselRow = ({
                 {carousel.name}
               </h2>
               {isSelected && (
-                <span className="text-[9px] bg-gray-600 text-gray-300 px-1.5 py-0.5 rounded font-medium">EDITING</span>
+                <span className="text-[9px] bg-[--surface-elevated] text-[--text-secondary] px-1.5 py-0.5 rounded-[--radius-sm] font-medium">EDITING</span>
               )}
               {/* Remove Row Button - next to EDITING tag */}
               {isSelected && (
@@ -158,7 +158,7 @@ const CarouselRow = ({
                 </button>
               )}
             </div>
-            <p className="text-sm text-gray-400">{carousel.subtitle}</p>
+            <p className="text-sm text-[--text-tertiary]">{carousel.subtitle}</p>
           </div>
         </div>
       </div>
@@ -227,10 +227,10 @@ const CarouselRow = ({
                         e.stopPropagation();
                         onAddFrame(carousel.id, index + 1);
                       }}
-                      className="w-7 h-7 rounded-full border-2 border-dashed border-gray-600 opacity-50 hover:opacity-100 hover:border-gray-400 hover:bg-gray-700 flex items-center justify-center transition-all duration-150"
+                      className="w-7 h-7 rounded-full border-2 border-dashed border-[--border-emphasis] opacity-50 hover:opacity-100 hover:border-[--border-strong] hover:bg-[--surface-overlay] flex items-center justify-center transition-all duration-150"
                     >
                       <svg
-                        className="w-3.5 h-3.5 text-gray-500 hover:text-white transition-colors"
+                        className="w-3.5 h-3.5 text-[--text-quaternary] hover:text-white transition-colors"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
