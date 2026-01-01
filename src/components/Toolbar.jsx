@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { frameSizes, layoutNames, layoutVariantNames, getFrameStyle, getFrameSizesByCategory } from '../data';
-import { FONT_WEIGHTS, SMOOTH_SETTINGS } from '../config';
-import { smoothCarouselBackgrounds } from '../utils';
+import { FONT_WEIGHTS } from '../config';
 import { 
   useDesignSystemContext, 
   useSelectionContext, 
@@ -34,7 +33,6 @@ export default function Toolbar({ totalOffset, activeTab }) {
     handleShuffleLayoutVariant,
     handleUpdateFormatting,
     handleChangeFrameSize,
-    handleSmoothBackgrounds,
     handleUpdateImageLayer,
     handleRemoveImageFromFrame,
   } = carouselsCtx;
@@ -63,154 +61,9 @@ export default function Toolbar({ totalOffset, activeTab }) {
     closeAllDropdowns,
   } = dropdowns;
 
-  // Smooth backgrounds state
-  const [showSmoothPicker, setShowSmoothPicker] = useState(false);
-  
   // Image controls state
   const [showImageControls, setShowImageControls] = useState(false);
   const imageControlsRef = useRef(null);
-  const [smoothIntensity, setSmoothIntensity] = useState(2); // 1=Light(25%), 2=Medium(50%), 3=Strong(75%), 4=Full(100%)
-  const [smoothDirection, setSmoothDirection] = useState('horizontal'); // horizontal, vertical, radial, diagonal
-  const [originalBackgrounds, setOriginalBackgrounds] = useState(null); // Store originals for cancel
-  const [previewApplied, setPreviewApplied] = useState(false);
-  const smoothPickerRef = useRef(null);
-
-  // Use centralized smooth settings
-  const SMOOTH_NOTCHES = SMOOTH_SETTINGS.INTENSITY_NOTCHES;
-  const SMOOTH_DIRECTIONS = SMOOTH_SETTINGS.DIRECTIONS;
-
-  const currentNotch = SMOOTH_NOTCHES.find(n => n.step === smoothIntensity) || SMOOTH_NOTCHES[1];
-  const currentDirection = SMOOTH_DIRECTIONS.find(d => d.id === smoothDirection) || SMOOTH_DIRECTIONS[0];
-
-  // Helper to extract gradient string from backgroundOverride (handles both string and stretched object)
-  const extractGradientString = (bgOverride) => {
-    if (!bgOverride) return null;
-    if (typeof bgOverride === 'string') return bgOverride;
-    if (typeof bgOverride === 'object' && bgOverride.gradient) return bgOverride.gradient;
-    return null;
-  };
-
-  // Get backgrounds for frames (using originals if we have them, for proper preview)
-  const getBackgroundForFrame = (frame, useOriginal = false) => {
-    if (useOriginal && originalBackgrounds) {
-      const orig = originalBackgrounds[frame.id];
-      if (orig) return extractGradientString(orig) || orig;
-      return extractGradientString(frame.backgroundOverride) || getFrameStyle(selectedCarousel?.id, frame.style, designSystem).background;
-    }
-    const bgOverride = extractGradientString(frame.backgroundOverride);
-    if (bgOverride) return bgOverride;
-    const style = getFrameStyle(selectedCarousel?.id, frame.style, designSystem);
-    return style.background;
-  };
-
-  // Store original backgrounds when opening picker
-  const openSmoothPicker = () => {
-    if (!selectedCarousel) return;
-    
-    // Store current backgrounds (preserve full object for stretched gradients)
-    const originals = {};
-    selectedCarousel.frames?.forEach(frame => {
-      // Store the actual backgroundOverride (could be string, object, or undefined)
-      originals[frame.id] = frame.backgroundOverride !== undefined 
-        ? frame.backgroundOverride 
-        : getFrameStyle(selectedCarousel?.id, frame.style, designSystem).background;
-    });
-    setOriginalBackgrounds(originals);
-    setPreviewApplied(false);
-    setShowSmoothPicker(true);
-  };
-
-  // Apply preview (temporary)
-  const applyPreview = (notchStep, direction = smoothDirection) => {
-    if (!selectedCarousel || !originalBackgrounds) return;
-    
-    const notch = SMOOTH_NOTCHES.find(n => n.step === notchStep);
-    if (!notch) return;
-    
-    console.log('Smooth Preview:', notch.label, `(${notch.value}%)`, 'Direction:', direction);
-    
-    // Calculate smoothed backgrounds from originals
-    // Use extractGradientString to handle stretched gradient objects
-    const smoothedFrames = smoothCarouselBackgrounds(
-      selectedCarousel.frames,
-      (frame) => {
-        const bg = originalBackgrounds[frame.id];
-        return extractGradientString(bg) || bg;
-      },
-      { intensity: notch.value / 100, direction }
-    );
-    
-    if (smoothedFrames.length > 0) {
-      handleSmoothBackgrounds(selectedCarousel.id, smoothedFrames);
-      setPreviewApplied(true);
-    }
-  };
-
-  // Revert to original backgrounds
-  const revertToOriginal = () => {
-    if (!selectedCarousel || !originalBackgrounds || !previewApplied) return;
-    
-    console.log('Smooth: Reverting to original');
-    const revertFrames = selectedCarousel.frames?.map(frame => ({
-      id: frame.id,
-      background: originalBackgrounds[frame.id]
-    }));
-    
-    if (revertFrames?.length > 0) {
-      handleSmoothBackgrounds(selectedCarousel.id, revertFrames);
-    }
-  };
-
-  // Reset all backgrounds to defaults (clear all backgroundOverride)
-  const resetAllBackgrounds = () => {
-    if (!selectedCarousel) return;
-    
-    console.log('Smooth: Resetting all backgrounds to defaults');
-    const resetFrames = selectedCarousel.frames?.map(frame => ({
-      id: frame.id,
-      background: null // null will be handled by reducer to clear backgroundOverride
-    }));
-    
-    if (resetFrames?.length > 0) {
-      handleSmoothBackgrounds(selectedCarousel.id, resetFrames);
-    }
-    closeSmoothPicker(false);
-  };
-
-  // Close picker and revert if not saved
-  const closeSmoothPicker = (save = false) => {
-    if (!save && previewApplied) {
-      revertToOriginal();
-    }
-    setShowSmoothPicker(false);
-    setOriginalBackgrounds(null);
-    setPreviewApplied(false);
-  };
-
-  // Handle slider change
-  const handleSliderChange = (newStep) => {
-    setSmoothIntensity(newStep);
-    applyPreview(newStep, smoothDirection);
-  };
-
-  // Handle direction change
-  const handleDirectionChange = (newDirection) => {
-    setSmoothDirection(newDirection);
-    applyPreview(smoothIntensity, newDirection);
-  };
-
-  // Close smooth picker on outside click
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (smoothPickerRef.current && !smoothPickerRef.current.contains(e.target)) {
-        closeSmoothPicker(false); // Revert on outside click
-      }
-    };
-    if (showSmoothPicker) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [showSmoothPicker, previewApplied, originalBackgrounds]);
 
   // Image controls click-outside handler
   useEffect(() => {
@@ -255,100 +108,6 @@ export default function Toolbar({ totalOffset, activeTab }) {
                       <span className="text-gray-600">{size.ratio}</span>
                     </button>
                   ))}
-                </div>
-              )}
-            </div>
-            
-            {/* Smooth Backgrounds Dropdown */}
-            <div ref={smoothPickerRef} className="relative">
-              <button
-                onClick={() => showSmoothPicker ? closeSmoothPicker(false) : openSmoothPicker()}
-                className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium transition-all duration-200 border ${
-                  showSmoothPicker ? 'bg-gray-700 border-gray-500 text-white' : 'bg-gray-800/50 border-gray-700 text-gray-300 hover:bg-gray-700 hover:border-gray-600'
-                }`}
-                title="Smooth background transitions between frames"
-              >
-                <span>Smooth</span>
-                <svg className={`w-2.5 h-2.5 text-gray-500 transition-transform duration-200 ${showSmoothPicker ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              
-              {showSmoothPicker && (
-                <div className="absolute top-full left-0 mt-2 p-3 bg-gray-900 border border-gray-700 rounded-xl shadow-xl z-[200] min-w-[220px]">
-                  
-                  {/* Intensity Section */}
-                  <div className="mb-4">
-                    <div className="text-[10px] text-gray-500 uppercase tracking-wide mb-2">Intensity</div>
-                    <div className="flex gap-1.5">
-                      {SMOOTH_NOTCHES.map((notch) => (
-                        <button
-                          key={notch.step}
-                          onClick={() => handleSliderChange(notch.step)}
-                          className={`flex-1 px-2 py-1.5 rounded-lg text-[11px] font-medium transition-all duration-200 border ${
-                            smoothIntensity === notch.step
-                              ? 'bg-gray-700 border-gray-500 text-white'
-                              : 'bg-gray-800/50 border-gray-700 text-gray-500 hover:bg-gray-800 hover:border-gray-600 hover:text-gray-300'
-                          }`}
-                        >
-                          {notch.label}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                  
-                  {/* Direction Section */}
-                  <div className="mb-4">
-                    <div className="text-[10px] text-gray-500 uppercase tracking-wide mb-2">Direction</div>
-                    <div className="flex gap-1.5">
-                      {SMOOTH_DIRECTIONS.map((dir) => (
-                        <button
-                          key={dir.id}
-                          onClick={() => handleDirectionChange(dir.id)}
-                          className={`flex-1 flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg text-[11px] font-medium transition-all duration-200 border ${
-                            smoothDirection === dir.id
-                              ? 'bg-gray-700 border-gray-500 text-white'
-                              : 'bg-gray-800/50 border-gray-700 text-gray-500 hover:bg-gray-800 hover:border-gray-600 hover:text-gray-300'
-                          }`}
-                        >
-                          <span className="text-sm">{dir.icon}</span>
-                          <span>{dir.label}</span>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                  
-                  {/* Preview indicator */}
-                  {previewApplied && (
-                    <div className="flex items-center gap-1.5 mb-3 text-[10px] text-gray-400">
-                      <div className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-pulse" />
-                      <span>Preview active</span>
-                    </div>
-                  )}
-                  
-                  {/* Reset button */}
-                  <button
-                    onClick={resetAllBackgrounds}
-                    className="w-full mb-3 py-1.5 text-gray-500 text-[11px] font-medium rounded-lg border border-gray-700/50 hover:border-gray-600 hover:bg-gray-800/50 hover:text-gray-300 transition-all duration-200"
-                  >
-                    Reset to defaults
-                  </button>
-                  
-                  {/* Action buttons */}
-                  <div className="flex gap-1.5 pt-3 border-t border-gray-800">
-                    <button
-                      onClick={() => closeSmoothPicker(false)}
-                      className="flex-1 py-1.5 text-gray-500 text-[11px] font-medium rounded-lg border border-gray-700/50 hover:border-gray-600 hover:bg-gray-800/50 hover:text-gray-300 transition-all duration-200"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      onClick={() => closeSmoothPicker(true)}
-                      className="flex-1 py-1.5 bg-gray-700 hover:bg-gray-600 border border-gray-600 hover:border-gray-500 text-white text-[11px] font-medium rounded-lg transition-all duration-200"
-                    >
-                      Apply
-                    </button>
-                  </div>
                 </div>
               )}
             </div>

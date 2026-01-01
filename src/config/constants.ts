@@ -65,23 +65,6 @@ export const IMAGE_COMPRESSION = {
   MAX_FILE_SIZE_MB: 10,
 } as const;
 
-// ===== SMOOTH BACKGROUNDS =====
-// Settings for the gradient smooth tool
-export const SMOOTH_SETTINGS = {
-  INTENSITY_NOTCHES: [
-    { step: 1, label: 'Light', value: 25 },
-    { step: 2, label: 'Medium', value: 50 },
-    { step: 3, label: 'Strong', value: 75 },
-    { step: 4, label: 'Full', value: 100 },
-  ],
-  DIRECTIONS: [
-    { id: 'diagonal', label: 'Diagonal', icon: '↘' },
-    { id: 'diagonal-mirror', label: 'Mirror', icon: '↙' },
-  ],
-  DEFAULT_INTENSITY: 2,
-  DEFAULT_DIRECTION: 'diagonal',
-} as const;
-
 // ===== FONT WEIGHTS =====
 // Available font weight options
 export const FONT_WEIGHTS = [
@@ -139,5 +122,4 @@ export const PROJECT_TYPE_ICONS = {
 export type StorageKey = typeof STORAGE_KEYS[keyof typeof STORAGE_KEYS];
 export type FontWeight = typeof FONT_WEIGHTS[number];
 export type FontSizeOption = typeof FONT_SIZE_OPTIONS[number];
-export type SmoothDirection = typeof SMOOTH_SETTINGS.DIRECTIONS[number]['id'];
 

@@ -26,7 +26,6 @@ export const CAROUSEL_ACTIONS = {
   RESET_CAROUSEL: 'RESET_CAROUSEL',
   SET_FRAME_BACKGROUND: 'SET_FRAME_BACKGROUND',
   SET_ROW_STRETCHED_BACKGROUND: 'SET_ROW_STRETCHED_BACKGROUND',
-  SMOOTH_BACKGROUNDS: 'SMOOTH_BACKGROUNDS',
   // Image Layer Actions
   ADD_IMAGE_TO_FRAME: 'ADD_IMAGE_TO_FRAME',
   UPDATE_IMAGE_LAYER: 'UPDATE_IMAGE_LAYER',
@@ -357,37 +356,6 @@ function carouselReducer(state, action) {
                   isStretched: true,
                 }
               };
-            })
-          };
-        })
-      };
-    }
-
-    case CAROUSEL_ACTIONS.SMOOTH_BACKGROUNDS: {
-      // Apply smoothed backgrounds to all frames in a carousel
-      // action.smoothedFrames: Array<{ id: number, background: string | object | null }>
-      // background can be: string (simple gradient), object (stretched gradient), or null (clear)
-      const { carouselId, smoothedFrames } = action;
-      if (!smoothedFrames || smoothedFrames.length === 0) return state;
-      
-      const smoothedMap = new Map(smoothedFrames.map(f => [f.id, f.background]));
-      
-      return {
-        ...state,
-        carousels: state.carousels.map(carousel => {
-          if (carousel.id !== carouselId) return carousel;
-          return {
-            ...carousel,
-            frames: carousel.frames.map(frame => {
-              if (!smoothedMap.has(frame.id)) return frame;
-              const newBg = smoothedMap.get(frame.id);
-              // If null or undefined, remove backgroundOverride; otherwise set it
-              if (newBg === null || newBg === undefined) {
-                const { backgroundOverride, ...rest } = frame;
-                return rest;
-              }
-              // Preserve object format (stretched gradients) or string format
-              return { ...frame, backgroundOverride: newBg };
             })
           };
         })
@@ -922,10 +890,7 @@ export default function useCarousels(initialData) {
     
     handleSetRowStretchedBackground: useCallback((carouselId, background, startIdx, endIdx) =>
       dispatch({ type: CAROUSEL_ACTIONS.SET_ROW_STRETCHED_BACKGROUND, carouselId, background, startIdx, endIdx }), []),
-    
-    handleSmoothBackgrounds: useCallback((carouselId, smoothedFrames) =>
-      dispatch({ type: CAROUSEL_ACTIONS.SMOOTH_BACKGROUNDS, carouselId, smoothedFrames }), []),
-    
+
     // Image Layer Actions
     handleAddImageToFrame: useCallback((carouselId, frameId, imageSrc) =>
       dispatch({ type: CAROUSEL_ACTIONS.ADD_IMAGE_TO_FRAME, carouselId, frameId, imageSrc }), []),

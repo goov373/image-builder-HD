@@ -25,7 +25,6 @@ export {
   LIMITS,
   DEFAULTS,
   IMAGE_COMPRESSION,
-  SMOOTH_SETTINGS,
   FONT_WEIGHTS,
   FONT_SIZE_OPTIONS,
   TEXT_ALIGN_OPTIONS,
@@ -35,6 +34,5 @@ export {
   type StorageKey,
   type FontWeight,
   type FontSizeOption,
-  type SmoothDirection,
 } from './constants';
 

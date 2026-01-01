@@ -23,11 +23,6 @@ export {
   getDominantColor,
 } from './gradientParser';
 
-// Smooth backgrounds - main function
-export {
-  smoothCarouselBackgrounds,
-} from './smoothBackgrounds';
-
 // Image compression - main functions
 export {
   compressImages,
