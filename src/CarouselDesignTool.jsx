@@ -403,13 +403,13 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
 
             {/* Fixed Home Button - above sidebar */}
             <div
-              className="fixed top-0 left-0 z-[120] flex items-center justify-center border-b border-r border-[--border-default]"
-              style={{ width: 64, height: 56, backgroundColor: 'var(--surface-canvas)' }}
+              className="fixed top-0 left-0 z-[120] border-b border-r border-[--border-default]"
+              style={{ width: 64, height: 56, backgroundColor: tabs.currentView === 'home' ? 'var(--surface-default)' : 'var(--surface-canvas)' }}
             >
               <button
                 type="button"
                 onClick={handleGoHome}
-                className={`w-10 h-10 rounded-[--radius-md] flex items-center justify-center transition-all ${tabs.currentView === 'home' ? 'text-[--text-primary] bg-[--surface-default]' : 'text-[--text-tertiary] hover:text-[--text-primary] hover:bg-[--surface-default]'}`}
+                className={`w-full h-full flex items-center justify-center transition-all ${tabs.currentView === 'home' ? 'text-[--text-primary]' : 'text-[--text-tertiary] hover:text-[--text-primary] hover:bg-[--surface-default]'}`}
                 title="Go to Homepage"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
