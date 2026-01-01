@@ -39,7 +39,7 @@ const BrandColorsSection = ({ designSystem, onUpdate, isCollapsed, onToggle, ord
       </button>
 
       {!isCollapsed && (
-        <div className="px-4 pb-4">
+        <div className="px-4 pt-2 pb-4">
           <div className="grid grid-cols-3 gap-3">
             {colorFields.map((field) => (
               <div key={field.key} className="flex flex-col items-center gap-1.5">

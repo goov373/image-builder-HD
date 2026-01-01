@@ -1341,7 +1341,7 @@ const DesignSystemPanel = ({
                   </button>
 
                   {!collapsedSections.productImagery && (
-                    <div className="px-4 pb-4">
+                    <div className="px-4 pt-2 pb-4">
                       {uploadedProductImages.length === 0 ? (
                         <div className="text-center py-6">
                           <svg
