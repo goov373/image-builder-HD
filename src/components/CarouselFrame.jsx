@@ -1094,11 +1094,14 @@ export const CarouselFrame = ({
   };
   
   return (
-    <div className="flex flex-col" style={{ width: size.width }}>
-      {/* Position Header - appears above card when frame is selected */}
+    <div className="flex flex-col relative" style={{ width: size.width }}>
+      {/* Position Header - appears above card when frame is selected (positioned absolutely to not affect row alignment) */}
       {isFrameSelected && (
-        <div className="mb-1.5 flex flex-col items-stretch w-full max-w-[180px]">
-          <div className="text-[9px] text-gray-500 uppercase tracking-wider px-1 pb-1">
+        <div 
+          className="absolute left-0 flex flex-col items-stretch w-full max-w-[180px]"
+          style={{ bottom: '100%', marginBottom: 6 }}
+        >
+          <div className="text-[9px] text-gray-500 uppercase tracking-wider px-1">
             Frame {frameIndex + 1}
           </div>
         </div>
