@@ -89,6 +89,8 @@ export interface Carousel {
   id: number;
   name: string;
   subtitle: string;
+  audienceTags?: string[];  // Array of audience tag IDs
+  featureTags?: string[];   // Array of feature tag IDs
   frameSize: FrameSizeKey;
   frames: Frame[];
 }
@@ -247,6 +249,10 @@ export interface CarouselsContextValue {
   canRedo: boolean;
   historyLength: number;
   futureLength: number;
+  // Row name and tags
+  handleUpdateRowName: (carouselId: number, name: string) => void;
+  handleUpdateRowAudienceTags: (carouselId: number, tags: string[]) => void;
+  handleUpdateRowFeatureTags: (carouselId: number, tags: string[]) => void;
 }
 
 // ===== Component Props Types =====

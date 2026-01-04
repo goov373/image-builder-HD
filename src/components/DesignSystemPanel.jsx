@@ -1296,11 +1296,11 @@ const DesignSystemPanel = ({
                 )}
               </div>
 
-              {/* ========== CUSTOM BACKGROUNDS SECTION ========== */}
-              {/* Upload Backgrounds Section */}
+              {/* ========== CUSTOM FILL COLORS SECTION ========== */}
+              {/* Upload Fill Colors Section */}
               <div className="p-4 border-t border-[--border-default]">
                 <div className="flex items-center justify-between mb-3">
-                  <h3 className="text-xs font-medium text-[--text-tertiary] uppercase tracking-wide">Upload Backgrounds</h3>
+                  <h3 className="text-xs font-medium text-[--text-tertiary] uppercase tracking-wide">Upload Fill Colors</h3>
                   <span className="text-[10px] text-[--text-quaternary]">
                     {uploadedBackgrounds.length}/{MAX_BACKGROUNDS}
                   </span>
@@ -1330,25 +1330,25 @@ const DesignSystemPanel = ({
                       d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
                     />
                   </svg>
-                  <p className="text-xs text-[--text-tertiary] mb-1">Custom background images</p>
+                  <p className="text-xs text-[--text-tertiary] mb-1">Custom fill color images</p>
                   <button
                     type="button"
                     className="px-3 py-1.5 bg-[--surface-overlay] hover:bg-[--surface-elevated] text-xs text-white rounded transition-colors"
                   >
-                    Upload backgrounds
+                    Upload fill colors
                   </button>
                   <p className="text-[10px] text-[--text-quaternary] mt-2">PNG, JPG, WEBP images</p>
                 </div>
               </div>
 
-              {/* Your Backgrounds Browser - Collapsible */}
+              {/* Your Fill Colors Browser - Collapsible */}
               <div className="border-t border-[--border-default]">
                 <button
                   type="button"
                   onClick={() => toggleSection('yourBackgrounds')}
                   className="w-full p-4 flex items-center justify-between hover:bg-[--surface-default] transition-colors"
                 >
-                  <h3 className="text-xs font-medium text-[--text-tertiary] uppercase tracking-wide">Your Backgrounds</h3>
+                  <h3 className="text-xs font-medium text-[--text-tertiary] uppercase tracking-wide">Your Fill Colors</h3>
                   <div className="flex items-center gap-2">
                     {uploadedBackgrounds.length > 0 && (
                       <span className="px-1.5 py-0.5 bg-[--surface-raised] rounded-[--radius-sm] text-[10px] text-[--text-tertiary]">
@@ -1817,7 +1817,7 @@ const DesignSystemPanel = ({
                   )}
                 </div>
 
-                {/* Backgrounds Section */}
+                {/* Fill Color Section */}
                 <div className="border-b border-[--border-default]" style={{ order: sectionOrder.indexOf('backgrounds') }}>
                   <button
                     type="button"
@@ -1875,11 +1875,11 @@ const DesignSystemPanel = ({
                         </div>
                       )}
 
-                      {/* User's Uploaded Backgrounds - shown first */}
+                      {/* User's Uploaded Fill Colors - shown first */}
                       {uploadedBackgrounds.length > 0 && (
                         <>
                           <h4 className="text-[10px] text-[--text-quaternary] uppercase tracking-wide mb-2">
-                            Your Backgrounds ({uploadedBackgrounds.length})
+                            Your Fill Colors ({uploadedBackgrounds.length})
                           </h4>
                           <div className="grid grid-cols-3 gap-2 mb-4">
                             {uploadedBackgrounds.map((bg) => (

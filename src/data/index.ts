@@ -1,6 +1,6 @@
 export { frameSizes, layoutNames, layoutVariantNames, getFontSizes, getFrameSizesByCategory } from './frameSizes';
 export { fontOptions, allFonts, defaultDesignSystem } from './fontOptions';
-export { initialCarousels, getFrameStyle } from './initialCarousels';
+export { initialCarousels, getFrameStyle, createEmptyProjectCarousels } from './initialCarousels';
 export { initialEblasts, createEmptyEblast, getEblastSectionStyle } from './initialEblasts';
 export { initialVideoCovers, createEmptyVideoCover, getVideoCoverStyle } from './initialVideoCovers';
 export {
@@ -39,3 +39,12 @@ export {
   type PatternLayer,
 } from './patterns';
 export { brandIcons, getAllBrandIcons, getBrandIconsByCategory, iconCategories, type BrandIcon } from './brandIcons';
+export {
+  AUDIENCE_TAGS,
+  FEATURE_TAGS,
+  getAudienceTag,
+  getFeatureTag,
+  getAudienceLabels,
+  getFeatureLabels,
+  type TagDefinition,
+} from './tags';

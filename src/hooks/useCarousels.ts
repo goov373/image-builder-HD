@@ -46,7 +46,13 @@ import type { PatternLayer, ImageLayer, BackgroundOverride, ContentVariant } fro
  * @module hooks/useCarousels
  */
 
-const STORAGE_KEY = STORAGE_KEYS.CAROUSELS;
+const STORAGE_KEY_PREFIX = 'carousel-project-';
+const LEGACY_STORAGE_KEY = STORAGE_KEYS.CAROUSELS;
+
+// Get storage key for a specific project
+function getProjectStorageKey(projectId: number | null): string | null {
+  return projectId ? `${STORAGE_KEY_PREFIX}${projectId}` : null;
+}
 
 // ===== Types =====
 
@@ -102,6 +108,8 @@ export interface Carousel {
   id: number;
   name: string;
   subtitle: string;
+  audienceTags?: string[];
+  featureTags?: string[];
   frameSize: string;
   frames: CarouselFrame[];
 }
@@ -153,6 +161,9 @@ export const CAROUSEL_ACTIONS = {
   UPDATE_PROGRESS_INDICATOR: 'UPDATE_PROGRESS_INDICATOR',
   REORDER_BACKGROUND_LAYERS: 'REORDER_BACKGROUND_LAYERS',
   REORDER_CAROUSELS: 'REORDER_CAROUSELS',
+  UPDATE_ROW_NAME: 'UPDATE_ROW_NAME',
+  UPDATE_ROW_AUDIENCE_TAGS: 'UPDATE_ROW_AUDIENCE_TAGS',
+  UPDATE_ROW_FEATURE_TAGS: 'UPDATE_ROW_FEATURE_TAGS',
 } as const;
 
 type CarouselActionType = typeof CAROUSEL_ACTIONS[keyof typeof CAROUSEL_ACTIONS];
@@ -185,6 +196,8 @@ export interface CarouselAction {
   iconName?: string;
   originalCarousel?: Carousel;
   newOrder?: BackgroundLayerType[];
+  name?: string;
+  tags?: string[];
 }
 
 // Actions that should NOT create history entries
@@ -887,6 +900,39 @@ function carouselReducer(state: CarouselState, action: CarouselAction): Carousel
       };
     }
 
+    case CAROUSEL_ACTIONS.UPDATE_ROW_NAME: {
+      const { carouselId, name } = action;
+      if (carouselId === undefined || !name) return state;
+      return {
+        ...state,
+        carousels: state.carousels.map((carousel) =>
+          carousel.id === carouselId ? { ...carousel, name } : carousel
+        ),
+      };
+    }
+
+    case CAROUSEL_ACTIONS.UPDATE_ROW_AUDIENCE_TAGS: {
+      const { carouselId, tags } = action;
+      if (carouselId === undefined || !tags) return state;
+      return {
+        ...state,
+        carousels: state.carousels.map((carousel) =>
+          carousel.id === carouselId ? { ...carousel, audienceTags: tags } : carousel
+        ),
+      };
+    }
+
+    case CAROUSEL_ACTIONS.UPDATE_ROW_FEATURE_TAGS: {
+      const { carouselId, tags } = action;
+      if (carouselId === undefined || !tags) return state;
+      return {
+        ...state,
+        carousels: state.carousels.map((carousel) =>
+          carousel.id === carouselId ? { ...carousel, featureTags: tags } : carousel
+        ),
+      };
+    }
+
     default:
       return state;
   }
@@ -898,15 +944,20 @@ const undoableCarouselReducer = undoable(carouselReducer, {
   limit: 50,
 });
 
-// Load from localStorage
-function loadFromStorage(initialData: Carousel[]): Carousel[] {
+// Load from localStorage with project-specific key
+function loadFromStorage(storageKey: string | null, initialData: Carousel[]): Carousel[] {
+  if (!storageKey) return initialData;
+  
   try {
-    const saved = localStorage.getItem(STORAGE_KEY);
+    const saved = localStorage.getItem(storageKey);
     if (saved) {
       const parsed = JSON.parse(saved);
       if (Array.isArray(parsed) && parsed.length > 0) {
+        // Migrate frame data to ensure all required fields exist
         const migrated = parsed.map((carousel: Carousel) => ({
           ...carousel,
+          audienceTags: carousel.audienceTags || [],
+          featureTags: carousel.featureTags || [],
           frames:
             carousel.frames?.map((frame: CarouselFrame) => ({
               ...frame,
@@ -914,15 +965,32 @@ function loadFromStorage(initialData: Carousel[]): Carousel[] {
               backgroundLayerOrder: frame.backgroundLayerOrder || ['fill', 'pattern', 'image'],
             })) || [],
         }));
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(migrated));
-        logger.log('Migration: Cleared all background overrides from frames');
         return migrated;
       }
     }
   } catch (e) {
-    logger.warn('Failed to load carousels from localStorage:', e);
+    logger.warn(`Failed to load carousels from ${storageKey}:`, e);
   }
   return initialData;
+}
+
+// Migrate legacy global data to first project (one-time migration)
+export function migrateLegacyCarouselData(firstProjectId: number): boolean {
+  try {
+    const legacyData = localStorage.getItem(LEGACY_STORAGE_KEY);
+    const projectKey = getProjectStorageKey(firstProjectId);
+    
+    if (legacyData && projectKey && !localStorage.getItem(projectKey)) {
+      // Migrate to first project's key
+      localStorage.setItem(projectKey, legacyData);
+      localStorage.removeItem(LEGACY_STORAGE_KEY);
+      logger.log(`Migrated legacy carousel data to project ${firstProjectId}`);
+      return true;
+    }
+  } catch (e) {
+    logger.warn('Failed to migrate legacy data:', e);
+  }
+  return false;
 }
 
 // ===== Hook Return Type =====
@@ -977,14 +1045,25 @@ export interface UseCarouselsReturn {
   handleUpdateProgressIndicator: (carouselId: number, frameId: number, updates: Partial<ProgressIndicator>) => void;
   handleReorderBackgroundLayers: (carouselId: number, frameId: number, newOrder: BackgroundLayerType[]) => void;
   handleReorderCarousels: (oldIndex: number, newIndex: number) => void;
+  handleUpdateRowName: (carouselId: number, name: string) => void;
+  handleUpdateRowAudienceTags: (carouselId: number, tags: string[]) => void;
+  handleUpdateRowFeatureTags: (carouselId: number, tags: string[]) => void;
 }
 
-export default function useCarousels(initialData: Carousel[]): UseCarouselsReturn {
+export default function useCarousels(
+  initialData: Carousel[],
+  projectId: number | null = null
+): UseCarouselsReturn {
   const [initialized, setInitialized] = useState(false);
-
+  const [currentProjectId, setCurrentProjectId] = useState<number | null>(projectId);
+  
+  // Compute storage key for this project
+  const storageKey = getProjectStorageKey(projectId);
+  
+  // Initialize reducer with data from project-specific storage
   const [undoableState, dispatch] = useReducer(undoableCarouselReducer, {
     past: [],
-    present: createInitialState(loadFromStorage(initialData)),
+    present: createInitialState(loadFromStorage(storageKey, initialData)),
     future: [],
   });
 
@@ -993,17 +1072,33 @@ export default function useCarousels(initialData: Carousel[]): UseCarouselsRetur
   const selectedCarousel = state.carousels.find((c) => c.id === state.selectedCarouselId) || state.carousels[0];
   const selectedFrame = selectedCarousel?.frames?.find((f) => f.id === state.selectedFrameId);
 
+  // Re-load data when projectId changes
+  useEffect(() => {
+    if (projectId !== currentProjectId) {
+      setCurrentProjectId(projectId);
+      const newStorageKey = getProjectStorageKey(projectId);
+      const newData = loadFromStorage(newStorageKey, initialData);
+      dispatch({ type: CAROUSEL_ACTIONS.SET_CAROUSELS, carousels: newData });
+      // Clear selection when switching projects
+      dispatch({ type: CAROUSEL_ACTIONS.CLEAR_SELECTION });
+      setInitialized(false); // Reset to avoid immediate save
+    }
+  }, [projectId, currentProjectId, initialData]);
+
+  // Save to project-specific localStorage
   useEffect(() => {
     if (!initialized) {
       setInitialized(true);
       return;
     }
+    if (!storageKey) return; // Don't save if no project selected
+    
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state.carousels));
+      localStorage.setItem(storageKey, JSON.stringify(state.carousels));
     } catch (e) {
-      logger.warn('Failed to save carousels to localStorage:', e);
+      logger.warn(`Failed to save carousels to ${storageKey}:`, e);
     }
-  }, [state.carousels, initialized]);
+  }, [state.carousels, initialized, storageKey]);
 
   // Memoized actions
   const clearSelection = useCallback(() => dispatch({ type: CAROUSEL_ACTIONS.CLEAR_SELECTION }), []);
@@ -1226,6 +1321,24 @@ export default function useCarousels(initialData: Carousel[]): UseCarouselsRetur
     []
   );
 
+  const handleUpdateRowName = useCallback(
+    (carouselId: number, name: string) =>
+      dispatch({ type: CAROUSEL_ACTIONS.UPDATE_ROW_NAME, carouselId, name }),
+    []
+  );
+
+  const handleUpdateRowAudienceTags = useCallback(
+    (carouselId: number, tags: string[]) =>
+      dispatch({ type: CAROUSEL_ACTIONS.UPDATE_ROW_AUDIENCE_TAGS, carouselId, tags }),
+    []
+  );
+
+  const handleUpdateRowFeatureTags = useCallback(
+    (carouselId: number, tags: string[]) =>
+      dispatch({ type: CAROUSEL_ACTIONS.UPDATE_ROW_FEATURE_TAGS, carouselId, tags }),
+    []
+  );
+
   return {
     carousels: state.carousels,
     selectedCarouselId: state.selectedCarouselId,
@@ -1277,6 +1390,9 @@ export default function useCarousels(initialData: Carousel[]): UseCarouselsRetur
     handleUpdateProgressIndicator,
     handleReorderBackgroundLayers,
     handleReorderCarousels,
+    handleUpdateRowName,
+    handleUpdateRowAudienceTags,
+    handleUpdateRowFeatureTags,
   };
 }
 

@@ -2,7 +2,10 @@ import React, { useState } from 'react';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { SortableContext, sortableKeyboardCoordinates, horizontalListSortingStrategy } from '@dnd-kit/sortable';
 import { frameSizes } from '../data';
+import { useTagsContext } from '../context';
 import { SortableFrame } from './CarouselFrame';
+import EditableRowHeader from './EditableRowHeader';
+import TagSelector from './TagSelector';
 
 /**
  * Carousel Row Component
@@ -42,7 +45,13 @@ const CarouselRow = ({
   onRequestAddPattern,
   onRequestAddPageIndicator,
   onDeselectFrame,
+  onUpdateRowName,
+  onUpdateRowAudienceTags,
+  onUpdateRowFeatureTags,
 }) => {
+  // Get dynamic tags from context
+  const { audienceTags, featureTags } = useTagsContext();
+  
   const totalFrames = carousel.frames.length;
   const isFaded = hasAnySelection && !isSelected;
 
@@ -90,13 +99,10 @@ const CarouselRow = ({
   return (
     <div
       data-carousel-id={carousel.id}
-      className={`mb-10 rounded-[--radius-md] transition-all duration-150 cursor-pointer overflow-x-auto hide-scrollbar ${isSelected ? 'bg-[--surface-raised]/40 border border-[--border-emphasis] py-4' : 'hover:bg-[--surface-raised]/30 border border-transparent py-4'} ${isFaded ? 'opacity-20 hover:opacity-50' : 'opacity-100'}`}
+      className={`mb-10 rounded-[--radius-md] transition-all duration-150 cursor-pointer ${isSelected ? 'bg-[--surface-raised]/40 border border-[--border-emphasis] py-4' : 'hover:bg-[--surface-raised]/30 border border-transparent py-4'} ${isFaded ? 'opacity-20 hover:opacity-50' : 'opacity-100'}`}
       style={{
-        marginLeft: '10px',
-        marginRight: '10px',
-        width: 'fit-content',
-        minWidth: 'auto',
-        maxWidth: 'calc(100% - 20px)',
+        marginLeft: 'var(--row-margin, 10px)',
+        marginRight: 'var(--row-margin, 10px)',
       }}
       onClick={(e) => {
         e.stopPropagation();
@@ -128,11 +134,13 @@ const CarouselRow = ({
               </svg>
             )}
           </button>
-          <div>
-            <div className="flex items-center gap-2">
-              <h2 className={`text-lg font-bold transition-colors ${isSelected ? 'text-white' : 'text-white'}`}>
-                {carousel.name}
-              </h2>
+          <div className="flex-1">
+            <div className="flex items-center gap-2 mb-1">
+              <EditableRowHeader
+                name={carousel.name}
+                onUpdateName={(name) => onUpdateRowName?.(carousel.id, name)}
+                isSelected={isSelected}
+              />
               {isSelected && (
                 <span className="text-[9px] bg-[--surface-elevated] text-[--text-secondary] px-1.5 py-0.5 rounded-[--radius-sm] font-medium">EDITING</span>
               )}
@@ -158,12 +166,39 @@ const CarouselRow = ({
                 </button>
               )}
             </div>
-            <p className="text-sm text-[--text-tertiary]">{carousel.subtitle}</p>
+            {/* Tag subheadings */}
+            <div className="flex flex-col gap-1">
+              <TagSelector
+                label="Audience"
+                availableTags={audienceTags}
+                selectedTagIds={carousel.audienceTags || []}
+                onTagsChange={(tags) => onUpdateRowAudienceTags?.(carousel.id, tags)}
+                placeholder="Select audience..."
+                isEditable={isSelected}
+              />
+              <TagSelector
+                label="Feature"
+                availableTags={featureTags}
+                selectedTagIds={carousel.featureTags || []}
+                onTagsChange={(tags) => onUpdateRowFeatureTags?.(carousel.id, tags)}
+                placeholder="Select feature..."
+                isEditable={isSelected}
+              />
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="px-4" style={{ minHeight: 300 }}>
+      {/* Scrollable card container - horizontal scroll happens here */}
+      <div 
+        className="overflow-x-auto hide-scrollbar scroll-smooth"
+        style={{ 
+          minHeight: 300,
+          paddingLeft: 'var(--row-padding, 16px)',
+          paddingRight: 'var(--row-padding, 16px)',
+          WebkitOverflowScrolling: 'touch',
+        }}
+      >
         <DndContext
           sensors={sensors}
           collisionDetection={closestCenter}
@@ -173,7 +208,7 @@ const CarouselRow = ({
           <SortableContext items={frameIds} strategy={horizontalListSortingStrategy}>
             <div
               className={`flex items-start transition-all duration-150 ease-out`}
-              style={{ width: 'auto', minWidth: 'fit-content', gap: isSelected ? '12px' : '10px' }}
+              style={{ width: 'fit-content', gap: isSelected ? '12px' : '10px' }}
             >
               {carousel.frames.map((frame, index) => (
                 <React.Fragment key={frame.id}>

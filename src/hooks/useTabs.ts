@@ -360,6 +360,14 @@ export default function useTabs(
   };
 
   const handleDeleteProject = (projectId: number): void => {
+    // Clean up project-specific carousel data from localStorage
+    try {
+      localStorage.removeItem(`carousel-project-${projectId}`);
+      logger.log(`Cleaned up carousel data for deleted project ${projectId}`);
+    } catch (e) {
+      logger.warn('Failed to clean up project data:', e);
+    }
+    
     // Remove from projects
     setProjects((prev) => prev.filter((p) => p.id !== projectId));
     // Remove from open tabs if open
@@ -381,6 +389,18 @@ export default function useTabs(
     if (!projectToDupe) return;
 
     const newId = Math.max(...projects.map((p) => p.id), 0) + 1;
+    
+    // Copy carousel data to new project's storage key
+    try {
+      const sourceData = localStorage.getItem(`carousel-project-${projectId}`);
+      if (sourceData) {
+        localStorage.setItem(`carousel-project-${newId}`, sourceData);
+        logger.log(`Copied carousel data from project ${projectId} to ${newId}`);
+      }
+    } catch (e) {
+      logger.warn('Failed to copy project data:', e);
+    }
+    
     const newProject: Project = {
       ...projectToDupe,
       id: newId,

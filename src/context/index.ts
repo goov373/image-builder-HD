@@ -11,3 +11,4 @@ export {
 } from './AppContext';
 
 export { HistoryProvider, useHistory } from './HistoryContext';
+export { TagsProvider, useTagsContext } from './TagsContext';

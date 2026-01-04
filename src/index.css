@@ -4,6 +4,10 @@
 
 /* ===== DESIGN SYSTEM TOKENS ===== */
 :root {
+  /* === RESPONSIVE ROW LAYOUT === */
+  --row-margin: 16px;
+  --row-padding: 16px;
+
   /* === SURFACES (Luminosity-based elevation - Neutral Gray) === */
   --surface-canvas: #111111;    /* Pure dark gray - app background */
   --surface-sunken: #0d0d0d;    /* Darkest - inset areas */
@@ -283,4 +287,35 @@ textarea:focus-visible {
 .focus-ring-subtle:focus-visible {
   outline: 1px solid rgba(255, 255, 255, 0.3);
   outline-offset: 1px;
+}
+
+/* ===== RESPONSIVE ROW LAYOUT ===== */
+/* iPad landscape and smaller laptops */
+@media (max-width: 1024px) {
+  :root {
+    --row-margin: 12px;
+    --row-padding: 12px;
+  }
+}
+
+/* iPad portrait and large phones */
+@media (max-width: 768px) {
+  :root {
+    --row-margin: 10px;
+    --row-padding: 10px;
+  }
+}
+
+/* Small screens / phones */
+@media (max-width: 640px) {
+  :root {
+    --row-margin: 8px;
+    --row-padding: 8px;
+  }
+}
+
+/* Smooth scrolling utility */
+.scroll-smooth {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
 }

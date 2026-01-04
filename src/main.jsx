@@ -8,11 +8,15 @@ import './utils/exportDiagnostics';
 
 // Import toast provider for notifications
 import { ToastProvider } from './components/ui/Toast';
+// Import tags provider for dynamic tag management
+import { TagsProvider } from './context';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <ToastProvider>
-      <App />
+      <TagsProvider>
+        <App />
+      </TagsProvider>
     </ToastProvider>
   </React.StrictMode>
 );

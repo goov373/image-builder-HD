@@ -17,6 +17,8 @@ export { CarouselFrame, SortableFrame } from './CarouselFrame';
 export { default as ImageLayer } from './ImageLayer';
 export { default as PatternLayer } from './PatternLayer';
 export { default as CarouselRow } from './CarouselRow';
+export { default as EditableRowHeader } from './EditableRowHeader';
+export { default as TagSelector } from './TagSelector';
 export { default as Toolbar } from './Toolbar';
 export { default as TabBar } from './TabBar';
 export { default as EditorView } from './EditorView';

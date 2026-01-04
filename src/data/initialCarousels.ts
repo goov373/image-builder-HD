@@ -1,11 +1,43 @@
 import type { Carousel, DesignSystem, FrameStyle } from '../types';
 
-// Initial carousel data with text variations
+/**
+ * Create empty carousel data for a new project
+ * Returns 1 row with 5 empty cards using default settings
+ */
+export function createEmptyProjectCarousels(): Carousel[] {
+  const now = Date.now();
+  return [{
+    id: now,
+    name: 'New Row',
+    subtitle: '',
+    frameSize: 'portrait',
+    audienceTags: [],
+    featureTags: [],
+    frames: Array.from({ length: 5 }, (_, i) => ({
+      id: i + 1,
+      variants: [
+        { headline: 'Your headline here', body: 'Add your supporting copy.', formatting: {} },
+        { headline: 'Alternative headline', body: 'Alternative copy variation.', formatting: {} },
+        { headline: 'Third option', body: 'Third copy option.', formatting: {} },
+      ],
+      currentVariant: 0,
+      currentLayout: 0,
+      layoutVariant: 0,
+      style: 'dark-single-pin',
+      backgroundOverride: '#6466e9',
+      backgroundLayerOrder: ['fill', 'pattern', 'image'] as const,
+    })),
+  }];
+}
+
+// Initial carousel data with text variations (used for demo/default project)
 export const initialCarousels: Carousel[] = [
   {
     id: 1,
     name: 'The Deal That Got Away',
     subtitle: 'Investors / Acquisitions',
+    audienceTags: ['investor'],
+    featureTags: ['deal-screening', 'comp-analysis'],
     frameSize: 'portrait',
     frames: [
       {
@@ -127,6 +159,8 @@ export const initialCarousels: Carousel[] = [
     id: 2,
     name: 'Where Rents Are Heading',
     subtitle: 'Rent Forecast Launch',
+    audienceTags: ['investor', 'analyst', 'asset-manager'],
+    featureTags: ['rent-forecast', 'product-launch'],
     frameSize: 'portrait',
     frames: [
       {
@@ -236,6 +270,8 @@ export const initialCarousels: Carousel[] = [
     id: 3,
     name: "5 Hours You'll Never Get Back",
     subtitle: 'Property Managers',
+    audienceTags: ['property-manager'],
+    featureTags: ['market-survey'],
     frameSize: 'portrait',
     frames: [
       {

@@ -76,8 +76,8 @@ const SortableRow = ({ id, children, isSelected }) => {
         </div>
       </div>
 
-      {/* Row Content */}
-      <div className="flex-1">{children}</div>
+      {/* Row Content - min-w-0 allows flex child to shrink below content size */}
+      <div className="flex-1 min-w-0">{children}</div>
     </div>
   );
 };

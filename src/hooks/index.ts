@@ -1,9 +1,10 @@
 export { useDropdowns } from './useDropdowns';
 export { default as useTabs } from './useTabs';
-export { default as useCarousels } from './useCarousels';
+export { default as useCarousels, migrateLegacyCarouselData } from './useCarousels';
 export { default as useEblasts } from './useEblasts';
 export { default as useVideoCovers } from './useVideoCovers';
 export { default as useSingleImages } from './useSingleImages';
 export { default as useDesignSystem } from './useDesignSystem';
 export { default as useAuth } from './useAuth';
 export { default as useKeyboardShortcuts } from './useKeyboardShortcuts';
+export { default as useTags } from './useTags';

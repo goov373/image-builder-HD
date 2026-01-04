@@ -1,7 +1,7 @@
 import React, { useState, Suspense, lazy, useRef, useEffect } from 'react';
 
 // Import data from centralized location
-import { defaultDesignSystem, initialCarousels, initialEblasts, initialVideoCovers, initialSingleImages } from './data';
+import { defaultDesignSystem, initialCarousels, initialEblasts, initialVideoCovers, initialSingleImages, createEmptyProjectCarousels } from './data';
 
 // Import custom hooks
 import {
@@ -13,6 +13,7 @@ import {
   useSingleImages,
   useDesignSystem,
   useKeyboardShortcuts,
+  migrateLegacyCarouselData,
 } from './hooks';
 
 // Import context providers
@@ -33,6 +34,7 @@ import KeyboardShortcutsModal from './components/KeyboardShortcutsModal';
 const AccountPanel = lazy(() => import('./components/AccountPanel'));
 const DesignSystemPanel = lazy(() => import('./components/DesignSystemPanel'));
 const ExportPanel = lazy(() => import('./components/ExportPanel'));
+const TagsPanel = lazy(() => import('./components/TagsPanel'));
 
 // Loading fallback for lazy panels
 const PanelLoading = () => (
@@ -75,7 +77,23 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
 
   // Use custom hooks for complex state management
   const tabs = useTabs(INITIAL_TABS, user);
-  const carousels = useCarousels(initialCarousels);
+  
+  // One-time migration of legacy carousel data to first project
+  useEffect(() => {
+    if (tabs.projects.length > 0) {
+      const firstProjectId = tabs.projects[0].id;
+      migrateLegacyCarouselData(firstProjectId);
+    }
+  }, []); // Only run once on mount
+  
+  // Determine initial carousel data based on project state
+  // New projects (hasContent=false) start with empty template
+  // Existing projects load from project-specific storage
+  const isNewProject = tabs.activeTab && !tabs.activeTab.hasContent;
+  const carouselInitialData = isNewProject ? createEmptyProjectCarousels() : initialCarousels;
+  
+  // Pass activeTabId for project-specific storage
+  const carousels = useCarousels(carouselInitialData, tabs.activeTabId);
   const eblasts = useEblasts(initialEblasts);
   const videoCovers = useVideoCovers(initialVideoCovers);
   const singleImages = useSingleImages(initialSingleImages);
@@ -233,7 +251,7 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
   };
 
   // Layout calculations
-  const panelWidth = activePanel === 'design' || activePanel === 'export' || activePanel === 'account' ? 288 : 0;
+  const panelWidth = activePanel === 'design' || activePanel === 'export' || activePanel === 'account' || activePanel === 'tags' ? 288 : 0;
   const sidebarWidth = 64;
   const totalOffset = sidebarWidth + panelWidth;
 
@@ -323,6 +341,10 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
     handleReorderBackgroundLayers: carousels.handleReorderBackgroundLayers,
     // Row reordering
     handleReorderCarousels: carousels.handleReorderCarousels,
+    // Row name and tags
+    handleUpdateRowName: carousels.handleUpdateRowName,
+    handleUpdateRowAudienceTags: carousels.handleUpdateRowAudienceTags,
+    handleUpdateRowFeatureTags: carousels.handleUpdateRowFeatureTags,
     // Undo/Redo
     handleUndo: carousels.handleUndo,
     handleRedo: carousels.handleRedo,
@@ -455,7 +477,7 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
             <div
               className="fixed top-0 h-[56px] w-72 z-30 border-r border-b border-[--border-default] pointer-events-none"
               style={{
-                left: activePanel === 'design' || activePanel === 'export' || activePanel === 'account' ? 64 : -224,
+                left: activePanel === 'design' || activePanel === 'export' || activePanel === 'account' || activePanel === 'tags' ? 64 : -224,
                 transition: 'left 0.3s ease-out',
                 backgroundImage: `repeating-linear-gradient(
               -45deg,
@@ -528,6 +550,14 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
                 videoCovers={videoCovers.videoCovers}
                 singleImages={singleImages.singleImages}
                 projectType={currentProjectType}
+                />
+              </SectionErrorBoundary>
+            </Suspense>
+            <Suspense fallback={<PanelLoading />}>
+              <SectionErrorBoundary name="Tags Panel">
+                <TagsPanel
+                  onClose={() => setActivePanel(null)}
+                  isOpen={activePanel === 'tags'}
                 />
               </SectionErrorBoundary>
             </Suspense>

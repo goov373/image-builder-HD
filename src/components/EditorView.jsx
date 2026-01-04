@@ -114,6 +114,10 @@ export default function EditorView({
     handleReorderBackgroundLayers,
     // Row reordering
     handleReorderCarousels,
+    // Row name and tags
+    handleUpdateRowName,
+    handleUpdateRowAudienceTags,
+    handleUpdateRowFeatureTags,
     // Eblast methods
     eblasts,
     handleEblastUpdateText,
@@ -270,6 +274,9 @@ export default function EditorView({
                               onRequestAddPattern={onRequestAddPattern}
                               onRequestAddPageIndicator={onRequestAddPageIndicator}
                               onDeselectFrame={handleDeselectFrame}
+                              onUpdateRowName={handleUpdateRowName}
+                              onUpdateRowAudienceTags={handleUpdateRowAudienceTags}
+                              onUpdateRowFeatureTags={handleUpdateRowFeatureTags}
                             />
                           </SortableRow>
                           {/* Add Row Button - only after last row */}

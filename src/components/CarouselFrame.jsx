@@ -890,14 +890,29 @@ export const CarouselFrame = ({
     // Check if it's a stretched gradient object
     // IMPORTANT: Use backgroundImage (not background shorthand) to prevent it from resetting size/position
     if (typeof bgOverride === 'object' && bgOverride.isStretched) {
+      // Check if the "gradient" is actually a URL (user-uploaded fill color)
+      const gradientValue = bgOverride.gradient;
+      const isUrl = typeof gradientValue === 'string' && 
+        (gradientValue.startsWith('http://') || gradientValue.startsWith('https://') || gradientValue.startsWith('blob:'));
+      
       return {
-        backgroundImage: bgOverride.gradient,
-        backgroundSize: bgOverride.size,
-        backgroundPosition: bgOverride.position,
+        backgroundImage: isUrl ? `url(${gradientValue})` : gradientValue,
+        backgroundSize: isUrl ? 'cover' : bgOverride.size,
+        backgroundPosition: isUrl ? 'center' : bgOverride.position,
         backgroundRepeat: 'no-repeat',
       };
     }
-    // Simple string override
+    // Check if it's a URL (user-uploaded fill color image)
+    // URLs need to be wrapped in url() for CSS background property
+    if (typeof bgOverride === 'string' && (bgOverride.startsWith('http://') || bgOverride.startsWith('https://') || bgOverride.startsWith('blob:'))) {
+      return {
+        backgroundImage: `url(${bgOverride})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+      };
+    }
+    // Simple string override (hex color, gradient, etc.)
     return { background: bgOverride };
   };
   const backgroundStyle = getBackgroundStyle();
