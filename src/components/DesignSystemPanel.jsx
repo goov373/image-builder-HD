@@ -1557,7 +1557,7 @@ const DesignSystemPanel = ({
                   >
                     <div className="flex items-center gap-2">
                       <h3 className="text-xs font-medium text-[--text-tertiary] uppercase tracking-wide">Add Indicator</h3>
-                      <span className="px-1.5 py-0.5 bg-[--surface-raised] rounded-[--radius-sm] text-[10px] text-[--text-tertiary]">6</span>
+                      <span className="px-1.5 py-0.5 bg-[--surface-raised] rounded-[--radius-sm] text-[10px] text-[--text-tertiary]">9</span>
                     </div>
                     <svg
                       className={`w-4 h-4 text-[--text-quaternary] transition-transform ${collapsedSections.pageIndicators ? '' : 'rotate-180'}`}
@@ -1573,12 +1573,15 @@ const DesignSystemPanel = ({
                     <div className="px-4 pt-2 pb-4">
                       <p className="text-[10px] text-[--text-quaternary] mb-3">Choose a style for frame position indicators</p>
 
-                      {/* Indicator Style Grid - 2 columns */}
-                      <div className="grid grid-cols-2 gap-2">
+                      {/* Indicator Style Grid - 3 columns */}
+                      <div className="grid grid-cols-3 gap-2">
                         {[
                           { type: 'dots', name: 'Dots', desc: 'Classic dot indicators' },
+                          { type: 'numberedDots', name: 'Numbered', desc: 'Dots with step numbers' },
+                          { type: 'dashes', name: 'Dashes', desc: 'Modern line segments' },
                           { type: 'arrows', name: 'Arrows', desc: 'Chevron navigation' },
-                          { type: 'bar', name: 'Loading Bar', desc: 'Progress bar style' },
+                          { type: 'bar', name: 'Bar', desc: 'Progress bar style' },
+                          { type: 'buildings', name: 'Buildings', desc: 'Multifamily skyline' },
                           { type: 'mapPins', name: 'Map Pins', desc: 'GPS waypoints' },
                           { type: 'forecast', name: 'Forecast', desc: 'Trend line markers' },
                           { type: 'barChart', name: 'Bar Chart', desc: 'Mini chart bars' },
@@ -1598,7 +1601,7 @@ const DesignSystemPanel = ({
                                 }
                               }}
                               disabled={!hasFrameSelected}
-                              className={`group relative p-3 rounded-[--radius-md] border transition-all ${
+                              className={`group relative p-2 rounded-[--radius-md] border transition-all ${
                                 hasFrameSelected
                                   ? isSelected
                                     ? 'border-[--border-strong] bg-[--surface-raised]'
@@ -1608,22 +1611,46 @@ const DesignSystemPanel = ({
                               title={indicator.desc}
                             >
                               {/* Preview of the indicator style */}
-                              <div className="flex justify-center mb-2 h-5 items-center">
+                              <div className="flex justify-center mb-1.5 h-4 items-center">
                                 {indicator.type === 'dots' && (
-                                  <div className="flex items-center gap-1">
+                                  <div className="flex items-center gap-0.5">
                                     {[1, 2, 3, 4, 5].map((i) => (
                                       <div
                                         key={i}
-                                        className="w-1.5 h-1.5 rounded-full bg-white"
+                                        className="w-1 h-1 rounded-full bg-white"
+                                        style={{ opacity: i === 3 ? 1 : 0.3 }}
+                                      />
+                                    ))}
+                                  </div>
+                                )}
+                                {indicator.type === 'numberedDots' && (
+                                  <div className="flex items-center gap-0.5">
+                                    {[1, 2, 3, 4, 5].map((i) => (
+                                      <div
+                                        key={i}
+                                        className="w-3 h-3 rounded-full bg-white flex items-center justify-center"
+                                        style={{ opacity: i === 3 ? 1 : 0.3 }}
+                                      >
+                                        <span className="text-[6px] font-bold text-gray-900">{i}</span>
+                                      </div>
+                                    ))}
+                                  </div>
+                                )}
+                                {indicator.type === 'dashes' && (
+                                  <div className="flex items-center gap-0.5">
+                                    {[1, 2, 3, 4, 5].map((i) => (
+                                      <div
+                                        key={i}
+                                        className="w-2 h-0.5 rounded-full bg-white"
                                         style={{ opacity: i === 3 ? 1 : 0.3 }}
                                       />
                                     ))}
                                   </div>
                                 )}
                                 {indicator.type === 'arrows' && (
-                                  <div className="flex items-center gap-1.5">
+                                  <div className="flex items-center gap-1">
                                     <svg
-                                      className="w-3.5 h-3.5 text-white/50"
+                                      className="w-2.5 h-2.5 text-white/50"
                                       fill="none"
                                       stroke="currentColor"
                                       viewBox="0 0 24 24"
@@ -1635,9 +1662,9 @@ const DesignSystemPanel = ({
                                         d="M15 19l-7-7 7-7"
                                       />
                                     </svg>
-                                    <span className="text-[9px] text-white font-medium">3/5</span>
+                                    <span className="text-[7px] text-white font-medium">3/5</span>
                                     <svg
-                                      className="w-3.5 h-3.5 text-white"
+                                      className="w-2.5 h-2.5 text-white"
                                       fill="none"
                                       stroke="currentColor"
                                       viewBox="0 0 24 24"
@@ -1652,32 +1679,43 @@ const DesignSystemPanel = ({
                                   </div>
                                 )}
                                 {indicator.type === 'bar' && (
-                                  <div className="w-12 h-1 rounded-full bg-white/20 overflow-hidden">
+                                  <div className="w-10 h-1 rounded-full bg-white/20 overflow-hidden">
                                     <div className="h-full w-3/5 bg-white rounded-full" />
                                   </div>
                                 )}
+                                {indicator.type === 'buildings' && (
+                                  <div className="flex items-end gap-px">
+                                    {[8, 12, 6, 10, 14].map((h, i) => (
+                                      <div
+                                        key={i}
+                                        className="w-1.5 rounded-t-sm bg-white"
+                                        style={{ height: h, opacity: i === 2 ? 1 : 0.3 }}
+                                      />
+                                    ))}
+                                  </div>
+                                )}
                                 {indicator.type === 'mapPins' && (
-                                  <svg width="48" height="14" viewBox="0 0 48 14" fill="none">
+                                  <svg width="40" height="12" viewBox="0 0 40 12" fill="none">
                                     <path
-                                      d="M2 10 Q12 3, 24 6 Q36 9, 46 5"
+                                      d="M2 8 Q10 2, 20 5 Q30 8, 38 4"
                                       stroke="white"
-                                      strokeWidth="1.5"
+                                      strokeWidth="1"
                                       strokeLinecap="round"
                                       strokeOpacity="0.25"
                                       fill="none"
                                     />
                                     {[
-                                      { x: 2, y: 10 },
-                                      { x: 13, y: 4 },
-                                      { x: 24, y: 6 },
-                                      { x: 35, y: 8 },
-                                      { x: 46, y: 5 },
+                                      { x: 2, y: 8 },
+                                      { x: 11, y: 3 },
+                                      { x: 20, y: 5 },
+                                      { x: 29, y: 7 },
+                                      { x: 38, y: 4 },
                                     ].map((pos, i) => (
                                       <g key={i}>
                                         <circle
                                           cx={pos.x}
-                                          cy={pos.y - 2}
-                                          r="2"
+                                          cy={pos.y - 1.5}
+                                          r="1.5"
                                           fill="white"
                                           fillOpacity={i === 2 ? 1 : 0.3}
                                         />
@@ -1685,9 +1723,9 @@ const DesignSystemPanel = ({
                                           x1={pos.x}
                                           y1={pos.y}
                                           x2={pos.x}
-                                          y2={pos.y + 2}
+                                          y2={pos.y + 1.5}
                                           stroke="white"
-                                          strokeWidth="1.5"
+                                          strokeWidth="1"
                                           strokeLinecap="round"
                                           strokeOpacity={i === 2 ? 1 : 0.3}
                                         />
@@ -1696,40 +1734,40 @@ const DesignSystemPanel = ({
                                   </svg>
                                 )}
                                 {indicator.type === 'forecast' && (
-                                  <svg width="44" height="14" viewBox="0 0 44 14" fill="none">
+                                  <svg width="36" height="12" viewBox="0 0 36 12" fill="none">
                                     <path
-                                      d="M2 11 L11 8 L22 9 L33 5 L42 2"
+                                      d="M2 10 L9 7 L18 8 L27 4 L34 2"
                                       stroke="white"
-                                      strokeWidth="1.5"
+                                      strokeWidth="1"
                                       strokeLinecap="round"
                                       strokeLinejoin="round"
                                       strokeOpacity="0.25"
                                       fill="none"
                                     />
                                     {[
-                                      { x: 2, y: 11 },
-                                      { x: 11, y: 8 },
-                                      { x: 22, y: 9 },
-                                      { x: 33, y: 5 },
-                                      { x: 42, y: 2 },
+                                      { x: 2, y: 10 },
+                                      { x: 9, y: 7 },
+                                      { x: 18, y: 8 },
+                                      { x: 27, y: 4 },
+                                      { x: 34, y: 2 },
                                     ].map((pos, i) => (
                                       <g key={i} opacity={i === 2 ? 1 : 0.3}>
                                         <line
-                                          x1={pos.x - 2}
-                                          y1={pos.y - 2}
-                                          x2={pos.x + 2}
-                                          y2={pos.y + 2}
+                                          x1={pos.x - 1.5}
+                                          y1={pos.y - 1.5}
+                                          x2={pos.x + 1.5}
+                                          y2={pos.y + 1.5}
                                           stroke="white"
-                                          strokeWidth="1.5"
+                                          strokeWidth="1"
                                           strokeLinecap="round"
                                         />
                                         <line
-                                          x1={pos.x + 2}
-                                          y1={pos.y - 2}
-                                          x2={pos.x - 2}
-                                          y2={pos.y + 2}
+                                          x1={pos.x + 1.5}
+                                          y1={pos.y - 1.5}
+                                          x2={pos.x - 1.5}
+                                          y2={pos.y + 1.5}
                                           stroke="white"
-                                          strokeWidth="1.5"
+                                          strokeWidth="1"
                                           strokeLinecap="round"
                                         />
                                       </g>
@@ -1737,21 +1775,21 @@ const DesignSystemPanel = ({
                                   </svg>
                                 )}
                                 {indicator.type === 'barChart' && (
-                                  <svg width="36" height="14" viewBox="0 0 36 14" fill="none">
+                                  <svg width="30" height="12" viewBox="0 0 30 12" fill="none">
                                     {[
-                                      { x: 2, h: 6 },
-                                      { x: 9, h: 10 },
-                                      { x: 16, h: 5 },
-                                      { x: 23, h: 12 },
-                                      { x: 30, h: 8 },
+                                      { x: 2, h: 5 },
+                                      { x: 8, h: 8 },
+                                      { x: 14, h: 4 },
+                                      { x: 20, h: 10 },
+                                      { x: 26, h: 6 },
                                     ].map((bar, i) => (
                                       <rect
                                         key={i}
                                         x={bar.x}
-                                        y={14 - bar.h}
-                                        width="4"
+                                        y={12 - bar.h}
+                                        width="3"
                                         height={bar.h}
-                                        rx="1"
+                                        rx="0.5"
                                         fill="white"
                                         fillOpacity={i === 2 ? 1 : 0.3}
                                       />
@@ -1761,7 +1799,7 @@ const DesignSystemPanel = ({
                               </div>
                               {/* Label */}
                               <span
-                                className={`text-[10px] font-medium block text-center ${isSelected ? 'text-white' : 'text-[--text-tertiary] group-hover:text-white'}`}
+                                className={`text-[9px] font-medium block text-center ${isSelected ? 'text-white' : 'text-[--text-tertiary] group-hover:text-white'}`}
                               >
                                 {indicator.name}
                               </span>
