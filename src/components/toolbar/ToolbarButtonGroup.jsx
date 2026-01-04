@@ -1,10 +1,12 @@
 /**
  * ToolbarButtonGroup Component
  * Groups related toolbar buttons with consistent styling
+ * 
+ * Design: Minimalist black containers with subtle borders that appear on hover
  */
 const ToolbarButtonGroup = ({ children, disabled = false, className = '' }) => (
   <div
-    className={`flex items-center gap-1.5 px-2 py-1.5 bg-[--surface-raised] border border-[--border-subtle] rounded-[--radius-md] transition-opacity duration-[--duration-fast] ${
+    className={`flex items-center gap-1.5 px-2.5 py-1.5 bg-transparent border border-[--border-subtle] rounded-[--radius-lg] transition-all duration-[--duration-fast] hover:border-[--border-default] ${
       disabled ? 'opacity-40 pointer-events-none' : 'opacity-100'
     } ${className}`}
   >
@@ -14,7 +16,7 @@ const ToolbarButtonGroup = ({ children, disabled = false, className = '' }) => (
 
 /**
  * ToolbarButton Component
- * Individual toolbar button with consistent styling
+ * Individual toolbar button with consistent minimalist styling
  */
 export const ToolbarButton = ({
   onClick,
@@ -26,9 +28,9 @@ export const ToolbarButton = ({
   className = '',
 }) => {
   const sizeClasses = {
-    small: 'px-2 py-1.5 text-[11px]',
-    normal: 'px-3 py-2 text-xs',
-    square: 'w-9 h-9 flex items-center justify-center text-sm',
+    small: 'px-1.5 py-1 text-[11px]',
+    normal: 'px-2 py-1 text-xs',
+    square: 'w-7 h-7 flex items-center justify-center text-sm',
   };
 
   return (
@@ -37,10 +39,10 @@ export const ToolbarButton = ({
       onClick={onClick}
       disabled={disabled}
       title={title}
-      className={`rounded-[--radius-md] font-medium transition-all duration-[--duration-fast] border ${
+      className={`rounded-[--radius-sm] font-medium transition-all duration-[--duration-fast] ${
         isActive
-          ? 'bg-[--surface-overlay] border-[--border-strong] text-[--text-primary]'
-          : 'bg-[--surface-default] border-[--border-default] text-[--text-tertiary] hover:bg-[--surface-raised] hover:border-[--border-emphasis] hover:text-[--text-secondary]'
+          ? 'bg-[--surface-overlay] text-[--text-primary]'
+          : 'bg-transparent text-[--text-tertiary] hover:bg-[--surface-raised] hover:text-[--text-secondary]'
       } ${disabled ? 'opacity-50 cursor-not-allowed' : ''} ${sizeClasses[size]} ${className}`}
     >
       {children}
@@ -50,7 +52,7 @@ export const ToolbarButton = ({
 
 /**
  * ToolbarIconButton Component
- * Icon-only toolbar button
+ * Icon-only toolbar button with minimalist styling
  */
 export const ToolbarIconButton = ({ onClick, isActive = false, disabled = false, title, icon, className = '' }) => (
   <button
@@ -58,10 +60,10 @@ export const ToolbarIconButton = ({ onClick, isActive = false, disabled = false,
     onClick={onClick}
     disabled={disabled}
     title={title}
-    className={`p-2 rounded-[--radius-md] border transition-all duration-[--duration-fast] ${
+    className={`p-1.5 rounded-[--radius-sm] transition-all duration-[--duration-fast] ${
       isActive
-        ? 'bg-[--surface-overlay] border-[--border-strong] text-[--text-primary]'
-        : 'border-transparent hover:bg-[--surface-raised] hover:border-[--border-emphasis] text-[--text-quaternary] hover:text-[--text-secondary]'
+        ? 'bg-[--surface-overlay] text-[--text-primary]'
+        : 'bg-transparent text-[--text-quaternary] hover:bg-[--surface-raised] hover:text-[--text-secondary]'
     } ${disabled ? 'opacity-50 cursor-not-allowed' : ''} ${className}`}
   >
     {icon}
@@ -70,21 +72,21 @@ export const ToolbarIconButton = ({ onClick, isActive = false, disabled = false,
 
 /**
  * ToolbarColorSwatch Component
- * Color preview button for color pickers
+ * Color preview button for color pickers with minimalist styling
  */
 export const ToolbarColorSwatch = ({ color, onClick, isOpen = false, title = 'Color' }) => (
   <button
     type="button"
     onClick={onClick}
     title={title}
-    className={`flex items-center gap-1 p-2 rounded-[--radius-md] transition-all duration-[--duration-fast] border ${
+    className={`flex items-center gap-1 p-1.5 rounded-[--radius-sm] transition-all duration-[--duration-fast] ${
       isOpen
-        ? 'bg-[--surface-overlay] border-[--border-strong]'
-        : 'bg-[--surface-default] border-[--border-default] hover:bg-[--surface-raised] hover:border-[--border-emphasis]'
+        ? 'bg-[--surface-overlay]'
+        : 'bg-transparent hover:bg-[--surface-raised]'
     }`}
   >
     <div
-      className="w-5 h-5 rounded-[--radius-sm] border border-[--border-emphasis]"
+      className="w-5 h-5 rounded-[--radius-sm] border border-[--border-default]"
       style={{ backgroundColor: color }}
     />
   </button>

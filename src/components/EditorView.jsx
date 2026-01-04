@@ -1,6 +1,7 @@
 import React from 'react';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
 import { useDesignSystemContext, useSelectionContext, useCarouselsContext, useDropdownsContext } from '../context';
 import Toolbar from './Toolbar';
 import NewProjectView from './NewProjectView';
@@ -223,6 +224,7 @@ export default function EditorView({
                     sensors={rowSensors}
                     collisionDetection={closestCenter}
                     onDragEnd={handleRowDragEnd}
+                    modifiers={[restrictToVerticalAxis]}
                   >
                     <SortableContext
                       items={carousels.map((c) => `row-${c.id}`)}

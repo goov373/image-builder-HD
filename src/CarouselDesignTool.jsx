@@ -307,6 +307,8 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
     handleUpdateProgressIndicator: carousels.handleUpdateProgressIndicator,
     // Background layer order methods
     handleReorderBackgroundLayers: carousels.handleReorderBackgroundLayers,
+    // Row reordering
+    handleReorderCarousels: carousels.handleReorderCarousels,
     // Undo/Redo
     handleUndo: carousels.handleUndo,
     handleRedo: carousels.handleRedo,

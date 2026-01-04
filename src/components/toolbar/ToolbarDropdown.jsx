@@ -12,13 +12,13 @@ const ToolbarDropdown = forwardRef(
           type="button"
           onClick={onToggle}
           disabled={disabled}
-          className={`flex items-center gap-2 px-3 py-2 rounded-[--radius-md] transition-all duration-[--duration-fast] border ${
+          className={`flex items-center gap-2 px-2 py-1 rounded-[--radius-sm] transition-all duration-[--duration-fast] ${
             isOpen
-              ? 'bg-[--surface-overlay] border-[--border-strong]'
-              : 'bg-[--surface-default] border-[--border-default] hover:bg-[--surface-raised] hover:border-[--border-emphasis]'
+              ? 'bg-[--surface-overlay] text-[--text-primary]'
+              : 'bg-transparent text-[--text-secondary] hover:bg-[--surface-raised] hover:text-[--text-primary]'
           } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
-          <span className="text-xs font-medium text-[--text-secondary]">{label}</span>
+          <span className="text-xs font-medium">{label}</span>
           {value && <span className="text-[11px] text-[--text-quaternary]">{value}</span>}
           <ChevronIcon isOpen={isOpen} />
         </button>

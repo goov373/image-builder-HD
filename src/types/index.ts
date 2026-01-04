@@ -238,6 +238,8 @@ export interface CarouselsContextValue {
   handleAddImageToFrame: (carouselId: number, frameId: number, imageSrc: string) => void;
   handleUpdateImageLayer: (carouselId: number, frameId: number, updates: Partial<ImageLayer>) => void;
   handleRemoveImageFromFrame: (carouselId: number, frameId: number) => void;
+  // Row reordering
+  handleReorderCarousels: (oldIndex: number, newIndex: number) => void;
   // Undo/Redo
   handleUndo: () => void;
   handleRedo: () => void;

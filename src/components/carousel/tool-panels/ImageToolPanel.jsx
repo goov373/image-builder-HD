@@ -2,7 +2,7 @@ import { ToolPanel, Button, IconButton } from '../../ui';
 
 /**
  * Image Tool Panel Component
- * Controls for editing background photo layer
+ * Controls for editing background photo layer (Photograph layer)
  *
  * @see ARCHITECTURE-CONTEXT.md for behavioral rules
  */
@@ -15,11 +15,17 @@ const ImageToolPanel = ({
   onCancel,
   onDone,
 }) => {
-  const imageLayer = frame.imageLayer || { scale: 1, opacity: 1 };
+  const imageLayer = frame.imageLayer || { scale: 1, opacity: 1, fit: 'cover' };
 
   const handleUpdate = (updates) => {
     onUpdateImageLayer?.(carouselId, frame.id, updates);
   };
+
+  // Fit mode options
+  const fitModeOptions = [
+    { key: 'cover', label: 'Cover' },
+    { key: 'contain', label: 'Contain' },
+  ];
 
   return (
     <ToolPanel.Container width={frameWidth}>
@@ -41,26 +47,41 @@ const ImageToolPanel = ({
           onIncrement={() => handleUpdate({ opacity: Math.min(1, imageLayer.opacity + 0.1) })}
           onReset={() => handleUpdate({ opacity: 1 })}
         />
+
+        {/* Fit Mode Selector */}
+        <ToolPanel.SegmentedControl
+          label="Fit"
+          options={fitModeOptions}
+          value={imageLayer.fit || 'cover'}
+          onChange={(fit) => handleUpdate({ fit })}
+        />
       </ToolPanel.Row>
 
-      <ToolPanel.Actions>
-        <Button variant="ghost" size="sm" onClick={onCancel} title="Cancel and revert changes">
-          Cancel
-        </Button>
-        <Button variant="secondary" size="sm" onClick={onDone} title="Done editing">
-          Done
-        </Button>
-        <IconButton variant="danger" size="sm" onClick={onRemove} title="Remove image">
-          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-            />
-          </svg>
-        </IconButton>
-      </ToolPanel.Actions>
+      <ToolPanel.Row className="justify-between">
+        <ToolPanel.Actions>
+          <Button variant="ghost" size="sm" onClick={onCancel} title="Cancel and revert changes">
+            Cancel
+          </Button>
+          <Button variant="secondary" size="sm" onClick={onDone} title="Done editing">
+            Done
+          </Button>
+          <IconButton variant="danger" size="sm" onClick={onRemove} title="Remove image">
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+              />
+            </svg>
+          </IconButton>
+        </ToolPanel.Actions>
+
+        {/* Interaction Tip */}
+        <p className="text-[9px] text-[--text-quaternary]">
+          Double-click image to drag • Scroll to zoom
+        </p>
+      </ToolPanel.Row>
     </ToolPanel.Container>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React from 'react';
 import { frameSizes, layoutNames, layoutVariantNames, getFrameSizesByCategory } from '../data';
 import { useDesignSystemContext, useSelectionContext, useCarouselsContext, useDropdownsContext } from '../context';
 import { HistoryControls, ToolbarButtonGroup } from './toolbar/index.js';
@@ -23,8 +23,6 @@ export default function Toolbar({ totalOffset, activeTab, zoom, onZoomChange }) 
     handleSetLayout,
     handleShuffleLayoutVariant,
     handleChangeFrameSize,
-    handleUpdateImageLayer,
-    handleRemoveImageFromFrame,
   } = carouselsCtx;
 
   const {
@@ -39,23 +37,6 @@ export default function Toolbar({ totalOffset, activeTab, zoom, onZoomChange }) 
     snippetsPickerRef,
     closeAllDropdowns,
   } = dropdowns;
-
-  // Image controls state
-  const [showImageControls, setShowImageControls] = useState(false);
-  const imageControlsRef = useRef(null);
-
-  // Image controls click-outside handler
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (imageControlsRef.current && !imageControlsRef.current.contains(e.target)) {
-        setShowImageControls(false);
-      }
-    };
-    if (showImageControls) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [showImageControls]);
 
   if (!activeTab?.hasContent) return null;
 
@@ -82,7 +63,7 @@ export default function Toolbar({ totalOffset, activeTab, zoom, onZoomChange }) 
                   closeAllDropdowns();
                   if (!wasOpen) setShowFormatPicker(true);
                 }}
-                className={`flex items-center gap-2 px-3 py-2 rounded transition-all duration-200 border ${showFormatPicker ? 'bg-[--surface-overlay] border-[--border-strong]' : 'bg-[--surface-raised]/50 border-[--border-default] hover:bg-[--surface-overlay] hover:border-[--border-emphasis]'}`}
+                className={`flex items-center gap-2 px-2 py-1 rounded-[--radius-sm] transition-all duration-[--duration-fast] ${showFormatPicker ? 'bg-[--surface-overlay] text-[--text-primary]' : 'bg-transparent text-[--text-secondary] hover:bg-[--surface-raised] hover:text-[--text-primary]'}`}
               >
                 <span className="text-xs font-medium text-[--text-secondary]">Format</span>
                 <span className="text-[11px] text-[--text-quaternary]">
@@ -126,7 +107,7 @@ export default function Toolbar({ totalOffset, activeTab, zoom, onZoomChange }) 
                   closeAllDropdowns();
                   if (!wasOpen) setShowLayoutPicker(true);
                 }}
-                className={`flex items-center gap-2 px-3 py-2 rounded transition-all duration-200 border ${showLayoutPicker ? 'bg-[--surface-overlay] border-[--border-strong]' : 'bg-[--surface-raised]/50 border-[--border-default] hover:bg-[--surface-overlay] hover:border-[--border-emphasis]'}`}
+                className={`flex items-center gap-2 px-2 py-1 rounded-[--radius-sm] transition-all duration-[--duration-fast] ${showLayoutPicker ? 'bg-[--surface-overlay] text-[--text-primary]' : 'bg-transparent text-[--text-secondary] hover:bg-[--surface-raised] hover:text-[--text-primary]'}`}
               >
                 <span className="text-xs font-medium text-[--text-secondary]">Layout</span>
                 <span className="text-[11px] text-[--text-quaternary] w-[85px] text-left">
@@ -212,171 +193,6 @@ export default function Toolbar({ totalOffset, activeTab, zoom, onZoomChange }) 
             </button>
           </ToolbarButtonGroup>
 
-          {/* Image Controls Group - Only shows when frame has image */}
-          {selectedFrame?.imageLayer && (
-            <ToolbarButtonGroup>
-              <div ref={imageControlsRef} className="relative">
-                <button
-                  onClick={() => {
-                    const wasOpen = showImageControls;
-                    closeAllDropdowns();
-                    setShowImageControls(false);
-                    if (!wasOpen) setShowImageControls(true);
-                  }}
-                  className={`flex items-center gap-2 px-3 py-2 rounded transition-all duration-200 border ${
-                    showImageControls
-                      ? 'bg-blue-600 border-blue-500'
-                      : 'bg-[--surface-raised]/50 border-[--border-default] hover:bg-[--surface-overlay] hover:border-[--border-emphasis]'
-                  }`}
-                >
-                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                    />
-                  </svg>
-                  <span className="text-xs font-medium text-white">Image</span>
-                  <svg
-                    className={`w-3 h-3 text-[--text-tertiary] transition-transform duration-200 ${showImageControls ? 'rotate-180' : ''}`}
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </button>
-
-                {showImageControls && (
-                  <div className="absolute top-full left-0 mt-2 p-3 bg-[--surface-canvas] border border-[--border-default] rounded-xl shadow-xl z-[200] min-w-[200px]">
-                    {/* Zoom Control */}
-                    <div className="mb-3">
-                      <div className="text-[10px] text-[--text-quaternary] uppercase tracking-wide mb-2">Zoom</div>
-                      <div className="flex items-center gap-2">
-                        <button
-                          onClick={() =>
-                            handleUpdateImageLayer?.(selectedCarouselId, selectedFrameId, {
-                              scale: Math.max(0.5, (selectedFrame?.imageLayer?.scale || 1) - 0.2),
-                            })
-                          }
-                          className="w-7 h-7 flex items-center justify-center bg-[--surface-raised] hover:bg-[--surface-overlay] rounded border border-[--border-default] text-[--text-tertiary] hover:text-white transition-colors"
-                        >
-                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
-                          </svg>
-                        </button>
-                        <div className="flex-1 text-center">
-                          <span className="text-xs text-white font-medium">
-                            {Math.round((selectedFrame?.imageLayer?.scale || 1) * 100)}%
-                          </span>
-                        </div>
-                        <button
-                          onClick={() =>
-                            handleUpdateImageLayer?.(selectedCarouselId, selectedFrameId, {
-                              scale: Math.min(5, (selectedFrame?.imageLayer?.scale || 1) + 0.2),
-                            })
-                          }
-                          className="w-7 h-7 flex items-center justify-center bg-[--surface-raised] hover:bg-[--surface-overlay] rounded border border-[--border-default] text-[--text-tertiary] hover:text-white transition-colors"
-                        >
-                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                          </svg>
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* Opacity Control */}
-                    <div className="mb-3">
-                      <div className="text-[10px] text-[--text-quaternary] uppercase tracking-wide mb-2">Opacity</div>
-                      <div className="flex items-center gap-2">
-                        <input
-                          type="range"
-                          min="0"
-                          max="100"
-                          value={(selectedFrame?.imageLayer?.opacity || 1) * 100}
-                          onChange={(e) =>
-                            handleUpdateImageLayer?.(selectedCarouselId, selectedFrameId, {
-                              opacity: parseInt(e.target.value) / 100,
-                            })
-                          }
-                          className="flex-1 h-1.5 bg-[--surface-overlay] rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:bg-blue-500 [&::-webkit-slider-thumb]:rounded-full"
-                        />
-                        <span className="text-xs text-[--text-tertiary] w-10 text-right">
-                          {Math.round((selectedFrame?.imageLayer?.opacity || 1) * 100)}%
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Fit Mode */}
-                    <div className="mb-3">
-                      <div className="text-[10px] text-[--text-quaternary] uppercase tracking-wide mb-2">Fit Mode</div>
-                      <div className="flex gap-1.5">
-                        <button
-                          onClick={() =>
-                            handleUpdateImageLayer?.(selectedCarouselId, selectedFrameId, { fit: 'cover' })
-                          }
-                          className={`flex-1 px-2 py-1.5 rounded text-[11px] font-medium transition-all border ${
-                            selectedFrame?.imageLayer?.fit === 'cover' || !selectedFrame?.imageLayer?.fit
-                              ? 'bg-[--surface-overlay] border-[--border-strong] text-white'
-                              : 'bg-[--surface-raised]/50 border-[--border-default] text-[--text-quaternary] hover:bg-[--surface-raised] hover:text-[--text-secondary]'
-                          }`}
-                        >
-                          Cover
-                        </button>
-                        <button
-                          onClick={() =>
-                            handleUpdateImageLayer?.(selectedCarouselId, selectedFrameId, { fit: 'contain' })
-                          }
-                          className={`flex-1 px-2 py-1.5 rounded text-[11px] font-medium transition-all border ${
-                            selectedFrame?.imageLayer?.fit === 'contain'
-                              ? 'bg-[--surface-overlay] border-[--border-strong] text-white'
-                              : 'bg-[--surface-raised]/50 border-[--border-default] text-[--text-quaternary] hover:bg-[--surface-raised] hover:text-[--text-secondary]'
-                          }`}
-                        >
-                          Contain
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* Action Buttons */}
-                    <div className="flex gap-2 pt-2 border-t border-[--border-default]">
-                      <button
-                        onClick={() =>
-                          handleUpdateImageLayer?.(selectedCarouselId, selectedFrameId, {
-                            x: 0,
-                            y: 0,
-                            scale: 1,
-                            opacity: 1,
-                          })
-                        }
-                        className="flex-1 px-3 py-2 bg-[--surface-raised] hover:bg-[--surface-overlay] rounded text-xs text-[--text-secondary] transition-colors"
-                      >
-                        Reset
-                      </button>
-                      <button
-                        onClick={() => {
-                          handleRemoveImageFromFrame?.(selectedCarouselId, selectedFrameId);
-                          setShowImageControls(false);
-                        }}
-                        className="flex-1 px-3 py-2 bg-red-900/50 hover:bg-red-600 rounded text-xs text-red-300 hover:text-white transition-colors"
-                      >
-                        Remove
-                      </button>
-                    </div>
-
-                    {/* Tip */}
-                    <div className="mt-3 pt-2 border-t border-[--border-default]">
-                      <p className="text-[10px] text-[--text-quaternary] text-center">
-                        Double-click image to drag • Scroll to zoom
-                      </p>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </ToolbarButtonGroup>
-          )}
-
           {/* Snippets Group - Using extracted ToolbarButtonGroup */}
           <ToolbarButtonGroup disabled={!selectedFrameId}>
             <div ref={snippetsPickerRef} className="relative">
@@ -386,7 +202,7 @@ export default function Toolbar({ totalOffset, activeTab, zoom, onZoomChange }) 
                   closeAllDropdowns();
                   if (!wasOpen) setShowSnippetsPicker(true);
                 }}
-                className={`flex items-center gap-2 px-3 py-2 rounded transition-all duration-200 border ${showSnippetsPicker ? 'bg-[--surface-overlay] border-[--border-strong]' : 'bg-[--surface-raised]/50 border-[--border-default] hover:bg-[--surface-overlay] hover:border-[--border-emphasis]'}`}
+                className={`flex items-center gap-2 px-2 py-1 rounded-[--radius-sm] transition-all duration-[--duration-fast] ${showSnippetsPicker ? 'bg-[--surface-overlay] text-[--text-primary]' : 'bg-transparent text-[--text-secondary] hover:bg-[--surface-raised] hover:text-[--text-primary]'}`}
               >
                 <span className="text-xs font-medium text-[--text-secondary]">Snippets</span>
                 <span className="text-[11px] text-[--text-tertiary] font-medium">

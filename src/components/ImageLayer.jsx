@@ -31,8 +31,16 @@ const ImageLayer = ({
 }) => {
   const [isEditMode, setIsEditMode] = useState(false);
 
-  // Notify parent when edit mode changes
+  // Track if this is the first render to skip initial mount notification
+  // This prevents closing auto-opened tool panels when ImageLayer first mounts
+  const isFirstRender = useRef(true);
+
+  // Notify parent when edit mode changes (skip initial mount)
   useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return; // Skip notification on initial mount
+    }
     onEditModeChange?.(isEditMode);
   }, [isEditMode, onEditModeChange]);
 
