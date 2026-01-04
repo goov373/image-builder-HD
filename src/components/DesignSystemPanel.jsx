@@ -154,8 +154,8 @@ const DesignSystemPanel = ({
   const [uploadProgress, setUploadProgress] = useState({ current: 0, total: 0, fileName: '' });
   const [compressionPreset, setCompressionPreset] = useState('highQuality');
 
-  // Default order for design dropdown sections
-  const defaultSectionOrder = [
+  // Fixed order for design dropdown sections
+  const sectionOrder = [
     'brandColors',
     'fonts',
     'pageIndicators',
@@ -166,7 +166,7 @@ const DesignSystemPanel = ({
     'brandIcons',
   ];
 
-  // Track which single section is open (null = all closed), and dynamic section order
+  // Track which single section is open (null = all closed)
   // Persist to localStorage for user preference retention
   const [openSection, setOpenSection] = useState(() => {
     try {
@@ -174,14 +174,6 @@ const DesignSystemPanel = ({
       return saved ? JSON.parse(saved) : null;
     } catch {
       return null;
-    }
-  });
-  const [sectionOrder, setSectionOrder] = useState(() => {
-    try {
-      const saved = localStorage.getItem('designPanel.sectionOrder');
-      return saved ? JSON.parse(saved) : defaultSectionOrder;
-    } catch {
-      return defaultSectionOrder;
     }
   });
 
@@ -193,15 +185,6 @@ const DesignSystemPanel = ({
       /* ignore storage errors */
     }
   }, [openSection]);
-
-  // Persist section order changes
-  useEffect(() => {
-    try {
-      localStorage.setItem('designPanel.sectionOrder', JSON.stringify(sectionOrder));
-    } catch {
-      /* ignore storage errors */
-    }
-  }, [sectionOrder]);
 
   // Assets tab sections (separate from design sections)
   const [openAssetSection, setOpenAssetSection] = useState(null);
@@ -229,29 +212,15 @@ const DesignSystemPanel = ({
     if (assetSections.includes(section)) {
       setOpenAssetSection((prev) => (prev === section ? null : section));
     } else {
-      // Design sections - also reorder to put clicked section at top
-      if (openSection === section) {
-        setOpenSection(null);
-      } else {
-        setOpenSection(section);
-        // Move this section to the top of the order
-        setSectionOrder((prev) => {
-          if (prev[0] === section) return prev;
-          return [section, ...prev.filter((s) => s !== section)];
-        });
-      }
+      // Design sections - toggle open/closed without reordering
+      setOpenSection((prev) => (prev === section ? null : section));
     }
   };
 
-  // Expand and prioritize a specific section when triggered by tag click
+  // Expand a specific section when triggered by tag click
   useEffect(() => {
     if (expandSectionOnOpen) {
-      // Open this section and move it to top
       setOpenSection(expandSectionOnOpen);
-      setSectionOrder((prev) => {
-        if (prev[0] === expandSectionOnOpen) return prev;
-        return [expandSectionOnOpen, ...prev.filter((s) => s !== expandSectionOnOpen)];
-      });
     }
   }, [expandSectionOnOpen]);
 
@@ -260,9 +229,7 @@ const DesignSystemPanel = ({
     if (!isOpen) {
       setOpenSection(null);
       setOpenAssetSection(null);
-      setSectionOrder(defaultSectionOrder);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- defaultSectionOrder is stable, only run on isOpen change
   }, [isOpen]);
 
   // Close all sections when switching tabs
