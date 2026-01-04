@@ -1,4 +1,4 @@
-import { useState, useEffect, MouseEvent } from 'react';
+import { useState, useEffect, useRef, MouseEvent } from 'react';
 import { logger } from '../utils';
 
 /**
@@ -96,6 +96,8 @@ export type ViewType = 'home' | 'editor';
 interface StoredTabState {
   projects: Project[];
   activeTabId: number | null;
+  currentView: ViewType;
+  openTabIds: number[];
 }
 
 /**
@@ -129,9 +131,16 @@ function loadFromStorage(initialTabs: Project[]): StoredTabState {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
       const parsed = JSON.parse(saved) as Partial<StoredTabState>;
+      const activeTabId = parsed.activeTabId ?? null;
+      
+      // If there's an active tab, restore to editor view, otherwise home
+      const currentView = activeTabId !== null ? (parsed.currentView || 'editor') : 'home';
+      
       return {
         projects: parsed.projects || initialTabs,
-        activeTabId: parsed.activeTabId ?? null,
+        activeTabId,
+        currentView,
+        openTabIds: parsed.openTabIds || (activeTabId !== null ? [activeTabId] : []),
       };
     }
   } catch (e) {
@@ -140,6 +149,8 @@ function loadFromStorage(initialTabs: Project[]): StoredTabState {
   return {
     projects: initialTabs,
     activeTabId: null,
+    currentView: 'home',
+    openTabIds: [],
   };
 }
 
@@ -155,34 +166,50 @@ export default function useTabs(
   initialTabs: Project[] = [],
   user: User | null = null
 ): UseTabsReturn {
-  const [initialized, setInitialized] = useState(false);
-  const stored = loadFromStorage(initialTabs);
+  // Load from storage only once using lazy initializer
+  const storedRef = useRef<StoredTabState | null>(null);
+  if (storedRef.current === null) {
+    storedRef.current = loadFromStorage(initialTabs);
+  }
+  const stored = storedRef.current;
 
   // Helper to get user email for edit tracking
   const getUserEmail = (): string => user?.email || 'Unknown user';
 
-  // All saved projects (persisted)
+  // All saved projects (persisted) - initialize from stored state
   const [projects, setProjects] = useState<Project[]>(stored.projects);
   // IDs of projects currently open as tabs
-  const [openTabIds, setOpenTabIds] = useState<number[]>([]);
+  const [openTabIds, setOpenTabIds] = useState<number[]>(stored.openTabIds);
   const [activeTabId, setActiveTabId] = useState<number | null>(stored.activeTabId);
-  const [currentView, setCurrentView] = useState<ViewType>('home');
+  const [currentView, setCurrentView] = useState<ViewType>(stored.currentView);
+
+  // Track if this is the initial mount to prevent saving on first render
+  const isInitialMount = useRef(true);
 
   // Derive open tabs from projects and openTabIds
   const tabs = projects.filter((p) => openTabIds.includes(p.id));
 
-  // Save to localStorage whenever projects or activeTabId changes
+  // Save to localStorage whenever projects, activeTabId, currentView, or openTabIds changes
+  // Skip saving on initial mount to prevent unnecessary writes
   useEffect(() => {
-    if (!initialized) {
-      setInitialized(true);
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
       return;
     }
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({ projects, activeTabId }));
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify({
+          projects,
+          activeTabId,
+          currentView,
+          openTabIds,
+        })
+      );
     } catch (e) {
-      logger.warn('Failed to save projects to localStorage:', e);
+      logger.warn('Failed to save tabs to localStorage:', e);
     }
-  }, [projects, activeTabId, initialized]);
+  }, [projects, activeTabId, currentView, openTabIds]);
 
   const activeTab = projects.find((p) => p.id === activeTabId);
 

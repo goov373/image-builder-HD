@@ -1,5 +1,6 @@
 import React, { createContext, useContext, ReactNode } from 'react';
 import type { DesignSystemContextValue, SelectionContextValue, CarouselsContextValue } from '../types';
+import type { UseDropdownsReturn } from '../hooks/useDropdowns';
 
 // Design System Context
 const DesignSystemContext = createContext<DesignSystemContextValue | null>(null);
@@ -53,14 +54,14 @@ export function useCarouselsContext(): CarouselsContextValue {
   return context;
 }
 
-// Dropdowns Context - keeping as 'any' for simplicity since it has many props
-const DropdownsContext = createContext<Record<string, unknown> | null>(null);
+// Dropdowns Context - properly typed
+const DropdownsContext = createContext<UseDropdownsReturn | null>(null);
 
 export function DropdownsProvider({ value, children }: ProviderProps) {
-  return <DropdownsContext.Provider value={value as Record<string, unknown>}>{children}</DropdownsContext.Provider>;
+  return <DropdownsContext.Provider value={value as UseDropdownsReturn}>{children}</DropdownsContext.Provider>;
 }
 
-export function useDropdownsContext() {
+export function useDropdownsContext(): UseDropdownsReturn {
   const context = useContext(DropdownsContext);
   if (context === null) {
     throw new Error('useDropdownsContext must be used within a DropdownsProvider');
@@ -73,7 +74,7 @@ interface AppProviderProps {
   designSystem: DesignSystemContextValue;
   selection: SelectionContextValue;
   carousels: CarouselsContextValue;
-  dropdowns: Record<string, unknown>;
+  dropdowns: UseDropdownsReturn;
   children: ReactNode;
 }
 

@@ -1,4 +1,5 @@
-import { createContext, useContext, useReducer, useCallback, useRef, ReactNode } from 'react';
+import { createContext, useContext, useReducer, useCallback, useRef, useEffect, ReactNode } from 'react';
+import { isEqual } from 'lodash-es';
 
 /**
  * History Context
@@ -91,8 +92,8 @@ const initialHistoryState: HistoryStackState = {
 function historyReducer(state: HistoryStackState, action: HistoryAction): HistoryStackState {
   switch (action.type) {
     case HISTORY_ACTIONS.PUSH: {
-      // Don't push if state hasn't changed
-      if (state.present && JSON.stringify(state.present) === JSON.stringify(action.state)) {
+      // Don't push if state hasn't changed (using efficient deep equality check)
+      if (state.present && action.state && isEqual(state.present, action.state)) {
         return state;
       }
 
@@ -186,6 +187,8 @@ export function HistoryProvider({ children, onStateChange }: HistoryProviderProp
   const [historyState, dispatch] = useReducer(historyReducer, initialHistoryState);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastActionRef = useRef<string | null>(null);
+  // Ref to always access latest state in callbacks (prevents stale closures)
+  const historyStateRef = useRef(historyState);
 
   /**
    * Push a new state to history
@@ -195,6 +198,7 @@ export function HistoryProvider({ children, onStateChange }: HistoryProviderProp
     // Clear any pending debounced push
     if (debounceRef.current) {
       clearTimeout(debounceRef.current);
+      debounceRef.current = null;
     }
 
     // Debounce text-related actions
@@ -204,6 +208,7 @@ export function HistoryProvider({ children, onStateChange }: HistoryProviderProp
       debounceRef.current = setTimeout(() => {
         dispatch({ type: HISTORY_ACTIONS.PUSH, state: structuredClone(state) });
         lastActionRef.current = null;
+        debounceRef.current = null;
       }, DEBOUNCE_MS);
     } else {
       dispatch({ type: HISTORY_ACTIONS.PUSH, state: structuredClone(state) });
@@ -212,31 +217,48 @@ export function HistoryProvider({ children, onStateChange }: HistoryProviderProp
     lastActionRef.current = actionType;
   }, []);
 
+  // Keep ref in sync with state
+  useEffect(() => {
+    historyStateRef.current = historyState;
+  }, [historyState]);
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+        debounceRef.current = null;
+      }
+    };
+  }, []);
+
   /** Undo - restore previous state */
   const undo = useCallback(() => {
-    if (historyState.past.length === 0) return;
+    const currentState = historyStateRef.current;
+    if (currentState.past.length === 0) return;
 
     dispatch({ type: HISTORY_ACTIONS.UNDO });
 
-    // Notify parent of state change
-    const previousState = historyState.past[historyState.past.length - 1];
+    // Notify parent of state change using latest state from ref
+    const previousState = currentState.past[currentState.past.length - 1];
     if (onStateChange && previousState) {
       onStateChange(previousState);
     }
-  }, [historyState.past, onStateChange]);
+  }, [onStateChange]);
 
   /** Redo - restore future state */
   const redo = useCallback(() => {
-    if (historyState.future.length === 0) return;
+    const currentState = historyStateRef.current;
+    if (currentState.future.length === 0) return;
 
     dispatch({ type: HISTORY_ACTIONS.REDO });
 
-    // Notify parent of state change
-    const nextState = historyState.future[0];
+    // Notify parent of state change using latest state from ref
+    const nextState = currentState.future[0];
     if (onStateChange && nextState) {
       onStateChange(nextState);
     }
-  }, [historyState.future, onStateChange]);
+  }, [onStateChange]);
 
   /** Clear all history */
   const clearHistory = useCallback(() => {

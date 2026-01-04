@@ -1,5 +1,36 @@
-import { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, KeyboardEvent, MouseEvent, FocusEvent } from 'react';
 import Button from './ui/Button';
+
+// Types
+export type ProjectType = 'carousel' | 'singleImage' | 'eblast' | 'videoCover';
+export type FilterType = 'all' | ProjectType;
+export type SortBy = 'updated' | 'created' | 'name';
+
+export interface Project {
+  id: number;
+  name: string;
+  projectType?: ProjectType;
+  hasContent: boolean;
+  frameCount?: number;
+  createdAt: string;
+  updatedAt: string;
+  lastEditedBy?: string;
+}
+
+export interface RenameResult {
+  success: boolean;
+  error?: string;
+}
+
+export interface HomepageProps {
+  projects: Project[];
+  onOpenProject: (projectId: number) => void;
+  onCreateNew: () => void;
+  onDeleteProject?: (projectId: number) => void;
+  onDuplicateProject?: (projectId: number) => void;
+  onRenameProject?: (projectId: number, newName: string) => RenameResult | void;
+  onQuickExport?: (projectId: number) => void;
+}
 
 /**
  * Homepage Component - Project Browser
@@ -14,21 +45,21 @@ const Homepage = ({
   onDuplicateProject,
   onRenameProject,
   onQuickExport,
-}) => {
-  const [openMenuId, setOpenMenuId] = useState(null);
-  const [renamingId, setRenamingId] = useState(null);
+}: HomepageProps) => {
+  const [openMenuId, setOpenMenuId] = useState<number | null>(null);
+  const [renamingId, setRenamingId] = useState<number | null>(null);
   const [renameValue, setRenameValue] = useState('');
-  const [renameError, setRenameError] = useState(null);
-  const [filterType, setFilterType] = useState('all'); // 'all', 'carousel', 'singleImage', 'eblast', 'videoCover'
-  const [sortBy, setSortBy] = useState('updated'); // 'updated', 'created', 'name'
+  const [renameError, setRenameError] = useState<string | null>(null);
+  const [filterType, setFilterType] = useState<FilterType>('all');
+  const [sortBy, setSortBy] = useState<SortBy>('updated');
   const [searchQuery, setSearchQuery] = useState('');
-  const menuRef = useRef(null);
-  const renameInputRef = useRef(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const renameInputRef = useRef<HTMLInputElement>(null);
 
   // Close menu when clicking outside
   useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (menuRef.current && !menuRef.current.contains(e.target)) {
+    const handleClickOutside = (e: globalThis.MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
         setOpenMenuId(null);
       }
     };
@@ -44,12 +75,12 @@ const Homepage = ({
     }
   }, [renamingId]);
 
-  const handleMenuClick = (e, projectId) => {
+  const handleMenuClick = (e: MouseEvent, projectId: number) => {
     e.stopPropagation();
     setOpenMenuId(openMenuId === projectId ? null : projectId);
   };
 
-  const handleDelete = (e, projectId) => {
+  const handleDelete = (e: MouseEvent, projectId: number) => {
     e.stopPropagation();
     if (onDeleteProject) {
       onDeleteProject(projectId);
@@ -57,7 +88,7 @@ const Homepage = ({
     setOpenMenuId(null);
   };
 
-  const handleDuplicate = (e, projectId) => {
+  const handleDuplicate = (e: MouseEvent, projectId: number) => {
     e.stopPropagation();
     if (onDuplicateProject) {
       onDuplicateProject(projectId);
@@ -65,7 +96,7 @@ const Homepage = ({
     setOpenMenuId(null);
   };
 
-  const handleStartRename = (e, project) => {
+  const handleStartRename = (e: MouseEvent, project: Project) => {
     e.stopPropagation();
     setRenamingId(project.id);
     setRenameValue(project.name);
@@ -73,7 +104,7 @@ const Homepage = ({
     setOpenMenuId(null);
   };
 
-  const handleRenameSubmit = (e, projectId) => {
+  const handleRenameSubmit = (e: MouseEvent | KeyboardEvent | FocusEvent, projectId: number) => {
     e.stopPropagation();
     if (!renameValue.trim()) {
       setRenamingId(null);
@@ -84,7 +115,7 @@ const Homepage = ({
     if (onRenameProject) {
       const result = onRenameProject(projectId, renameValue.trim());
       if (result && !result.success) {
-        setRenameError(result.error);
+        setRenameError(result.error || null);
         return;
       }
     }
@@ -92,7 +123,7 @@ const Homepage = ({
     setRenameError(null);
   };
 
-  const handleRenameKeyDown = (e, projectId) => {
+  const handleRenameKeyDown = (e: KeyboardEvent<HTMLInputElement>, projectId: number) => {
     if (e.key === 'Enter') {
       handleRenameSubmit(e, projectId);
     } else if (e.key === 'Escape') {
@@ -101,7 +132,7 @@ const Homepage = ({
     }
   };
 
-  const handleOpenInNewTab = (e, projectId) => {
+  const handleOpenInNewTab = (e: MouseEvent, projectId: number) => {
     e.stopPropagation();
     if (onOpenProject) {
       onOpenProject(projectId);
@@ -160,7 +191,7 @@ const Homepage = ({
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {[...projects]
               .filter((p) => p.hasContent)
-              .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
+              .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
               .slice(0, 6)
               .map((project) => (
                 <button
@@ -254,7 +285,7 @@ const Homepage = ({
               {/* Filter by Type */}
               <select
                 value={filterType}
-                onChange={(e) => setFilterType(e.target.value)}
+                onChange={(e) => setFilterType(e.target.value as FilterType)}
                 className="bg-[--surface-raised] border border-[--border-default] rounded-[--radius-md] px-3 py-1.5 text-xs text-[--text-secondary] hover:border-[--border-emphasis] focus:border-[--border-strong] focus:outline-none transition-colors cursor-pointer"
               >
                 <option value="all">All Types</option>
@@ -267,7 +298,7 @@ const Homepage = ({
               {/* Sort By */}
               <select
                 value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
+                onChange={(e) => setSortBy(e.target.value as SortBy)}
                 className="bg-[--surface-raised] border border-[--border-default] rounded-[--radius-md] px-3 py-1.5 text-xs text-[--text-secondary] hover:border-[--border-emphasis] focus:border-[--border-strong] focus:outline-none transition-colors cursor-pointer"
               >
                 <option value="updated">Last Updated</option>
@@ -297,8 +328,8 @@ const Homepage = ({
             .filter((p) => filterType === 'all' || p.projectType === filterType)
             .filter((p) => !searchQuery || (p.name || '').toLowerCase().includes(searchQuery.toLowerCase()))
             .sort((a, b) => {
-              if (sortBy === 'updated') return new Date(b.updatedAt) - new Date(a.updatedAt);
-              if (sortBy === 'created') return new Date(b.createdAt) - new Date(a.createdAt);
+              if (sortBy === 'updated') return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
+              if (sortBy === 'created') return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
               if (sortBy === 'name') return (a.name || '').localeCompare(b.name || '');
               return 0;
             })

@@ -1,4 +1,4 @@
-import React, { useState, Suspense, lazy } from 'react';
+import React, { useState, Suspense, lazy, useRef, useEffect } from 'react';
 
 // Import data from centralized location
 import { defaultDesignSystem, initialCarousels, initialEblasts, initialVideoCovers, initialSingleImages } from './data';
@@ -66,6 +66,9 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
   const [expandSectionOnOpen, setExpandSectionOnOpen] = useState(null);
   const [showShortcutsModal, setShowShortcutsModal] = useState(false);
   const [selectedDevice, setSelectedDevice] = useState('none');
+  
+  // Ref to track expand timeout for cleanup
+  const expandTimeoutRef = useRef(null);
 
   // Design system with persistence
   const [designSystem, setDesignSystem] = useDesignSystem(defaultDesignSystem);
@@ -105,49 +108,60 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
     !showShortcutsModal
   ); // Disable some shortcuts when modal is open
 
-  // Handler to open Design panel and expand Product Imagery section
-  const handleRequestAddProductImage = () => {
-    setExpandSectionOnOpen('productImagery');
+  // Helper function to handle expand section with cleanup
+  const handleExpandSection = (sectionName) => {
+    // Clear any existing timeout
+    if (expandTimeoutRef.current) {
+      clearTimeout(expandTimeoutRef.current);
+    }
+    setExpandSectionOnOpen(sectionName);
     setActivePanel('design');
     // Clear the expand trigger after a short delay so it can be triggered again
-    setTimeout(() => setExpandSectionOnOpen(null), 100);
+    expandTimeoutRef.current = setTimeout(() => {
+      setExpandSectionOnOpen(null);
+      expandTimeoutRef.current = null;
+    }, 100);
+  };
+
+  // Handler to open Design panel and expand Product Imagery section
+  const handleRequestAddProductImage = () => {
+    handleExpandSection('productImagery');
   };
 
   // Handler to open Design panel and expand Brand Icons section
   const handleRequestAddIcon = () => {
-    setExpandSectionOnOpen('brandIcons');
-    setActivePanel('design');
-    // Clear the expand trigger after a short delay so it can be triggered again
-    setTimeout(() => setExpandSectionOnOpen(null), 100);
+    handleExpandSection('brandIcons');
   };
 
   // Handler to open Design panel and expand Backgrounds section (for Fill Color)
   const handleRequestAddFill = () => {
-    setExpandSectionOnOpen('backgrounds');
-    setActivePanel('design');
-    setTimeout(() => setExpandSectionOnOpen(null), 100);
+    handleExpandSection('backgrounds');
   };
 
   // Handler to open Design panel and expand Photography section (for Background Photo)
   const handleRequestAddPhoto = () => {
-    setExpandSectionOnOpen('photography');
-    setActivePanel('design');
-    setTimeout(() => setExpandSectionOnOpen(null), 100);
+    handleExpandSection('photography');
   };
 
   // Handler to open Design panel and expand Brand Patterns section
   const handleRequestAddPattern = () => {
-    setExpandSectionOnOpen('patterns');
-    setActivePanel('design');
-    setTimeout(() => setExpandSectionOnOpen(null), 100);
+    handleExpandSection('patterns');
   };
 
   // Handler to open Design panel and expand Page Indicators section
   const handleRequestAddPageIndicator = () => {
-    setExpandSectionOnOpen('pageIndicators');
-    setActivePanel('design');
-    setTimeout(() => setExpandSectionOnOpen(null), 100);
+    handleExpandSection('pageIndicators');
   };
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (expandTimeoutRef.current) {
+        clearTimeout(expandTimeoutRef.current);
+        expandTimeoutRef.current = null;
+      }
+    };
+  }, []);
 
   // Get current project type from active tab
   const currentProjectType = tabs.activeTab?.projectType || 'carousel';

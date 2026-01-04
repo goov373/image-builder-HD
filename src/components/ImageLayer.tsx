@@ -1,4 +1,52 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback, CSSProperties, MouseEvent as ReactMouseEvent } from 'react';
+
+// Types
+export type ImageFit = 'cover' | 'contain' | 'fill' | 'none' | 'scale-down';
+
+export interface ImageLayerData {
+  src: string;
+  x: number;
+  y: number;
+  scale: number;
+  opacity: number;
+  rotation: number;
+  fit: ImageFit;
+}
+
+export interface OverflowImage {
+  src: string;
+  x: number;
+  y: number;
+  scale: number;
+  opacity: number;
+  rotation: number;
+}
+
+export interface ImageLayerProps {
+  imageLayer: ImageLayerData;
+  frameWidth: number;
+  frameHeight: number;
+  isFrameSelected: boolean;
+  onUpdate: (updates: Partial<ImageLayerData>) => void;
+  onRemove?: () => void;
+  /** Edit mode trigger from parent (e.g., clicking the Image tag) */
+  editTrigger?: number;
+  /** Close trigger from parent (e.g., clicking Done/Cancel buttons) */
+  closeTrigger?: number;
+  /** Callback to notify parent of edit mode changes (for z-index management) */
+  onEditModeChange?: (isEditing: boolean) => void;
+  /** True if this is showing overflow from previous frame */
+  isOverflowFromPrev?: boolean;
+  /** True if this is showing overflow from next frame */
+  isOverflowFromNext?: boolean;
+  /** The overflow image data from adjacent frame */
+  overflowImage?: OverflowImage | null;
+}
+
+interface DragPosition {
+  x: number;
+  y: number;
+}
 
 /**
  * ImageLayer Component
@@ -18,22 +66,25 @@ const ImageLayer = ({
   isFrameSelected,
   onUpdate,
   onRemove,
-  // Edit mode trigger from parent (e.g., clicking the Image tag)
   editTrigger = 0,
-  // Close trigger from parent (e.g., clicking Done/Cancel buttons)
   closeTrigger = 0,
-  // Callback to notify parent of edit mode changes (for z-index management)
   onEditModeChange,
-  // Cross-frame props (for future seamless image transitions)
-  isOverflowFromPrev = false, // True if this is showing overflow from previous frame
-  isOverflowFromNext = false, // True if this is showing overflow from next frame
-  overflowImage = null, // The overflow image data from adjacent frame
-}) => {
+  isOverflowFromPrev = false,
+  isOverflowFromNext = false,
+  overflowImage = null,
+}: ImageLayerProps) => {
   const [isEditMode, setIsEditMode] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState<DragPosition>({ x: 0, y: 0 });
+  const [initialPos, setInitialPos] = useState<DragPosition>({ x: 0, y: 0 });
 
   // Track if this is the first render to skip initial mount notification
   // This prevents closing auto-opened tool panels when ImageLayer first mounts
   const isFirstRender = useRef(true);
+  const prevEditTriggerRef = useRef(0);
+  const prevCloseTriggerRef = useRef(0);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const imageRef = useRef<HTMLImageElement>(null);
 
   // Notify parent when edit mode changes (skip initial mount)
   useEffect(() => {
@@ -44,9 +95,6 @@ const ImageLayer = ({
     onEditModeChange?.(isEditMode);
   }, [isEditMode, onEditModeChange]);
 
-  // Track previous editTrigger to only respond to actual clicks
-  const prevEditTriggerRef = useRef(0);
-
   // Enter edit mode when editTrigger increases (from parent clicking the tag)
   useEffect(() => {
     if (editTrigger > prevEditTriggerRef.current && isFrameSelected) {
@@ -55,9 +103,6 @@ const ImageLayer = ({
     prevEditTriggerRef.current = editTrigger;
   }, [editTrigger, isFrameSelected]);
 
-  // Track previous closeTrigger to respond to parent close requests
-  const prevCloseTriggerRef = useRef(0);
-
   // Exit edit mode when closeTrigger increases (from parent clicking Done/Cancel)
   useEffect(() => {
     if (closeTrigger > prevCloseTriggerRef.current) {
@@ -65,12 +110,6 @@ const ImageLayer = ({
     }
     prevCloseTriggerRef.current = closeTrigger;
   }, [closeTrigger]);
-
-  const [isDragging, setIsDragging] = useState(false);
-  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
-  const [initialPos, setInitialPos] = useState({ x: 0, y: 0 });
-  const containerRef = useRef(null);
-  const imageRef = useRef(null);
 
   const { src, x, y, scale, opacity, rotation, fit } = imageLayer;
 
@@ -94,7 +133,7 @@ const ImageLayer = ({
   };
 
   // Calculate transform style
-  const getTransformStyle = (useOverflowOffset = false) => {
+  const getTransformStyle = (useOverflowOffset = false): CSSProperties => {
     // x and y are percentages (-1 to 1), convert to pixel offset
     const effectiveX = useOverflowOffset ? getOverflowOffset() : x;
     const translateX = effectiveX * frameWidth * 0.5;
@@ -113,14 +152,14 @@ const ImageLayer = ({
   };
 
   // Handle double-click to enter edit mode
-  const handleDoubleClick = (e) => {
+  const handleDoubleClick = (e: ReactMouseEvent) => {
     if (!isFrameSelected) return;
     e.stopPropagation();
     setIsEditMode(true);
   };
 
   // Handle mouse down for dragging
-  const handleMouseDown = (e) => {
+  const handleMouseDown = (e: ReactMouseEvent) => {
     if (!isEditMode) return;
     e.preventDefault();
     e.stopPropagation();
@@ -131,7 +170,7 @@ const ImageLayer = ({
 
   // Handle mouse move for dragging
   const handleMouseMove = useCallback(
-    (e) => {
+    (e: MouseEvent) => {
       if (!isDragging) return;
 
       const deltaX = e.clientX - dragStart.x;
@@ -153,7 +192,7 @@ const ImageLayer = ({
 
   // Handle ESC key to exit edit mode
   useEffect(() => {
-    const handleKeyDown = (e) => {
+    const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isEditMode) {
         setIsEditMode(false);
       }
@@ -221,13 +260,13 @@ const ImageLayer = ({
 
   // Click outside to exit edit mode
   useEffect(() => {
-    const handleClickOutside = (e) => {
+    const handleClickOutside = (e: MouseEvent) => {
       // Don't close if clicking within the image layer container
-      if (containerRef.current && containerRef.current.contains(e.target)) {
+      if (containerRef.current && containerRef.current.contains(e.target as Node)) {
         return;
       }
       // Don't close if clicking on the edit controls (which are outside this component)
-      if (e.target.closest('[data-image-edit-controls]')) {
+      if ((e.target as HTMLElement).closest('[data-image-edit-controls]')) {
         return;
       }
       if (isEditMode) {

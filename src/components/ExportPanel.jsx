@@ -300,7 +300,20 @@ const ExportPanel = ({
       }
     } catch (error) {
       logger.error('Export failed:', error);
-      alert('Export failed. Please try again.');
+      
+      // Provide user-friendly error messages
+      let errorMessage = 'Export failed. Please try again.';
+      if (error instanceof Error) {
+        if (error.message.includes('timeout') || error.message.includes('aborted')) {
+          errorMessage = 'Export was cancelled or timed out. Please try again.';
+        } else if (error.message.includes('memory') || error.message.includes('quota')) {
+          errorMessage = 'Not enough memory to complete export. Try exporting fewer items at once.';
+        } else if (error.message.includes('network') || error.message.includes('fetch')) {
+          errorMessage = 'Network error during export. Please check your connection and try again.';
+        }
+      }
+      
+      alert(errorMessage);
     } finally {
       logger.groupEnd();
       setIsExporting(false);

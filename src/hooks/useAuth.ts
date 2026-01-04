@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import { logger } from '../utils';
 import type { User, AuthError, Session, AuthChangeEvent } from '@supabase/supabase-js';
@@ -77,12 +77,17 @@ export default function useAuth(): UseAuthReturn {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const mountedRef = useRef(true);
 
   // Check for existing session on mount
   useEffect(() => {
+    mountedRef.current = true;
+
     if (!isSupabaseConfigured()) {
       // No Supabase = skip auth, run in local mode
-      setLoading(false);
+      if (mountedRef.current) {
+        setLoading(false);
+      }
       return;
     }
 
@@ -94,13 +99,24 @@ export default function useAuth(): UseAuthReturn {
           error: sessionError,
         } = await supabase!.auth.getSession();
         if (sessionError) throw sessionError;
-        setUser(session?.user ?? null);
+        
+        // Only update state if component is still mounted
+        if (mountedRef.current) {
+          setUser(session?.user ?? null);
+        }
       } catch (err) {
         const authError = err as AuthError;
         logger.error('Error getting session:', authError);
-        setError(authError.message);
+        
+        // Only update state if component is still mounted
+        if (mountedRef.current) {
+          setError(authError.message);
+        }
       } finally {
-        setLoading(false);
+        // Only update state if component is still mounted
+        if (mountedRef.current) {
+          setLoading(false);
+        }
       }
     };
 
@@ -110,22 +126,32 @@ export default function useAuth(): UseAuthReturn {
     const {
       data: { subscription },
     } = supabase!.auth.onAuthStateChange((_event: AuthChangeEvent, session: Session | null) => {
-      setUser(session?.user ?? null);
-      setLoading(false);
+      // Only update state if component is still mounted
+      if (mountedRef.current) {
+        setUser(session?.user ?? null);
+        setLoading(false);
+      }
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      mountedRef.current = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   // Sign in with email/password
   const signIn = useCallback(async (email: string, password: string): Promise<SignInResult> => {
     if (!isSupabaseConfigured()) {
-      setError('Authentication not configured');
+      if (mountedRef.current) {
+        setError('Authentication not configured');
+      }
       return { data: null, error: { message: 'Authentication not configured' } };
     }
 
-    setLoading(true);
-    setError(null);
+    if (mountedRef.current) {
+      setLoading(true);
+      setError(null);
+    }
 
     try {
       const { data, error: signInError } = await supabase!.auth.signInWithPassword({
@@ -134,14 +160,22 @@ export default function useAuth(): UseAuthReturn {
       });
 
       if (signInError) throw signInError;
-      setUser(data.user);
+      
+      // Only update state if component is still mounted
+      if (mountedRef.current) {
+        setUser(data.user);
+      }
       return { data, error: null };
     } catch (err) {
       const authError = err as AuthError;
-      setError(authError.message);
+      if (mountedRef.current) {
+        setError(authError.message);
+      }
       return { data: null, error: { message: authError.message } };
     } finally {
-      setLoading(false);
+      if (mountedRef.current) {
+        setLoading(false);
+      }
     }
   }, []);
 
@@ -149,16 +183,26 @@ export default function useAuth(): UseAuthReturn {
   const signOut = useCallback(async (): Promise<void> => {
     if (!isSupabaseConfigured()) return;
 
-    setLoading(true);
+    if (mountedRef.current) {
+      setLoading(true);
+    }
     try {
       const { error: signOutError } = await supabase!.auth.signOut();
       if (signOutError) throw signOutError;
-      setUser(null);
+      
+      // Only update state if component is still mounted
+      if (mountedRef.current) {
+        setUser(null);
+      }
     } catch (err) {
       const authError = err as AuthError;
-      setError(authError.message);
+      if (mountedRef.current) {
+        setError(authError.message);
+      }
     } finally {
-      setLoading(false);
+      if (mountedRef.current) {
+        setLoading(false);
+      }
     }
   }, []);
 

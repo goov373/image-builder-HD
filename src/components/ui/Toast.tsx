@@ -1,20 +1,45 @@
-import { useState, createContext, useContext, useCallback } from 'react';
+import { useState, createContext, useContext, useCallback, useRef, useEffect, ReactNode } from 'react';
+
+// Toast Types
+export type ToastType = 'info' | 'success' | 'warning' | 'error';
+
+export interface Toast {
+  id: number;
+  message: string;
+  type: ToastType;
+  duration: number;
+}
+
+export interface ToastOptions {
+  type?: ToastType;
+  duration?: number;
+}
+
+interface ToastContextValue {
+  addToast: (message: string, options?: ToastOptions) => number;
+  removeToast: (id: number) => void;
+}
 
 // Toast Context
-const ToastContext = createContext(null);
+const ToastContext = createContext<ToastContextValue | null>(null);
+
+interface ToastProviderProps {
+  children: ReactNode;
+}
 
 /**
  * Toast Provider - Wrap your app with this to enable toasts
  */
-export const ToastProvider = ({ children }) => {
-  const [toasts, setToasts] = useState([]);
+export const ToastProvider = ({ children }: ToastProviderProps) => {
+  const [toasts, setToasts] = useState<Toast[]>([]);
+  const timeoutRefs = useRef<Map<number, ReturnType<typeof setTimeout>>>(new Map());
 
-  const addToast = useCallback((message, options = {}) => {
+  const addToast = useCallback((message: string, options: ToastOptions = {}) => {
     const id = Date.now() + Math.random();
-    const toast = {
+    const toast: Toast = {
       id,
       message,
-      type: options.type || 'info', // 'info', 'success', 'warning', 'error'
+      type: options.type || 'info',
       duration: options.duration ?? 3000,
     };
 
@@ -22,16 +47,32 @@ export const ToastProvider = ({ children }) => {
 
     // Auto-remove after duration
     if (toast.duration > 0) {
-      setTimeout(() => {
+      const timeoutId = setTimeout(() => {
         setToasts((prev) => prev.filter((t) => t.id !== id));
+        timeoutRefs.current.delete(id);
       }, toast.duration);
+      timeoutRefs.current.set(id, timeoutId);
     }
 
     return id;
   }, []);
 
-  const removeToast = useCallback((id) => {
+  const removeToast = useCallback((id: number) => {
+    // Clear timeout if toast is manually removed
+    const timeoutId = timeoutRefs.current.get(id);
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+      timeoutRefs.current.delete(id);
+    }
     setToasts((prev) => prev.filter((t) => t.id !== id));
+  }, []);
+
+  // Cleanup all timeouts on unmount
+  useEffect(() => {
+    return () => {
+      timeoutRefs.current.forEach((timeoutId) => clearTimeout(timeoutId));
+      timeoutRefs.current.clear();
+    };
   }, []);
 
   return (
@@ -53,10 +94,15 @@ export const useToast = () => {
   return context;
 };
 
+interface ToastContainerProps {
+  toasts: Toast[];
+  onRemove: (id: number) => void;
+}
+
 /**
  * Toast Container - Renders toasts in bottom-right corner
  */
-const ToastContainer = ({ toasts, onRemove }) => {
+const ToastContainer = ({ toasts, onRemove }: ToastContainerProps) => {
   if (toasts.length === 0) return null;
 
   return (
@@ -68,16 +114,38 @@ const ToastContainer = ({ toasts, onRemove }) => {
   );
 };
 
+interface ToastItemProps {
+  toast: Toast;
+  onRemove: (id: number) => void;
+}
+
 /**
  * Individual Toast Item
  */
-const ToastItem = ({ toast, onRemove }) => {
+const ToastItem = ({ toast, onRemove }: ToastItemProps) => {
   const [isExiting, setIsExiting] = useState(false);
+  const exitTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleRemove = () => {
     setIsExiting(true);
-    setTimeout(() => onRemove(toast.id), 150);
+    // Clear any existing timeout
+    if (exitTimeoutRef.current) {
+      clearTimeout(exitTimeoutRef.current);
+    }
+    exitTimeoutRef.current = setTimeout(() => {
+      onRemove(toast.id);
+      exitTimeoutRef.current = null;
+    }, 150);
   };
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (exitTimeoutRef.current) {
+        clearTimeout(exitTimeoutRef.current);
+      }
+    };
+  }, []);
 
   // Icon based on type
   const icons = {
@@ -125,7 +193,7 @@ const ToastItem = ({ toast, onRemove }) => {
       `}
       style={{ minWidth: '200px', maxWidth: '360px' }}
     >
-      {icons[toast.type]}
+      {icons[toast.type as ToastType]}
       <span className="flex-1">{toast.message}</span>
       <button
         type="button"
