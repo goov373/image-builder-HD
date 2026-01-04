@@ -1,4 +1,4 @@
-import { ColorDropdown, Button, IconButton } from '../../ui';
+import { ToolPanel, ColorDropdown, Button, IconButton } from '../../ui';
 
 /**
  * Icon Tool Panel Component
@@ -8,6 +8,7 @@ import { ColorDropdown, Button, IconButton } from '../../ui';
  */
 const IconToolPanel = ({
   frame,
+  frameWidth,
   carouselId,
   designSystem,
   onUpdateIconLayer,
@@ -34,15 +35,9 @@ const IconToolPanel = ({
   };
 
   return (
-    <div
-      className="mt-1.5 flex flex-col gap-1.5"
-      data-icon-edit-controls
-      onClick={(e) => e.stopPropagation()}
-      onMouseDown={(e) => e.stopPropagation()}
-    >
-      {/* Row 1: Action buttons and color dropdowns */}
-      <div className="flex items-center gap-2 flex-wrap">
-        {/* Change Icon Button */}
+    <ToolPanel.Container width={frameWidth}>
+      {/* Row 1: Change button and Icon color */}
+      <ToolPanel.Row>
         <Button
           variant="secondary"
           size="sm"
@@ -61,15 +56,16 @@ const IconToolPanel = ({
           Change
         </Button>
 
-        {/* Icon Color Dropdown */}
         <ColorDropdown
           label="Icon"
           value={frame.iconLayer.color}
           onChange={(color) => handleUpdate({ color: color || '#ffffff' })}
           colors={brandColors}
         />
+      </ToolPanel.Row>
 
-        {/* Border Color Dropdown */}
+      {/* Row 2: Border and Fill colors */}
+      <ToolPanel.Row>
         <ColorDropdown
           label="Border"
           value={frame.iconLayer.borderColor}
@@ -79,7 +75,6 @@ const IconToolPanel = ({
           noneLabel="None"
         />
 
-        {/* Fill Color Dropdown */}
         <ColorDropdown
           label="Fill"
           value={frame.iconLayer.backgroundColor}
@@ -88,18 +83,15 @@ const IconToolPanel = ({
           allowNone
           noneLabel="None"
         />
-      </div>
+      </ToolPanel.Row>
 
-      {/* Row 2: Cancel, Done, Remove buttons */}
-      <div className="flex items-center gap-2">
+      <ToolPanel.Actions>
         <Button variant="ghost" size="sm" onClick={onCancel} title="Cancel and revert changes">
           Cancel
         </Button>
-
         <Button variant="secondary" size="sm" onClick={onDone} title="Done editing">
           Done
         </Button>
-
         <IconButton variant="danger" size="sm" onClick={onDelete} title="Remove icon">
           <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
@@ -110,8 +102,8 @@ const IconToolPanel = ({
             />
           </svg>
         </IconButton>
-      </div>
-    </div>
+      </ToolPanel.Actions>
+    </ToolPanel.Container>
   );
 };
 

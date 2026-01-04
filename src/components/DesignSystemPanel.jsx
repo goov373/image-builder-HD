@@ -10,6 +10,15 @@ import {
   uploadDoc,
   listDocs,
   deleteDoc,
+  uploadIcon,
+  listIcons,
+  deleteIcon,
+  uploadBackground,
+  listBackgrounds,
+  deleteBackground,
+  uploadPattern,
+  listPatterns,
+  deletePattern,
 } from '../lib/storage';
 import { isSupabaseConfigured } from '../lib/supabase';
 import { getAllGradientCSSValues, allGradients } from '../data';
@@ -149,6 +158,9 @@ const DesignSystemPanel = ({
   const [uploadedFiles, setUploadedFiles] = useState([]); // Compressed uploaded files
   const [uploadedDocs, setUploadedDocs] = useState([]); // Uploaded docs
   const [uploadedProductImages, setUploadedProductImages] = useState([]); // Product imagery uploads
+  const [uploadedIcons, setUploadedIcons] = useState([]); // Brand icon uploads (SVG)
+  const [uploadedBackgrounds, setUploadedBackgrounds] = useState([]); // Custom background uploads
+  const [uploadedPatterns, setUploadedPatterns] = useState([]); // Custom pattern uploads
   const [isUploading, setIsUploading] = useState(false);
   const [isLoadingImages, setIsLoadingImages] = useState(false);
   const [uploadProgress, setUploadProgress] = useState({ current: 0, total: 0, fileName: '' });
@@ -203,12 +215,15 @@ const DesignSystemPanel = ({
     yourImages: openAssetSection !== 'yourImages',
     yourDocs: openAssetSection !== 'yourDocs',
     yourProductImages: openAssetSection !== 'yourProductImages',
+    yourIcons: openAssetSection !== 'yourIcons',
+    yourBackgrounds: openAssetSection !== 'yourBackgrounds',
+    yourPatterns: openAssetSection !== 'yourPatterns',
   };
 
   // Toggle a section - only one can be open at a time
   const toggleSection = (section) => {
     // Check if this is an asset section
-    const assetSections = ['yourImages', 'yourDocs', 'yourProductImages'];
+    const assetSections = ['yourImages', 'yourDocs', 'yourProductImages', 'yourIcons', 'yourBackgrounds', 'yourPatterns'];
     if (assetSections.includes(section)) {
       setOpenAssetSection((prev) => (prev === section ? null : section));
     } else {
@@ -240,6 +255,9 @@ const DesignSystemPanel = ({
   const fileInputRef = useRef(null);
   const MAX_FILES = LIMITS.MAX_UPLOADED_FILES;
   const MAX_DOCS = LIMITS.MAX_UPLOADED_DOCS;
+  const MAX_ICONS = LIMITS.MAX_UPLOADED_ICONS;
+  const MAX_BACKGROUNDS = LIMITS.MAX_UPLOADED_BACKGROUNDS;
+  const MAX_PATTERNS = LIMITS.MAX_UPLOADED_PATTERNS;
 
   // Load saved assets from Supabase on mount
   useEffect(() => {
@@ -298,6 +316,54 @@ const DesignSystemPanel = ({
             isPersisted: true,
           }));
           setUploadedDocs(loadedDocs);
+        }
+
+        // Load icons
+        const { files: iconFiles, error: iconError } = await listIcons();
+        if (iconError) {
+          logger.error('Failed to load icons:', iconError);
+        } else if (iconFiles.length > 0) {
+          const loadedIcons = iconFiles.map((file) => ({
+            id: file.id,
+            name: file.name,
+            url: file.url,
+            path: file.path,
+            size: file.size,
+            isPersisted: true,
+          }));
+          setUploadedIcons(loadedIcons);
+        }
+
+        // Load backgrounds
+        const { files: bgFiles, error: bgError } = await listBackgrounds();
+        if (bgError) {
+          logger.error('Failed to load backgrounds:', bgError);
+        } else if (bgFiles.length > 0) {
+          const loadedBackgrounds = bgFiles.map((file) => ({
+            id: file.id,
+            name: file.name,
+            url: file.url,
+            path: file.path,
+            size: file.size,
+            isPersisted: true,
+          }));
+          setUploadedBackgrounds(loadedBackgrounds);
+        }
+
+        // Load patterns
+        const { files: patternFiles, error: patternError } = await listPatterns();
+        if (patternError) {
+          logger.error('Failed to load patterns:', patternError);
+        } else if (patternFiles.length > 0) {
+          const loadedPatterns = patternFiles.map((file) => ({
+            id: file.id,
+            name: file.name,
+            url: file.url,
+            path: file.path,
+            size: file.size,
+            isPersisted: true,
+          }));
+          setUploadedPatterns(loadedPatterns);
         }
       } catch (err) {
         logger.error('Error loading assets:', err);
@@ -554,6 +620,194 @@ const DesignSystemPanel = ({
 
     if (doc?.url && doc.url.startsWith('blob:')) {
       URL.revokeObjectURL(doc.url);
+    }
+  };
+
+  // Handle icon upload (SVG only)
+  const handleIconUpload = async (event) => {
+    const files = event.target.files;
+    if (!files || files.length === 0) return;
+
+    if (uploadedIcons.length + files.length > MAX_ICONS) {
+      alert(`Maximum ${MAX_ICONS} icons allowed. You have ${uploadedIcons.length} icons.`);
+      return;
+    }
+
+    for (const file of files) {
+      // Validate SVG only
+      if (file.type !== 'image/svg+xml' && !file.name.endsWith('.svg')) {
+        alert('Please upload SVG files only for icons');
+        continue;
+      }
+
+      try {
+        let url = URL.createObjectURL(file);
+        let path = null;
+        let isPersisted = false;
+
+        if (isSupabaseConfigured()) {
+          const uploadResult = await uploadIcon(file, file.name);
+          if (uploadResult.url && !uploadResult.error) {
+            url = uploadResult.url;
+            path = uploadResult.path;
+            isPersisted = true;
+          }
+        }
+
+        setUploadedIcons((prev) => [
+          ...prev,
+          {
+            id: Date.now() + Math.random(),
+            name: file.name,
+            url,
+            path,
+            size: file.size,
+            isPersisted,
+          },
+        ]);
+      } catch (error) {
+        logger.error('Icon upload failed:', error);
+      }
+    }
+  };
+
+  // Handle icon removal
+  const handleRemoveIcon = async (iconId) => {
+    const icon = uploadedIcons.find((i) => i.id === iconId);
+
+    setUploadedIcons((prev) => prev.filter((i) => i.id !== iconId));
+
+    if (icon?.path && icon?.isPersisted) {
+      await deleteIcon(icon.path);
+    }
+
+    if (icon?.url && icon.url.startsWith('blob:')) {
+      URL.revokeObjectURL(icon.url);
+    }
+  };
+
+  // Handle background upload
+  const handleBackgroundUpload = async (event) => {
+    const files = event.target.files;
+    if (!files || files.length === 0) return;
+
+    if (uploadedBackgrounds.length + files.length > MAX_BACKGROUNDS) {
+      alert(`Maximum ${MAX_BACKGROUNDS} backgrounds allowed. You have ${uploadedBackgrounds.length} backgrounds.`);
+      return;
+    }
+
+    for (const file of files) {
+      if (!file.type.startsWith('image/')) {
+        alert('Please upload image files only');
+        continue;
+      }
+
+      try {
+        let url = URL.createObjectURL(file);
+        let path = null;
+        let isPersisted = false;
+
+        if (isSupabaseConfigured()) {
+          const uploadResult = await uploadBackground(file, file.name);
+          if (uploadResult.url && !uploadResult.error) {
+            url = uploadResult.url;
+            path = uploadResult.path;
+            isPersisted = true;
+          }
+        }
+
+        setUploadedBackgrounds((prev) => [
+          ...prev,
+          {
+            id: Date.now() + Math.random(),
+            name: file.name,
+            url,
+            path,
+            size: file.size,
+            isPersisted,
+          },
+        ]);
+      } catch (error) {
+        logger.error('Background upload failed:', error);
+      }
+    }
+  };
+
+  // Handle background removal
+  const handleRemoveBackground = async (bgId) => {
+    const bg = uploadedBackgrounds.find((b) => b.id === bgId);
+
+    setUploadedBackgrounds((prev) => prev.filter((b) => b.id !== bgId));
+
+    if (bg?.path && bg?.isPersisted) {
+      await deleteBackground(bg.path);
+    }
+
+    if (bg?.url && bg.url.startsWith('blob:')) {
+      URL.revokeObjectURL(bg.url);
+    }
+  };
+
+  // Handle pattern upload
+  const handlePatternUpload = async (event) => {
+    const files = event.target.files;
+    if (!files || files.length === 0) return;
+
+    if (uploadedPatterns.length + files.length > MAX_PATTERNS) {
+      alert(`Maximum ${MAX_PATTERNS} patterns allowed. You have ${uploadedPatterns.length} patterns.`);
+      return;
+    }
+
+    for (const file of files) {
+      // Accept images and SVGs
+      if (!file.type.startsWith('image/') && file.type !== 'image/svg+xml') {
+        alert('Please upload image or SVG files only');
+        continue;
+      }
+
+      try {
+        let url = URL.createObjectURL(file);
+        let path = null;
+        let isPersisted = false;
+
+        if (isSupabaseConfigured()) {
+          const uploadResult = await uploadPattern(file, file.name);
+          if (uploadResult.url && !uploadResult.error) {
+            url = uploadResult.url;
+            path = uploadResult.path;
+            isPersisted = true;
+          }
+        }
+
+        setUploadedPatterns((prev) => [
+          ...prev,
+          {
+            id: Date.now() + Math.random(),
+            name: file.name,
+            url,
+            path,
+            size: file.size,
+            isPersisted,
+          },
+        ]);
+      } catch (error) {
+        logger.error('Pattern upload failed:', error);
+      }
+    }
+  };
+
+  // Handle pattern removal
+  const handleRemovePattern = async (patternId) => {
+    const pattern = uploadedPatterns.find((p) => p.id === patternId);
+
+    setUploadedPatterns((prev) => prev.filter((p) => p.id !== patternId));
+
+    if (pattern?.path && pattern?.isPersisted) {
+      await deletePattern(pattern.path);
+    }
+
+    if (pattern?.url && pattern.url.startsWith('blob:')) {
+      URL.revokeObjectURL(pattern.url);
     }
   };
 
@@ -926,6 +1180,351 @@ const DesignSystemPanel = ({
                   </div>
                 )}
               </div>
+
+              {/* ========== BRAND ICONS SECTION ========== */}
+              {/* Upload Icons Section */}
+              <div className="p-4 border-t border-[--border-default]">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-xs font-medium text-[--text-tertiary] uppercase tracking-wide">Upload Icons</h3>
+                  <span className="text-[10px] text-[--text-quaternary]">
+                    {uploadedIcons.length}/{MAX_ICONS}
+                  </span>
+                </div>
+                <div
+                  className="border-2 border-dashed border-[--border-default] rounded p-4 text-center hover:border-[--border-emphasis] transition-colors cursor-pointer"
+                  onClick={() => document.getElementById('icons-input')?.click()}
+                >
+                  <input
+                    id="icons-input"
+                    type="file"
+                    accept=".svg,image/svg+xml"
+                    multiple
+                    onChange={handleIconUpload}
+                    className="hidden"
+                  />
+                  <svg
+                    className="w-8 h-8 mx-auto mb-2 text-[--text-quaternary]"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1.5}
+                      d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"
+                    />
+                  </svg>
+                  <p className="text-xs text-[--text-tertiary] mb-1">Brand icons (SVG only)</p>
+                  <button
+                    type="button"
+                    className="px-3 py-1.5 bg-[--surface-overlay] hover:bg-[--surface-elevated] text-xs text-white rounded transition-colors"
+                  >
+                    Browse SVGs
+                  </button>
+                  <p className="text-[10px] text-[--text-quaternary] mt-2">Vector icons for maximum quality</p>
+                </div>
+              </div>
+
+              {/* Your Icons Browser - Collapsible */}
+              <div className="border-t border-[--border-default]">
+                <button
+                  type="button"
+                  onClick={() => toggleSection('yourIcons')}
+                  className="w-full p-4 flex items-center justify-between hover:bg-[--surface-default] transition-colors"
+                >
+                  <h3 className="text-xs font-medium text-[--text-tertiary] uppercase tracking-wide">Your Icons</h3>
+                  <div className="flex items-center gap-2">
+                    {uploadedIcons.length > 0 && (
+                      <span className="px-1.5 py-0.5 bg-[--surface-raised] rounded-[--radius-sm] text-[10px] text-[--text-tertiary]">
+                        {uploadedIcons.length}
+                      </span>
+                    )}
+                    <svg
+                      className={`w-4 h-4 text-[--text-quaternary] transition-transform ${collapsedSections.yourIcons ? '' : 'rotate-180'}`}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                </button>
+
+                {!collapsedSections.yourIcons && (
+                  <div className="px-4 pb-4">
+                    {uploadedIcons.length === 0 ? (
+                      <div className="text-center py-6">
+                        <svg
+                          className="w-10 h-10 mx-auto mb-2 text-[--text-quaternary]"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={1}
+                            d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"
+                          />
+                        </svg>
+                        <p className="text-xs text-[--text-quaternary]">No icons uploaded yet</p>
+                        <p className="text-[10px] text-[--text-quaternary] mt-1">Upload SVG icons above</p>
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-4 gap-2">
+                        {uploadedIcons.map((icon) => (
+                          <div
+                            key={icon.id}
+                            className="relative group aspect-square rounded overflow-hidden bg-[--surface-raised] border border-[--border-default] p-2"
+                          >
+                            <img src={icon.url} alt={icon.name} className="w-full h-full object-contain" />
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveIcon(icon.id)}
+                              className="absolute top-1 right-1 p-1 bg-black/70 hover:bg-red-500 rounded-full opacity-0 group-hover:opacity-100 transition-all"
+                            >
+                              <svg className="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                              </svg>
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* ========== CUSTOM BACKGROUNDS SECTION ========== */}
+              {/* Upload Backgrounds Section */}
+              <div className="p-4 border-t border-[--border-default]">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-xs font-medium text-[--text-tertiary] uppercase tracking-wide">Upload Backgrounds</h3>
+                  <span className="text-[10px] text-[--text-quaternary]">
+                    {uploadedBackgrounds.length}/{MAX_BACKGROUNDS}
+                  </span>
+                </div>
+                <div
+                  className="border-2 border-dashed border-[--border-default] rounded p-4 text-center hover:border-[--border-emphasis] transition-colors cursor-pointer"
+                  onClick={() => document.getElementById('backgrounds-input')?.click()}
+                >
+                  <input
+                    id="backgrounds-input"
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={handleBackgroundUpload}
+                    className="hidden"
+                  />
+                  <svg
+                    className="w-8 h-8 mx-auto mb-2 text-[--text-quaternary]"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1.5}
+                      d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                    />
+                  </svg>
+                  <p className="text-xs text-[--text-tertiary] mb-1">Custom background images</p>
+                  <button
+                    type="button"
+                    className="px-3 py-1.5 bg-[--surface-overlay] hover:bg-[--surface-elevated] text-xs text-white rounded transition-colors"
+                  >
+                    Upload backgrounds
+                  </button>
+                  <p className="text-[10px] text-[--text-quaternary] mt-2">PNG, JPG, WEBP images</p>
+                </div>
+              </div>
+
+              {/* Your Backgrounds Browser - Collapsible */}
+              <div className="border-t border-[--border-default]">
+                <button
+                  type="button"
+                  onClick={() => toggleSection('yourBackgrounds')}
+                  className="w-full p-4 flex items-center justify-between hover:bg-[--surface-default] transition-colors"
+                >
+                  <h3 className="text-xs font-medium text-[--text-tertiary] uppercase tracking-wide">Your Backgrounds</h3>
+                  <div className="flex items-center gap-2">
+                    {uploadedBackgrounds.length > 0 && (
+                      <span className="px-1.5 py-0.5 bg-[--surface-raised] rounded-[--radius-sm] text-[10px] text-[--text-tertiary]">
+                        {uploadedBackgrounds.length}
+                      </span>
+                    )}
+                    <svg
+                      className={`w-4 h-4 text-[--text-quaternary] transition-transform ${collapsedSections.yourBackgrounds ? '' : 'rotate-180'}`}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                </button>
+
+                {!collapsedSections.yourBackgrounds && (
+                  <div className="px-4 pb-4">
+                    {uploadedBackgrounds.length === 0 ? (
+                      <div className="text-center py-6">
+                        <svg
+                          className="w-10 h-10 mx-auto mb-2 text-[--text-quaternary]"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={1}
+                            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                          />
+                        </svg>
+                        <p className="text-xs text-[--text-quaternary]">No backgrounds uploaded yet</p>
+                        <p className="text-[10px] text-[--text-quaternary] mt-1">Upload custom backgrounds above</p>
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-2 gap-2">
+                        {uploadedBackgrounds.map((bg) => (
+                          <div
+                            key={bg.id}
+                            className="relative group aspect-video rounded overflow-hidden bg-[--surface-raised]"
+                          >
+                            <img src={bg.url} alt={bg.name} className="w-full h-full object-cover" />
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveBackground(bg.id)}
+                              className="absolute top-1 right-1 p-1 bg-black/70 hover:bg-red-500 rounded-full opacity-0 group-hover:opacity-100 transition-all"
+                            >
+                              <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                              </svg>
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* ========== BRAND PATTERNS SECTION ========== */}
+              {/* Upload Patterns Section */}
+              <div className="p-4 border-t border-[--border-default]">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-xs font-medium text-[--text-tertiary] uppercase tracking-wide">Upload Patterns</h3>
+                  <span className="text-[10px] text-[--text-quaternary]">
+                    {uploadedPatterns.length}/{MAX_PATTERNS}
+                  </span>
+                </div>
+                <div
+                  className="border-2 border-dashed border-[--border-default] rounded p-4 text-center hover:border-[--border-emphasis] transition-colors cursor-pointer"
+                  onClick={() => document.getElementById('patterns-input')?.click()}
+                >
+                  <input
+                    id="patterns-input"
+                    type="file"
+                    accept="image/*,.svg"
+                    multiple
+                    onChange={handlePatternUpload}
+                    className="hidden"
+                  />
+                  <svg
+                    className="w-8 h-8 mx-auto mb-2 text-[--text-quaternary]"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1.5}
+                      d="M4 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zM14 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z"
+                    />
+                  </svg>
+                  <p className="text-xs text-[--text-tertiary] mb-1">Repeating patterns</p>
+                  <button
+                    type="button"
+                    className="px-3 py-1.5 bg-[--surface-overlay] hover:bg-[--surface-elevated] text-xs text-white rounded transition-colors"
+                  >
+                    Upload patterns
+                  </button>
+                  <p className="text-[10px] text-[--text-quaternary] mt-2">Tileable images or SVGs</p>
+                </div>
+              </div>
+
+              {/* Your Patterns Browser - Collapsible */}
+              <div className="border-t border-[--border-default]">
+                <button
+                  type="button"
+                  onClick={() => toggleSection('yourPatterns')}
+                  className="w-full p-4 flex items-center justify-between hover:bg-[--surface-default] transition-colors"
+                >
+                  <h3 className="text-xs font-medium text-[--text-tertiary] uppercase tracking-wide">Your Patterns</h3>
+                  <div className="flex items-center gap-2">
+                    {uploadedPatterns.length > 0 && (
+                      <span className="px-1.5 py-0.5 bg-[--surface-raised] rounded-[--radius-sm] text-[10px] text-[--text-tertiary]">
+                        {uploadedPatterns.length}
+                      </span>
+                    )}
+                    <svg
+                      className={`w-4 h-4 text-[--text-quaternary] transition-transform ${collapsedSections.yourPatterns ? '' : 'rotate-180'}`}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                </button>
+
+                {!collapsedSections.yourPatterns && (
+                  <div className="px-4 pb-4">
+                    {uploadedPatterns.length === 0 ? (
+                      <div className="text-center py-6">
+                        <svg
+                          className="w-10 h-10 mx-auto mb-2 text-[--text-quaternary]"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={1}
+                            d="M4 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zM14 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z"
+                          />
+                        </svg>
+                        <p className="text-xs text-[--text-quaternary]">No patterns uploaded yet</p>
+                        <p className="text-[10px] text-[--text-quaternary] mt-1">Upload custom patterns above</p>
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-3 gap-2">
+                        {uploadedPatterns.map((pattern) => (
+                          <div
+                            key={pattern.id}
+                            className="relative group aspect-square rounded overflow-hidden bg-[--surface-raised] border border-[--border-default]"
+                          >
+                            <img src={pattern.url} alt={pattern.name} className="w-full h-full object-cover" />
+                            <button
+                              type="button"
+                              onClick={() => handleRemovePattern(pattern.id)}
+                              className="absolute top-1 right-1 p-1 bg-black/70 hover:bg-red-500 rounded-full opacity-0 group-hover:opacity-100 transition-all"
+                            >
+                              <svg className="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                              </svg>
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
             </>
           ) : (
             <>
@@ -1188,9 +1787,9 @@ const DesignSystemPanel = ({
                     className="w-full p-4 flex items-center justify-between hover:bg-[--surface-default] transition-colors"
                   >
                     <div className="flex items-center gap-2">
-                      <h3 className="text-xs font-medium text-[--text-tertiary] uppercase tracking-wide">Set Background</h3>
+                      <h3 className="text-xs font-medium text-[--text-tertiary] uppercase tracking-wide">Fill Color</h3>
                       <span className="px-1.5 py-0.5 bg-[--surface-raised] rounded-[--radius-sm] text-[10px] text-[--text-tertiary]">
-                        {allGradients.length + solidColors.length}
+                        {allGradients.length + solidColors.length + uploadedBackgrounds.length}
                       </span>
                     </div>
                     <div className="flex items-center gap-2">
@@ -1237,6 +1836,41 @@ const DesignSystemPanel = ({
                           Add more frames to use stretch mode
                         </div>
                       )}
+
+                      {/* User's Uploaded Backgrounds - shown first */}
+                      {uploadedBackgrounds.length > 0 && (
+                        <>
+                          <h4 className="text-[10px] text-[--text-quaternary] uppercase tracking-wide mb-2">
+                            Your Backgrounds ({uploadedBackgrounds.length})
+                          </h4>
+                          <div className="grid grid-cols-3 gap-2 mb-4">
+                            {uploadedBackgrounds.map((bg) => (
+                              <button
+                                key={bg.id}
+                                type="button"
+                                onClick={() => handleBackgroundClick(bg.url)}
+                                disabled={!hasFrameSelected}
+                                className={`group relative w-full aspect-square rounded transition-colors overflow-hidden ${
+                                  hasFrameSelected
+                                    ? 'ring-1 ring-[--border-default] hover:ring-[--border-strong] hover:scale-105 cursor-pointer'
+                                    : 'ring-1 ring-[--border-default]/50 opacity-50 cursor-not-allowed'
+                                }`}
+                                style={{
+                                  backgroundImage: `url(${bg.url})`,
+                                  backgroundSize: 'cover',
+                                  backgroundPosition: 'center',
+                                }}
+                                title={hasFrameSelected ? `Click to apply ${bg.name}` : 'Select a frame first'}
+                              >
+                                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                  <span className="text-[9px] text-white font-medium truncate px-1">{bg.name}</span>
+                                </div>
+                              </button>
+                            ))}
+                          </div>
+                        </>
+                      )}
+
                       <h4 className="text-[10px] text-[--text-quaternary] uppercase tracking-wide mb-2">Gradients</h4>
                       <div className="grid grid-cols-3 gap-2 mb-4">
                         {gradients.map((gradient, idx) => (
@@ -1615,7 +2249,7 @@ const DesignSystemPanel = ({
                   >
                     <div className="flex items-center gap-2">
                       <h3 className="text-xs font-medium text-[--text-tertiary] uppercase tracking-wide">Add Pattern</h3>
-                      <span className="px-1.5 py-0.5 bg-[--surface-raised] rounded-[--radius-sm] text-[10px] text-[--text-tertiary]">18</span>
+                      <span className="px-1.5 py-0.5 bg-[--surface-raised] rounded-[--radius-sm] text-[10px] text-[--text-tertiary]">{18 + uploadedPatterns.length}</span>
                     </div>
                     <svg
                       className={`w-4 h-4 text-[--text-quaternary] transition-transform ${collapsedSections.patterns ? '' : 'rotate-180'}`}
@@ -1629,6 +2263,41 @@ const DesignSystemPanel = ({
 
                   {!collapsedSections.patterns && (
                     <div className="px-4 pt-2 pb-4">
+                      {/* User's Uploaded Patterns - shown first */}
+                      {uploadedPatterns.length > 0 && (
+                        <>
+                          <p className="text-[9px] text-[--text-quaternary] mb-2 uppercase tracking-wide">
+                            Your Patterns ({uploadedPatterns.length})
+                          </p>
+                          <div className="grid grid-cols-3 gap-2 mb-4">
+                            {uploadedPatterns.map((pattern) => (
+                              <button
+                                key={pattern.id}
+                                type="button"
+                                className={`group relative aspect-square rounded overflow-hidden border border-[--border-default] hover:border-[--border-strong] transition-all ${!selectedCarouselId && !selectedEblastId ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                style={{
+                                  backgroundImage: `url(${pattern.url})`,
+                                  backgroundSize: 'cover',
+                                  backgroundPosition: 'center',
+                                }}
+                                title={pattern.name}
+                                onClick={() => {
+                                  if (projectType === 'carousel' && selectedCarouselId && selectedFrameId) {
+                                    onAddPatternToFrame?.(selectedCarouselId, selectedFrameId, `custom-${pattern.id}`, pattern.url);
+                                  } else if (projectType === 'eblast' && selectedEblastId && selectedSectionId) {
+                                    onAddPatternToSection?.(selectedEblastId, selectedSectionId, `custom-${pattern.id}`, pattern.url);
+                                  }
+                                }}
+                              >
+                                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                  <span className="text-[10px] text-white font-medium truncate px-1">{pattern.name}</span>
+                                </div>
+                              </button>
+                            ))}
+                          </div>
+                        </>
+                      )}
+
                       <p className="text-[10px] text-[--text-quaternary] mb-3">
                         Data-driven visuals that tell the HelloData story
                       </p>
@@ -1834,6 +2503,7 @@ const DesignSystemPanel = ({
                   selectedFrameId={selectedFrameId}
                   onAddIconToFrame={onAddIconToFrame}
                   order={sectionOrder.indexOf('brandIcons')}
+                  uploadedIcons={uploadedIcons}
                 />
               </div>
               {/* End of dynamic dropdown sections flex container */}

@@ -1,9 +1,12 @@
 import React from 'react';
+import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import { SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { useDesignSystemContext, useSelectionContext, useCarouselsContext, useDropdownsContext } from '../context';
 import Toolbar from './Toolbar';
 import NewProjectView from './NewProjectView';
 import ProjectHeader from './ProjectHeader';
 import CarouselRow from './CarouselRow';
+import SortableRow from './SortableRow';
 import EblastEditor from './EblastEditor';
 import VideoCoverEditor from './VideoCoverEditor';
 import SingleImageEditor from './SingleImageEditor';
@@ -12,6 +15,7 @@ export default function EditorView({
   // Layout props
   totalOffset,
   zoom,
+  onZoomChange,
   // Tab/Project props
   activeTab,
   onUpdateProjectName,
@@ -107,6 +111,8 @@ export default function EditorView({
     handleUpdateProgressIndicator,
     // Background layer order methods (carousels)
     handleReorderBackgroundLayers,
+    // Row reordering
+    handleReorderCarousels,
     // Eblast methods
     eblasts,
     handleEblastUpdateText,
@@ -151,10 +157,36 @@ export default function EditorView({
   const isVideoCover = projectType === 'videoCover';
   const isSingleImage = projectType === 'singleImage';
 
+  // Sensors for row drag-and-drop (with distance activation to prevent accidental drags)
+  const rowSensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8, // Require 8px movement before drag starts
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  // Handle row drag end
+  const handleRowDragEnd = (event) => {
+    const { active, over } = event;
+    console.log('Row drag end:', { activeId: active?.id, overId: over?.id, carouselIds: carousels.map(c => `row-${c.id}`) });
+    if (active.id !== over?.id && over) {
+      const oldIndex = carousels.findIndex((c) => `row-${c.id}` === active.id);
+      const newIndex = carousels.findIndex((c) => `row-${c.id}` === over.id);
+      console.log('Row reorder:', { oldIndex, newIndex });
+      if (oldIndex !== -1 && newIndex !== -1) {
+        handleReorderCarousels(oldIndex, newIndex);
+      }
+    }
+  };
+
   return (
     <>
       {/* Toolbar */}
-      <Toolbar totalOffset={totalOffset} activeTab={activeTab} projectType={projectType} />
+      <Toolbar totalOffset={totalOffset} activeTab={activeTab} projectType={projectType} zoom={zoom} onZoomChange={onZoomChange} />
 
       {/* Main Content - Scrollable Canvas Area */}
       <div
@@ -185,69 +217,86 @@ export default function EditorView({
                 {/* Project Header */}
                 <ProjectHeader projectName={activeTab?.name || 'Untitled Project'} onUpdateName={onUpdateProjectName} />
 
-                {/* Carousel Content */}
-                {isCarousel &&
-                  carousels.map((carousel, index) => (
-                    <React.Fragment key={carousel.id}>
-                      <CarouselRow
-                        carousel={carousel}
-                        designSystem={designSystem}
-                        isSelected={selectedCarouselId === carousel.id}
-                        hasAnySelection={selectedCarouselId !== null}
-                        selectedFrameId={selectedCarouselId === carousel.id ? selectedFrameId : null}
-                        onSelect={handleSelectCarousel}
-                        onSelectFrame={handleSelectFrame}
-                        onAddFrame={handleAddFrame}
-                        onRemoveFrame={handleRemoveFrame}
-                        onRemoveRow={handleRemoveRow}
-                        onReorderFrames={handleReorderFrames}
-                        onUpdateText={handleUpdateText}
-                        activeTextField={activeTextField}
-                        onActivateTextField={setActiveTextField}
-                        onUpdateImageLayer={handleUpdateImageLayer}
-                        onRemoveImageFromFrame={handleRemoveImageFromFrame}
-                        onUpdateFillLayer={handleUpdateFillLayer}
-                        onClearBackground={(carouselId, frameId) => handleSetFrameBackground(carouselId, frameId, null)}
-                        onUpdatePatternLayer={handleUpdatePatternLayerCarousel}
-                        onRemovePatternFromFrame={handleRemovePatternFromFrame}
-                        onUpdateProductImageLayer={handleUpdateProductImageLayer}
-                        onRemoveProductImageFromFrame={handleRemoveProductImageFromFrame}
-                        onRequestAddProductImage={onRequestAddProductImage}
-                        onUpdateIconLayer={handleUpdateIconLayer}
-                        onRemoveIconFromFrame={handleRemoveIconFromFrame}
-                        onRequestAddIcon={onRequestAddIcon}
-                        onUpdateProgressIndicator={handleUpdateProgressIndicator}
-                        onReorderBackgroundLayers={handleReorderBackgroundLayers}
-                        onRequestAddFill={onRequestAddFill}
-                        onRequestAddPhoto={onRequestAddPhoto}
-                        onRequestAddPattern={onRequestAddPattern}
-                        onRequestAddPageIndicator={onRequestAddPageIndicator}
-                        onDeselectFrame={handleDeselectFrame}
-                      />
-                      {/* Add Row Button - only after last row */}
-                      {index === carousels.length - 1 && (
-                        <div
-                          className="flex items-center px-4 -mt-4"
-                          style={{ marginLeft: '10px' }}
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleAddRow(index);
-                            }}
-                            className="flex items-center gap-2 px-4 py-1.5 rounded-full border-2 border-dashed border-gray-600 text-gray-500 hover:border-gray-400 hover:text-white hover:bg-gray-700 transition-all duration-200"
+                {/* Carousel Content with Drag-and-Drop Row Reordering */}
+                {isCarousel && (
+                  <DndContext
+                    sensors={rowSensors}
+                    collisionDetection={closestCenter}
+                    onDragEnd={handleRowDragEnd}
+                  >
+                    <SortableContext
+                      items={carousels.map((c) => `row-${c.id}`)}
+                      strategy={verticalListSortingStrategy}
+                    >
+                      {carousels.map((carousel, index) => (
+                        <React.Fragment key={carousel.id}>
+                          <SortableRow
+                            id={`row-${carousel.id}`}
+                            isSelected={selectedCarouselId === carousel.id}
                           >
-                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                            </svg>
-                            <span className="text-xs font-medium">Add row</span>
-                          </button>
-                        </div>
-                      )}
-                    </React.Fragment>
-                  ))}
+                            <CarouselRow
+                              carousel={carousel}
+                              designSystem={designSystem}
+                              isSelected={selectedCarouselId === carousel.id}
+                              hasAnySelection={selectedCarouselId !== null}
+                              selectedFrameId={selectedCarouselId === carousel.id ? selectedFrameId : null}
+                              onSelect={handleSelectCarousel}
+                              onSelectFrame={handleSelectFrame}
+                              onAddFrame={handleAddFrame}
+                              onRemoveFrame={handleRemoveFrame}
+                              onRemoveRow={handleRemoveRow}
+                              onReorderFrames={handleReorderFrames}
+                              onUpdateText={handleUpdateText}
+                              activeTextField={activeTextField}
+                              onActivateTextField={setActiveTextField}
+                              onUpdateImageLayer={handleUpdateImageLayer}
+                              onRemoveImageFromFrame={handleRemoveImageFromFrame}
+                              onUpdateFillLayer={handleUpdateFillLayer}
+                              onClearBackground={(carouselId, frameId) => handleSetFrameBackground(carouselId, frameId, null)}
+                              onUpdatePatternLayer={handleUpdatePatternLayerCarousel}
+                              onRemovePatternFromFrame={handleRemovePatternFromFrame}
+                              onUpdateProductImageLayer={handleUpdateProductImageLayer}
+                              onRemoveProductImageFromFrame={handleRemoveProductImageFromFrame}
+                              onRequestAddProductImage={onRequestAddProductImage}
+                              onUpdateIconLayer={handleUpdateIconLayer}
+                              onRemoveIconFromFrame={handleRemoveIconFromFrame}
+                              onRequestAddIcon={onRequestAddIcon}
+                              onUpdateProgressIndicator={handleUpdateProgressIndicator}
+                              onReorderBackgroundLayers={handleReorderBackgroundLayers}
+                              onRequestAddFill={onRequestAddFill}
+                              onRequestAddPhoto={onRequestAddPhoto}
+                              onRequestAddPattern={onRequestAddPattern}
+                              onRequestAddPageIndicator={onRequestAddPageIndicator}
+                              onDeselectFrame={handleDeselectFrame}
+                            />
+                          </SortableRow>
+                          {/* Add Row Button - only after last row */}
+                          {index === carousels.length - 1 && (
+                            <div
+                              className="flex items-center px-4 -mt-4"
+                              style={{ marginLeft: '34px' }}
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleAddRow(index);
+                                }}
+                                className="flex items-center gap-2 px-4 py-1.5 rounded-full border-2 border-dashed border-gray-600 text-gray-500 hover:border-gray-400 hover:text-white hover:bg-gray-700 transition-all duration-200"
+                              >
+                                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                                </svg>
+                                <span className="text-xs font-medium">Add row</span>
+                              </button>
+                            </div>
+                          )}
+                        </React.Fragment>
+                      ))}
+                    </SortableContext>
+                  </DndContext>
+                )}
 
                 {/* Eblast Content */}
                 {isEblast &&

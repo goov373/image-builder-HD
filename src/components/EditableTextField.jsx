@@ -24,6 +24,11 @@ const EditableTextField = ({
   className = '',
   style = {},
 }) => {
+  // If this text layer is hidden, don't render anything
+  if (formatting.isHidden) {
+    return null;
+  }
+
   // Clean any HTML tags from the content
   const cleanChildren = stripHtmlTags(children);
 

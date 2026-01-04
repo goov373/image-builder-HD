@@ -61,10 +61,9 @@ const INITIAL_TABS = [
 // Main App Component
 export default function CarouselDesignTool({ onSignOut = null, user = null }) {
   // UI state
-  const [zoom, setZoom] = useState(120);
+  const [zoom, setZoom] = useState(150);
   const [activePanel, setActivePanel] = useState(null);
   const [expandSectionOnOpen, setExpandSectionOnOpen] = useState(null);
-  const [isAccountOpen, setIsAccountOpen] = useState(false);
   const [showShortcutsModal, setShowShortcutsModal] = useState(false);
   const [selectedDevice, setSelectedDevice] = useState('none');
 
@@ -164,15 +163,15 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
   };
 
   const handleOpenProject = (projectId) => {
-    tabs.handleOpenProject(projectId, () => setIsAccountOpen(false));
+    tabs.handleOpenProject(projectId, () => setActivePanel(null));
   };
 
   const handleCreateNewFromHome = () => {
-    tabs.handleCreateNewFromHome(() => setIsAccountOpen(false));
+    tabs.handleCreateNewFromHome(() => setActivePanel(null));
   };
 
   const handleAddTab = () => {
-    tabs.handleAddTab(() => setIsAccountOpen(false));
+    tabs.handleAddTab(() => setActivePanel(null));
   };
 
   const handleSelectFrame = (carouselId, frameId) => {
@@ -220,7 +219,7 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
   };
 
   // Layout calculations
-  const panelWidth = activePanel ? 288 : 0;
+  const panelWidth = activePanel === 'design' || activePanel === 'export' || activePanel === 'account' ? 288 : 0;
   const sidebarWidth = 64;
   const totalOffset = sidebarWidth + panelWidth;
 
@@ -427,25 +426,20 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
             <Sidebar
               activePanel={activePanel}
               onPanelChange={setActivePanel}
-              zoom={zoom}
-              onZoomChange={setZoom}
               isHomePage={tabs.currentView === 'home'}
               onAccountClick={() => {
-                setActivePanel(null);
-                setIsAccountOpen(!isAccountOpen);
+                setActivePanel(activePanel === 'account' ? null : 'account');
               }}
-              isAccountOpen={isAccountOpen}
-              onCloseAccount={() => setIsAccountOpen(false)}
+              isAccountOpen={activePanel === 'account'}
+              onCloseAccount={() => setActivePanel(null)}
               onShowShortcuts={() => setShowShortcutsModal(true)}
-              selectedDevice={selectedDevice}
-              onDeviceChange={setSelectedDevice}
             />
 
             {/* Decorative Diagonal Lines Pattern - Separate from panel tabs, only moves when sidebar opens/closes */}
             <div
               className="fixed top-0 h-[56px] w-72 z-30 border-r border-b border-[--border-default] pointer-events-none"
               style={{
-                left: activePanel === 'design' || activePanel === 'export' ? 64 : -224,
+                left: activePanel === 'design' || activePanel === 'export' || activePanel === 'account' ? 64 : -224,
                 transition: 'left 0.3s ease-out',
                 backgroundImage: `repeating-linear-gradient(
               -45deg,
@@ -524,9 +518,9 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
             <Suspense fallback={<PanelLoading />}>
               <SectionErrorBoundary name="Account Panel">
                 <AccountPanel
-                onClose={() => setIsAccountOpen(false)}
-                isOpen={isAccountOpen && tabs.currentView === 'home'}
-                onSignOut={onSignOut}
+                  onClose={() => setActivePanel(null)}
+                  isOpen={activePanel === 'account' && tabs.currentView === 'home'}
+                  onSignOut={onSignOut}
                   user={user}
                 />
               </SectionErrorBoundary>
@@ -556,6 +550,7 @@ export default function CarouselDesignTool({ onSignOut = null, user = null }) {
               <EditorView
                 totalOffset={totalOffset}
                 zoom={zoom}
+                onZoomChange={setZoom}
                 activeTab={tabs.activeTab}
                 onUpdateProjectName={tabs.handleUpdateProjectName}
                 onCreateProject={tabs.handleCreateProject}

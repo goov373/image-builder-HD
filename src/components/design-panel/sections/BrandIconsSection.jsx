@@ -3,6 +3,7 @@ import { brandIcons } from '../../../data';
 /**
  * BrandIconsSection Component
  * Displays brand icons in a grid for selection
+ * Shows user-uploaded icons above hardcoded brand icons
  */
 const BrandIconsSection = ({
   isCollapsed,
@@ -13,7 +14,10 @@ const BrandIconsSection = ({
   selectedFrameId,
   onAddIconToFrame,
   order,
+  uploadedIcons = [], // User's uploaded SVG icons
 }) => {
+  const totalIcons = brandIcons.length + uploadedIcons.length;
+
   return (
     <div className="border-b border-[--border-default]" style={{ order }}>
       <button
@@ -24,7 +28,7 @@ const BrandIconsSection = ({
         <div className="flex items-center gap-2">
           <h3 className="text-xs font-medium text-[--text-tertiary] uppercase tracking-wide">Add Icon</h3>
           <span className="px-1.5 py-0.5 bg-[--surface-raised] rounded-[--radius-sm] text-[10px] text-[--text-tertiary]">
-            {brandIcons.length}
+            {totalIcons}
           </span>
         </div>
         <svg
@@ -39,11 +43,52 @@ const BrandIconsSection = ({
 
       {!isCollapsed && (
         <div className="px-4 pt-2 pb-4">
+          {/* User's Uploaded Icons - shown first */}
+          {uploadedIcons.length > 0 && (
+            <>
+              <p className="text-[9px] text-[--text-quaternary] mb-2 uppercase tracking-wide">
+                Your Icons ({uploadedIcons.length})
+              </p>
+              <div className="grid grid-cols-4 gap-2 mb-4">
+                {uploadedIcons.map((icon) => (
+                  <button
+                    key={icon.id}
+                    type="button"
+                    className={`group relative aspect-square rounded-[--radius-md] overflow-hidden bg-[--surface-raised] border border-[--border-default] hover:border-[--border-strong] hover:bg-[--surface-overlay] transition-all p-1.5 ${hasFrameSelected ? 'cursor-pointer' : 'cursor-default opacity-60'}`}
+                    title={hasFrameSelected ? `Click to add ${icon.name} to frame` : `${icon.name} - Select a frame first`}
+                    disabled={!hasFrameSelected}
+                    onClick={() => {
+                      if (isCarousel && hasFrameSelected && onAddIconToFrame) {
+                        // Pass URL as iconUrl for custom icons
+                        onAddIconToFrame(selectedCarouselId, selectedFrameId, `custom-${icon.id}`, icon.url, icon.name);
+                      }
+                    }}
+                  >
+                    <img
+                      src={icon.url}
+                      alt={icon.name}
+                      className="w-full h-full object-contain"
+                    />
+                    {/* Hover tooltip */}
+                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-2 py-1 bg-[--surface-overlay] text-[--text-primary] text-[10px] font-medium rounded-[--radius-sm] shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50">
+                      {icon.name}
+                      <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-[--surface-overlay]" />
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
+
+          {/* Brand Icons Header */}
+          <p className="text-[9px] text-[--text-quaternary] mb-2 uppercase tracking-wide">
+            Brand Icons ({brandIcons.length})
+          </p>
           <p className="text-[10px] text-[--text-quaternary] mb-3">
             HelloData brand icons • 2px stroke, rounded corners
           </p>
 
-          {/* Icons Grid - 4 columns */}
+          {/* Brand Icons Grid - 4 columns */}
           <div className="grid grid-cols-4 gap-2">
             {brandIcons.map((icon) => (
               <button

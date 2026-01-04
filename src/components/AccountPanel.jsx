@@ -203,8 +203,8 @@ const AccountPanel = ({ onClose, isOpen, onSignOut = null, user = null }) => {
 
   return (
     <div
-      className={`fixed top-[56px] h-[calc(100%-56px)] w-80 bg-surface-canvas border-r border-default z-40 flex flex-col ${isOpen ? 'pointer-events-auto' : 'pointer-events-none'}`}
-      style={{ left: isOpen ? 64 : -256, transition: 'left 0.3s ease-out' }}
+      className={`fixed top-[56px] h-[calc(100%-56px)] w-72 bg-[--surface-canvas] border-r border-[--border-default] z-40 flex flex-col ${isOpen ? 'pointer-events-auto' : 'pointer-events-none'}`}
+      style={{ left: isOpen ? 64 : -224, transition: 'left 0.3s ease-out' }}
     >
       {/* Fixed Header */}
       <div

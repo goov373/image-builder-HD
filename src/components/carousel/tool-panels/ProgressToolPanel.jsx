@@ -1,4 +1,4 @@
-import { ColorDropdown, Button } from '../../ui';
+import { ToolPanel, ColorDropdown, Button } from '../../ui';
 
 /**
  * Progress Tool Panel Component
@@ -6,7 +6,15 @@ import { ColorDropdown, Button } from '../../ui';
  *
  * @see ARCHITECTURE-CONTEXT.md for behavioral rules
  */
-const ProgressToolPanel = ({ frame, carouselId, designSystem, onUpdateProgressIndicator, onCancel, onDone }) => {
+const ProgressToolPanel = ({
+  frame,
+  frameWidth,
+  carouselId,
+  designSystem,
+  onUpdateProgressIndicator,
+  onCancel,
+  onDone,
+}) => {
   // Get current progress indicator settings (with defaults)
   const progressIndicator = frame.progressIndicator || { type: 'dots', color: '#ffffff', isHidden: false };
 
@@ -25,8 +33,14 @@ const ProgressToolPanel = ({ frame, carouselId, designSystem, onUpdateProgressIn
 
   const progressTypes = [
     { key: 'dots', label: 'Dots' },
+    { key: 'numberedDots', label: 'Numbered' },
+    { key: 'dashes', label: 'Dashes' },
     { key: 'arrows', label: 'Arrows' },
     { key: 'bar', label: 'Bar' },
+    { key: 'buildings', label: 'Buildings' },
+    { key: 'mapPins', label: 'Map Pins' },
+    { key: 'forecast', label: 'Forecast' },
+    { key: 'barChart', label: 'Bar Chart' },
   ];
 
   const handleUpdate = (updates) => {
@@ -34,32 +48,15 @@ const ProgressToolPanel = ({ frame, carouselId, designSystem, onUpdateProgressIn
   };
 
   return (
-    <div
-      className="mt-1.5 flex flex-col gap-1.5"
-      data-progress-edit-controls
-      onClick={(e) => e.stopPropagation()}
-      onMouseDown={(e) => e.stopPropagation()}
-    >
-      {/* Row 1: Type selector and Color dropdown */}
-      <div className="flex items-center gap-2 flex-wrap">
+    <ToolPanel.Container width={frameWidth}>
+      <ToolPanel.Row>
         {/* Type Selector */}
-        <div className="flex items-center gap-1 bg-[--surface-raised] border border-[--border-default] rounded-[--radius-md] px-2 py-1.5">
-          <span className="text-[--text-tertiary] text-[10px] mr-1">Type</span>
-          {progressTypes.map(({ key, label }) => (
-            <button
-              key={key}
-              type="button"
-              onClick={() => handleUpdate({ type: key })}
-              className={`px-2 py-0.5 rounded-[--radius-sm] text-[10px] transition-colors ${
-                progressIndicator.type === key
-                  ? 'bg-[--surface-overlay] text-[--text-primary]'
-                  : 'text-[--text-tertiary] hover:text-[--text-primary] hover:bg-[--surface-overlay]'
-              }`}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
+        <ToolPanel.CycleControl
+          label="Type"
+          options={progressTypes}
+          value={progressIndicator.type}
+          onChange={(type) => handleUpdate({ type })}
+        />
 
         {/* Color Dropdown */}
         <ColorDropdown
@@ -96,19 +93,17 @@ const ProgressToolPanel = ({ frame, carouselId, designSystem, onUpdateProgressIn
           </svg>
           {progressIndicator.isHidden ? 'Show' : 'Hide'}
         </Button>
-      </div>
+      </ToolPanel.Row>
 
-      {/* Row 2: Cancel and Done buttons */}
-      <div className="flex items-center gap-2">
+      <ToolPanel.Actions>
         <Button variant="ghost" size="sm" onClick={onCancel} title="Cancel and revert changes">
           Cancel
         </Button>
-
         <Button variant="secondary" size="sm" onClick={onDone} title="Done editing">
           Done
         </Button>
-      </div>
-    </div>
+      </ToolPanel.Actions>
+    </ToolPanel.Container>
   );
 };
 

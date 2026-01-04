@@ -41,7 +41,7 @@ export default function LoginPage({ onLogin, error: externalError, loading: exte
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4" style={{ backgroundColor: '#0d1321' }}>
+    <div className="min-h-screen flex items-center justify-center p-4 bg-[--surface-canvas]">
       {/* Login Card - matching project card style */}
       <div
         className={`relative w-full max-w-md bg-surface-canvas border rounded-md overflow-hidden transition-all duration-150 ${

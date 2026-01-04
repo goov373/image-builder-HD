@@ -1,21 +1,20 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { frameSizes, layoutNames, layoutVariantNames, getFrameStyle, getFrameSizesByCategory } from '../data';
-import { FONT_WEIGHTS } from '../config';
+import { frameSizes, layoutNames, layoutVariantNames, getFrameSizesByCategory } from '../data';
 import { useDesignSystemContext, useSelectionContext, useCarouselsContext, useDropdownsContext } from '../context';
 import { HistoryControls, ToolbarButtonGroup } from './toolbar/index.js';
 
 // Detect Mac vs Windows/Linux for shortcut display
 const isMac = typeof navigator !== 'undefined' && navigator.platform.toUpperCase().indexOf('MAC') >= 0;
-const cmdKey = isMac ? '⌘' : 'Ctrl+';
+const cmdKey = isMac ? '⌘' : 'Ctrl';
 
-export default function Toolbar({ totalOffset, activeTab }) {
+export default function Toolbar({ totalOffset, activeTab, zoom, onZoomChange }) {
   // Get state from context
-  const { designSystem } = useDesignSystemContext();
+  useDesignSystemContext(); // Keep context subscription but don't destructure since text controls moved to TextToolPanel
   const selection = useSelectionContext();
   const carouselsCtx = useCarouselsContext();
   const dropdowns = useDropdownsContext();
 
-  const { selectedCarouselId, selectedFrameId, selectedCarousel, selectedFrame, activeTextField, handleDeselect } =
+  const { selectedCarouselId, selectedFrameId, selectedCarousel, selectedFrame, handleDeselect } =
     selection;
 
   const {
@@ -23,7 +22,6 @@ export default function Toolbar({ totalOffset, activeTab }) {
     handleSetVariant,
     handleSetLayout,
     handleShuffleLayoutVariant,
-    handleUpdateFormatting,
     handleChangeFrameSize,
     handleUpdateImageLayer,
     handleRemoveImageFromFrame,
@@ -36,30 +34,9 @@ export default function Toolbar({ totalOffset, activeTab }) {
     setShowLayoutPicker,
     showSnippetsPicker,
     setShowSnippetsPicker,
-    showFontPicker,
-    setShowFontPicker,
-    showFontSize,
-    setShowFontSize,
-    showColorPicker,
-    setShowColorPicker,
-    showUnderlinePicker,
-    setShowUnderlinePicker,
-    showTextAlign,
-    setShowTextAlign,
-    showLineSpacing,
-    setShowLineSpacing,
-    showLetterSpacing,
-    setShowLetterSpacing,
     formatPickerRef,
     layoutPickerRef,
     snippetsPickerRef,
-    fontPickerRef,
-    fontSizeRef,
-    colorPickerRef,
-    underlineRef,
-    textAlignRef,
-    lineSpacingRef,
-    letterSpacingRef,
     closeAllDropdowns,
   } = dropdowns;
 
@@ -401,7 +378,7 @@ export default function Toolbar({ totalOffset, activeTab }) {
           )}
 
           {/* Snippets Group - Using extracted ToolbarButtonGroup */}
-          <ToolbarButtonGroup disabled={!activeTextField}>
+          <ToolbarButtonGroup disabled={!selectedFrameId}>
             <div ref={snippetsPickerRef} className="relative">
               <button
                 onClick={() => {
@@ -450,581 +427,54 @@ export default function Toolbar({ totalOffset, activeTab }) {
               </svg>
             </button>
           </ToolbarButtonGroup>
-
-          {/* Typography Group - Using extracted ToolbarButtonGroup */}
-          <ToolbarButtonGroup disabled={!activeTextField}>
-            {/* Font Weight dropdown */}
-            <div ref={fontPickerRef} className="relative">
-              <button
-                onClick={() => {
-                  if (!activeTextField) return;
-                  const wasOpen = showFontPicker;
-                  closeAllDropdowns();
-                  if (!wasOpen) setShowFontPicker(true);
-                }}
-                className="flex items-center gap-1.5 px-3 py-2 bg-[--surface-overlay]/50 rounded text-xs font-medium text-[--text-secondary] hover:bg-[--surface-overlay] transition-colors duration-200"
-              >
-                <span>Font</span>
-                <svg
-                  className={`w-2.5 h-2.5 transition-transform duration-200 ${showFontPicker ? 'rotate-180' : ''}`}
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              {showFontPicker && activeTextField && (
-                <div
-                  className="absolute top-full left-0 mt-2 p-1.5 bg-[--surface-raised] border border-[--border-default] rounded shadow-xl z-[200] max-h-64 overflow-y-auto min-w-[180px]"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <div className="px-2 py-1.5 text-[10px] text-[--text-quaternary] uppercase tracking-wide border-b border-[--border-default] mb-1">
-                    Nunito Sans
-                  </div>
-                  {FONT_WEIGHTS.map((weight) => {
-                    const isHeadingDefault = weight.value === (designSystem?.headingWeight || '700');
-                    const isBodyDefault = weight.value === (designSystem?.bodyWeight || '400');
-                    const currentWeight =
-                      selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]
-                        ?.fontWeight;
-                    const isSelected = currentWeight === weight.value;
-
-                    return (
-                      <button
-                        type="button"
-                        key={weight.value}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleUpdateFormatting(
-                            selectedCarouselId,
-                            selectedFrameId,
-                            activeTextField,
-                            'fontWeight',
-                            weight.value
-                          );
-                          setShowFontPicker(false);
-                        }}
-                        className={`w-full px-3 py-2 rounded text-xs text-left transition-colors duration-200 flex items-center justify-between ${isSelected ? 'bg-[--surface-overlay] text-white' : 'text-[--text-secondary] hover:bg-[--surface-overlay]'}`}
-                        style={{ fontFamily: '"Nunito Sans", sans-serif', fontWeight: weight.weight }}
-                      >
-                        <span>{weight.name}</span>
-                        <span className="flex items-center gap-1">
-                          {isHeadingDefault && (
-                            <span
-                              className={`text-[10px] ${isSelected ? 'text-[--text-tertiary]' : 'text-[--text-quaternary]'}`}
-                              title="Default for Headings"
-                            >
-                              ★H
-                            </span>
-                          )}
-                          {isBodyDefault && (
-                            <span
-                              className={`text-[10px] ${isSelected ? 'text-[--text-tertiary]' : 'text-[--text-quaternary]'}`}
-                              title="Default for Body"
-                            >
-                              ★B
-                            </span>
-                          )}
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-
-            {/* Font Size dropdown */}
-            <div ref={fontSizeRef} className="relative">
-              <button
-                onClick={() => {
-                  if (!activeTextField) return;
-                  const wasOpen = showFontSize;
-                  closeAllDropdowns();
-                  if (!wasOpen) setShowFontSize(true);
-                }}
-                className={`flex items-center gap-1.5 px-3 py-2 rounded text-xs font-medium text-[--text-secondary] transition-all duration-200 border ${showFontSize ? 'bg-[--surface-overlay] border-[--border-strong]' : 'bg-[--surface-raised]/50 border-[--border-default] hover:bg-[--surface-overlay] hover:border-[--border-emphasis]'}`}
-              >
-                <span>Size</span>
-                <svg
-                  className={`w-2.5 h-2.5 text-[--text-quaternary] transition-transform duration-200 ${showFontSize ? 'rotate-180' : ''}`}
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              {showFontSize && activeTextField && (
-                <div
-                  className="absolute top-full left-0 mt-2 p-1.5 bg-[--surface-canvas] border border-[--border-default] rounded-xl shadow-xl z-[200]"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <div className="flex gap-1.5">
-                    {[
-                      { name: 'S', value: 0.85 },
-                      { name: 'M', value: 1 },
-                      { name: 'L', value: 1.2 },
-                    ].map((s) => (
-                      <button
-                        type="button"
-                        key={s.name}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleUpdateFormatting(
-                            selectedCarouselId,
-                            selectedFrameId,
-                            activeTextField,
-                            'fontSize',
-                            s.value
-                          );
-                          setShowFontSize(false);
-                        }}
-                        className={`px-3 py-1.5 rounded text-xs font-medium transition-all duration-200 border ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.fontSize === s.value ? 'bg-[--surface-overlay] border-[--border-strong] text-white' : 'bg-[--surface-raised]/50 border-[--border-default] text-[--text-tertiary] hover:bg-[--surface-raised] hover:border-[--border-emphasis] hover:text-[--text-secondary]'}`}
-                      >
-                        {s.name}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Color picker */}
-            <div ref={colorPickerRef} className="relative">
-              <button
-                onClick={() => {
-                  if (!activeTextField) return;
-                  const wasOpen = showColorPicker;
-                  closeAllDropdowns();
-                  if (!wasOpen) setShowColorPicker(true);
-                }}
-                className={`flex items-center gap-1 p-2 rounded transition-all duration-200 border ${showColorPicker ? 'bg-[--surface-overlay] border-[--border-strong]' : 'bg-[--surface-raised]/50 border-[--border-default] hover:bg-[--surface-overlay] hover:border-[--border-emphasis]'}`}
-                title="Text color • Apply brand colors"
-              >
-                <div
-                  className="w-5 h-5 rounded border border-[--border-strong]"
-                  style={{
-                    backgroundColor: (() => {
-                      const explicitColor =
-                        selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.color;
-                      if (explicitColor) return explicitColor;
-                      if (activeTextField === 'headline' && selectedFrame) {
-                        const frameStyle = getFrameStyle(selectedCarouselId, selectedFrame.style, designSystem);
-                        return frameStyle.text || '#ffffff';
-                      }
-                      return '#e5e7eb';
-                    })(),
-                  }}
-                />
-              </button>
-              {showColorPicker && activeTextField && (
-                <div
-                  className="absolute top-full left-0 mt-2 p-2.5 bg-[--surface-canvas] border border-[--border-default] rounded-xl shadow-xl z-[200]"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <div className="flex gap-2">
-                    {[
-                      { name: 'Primary', value: designSystem.primary },
-                      { name: 'Secondary', value: designSystem.secondary },
-                      { name: 'Accent', value: designSystem.accent },
-                      { name: 'Light', value: designSystem.neutral3 },
-                      { name: 'White', value: '#ffffff' },
-                    ].map((c) => (
-                      <button
-                        type="button"
-                        key={c.value}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleUpdateFormatting(
-                            selectedCarouselId,
-                            selectedFrameId,
-                            activeTextField,
-                            'color',
-                            c.value
-                          );
-                          setShowColorPicker(false);
-                        }}
-                        className="w-6 h-6 rounded border-2 border-[--border-emphasis] hover:border-[--border-strong] hover:scale-110 transition-all duration-200"
-                        style={{ backgroundColor: c.value }}
-                        title={c.name}
-                      />
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          </ToolbarButtonGroup>
-
-          {/* Style Group - Using extracted ToolbarButtonGroup */}
-          <ToolbarButtonGroup disabled={!activeTextField} className="gap-1">
-            {/* Bold */}
-            <button
-              onClick={() => {
-                if (!activeTextField) return;
-                closeAllDropdowns();
-                const formatting =
-                  selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField] || {};
-                const defaultWeight = activeTextField === 'headline' ? '700' : '400';
-                const currentWeight = formatting.fontWeight || defaultWeight;
-                const newWeight = currentWeight === '700' ? '400' : '700';
-                handleUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'fontWeight', newWeight);
-              }}
-              className={`w-9 h-9 rounded flex items-center justify-center text-sm font-bold transition-all duration-200 border ${(() => {
-                const formatting =
-                  selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField] || {};
-                const defaultWeight = activeTextField === 'headline' ? '700' : '400';
-                const currentWeight = formatting.fontWeight || defaultWeight;
-                const isBold = currentWeight === '700';
-                return isBold
-                  ? 'bg-[--surface-overlay] border-[--border-strong] text-white'
-                  : 'bg-[--surface-raised]/50 border-[--border-default] text-[--text-tertiary] hover:bg-[--surface-overlay] hover:border-[--border-emphasis] hover:text-[--text-secondary]';
-              })()}`}
-              title={`Bold (${cmdKey}B)`}
-            >
-              B
-            </button>
-
-            {/* Italic */}
-            <button
-              onClick={() => {
-                if (!activeTextField) return;
-                closeAllDropdowns();
-                const formatting =
-                  selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField] || {};
-                handleUpdateFormatting(
-                  selectedCarouselId,
-                  selectedFrameId,
-                  activeTextField,
-                  'italic',
-                  !formatting.italic
-                );
-              }}
-              className={`w-9 h-9 rounded flex items-center justify-center text-sm italic transition-all duration-200 border ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.italic ? 'bg-[--surface-overlay] border-[--border-strong] text-white' : 'bg-[--surface-raised]/50 border-[--border-default] text-[--text-tertiary] hover:bg-[--surface-overlay] hover:border-[--border-emphasis] hover:text-[--text-secondary]'}`}
-              title={`Italic (${cmdKey}I)`}
-            >
-              I
-            </button>
-
-            {/* Underline */}
-            <div ref={underlineRef} className="relative flex">
-              <button
-                onClick={() => {
-                  if (!activeTextField) return;
-                  const wasOpen = showUnderlinePicker;
-                  closeAllDropdowns();
-                  if (!wasOpen) setShowUnderlinePicker(true);
-                }}
-                className={`flex items-center gap-1 px-2 h-9 rounded text-sm transition-all duration-200 border ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.underline ? 'bg-[--surface-overlay] border-[--border-strong] text-white' : 'bg-[--surface-raised]/50 border-[--border-default] text-[--text-tertiary] hover:bg-[--surface-overlay] hover:border-[--border-emphasis] hover:text-[--text-secondary]'}`}
-                title={`Underline (${cmdKey}U)`}
-              >
-                <span style={{ textDecoration: 'underline' }}>U</span>
-                <svg
-                  className={`w-2.5 h-2.5 text-[--text-quaternary] transition-transform duration-200 ${showUnderlinePicker ? 'rotate-180' : ''}`}
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              {showUnderlinePicker && activeTextField && (
-                <div
-                  className="absolute top-full right-0 mt-2 p-3 bg-[--surface-canvas] border border-[--border-default] rounded-xl shadow-xl z-[200] min-w-[180px]"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <div className="text-[10px] text-[--text-quaternary] mb-2 uppercase tracking-wide font-medium">Style</div>
-                  <div className="flex gap-1.5 mb-4">
-                    {[
-                      { name: 'Solid', value: 'solid' },
-                      { name: 'Dotted', value: 'dotted' },
-                      { name: 'Wavy', value: 'wavy' },
-                      { name: 'Highlight', value: 'highlight' },
-                    ].map((s) => (
-                      <button
-                        type="button"
-                        key={s.value}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleUpdateFormatting(
-                            selectedCarouselId,
-                            selectedFrameId,
-                            activeTextField,
-                            'underlineStyle',
-                            s.value
-                          );
-                          handleUpdateFormatting(
-                            selectedCarouselId,
-                            selectedFrameId,
-                            activeTextField,
-                            'underline',
-                            true
-                          );
-                        }}
-                        className={`px-3 py-1.5 rounded text-xs transition-all duration-200 border ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.underlineStyle === s.value ? 'bg-[--surface-overlay] border-[--border-strong] text-white' : 'bg-[--surface-raised]/50 border-[--border-default] text-[--text-tertiary] hover:bg-[--surface-raised] hover:border-[--border-emphasis] hover:text-[--text-secondary]'}`}
-                        title={s.name}
-                      >
-                        {s.value === 'solid' && (
-                          <span style={{ textDecoration: 'underline', textDecorationStyle: 'solid' }}>S</span>
-                        )}
-                        {s.value === 'dotted' && (
-                          <span style={{ textDecoration: 'underline', textDecorationStyle: 'dotted' }}>D</span>
-                        )}
-                        {s.value === 'wavy' && (
-                          <span style={{ textDecoration: 'underline', textDecorationStyle: 'wavy' }}>W</span>
-                        )}
-                        {s.value === 'highlight' && (
-                          <span
-                            style={{
-                              backgroundImage: 'linear-gradient(to top, rgba(251,191,36,0.5) 30%, transparent 30%)',
-                            }}
-                          >
-                            H
-                          </span>
-                        )}
-                      </button>
-                    ))}
-                  </div>
-                  <div className="text-[10px] text-[--text-quaternary] mb-2 uppercase tracking-wide font-medium">Color</div>
-                  <div className="flex gap-2 mb-4">
-                    {[
-                      { name: 'Primary', value: designSystem.primary },
-                      { name: 'Secondary', value: designSystem.secondary },
-                      { name: 'Accent', value: designSystem.accent },
-                      { name: 'Light', value: designSystem.neutral3 },
-                      { name: 'White', value: '#ffffff' },
-                    ].map((c) => (
-                      <button
-                        type="button"
-                        key={c.value}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleUpdateFormatting(
-                            selectedCarouselId,
-                            selectedFrameId,
-                            activeTextField,
-                            'underlineColor',
-                            c.value
-                          );
-                          handleUpdateFormatting(
-                            selectedCarouselId,
-                            selectedFrameId,
-                            activeTextField,
-                            'underline',
-                            true
-                          );
-                          if (
-                            !selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]
-                              ?.underlineStyle
-                          )
-                            handleUpdateFormatting(
-                              selectedCarouselId,
-                              selectedFrameId,
-                              activeTextField,
-                              'underlineStyle',
-                              'solid'
-                            );
-                        }}
-                        className={`w-6 h-6 rounded border-2 hover:scale-110 transition-all duration-200 ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.underlineColor === c.value ? 'border-[--border-strong]' : 'border-[--border-emphasis] hover:border-[--border-strong]'}`}
-                        style={{ backgroundColor: c.value }}
-                        title={c.name}
-                      />
-                    ))}
-                  </div>
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleUpdateFormatting(selectedCarouselId, selectedFrameId, activeTextField, 'underline', false);
-                      setShowUnderlinePicker(false);
-                    }}
-                    className="w-full px-3 py-2 rounded text-xs text-[--text-quaternary] hover:text-[--text-secondary] hover:bg-[--surface-raised]/50 transition-all duration-200 border border-[--border-default]/50 hover:border-[--border-emphasis]"
-                  >
-                    Remove Underline
-                  </button>
-                </div>
-              )}
-            </div>
-          </ToolbarButtonGroup>
-
-          {/* Alignment & Spacing Group - Using extracted ToolbarButtonGroup */}
-          <ToolbarButtonGroup disabled={!activeTextField} className="gap-1">
-            {/* Text Alignment */}
-            <div ref={textAlignRef} className="relative">
-              <button
-                onClick={() => {
-                  if (!activeTextField) return;
-                  const wasOpen = showTextAlign;
-                  closeAllDropdowns();
-                  if (!wasOpen) setShowTextAlign(true);
-                }}
-                className={`flex items-center justify-center gap-1 w-[52px] h-9 rounded transition-all duration-200 border ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.textAlign && selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.textAlign !== 'left' ? 'bg-[--surface-overlay] border-[--border-strong] text-white' : 'bg-[--surface-raised]/50 border-[--border-default] text-[--text-tertiary] hover:bg-[--surface-overlay] hover:border-[--border-emphasis] hover:text-[--text-secondary]'}`}
-                title="Text alignment • Left, center, right"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h10M4 18h16" />
-                </svg>
-                <svg className="w-2.5 h-2.5 text-[--text-quaternary]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              {showTextAlign && activeTextField && (
-                <div
-                  className="absolute top-full left-0 mt-2 p-1.5 bg-[--surface-canvas] border border-[--border-default] rounded-xl shadow-xl z-[200]"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <div className="flex gap-1.5">
-                    {[
-                      { name: 'Left', value: 'left', icon: 'M4 6h16M4 12h10M4 18h16' },
-                      { name: 'Center', value: 'center', icon: 'M4 6h16M7 12h10M4 18h16' },
-                      { name: 'Right', value: 'right', icon: 'M4 6h16M10 12h10M4 18h16' },
-                      { name: 'Justify', value: 'justify', icon: 'M4 6h16M4 12h16M4 18h16' },
-                    ].map((a) => (
-                      <button
-                        type="button"
-                        key={a.value}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleUpdateFormatting(
-                            selectedCarouselId,
-                            selectedFrameId,
-                            activeTextField,
-                            'textAlign',
-                            a.value
-                          );
-                          setShowTextAlign(false);
-                        }}
-                        className={`p-2 rounded transition-all duration-200 border ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.textAlign === a.value ? 'bg-[--surface-overlay] border-[--border-strong] text-white' : 'bg-[--surface-raised]/50 border-[--border-default] text-[--text-tertiary] hover:bg-[--surface-raised] hover:border-[--border-emphasis] hover:text-[--text-secondary]'}`}
-                        title={a.name}
-                      >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={a.icon} />
-                        </svg>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Line Spacing */}
-            <div ref={lineSpacingRef} className="relative">
-              <button
-                onClick={() => {
-                  if (!activeTextField) return;
-                  const wasOpen = showLineSpacing;
-                  closeAllDropdowns();
-                  if (!wasOpen) setShowLineSpacing(true);
-                }}
-                className={`flex items-center justify-center gap-1 w-[52px] h-9 rounded transition-all duration-200 border ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.lineHeight && selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.lineHeight !== 1.4 ? 'bg-[--surface-overlay] border-[--border-strong] text-white' : 'bg-[--surface-raised]/50 border-[--border-default] text-[--text-tertiary] hover:bg-[--surface-overlay] hover:border-[--border-emphasis] hover:text-[--text-secondary]'}`}
-                title="Line spacing • Adjust line height"
-              >
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-                  <path
-                    d="M12 3v18M12 3l-3 3M12 3l3 3M12 21l-3-3M12 21l3-3"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-                <svg className="w-2.5 h-2.5 text-[--text-quaternary]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              {showLineSpacing && activeTextField && (
-                <div
-                  className="absolute top-full left-0 mt-2 p-1.5 bg-[--surface-canvas] border border-[--border-default] rounded-xl shadow-xl z-[200] min-w-[110px]"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  {[
-                    { name: 'Tight', value: 1.1 },
-                    { name: 'Normal', value: 1.4 },
-                    { name: 'Relaxed', value: 1.7 },
-                    { name: 'Loose', value: 2 },
-                  ].map((s) => (
-                    <button
-                      type="button"
-                      key={s.name}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleUpdateFormatting(
-                          selectedCarouselId,
-                          selectedFrameId,
-                          activeTextField,
-                          'lineHeight',
-                          s.value
-                        );
-                        setShowLineSpacing(false);
-                      }}
-                      className={`w-full px-3 py-2 rounded text-xs text-left transition-all duration-200 ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.lineHeight === s.value ? 'bg-[--surface-overlay] text-white' : 'text-[--text-tertiary] hover:bg-[--surface-raised] hover:text-[--text-secondary]'}`}
-                    >
-                      {s.name}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* Letter Spacing */}
-            <div ref={letterSpacingRef} className="relative">
-              <button
-                onClick={() => {
-                  if (!activeTextField) return;
-                  const wasOpen = showLetterSpacing;
-                  closeAllDropdowns();
-                  if (!wasOpen) setShowLetterSpacing(true);
-                }}
-                className={`flex items-center justify-center gap-1 w-[52px] h-9 rounded transition-all duration-200 border ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.letterSpacing && selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.letterSpacing !== 0 ? 'bg-[--surface-overlay] border-[--border-strong] text-white' : 'bg-[--surface-raised]/50 border-[--border-default] text-[--text-tertiary] hover:bg-[--surface-overlay] hover:border-[--border-emphasis] hover:text-[--text-secondary]'}`}
-                title="Letter spacing • Adjust character spacing"
-              >
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-                  <path
-                    d="M3 12h18M3 12l3-3M3 12l3 3M21 12l-3-3M21 12l-3 3"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-                <svg className="w-2.5 h-2.5 text-[--text-quaternary]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              {showLetterSpacing && activeTextField && (
-                <div
-                  className="absolute top-full left-0 mt-2 p-1.5 bg-[--surface-canvas] border border-[--border-default] rounded-xl shadow-xl z-[200] min-w-[110px]"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  {[
-                    { name: 'Tight', value: -0.5 },
-                    { name: 'Normal', value: 0 },
-                    { name: 'Wide', value: 1 },
-                    { name: 'Wider', value: 2 },
-                  ].map((s) => (
-                    <button
-                      type="button"
-                      key={s.name}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleUpdateFormatting(
-                          selectedCarouselId,
-                          selectedFrameId,
-                          activeTextField,
-                          'letterSpacing',
-                          s.value
-                        );
-                        setShowLetterSpacing(false);
-                      }}
-                      className={`w-full px-3 py-2 rounded text-xs text-left transition-all duration-200 ${selectedFrame?.variants?.[selectedFrame?.currentVariant]?.formatting?.[activeTextField]?.letterSpacing === s.value ? 'bg-[--surface-overlay] text-white' : 'text-[--text-tertiary] hover:bg-[--surface-raised] hover:text-[--text-secondary]'}`}
-                    >
-                      {s.name}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-          </ToolbarButtonGroup>
         </div>
 
         {/* Right side */}
         <div className="flex items-center gap-4">
+          {/* Zoom Controls */}
+          <div className="flex items-center gap-1 bg-[--surface-raised]/50 border border-[--border-default] rounded-[--radius-md] px-1.5 py-1">
+            <button
+              type="button"
+              onClick={() => onZoomChange?.(Math.max(50, zoom - 10))}
+              className="w-6 h-6 rounded-[--radius-sm] flex items-center justify-center text-[--text-tertiary] hover:text-[--text-primary] hover:bg-[--surface-overlay] transition-colors"
+              title={`Zoom out (${cmdKey}-)`}
+            >
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+              </svg>
+            </button>
+            <span className="text-[10px] font-mono font-medium text-[--text-secondary] tabular-nums min-w-[36px] text-center">
+              {zoom}%
+            </span>
+            <button
+              type="button"
+              onClick={() => onZoomChange?.(Math.min(250, zoom + 10))}
+              className="w-6 h-6 rounded-[--radius-sm] flex items-center justify-center text-[--text-tertiary] hover:text-[--text-primary] hover:bg-[--surface-overlay] transition-colors"
+              title={`Zoom in (${cmdKey}+)`}
+            >
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              onClick={() => onZoomChange?.(100)}
+              className="w-6 h-6 rounded-[--radius-sm] flex items-center justify-center text-[--text-quaternary] hover:text-[--text-primary] hover:bg-[--surface-overlay] transition-colors"
+              title={`Reset zoom (${cmdKey}0)`}
+            >
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                />
+              </svg>
+            </button>
+          </div>
+
+          <div className="w-px h-6 bg-[--border-default]" />
+
           <span className="text-[--text-tertiary]">
             Row{' '}
             <span className="text-white font-medium">

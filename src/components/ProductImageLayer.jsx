@@ -118,28 +118,32 @@ const ProductImageLayer = ({
           bottom: frameHeight * 0.08, // Above bottom edge
         };
 
-  // Determine border style based on selection state
+  // Determine outline style based on selection state
+  // Uses outline instead of border to prevent layout jitter (outline doesn't affect dimensions)
   // Orange accent is used ONLY for editable content layers (per design spec)
-  // When selected (clicked), show solid orange like text fields
-  // When frame selected but not this layer, show dashed
-  // Always use the user's borderRadius for live preview of corner rounding
-  const getBorderStyle = () => {
+  // Matches text field styling exactly for consistency
+  const getOutlineStyle = () => {
+    // Always include borderRadius for the image container
+    const baseStyle = {
+      borderRadius: `${borderRadius}px`,
+    };
+
     if (isSelected) {
       return {
-        border: '2px solid var(--accent-layer)', // Solid when layer selected
-        borderRadius: `${borderRadius}px`, // Use user's borderRadius for live preview
+        ...baseStyle,
+        outline: '1px dashed var(--accent-layer-subtle)', // Match text field active state
+        outlineOffset: '2px',
       };
     }
     if (isFrameSelected) {
       return {
-        border: '1px dashed var(--accent-layer-subtle)', // Dashed when frame selected
-        borderRadius: `${borderRadius}px`, // Use user's borderRadius for live preview
+        ...baseStyle,
+        outline: '1px dashed var(--accent-layer-subtle)', // Dashed when frame selected
+        outlineOffset: '2px',
       };
     }
-    // No border when only row is selected or nothing is selected
-    return {
-      borderRadius: `${borderRadius}px`,
-    };
+    // No outline when only row is selected or nothing is selected
+    return baseStyle;
   };
 
   // Block all pointer events from bubbling when frame is selected
@@ -174,7 +178,7 @@ const ProductImageLayer = ({
         alignItems: 'center',
         justifyContent: 'center',
         overflow: 'hidden', // Clip the scaled image to container bounds
-        ...getBorderStyle(),
+        ...getOutlineStyle(),
       }}
       onMouseDown={handleContainerMouseDown}
       onPointerDown={handleContainerMouseDown}

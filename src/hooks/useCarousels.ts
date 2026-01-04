@@ -152,6 +152,7 @@ export const CAROUSEL_ACTIONS = {
   REMOVE_ICON_FROM_FRAME: 'REMOVE_ICON_FROM_FRAME',
   UPDATE_PROGRESS_INDICATOR: 'UPDATE_PROGRESS_INDICATOR',
   REORDER_BACKGROUND_LAYERS: 'REORDER_BACKGROUND_LAYERS',
+  REORDER_CAROUSELS: 'REORDER_CAROUSELS',
 } as const;
 
 type CarouselActionType = typeof CAROUSEL_ACTIONS[keyof typeof CAROUSEL_ACTIONS];
@@ -875,6 +876,17 @@ function carouselReducer(state: CarouselState, action: CarouselAction): Carousel
       };
     }
 
+    case CAROUSEL_ACTIONS.REORDER_CAROUSELS: {
+      const { oldIndex, newIndex } = action;
+      if (oldIndex === undefined || newIndex === undefined) return state;
+      const newCarousels = arrayMove(state.carousels, oldIndex, newIndex);
+      console.log('Reorder carousels reducer:', { oldIndex, newIndex, oldIds: state.carousels.map(c => c.id), newIds: newCarousels.map(c => c.id) });
+      return {
+        ...state,
+        carousels: newCarousels,
+      };
+    }
+
     default:
       return state;
   }
@@ -964,6 +976,7 @@ export interface UseCarouselsReturn {
   handleRemoveIconFromFrame: (carouselId: number, frameId: number) => void;
   handleUpdateProgressIndicator: (carouselId: number, frameId: number, updates: Partial<ProgressIndicator>) => void;
   handleReorderBackgroundLayers: (carouselId: number, frameId: number, newOrder: BackgroundLayerType[]) => void;
+  handleReorderCarousels: (oldIndex: number, newIndex: number) => void;
 }
 
 export default function useCarousels(initialData: Carousel[]): UseCarouselsReturn {
@@ -1207,6 +1220,12 @@ export default function useCarousels(initialData: Carousel[]): UseCarouselsRetur
     []
   );
 
+  const handleReorderCarousels = useCallback(
+    (oldIndex: number, newIndex: number) =>
+      dispatch({ type: CAROUSEL_ACTIONS.REORDER_CAROUSELS, oldIndex, newIndex }),
+    []
+  );
+
   return {
     carousels: state.carousels,
     selectedCarouselId: state.selectedCarouselId,
@@ -1257,6 +1276,7 @@ export default function useCarousels(initialData: Carousel[]): UseCarouselsRetur
     handleRemoveIconFromFrame,
     handleUpdateProgressIndicator,
     handleReorderBackgroundLayers,
+    handleReorderCarousels,
   };
 }
 

@@ -10,6 +10,9 @@ const BUCKET_NAME = 'assets';
 const IMAGES_FOLDER = 'images';
 const PRODUCT_IMAGERY_FOLDER = 'product-imagery';
 const DOCS_FOLDER = 'docs';
+const ICONS_FOLDER = 'icons';
+const BACKGROUNDS_FOLDER = 'backgrounds';
+const PATTERNS_FOLDER = 'user-patterns';
 
 /**
  * Upload an image to Supabase Storage
@@ -398,6 +401,351 @@ export const deleteDoc = async (path) => {
   }
 };
 
+// ============================================
+// BRAND ICONS FUNCTIONS (SVG only)
+// ============================================
+
+/**
+ * Upload a brand icon (SVG) to Supabase Storage
+ * @param {File|Blob} file - The SVG file to upload
+ * @param {string} fileName - The name to save the file as
+ * @param {string} userId - The user's ID
+ * @returns {Promise<{url: string, path: string, error: Error|null}>}
+ */
+export const uploadIcon = async (file, fileName, userId = 'default') => {
+  if (!isSupabaseConfigured()) {
+    logger.warn('Supabase not configured - using local storage only');
+    return { url: null, path: null, error: new Error('Supabase not configured') };
+  }
+
+  try {
+    const fileExt = fileName.split('.').pop();
+    const uniqueName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+    const filePath = `${userId}/${ICONS_FOLDER}/${uniqueName}`;
+
+    const { data, error } = await supabase.storage.from(BUCKET_NAME).upload(filePath, file, {
+      cacheControl: '3600',
+      upsert: false,
+      contentType: 'image/svg+xml',
+    });
+
+    if (error) {
+      logger.error('Icon upload error:', error);
+      return { url: null, path: null, error };
+    }
+
+    const { data: urlData } = supabase.storage.from(BUCKET_NAME).getPublicUrl(data.path);
+
+    return {
+      url: urlData.publicUrl,
+      path: data.path,
+      error: null,
+    };
+  } catch (error) {
+    logger.error('Icon upload failed:', error);
+    return { url: null, path: null, error };
+  }
+};
+
+/**
+ * List all icons for a user
+ * @param {string} userId - The user's ID
+ * @returns {Promise<{files: Array, error: Error|null}>}
+ */
+export const listIcons = async (userId = 'default') => {
+  if (!isSupabaseConfigured()) {
+    return { files: [], error: new Error('Supabase not configured') };
+  }
+
+  try {
+    const { data, error } = await supabase.storage.from(BUCKET_NAME).list(`${userId}/${ICONS_FOLDER}`, {
+      limit: 100,
+      sortBy: { column: 'created_at', order: 'desc' },
+    });
+
+    if (error) {
+      logger.error('List icons error:', error);
+      return { files: [], error };
+    }
+
+    const files = (data || [])
+      .filter((file) => file.name && !file.name.endsWith('/'))
+      .map((file) => {
+        const path = `${userId}/${ICONS_FOLDER}/${file.name}`;
+        const { data: urlData } = supabase.storage.from(BUCKET_NAME).getPublicUrl(path);
+
+        return {
+          id: file.id || file.name,
+          name: file.name,
+          path,
+          url: urlData.publicUrl,
+          size: file.metadata?.size || 0,
+          createdAt: file.created_at,
+        };
+      });
+
+    return { files, error: null };
+  } catch (error) {
+    logger.error('List icons failed:', error);
+    return { files: [], error };
+  }
+};
+
+/**
+ * Delete an icon from Supabase Storage
+ * @param {string} path - The full path of the file to delete
+ * @returns {Promise<{success: boolean, error: Error|null}>}
+ */
+export const deleteIcon = async (path) => {
+  if (!isSupabaseConfigured()) {
+    return { success: false, error: new Error('Supabase not configured') };
+  }
+
+  try {
+    const { error } = await supabase.storage.from(BUCKET_NAME).remove([path]);
+
+    if (error) {
+      logger.error('Delete icon error:', error);
+      return { success: false, error };
+    }
+
+    return { success: true, error: null };
+  } catch (error) {
+    logger.error('Delete icon failed:', error);
+    return { success: false, error };
+  }
+};
+
+// ============================================
+// CUSTOM BACKGROUNDS FUNCTIONS
+// ============================================
+
+/**
+ * Upload a custom background image to Supabase Storage
+ * @param {File|Blob} file - The image file to upload
+ * @param {string} fileName - The name to save the file as
+ * @param {string} userId - The user's ID
+ * @returns {Promise<{url: string, path: string, error: Error|null}>}
+ */
+export const uploadBackground = async (file, fileName, userId = 'default') => {
+  if (!isSupabaseConfigured()) {
+    logger.warn('Supabase not configured - using local storage only');
+    return { url: null, path: null, error: new Error('Supabase not configured') };
+  }
+
+  try {
+    const fileExt = fileName.split('.').pop();
+    const uniqueName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+    const filePath = `${userId}/${BACKGROUNDS_FOLDER}/${uniqueName}`;
+
+    const { data, error } = await supabase.storage.from(BUCKET_NAME).upload(filePath, file, {
+      cacheControl: '3600',
+      upsert: false,
+      contentType: file.type || 'image/png',
+    });
+
+    if (error) {
+      logger.error('Background upload error:', error);
+      return { url: null, path: null, error };
+    }
+
+    const { data: urlData } = supabase.storage.from(BUCKET_NAME).getPublicUrl(data.path);
+
+    return {
+      url: urlData.publicUrl,
+      path: data.path,
+      error: null,
+    };
+  } catch (error) {
+    logger.error('Background upload failed:', error);
+    return { url: null, path: null, error };
+  }
+};
+
+/**
+ * List all custom backgrounds for a user
+ * @param {string} userId - The user's ID
+ * @returns {Promise<{files: Array, error: Error|null}>}
+ */
+export const listBackgrounds = async (userId = 'default') => {
+  if (!isSupabaseConfigured()) {
+    return { files: [], error: new Error('Supabase not configured') };
+  }
+
+  try {
+    const { data, error } = await supabase.storage.from(BUCKET_NAME).list(`${userId}/${BACKGROUNDS_FOLDER}`, {
+      limit: 100,
+      sortBy: { column: 'created_at', order: 'desc' },
+    });
+
+    if (error) {
+      logger.error('List backgrounds error:', error);
+      return { files: [], error };
+    }
+
+    const files = (data || [])
+      .filter((file) => file.name && !file.name.endsWith('/'))
+      .map((file) => {
+        const path = `${userId}/${BACKGROUNDS_FOLDER}/${file.name}`;
+        const { data: urlData } = supabase.storage.from(BUCKET_NAME).getPublicUrl(path);
+
+        return {
+          id: file.id || file.name,
+          name: file.name,
+          path,
+          url: urlData.publicUrl,
+          size: file.metadata?.size || 0,
+          createdAt: file.created_at,
+        };
+      });
+
+    return { files, error: null };
+  } catch (error) {
+    logger.error('List backgrounds failed:', error);
+    return { files: [], error };
+  }
+};
+
+/**
+ * Delete a background from Supabase Storage
+ * @param {string} path - The full path of the file to delete
+ * @returns {Promise<{success: boolean, error: Error|null}>}
+ */
+export const deleteBackground = async (path) => {
+  if (!isSupabaseConfigured()) {
+    return { success: false, error: new Error('Supabase not configured') };
+  }
+
+  try {
+    const { error } = await supabase.storage.from(BUCKET_NAME).remove([path]);
+
+    if (error) {
+      logger.error('Delete background error:', error);
+      return { success: false, error };
+    }
+
+    return { success: true, error: null };
+  } catch (error) {
+    logger.error('Delete background failed:', error);
+    return { success: false, error };
+  }
+};
+
+// ============================================
+// CUSTOM PATTERNS FUNCTIONS
+// ============================================
+
+/**
+ * Upload a custom pattern to Supabase Storage
+ * @param {File|Blob} file - The pattern file to upload
+ * @param {string} fileName - The name to save the file as
+ * @param {string} userId - The user's ID
+ * @returns {Promise<{url: string, path: string, error: Error|null}>}
+ */
+export const uploadPattern = async (file, fileName, userId = 'default') => {
+  if (!isSupabaseConfigured()) {
+    logger.warn('Supabase not configured - using local storage only');
+    return { url: null, path: null, error: new Error('Supabase not configured') };
+  }
+
+  try {
+    const fileExt = fileName.split('.').pop();
+    const uniqueName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+    const filePath = `${userId}/${PATTERNS_FOLDER}/${uniqueName}`;
+
+    const { data, error } = await supabase.storage.from(BUCKET_NAME).upload(filePath, file, {
+      cacheControl: '3600',
+      upsert: false,
+      contentType: file.type || 'image/png',
+    });
+
+    if (error) {
+      logger.error('Pattern upload error:', error);
+      return { url: null, path: null, error };
+    }
+
+    const { data: urlData } = supabase.storage.from(BUCKET_NAME).getPublicUrl(data.path);
+
+    return {
+      url: urlData.publicUrl,
+      path: data.path,
+      error: null,
+    };
+  } catch (error) {
+    logger.error('Pattern upload failed:', error);
+    return { url: null, path: null, error };
+  }
+};
+
+/**
+ * List all custom patterns for a user
+ * @param {string} userId - The user's ID
+ * @returns {Promise<{files: Array, error: Error|null}>}
+ */
+export const listPatterns = async (userId = 'default') => {
+  if (!isSupabaseConfigured()) {
+    return { files: [], error: new Error('Supabase not configured') };
+  }
+
+  try {
+    const { data, error } = await supabase.storage.from(BUCKET_NAME).list(`${userId}/${PATTERNS_FOLDER}`, {
+      limit: 100,
+      sortBy: { column: 'created_at', order: 'desc' },
+    });
+
+    if (error) {
+      logger.error('List patterns error:', error);
+      return { files: [], error };
+    }
+
+    const files = (data || [])
+      .filter((file) => file.name && !file.name.endsWith('/'))
+      .map((file) => {
+        const path = `${userId}/${PATTERNS_FOLDER}/${file.name}`;
+        const { data: urlData } = supabase.storage.from(BUCKET_NAME).getPublicUrl(path);
+
+        return {
+          id: file.id || file.name,
+          name: file.name,
+          path,
+          url: urlData.publicUrl,
+          size: file.metadata?.size || 0,
+          createdAt: file.created_at,
+        };
+      });
+
+    return { files, error: null };
+  } catch (error) {
+    logger.error('List patterns failed:', error);
+    return { files: [], error };
+  }
+};
+
+/**
+ * Delete a pattern from Supabase Storage
+ * @param {string} path - The full path of the file to delete
+ * @returns {Promise<{success: boolean, error: Error|null}>}
+ */
+export const deletePattern = async (path) => {
+  if (!isSupabaseConfigured()) {
+    return { success: false, error: new Error('Supabase not configured') };
+  }
+
+  try {
+    const { error } = await supabase.storage.from(BUCKET_NAME).remove([path]);
+
+    if (error) {
+      logger.error('Delete pattern error:', error);
+      return { success: false, error };
+    }
+
+    return { success: true, error: null };
+  } catch (error) {
+    logger.error('Delete pattern failed:', error);
+    return { success: false, error };
+  }
+};
+
 export default {
   // Images
   uploadImage,
@@ -412,6 +760,18 @@ export default {
   uploadDoc,
   listDocs,
   deleteDoc,
+  // Icons
+  uploadIcon,
+  listIcons,
+  deleteIcon,
+  // Backgrounds
+  uploadBackground,
+  listBackgrounds,
+  deleteBackground,
+  // Patterns
+  uploadPattern,
+  listPatterns,
+  deletePattern,
   // Constants
   BUCKET_NAME,
 };

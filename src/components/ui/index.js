@@ -8,6 +8,7 @@
 
 // Layout components
 export { default as Panel, PanelHeader, PanelSection, PanelTabs, PanelEmptyState } from './Panel';
+export { default as ToolPanel } from './ToolPanel';
 
 // Interactive primitives
 export { default as Button } from './Button';

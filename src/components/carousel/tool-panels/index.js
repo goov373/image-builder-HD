@@ -12,3 +12,4 @@ export { default as FillToolPanel } from './FillToolPanel';
 export { default as PatternToolPanel } from './PatternToolPanel';
 export { default as ImageToolPanel } from './ImageToolPanel';
 export { default as ProductImageToolPanel } from './ProductImageToolPanel';
+export { default as TextToolPanel } from './TextToolPanel';

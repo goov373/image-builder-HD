@@ -9,7 +9,15 @@ import ImageLayer from './ImageLayer';
 import PatternLayer from './PatternLayer';
 import ProductImageLayer from './ProductImageLayer';
 import IconLayer from './IconLayer';
-import { IconToolPanel, ProgressToolPanel } from './carousel/tool-panels';
+import {
+  IconToolPanel,
+  ProgressToolPanel,
+  ImageToolPanel,
+  FillToolPanel,
+  PatternToolPanel,
+  ProductImageToolPanel,
+  TextToolPanel,
+} from './carousel/tool-panels';
 
 /**
  * SortableLayerRow Component
@@ -51,27 +59,36 @@ const SortableLayerRow = ({ id, children }) => {
 /**
  * Progress Indicator Overlay
  * Shows current frame position in carousel with different styles
+ * 
+ * @param currentFrame - 1-based index of the current frame (1, 2, 3...)
+ * @param totalFrames - Total number of frames in the carousel
+ * @param type - Indicator style type
+ * @param color - Color for the indicator elements
+ * @param isHidden - Whether the indicator should be hidden
  */
 const ProgressIndicatorOverlay = ({
-  frameId,
+  currentFrame,
   totalFrames = 5,
-  type = 'dots', // 'dots', 'arrows', 'bar'
+  type = 'dots',
   color = '#ffffff',
   isHidden = false,
 }) => {
   if (isHidden) return null;
 
-  // Dots style (original)
+  // Generate array of frame numbers [1, 2, 3, ..., totalFrames]
+  const frames = Array.from({ length: totalFrames }, (_, i) => i + 1);
+
+  // Dots style - classic circular indicators
   if (type === 'dots') {
     return (
       <div className="flex items-center gap-1 min-w-[40px] min-h-[20px] justify-end">
-        {[1, 2, 3, 4, 5].map((i) => (
+        {frames.map((i) => (
           <div
             key={i}
-            className="w-1.5 h-1.5 rounded-full"
+            className="w-1.5 h-1.5 rounded-full transition-opacity duration-200"
             style={{
-              backgroundColor: i === frameId ? color : color,
-              opacity: i === frameId ? 1 : 0.3,
+              backgroundColor: color,
+              opacity: i === currentFrame ? 1 : 0.3,
             }}
           />
         ))}
@@ -79,7 +96,83 @@ const ProgressIndicatorOverlay = ({
     );
   }
 
-  // Arrows style
+  // Numbered Dots style - dots with step numbers inside
+  if (type === 'numberedDots') {
+    return (
+      <div className="flex items-center gap-1.5 min-w-[40px] min-h-[20px] justify-end">
+        {frames.map((i) => (
+          <div
+            key={i}
+            className="w-4 h-4 rounded-full flex items-center justify-center transition-opacity duration-200"
+            style={{
+              backgroundColor: color,
+              opacity: i === currentFrame ? 1 : 0.3,
+            }}
+          >
+            <span 
+              className="text-[8px] font-bold leading-none"
+              style={{ color: i === currentFrame ? '#18191A' : '#18191A' }}
+            >
+              {i}
+            </span>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  // Dashes style - modern minimalist line segments
+  if (type === 'dashes') {
+    const dashWidth = Math.max(8, Math.min(16, 64 / totalFrames - 2));
+    return (
+      <div className="flex items-center gap-1 min-w-[40px] min-h-[20px] justify-end">
+        {frames.map((i) => (
+          <div
+            key={i}
+            className="h-0.5 rounded-full transition-all duration-200"
+            style={{
+              width: dashWidth,
+              backgroundColor: color,
+              opacity: i === currentFrame ? 1 : 0.3,
+            }}
+          />
+        ))}
+      </div>
+    );
+  }
+
+  // Buildings style - multifamily building icons
+  if (type === 'buildings') {
+    const buildingWidth = Math.max(6, Math.min(10, 56 / totalFrames - 2));
+    const heights = [10, 14, 8, 12, 16, 11, 13, 9, 15, 10]; // Varying heights for skyline effect
+    return (
+      <div className="flex items-end gap-0.5 min-w-[40px] min-h-[20px] justify-end">
+        {frames.map((i, idx) => {
+          const height = heights[idx % heights.length];
+          return (
+            <div
+              key={i}
+              className="rounded-t-sm transition-opacity duration-200 relative"
+              style={{
+                width: buildingWidth,
+                height: height,
+                backgroundColor: color,
+                opacity: i === currentFrame ? 1 : 0.3,
+              }}
+            >
+              {/* Window details */}
+              <div 
+                className="absolute top-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-sm"
+                style={{ backgroundColor: i === currentFrame ? 'rgba(0,0,0,0.3)' : 'rgba(0,0,0,0.15)' }}
+              />
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
+
+  // Arrows style - chevron navigation with page counter
   if (type === 'arrows') {
     return (
       <div className="flex items-center gap-2 min-w-[40px] min-h-[20px] justify-end">
@@ -87,7 +180,7 @@ const ProgressIndicatorOverlay = ({
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
         </svg>
         <span className="text-[10px] font-medium" style={{ color }}>
-          {frameId}/{totalFrames}
+          {currentFrame}/{totalFrames}
         </span>
         <svg className="w-4 h-4" fill="none" stroke={color} viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -96,14 +189,14 @@ const ProgressIndicatorOverlay = ({
     );
   }
 
-  // Bar style (loading bar)
+  // Bar style - loading/progress bar
   if (type === 'bar') {
-    const progress = (frameId / totalFrames) * 100;
+    const progress = (currentFrame / totalFrames) * 100;
     return (
       <div className="flex items-center min-w-[60px] min-h-[20px] justify-end">
         <div className="w-16 h-1 rounded-full overflow-hidden" style={{ backgroundColor: color, opacity: 0.2 }}>
           <div
-            className="h-full rounded-full transition-all"
+            className="h-full rounded-full transition-all duration-300"
             style={{ width: `${progress}%`, backgroundColor: color }}
           />
         </div>
@@ -111,31 +204,46 @@ const ProgressIndicatorOverlay = ({
     );
   }
 
-  // Map Pins style - pins along a curved GPS path
+  // Map Pins style - pins along a curved GPS path (dynamic positioning)
   if (type === 'mapPins') {
+    const svgWidth = 64;
+    const padding = 4;
+    const usableWidth = svgWidth - padding * 2;
+    
+    // Generate curved path and positions dynamically
+    const getPosition = (index, total) => {
+      const x = padding + (usableWidth * index) / (total - 1 || 1);
+      // Create a gentle wave pattern for y positions
+      const waveAmplitude = 4;
+      const waveOffset = Math.sin((index / (total - 1 || 1)) * Math.PI * 2) * waveAmplitude;
+      const y = 8 + waveOffset;
+      return { x, y };
+    };
+    
+    // Generate path string
+    const pathPoints = frames.map((_, idx) => getPosition(idx, totalFrames));
+    const pathD = pathPoints.length > 1 
+      ? `M${pathPoints[0].x} ${pathPoints[0].y} ` + pathPoints.slice(1).map(p => `L${p.x} ${p.y}`).join(' ')
+      : '';
+    
     return (
       <div className="flex items-center min-w-[64px] min-h-[20px] justify-end">
         <svg width="64" height="16" viewBox="0 0 64 16" fill="none">
           {/* Curved path */}
-          <path
-            d="M4 12 Q16 4, 32 8 Q48 12, 60 6"
-            stroke={color}
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeOpacity="0.25"
-            fill="none"
-          />
+          {pathPoints.length > 1 && (
+            <path
+              d={pathD}
+              stroke={color}
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeOpacity="0.25"
+              fill="none"
+            />
+          )}
           {/* Pin markers */}
-          {[1, 2, 3, 4, 5].map((i, idx) => {
-            const positions = [
-              { x: 4, y: 12 },
-              { x: 19, y: 5.5 },
-              { x: 32, y: 8 },
-              { x: 45, y: 10 },
-              { x: 60, y: 6 },
-            ];
-            const pos = positions[idx];
-            const isActive = i === frameId;
+          {frames.map((i, idx) => {
+            const pos = getPosition(idx, totalFrames);
+            const isActive = i === currentFrame;
             return (
               <g key={i}>
                 <circle cx={pos.x} cy={pos.y - 3} r="2.5" fill={color} fillOpacity={isActive ? 1 : 0.3} />
@@ -157,32 +265,47 @@ const ProgressIndicatorOverlay = ({
     );
   }
 
-  // Forecast style - X marks on upward trend line
+  // Forecast style - X marks on upward trend line (dynamic)
   if (type === 'forecast') {
+    const svgWidth = 60;
+    const padding = 4;
+    const usableWidth = svgWidth - padding * 2;
+    
+    // Generate trend positions (upward trend)
+    const getPosition = (index, total) => {
+      const x = padding + (usableWidth * index) / (total - 1 || 1);
+      // Create upward trend with slight variation
+      const baseY = 13 - (index / (total - 1 || 1)) * 9;
+      const variation = Math.sin(index * 1.5) * 1.5;
+      const y = baseY + variation;
+      return { x, y };
+    };
+    
+    // Generate path string
+    const pathPoints = frames.map((_, idx) => getPosition(idx, totalFrames));
+    const pathD = pathPoints.length > 1 
+      ? `M${pathPoints[0].x} ${pathPoints[0].y} ` + pathPoints.slice(1).map(p => `L${p.x} ${p.y}`).join(' ')
+      : '';
+    
     return (
       <div className="flex items-center min-w-[60px] min-h-[20px] justify-end">
         <svg width="60" height="16" viewBox="0 0 60 16" fill="none">
-          {/* Trend line going up and to the right */}
-          <path
-            d="M4 13 L16 10 L28 11 L40 7 L52 4"
-            stroke={color}
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeOpacity="0.25"
-            fill="none"
-          />
+          {/* Trend line */}
+          {pathPoints.length > 1 && (
+            <path
+              d={pathD}
+              stroke={color}
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeOpacity="0.25"
+              fill="none"
+            />
+          )}
           {/* X markers at data points */}
-          {[1, 2, 3, 4, 5].map((i, idx) => {
-            const positions = [
-              { x: 4, y: 13 },
-              { x: 16, y: 10 },
-              { x: 28, y: 11 },
-              { x: 40, y: 7 },
-              { x: 52, y: 4 },
-            ];
-            const pos = positions[idx];
-            const isActive = i === frameId;
+          {frames.map((i, idx) => {
+            const pos = getPosition(idx, totalFrames);
+            const isActive = i === currentFrame;
             const size = 2;
             return (
               <g key={i} opacity={isActive ? 1 : 0.3}>
@@ -212,22 +335,26 @@ const ProgressIndicatorOverlay = ({
     );
   }
 
-  // Bar Chart style - mini vertical bars
+  // Bar Chart style - mini vertical bars (dynamic)
   if (type === 'barChart') {
+    const svgWidth = Math.max(48, totalFrames * 9 + 4);
+    const barWidth = Math.max(4, Math.min(6, (svgWidth - 8) / totalFrames - 3));
+    const spacing = (svgWidth - 8) / totalFrames;
+    const baseHeights = [8, 12, 6, 14, 10, 9, 13, 7, 11, 15]; // Pattern for visual interest
+    
     return (
       <div className="flex items-center min-w-[48px] min-h-[20px] justify-end">
-        <svg width="48" height="16" viewBox="0 0 48 16" fill="none">
-          {[1, 2, 3, 4, 5].map((i, idx) => {
-            const heights = [8, 12, 6, 14, 10]; // Varying heights for visual interest
-            const height = heights[idx];
-            const x = 4 + idx * 9;
-            const isActive = i === frameId;
+        <svg width={svgWidth} height="16" viewBox={`0 0 ${svgWidth} 16`} fill="none">
+          {frames.map((i, idx) => {
+            const height = baseHeights[idx % baseHeights.length];
+            const x = 4 + idx * spacing;
+            const isActive = i === currentFrame;
             return (
               <rect
                 key={i}
                 x={x}
                 y={16 - height}
-                width="5"
+                width={barWidth}
                 height={height}
                 rx="1"
                 fill={color}
@@ -326,6 +453,10 @@ export const CarouselFrame = ({
   const [isIconEditing, setIsIconEditing] = useState(false);
   const [initialIconState, setInitialIconState] = useState(null);
 
+  // Text layer editing states
+  const [isHeadlineEditing, setIsHeadlineEditing] = useState(false);
+  const [isBodyEditing, setIsBodyEditing] = useState(false);
+
   // Layer selection state - only one layer can be selected at a time
   // Values: 'icon', 'productImage', null (null means no layer selected, or text is selected)
   const [selectedLayer, setSelectedLayer] = useState(null);
@@ -362,6 +493,8 @@ export const CarouselFrame = ({
     setIsProductImageEditing(false);
     setIsIconEditing(false);
     setIsProgressEditing(false);
+    setIsHeadlineEditing(false);
+    setIsBodyEditing(false);
     setInitialImageState(null);
     setInitialFillState(null);
     setInitialPatternState(null);
@@ -371,11 +504,14 @@ export const CarouselFrame = ({
   };
 
   // Close all tool panels when frame is deselected
+  // BUT only if we're not currently in an auto-opened editing mode
+  // (editing modes can be triggered by clicking in the design panel, which may temporarily deselect the frame)
   useEffect(() => {
-    if (!isFrameSelected) {
+    if (!isFrameSelected && !isRowSelected) {
+      // Only close panels if the entire row is deselected, not just the frame
       closeAllToolPanels();
     }
-  }, [isFrameSelected]);
+  }, [isFrameSelected, isRowSelected]);
 
   // Close all tool panels when any frame starts dragging
   useEffect(() => {
@@ -470,17 +606,21 @@ export const CarouselFrame = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps -- Only sync when backgroundOverride changes, not fill values
   }, [frame.backgroundOverride, isDraggingAny]);
 
-  // Auto-open Image tool panel when background photo is added (close others first)
+  // Auto-open Image tool panel when background photo is added or changed (close others first)
   // Skip opening panel during drag, but always update ref to prevent false positives
   useEffect(() => {
     const wasEmpty = !prevImageRef.current;
     const nowHasContent = !!frame.imageLayer;
-    if (!isDraggingAny && wasEmpty && nowHasContent) {
+    // Check if image actually changed (new image or different src)
+    const imageChanged = prevImageRef.current?.src !== frame.imageLayer?.src;
+    
+    // Open panel if adding new image OR if changing to a different image
+    if (!isDraggingAny && nowHasContent && (wasEmpty || imageChanged)) {
       closeAllToolPanels();
-      handleImageEditModeChange(true);
+      setIsImageEditing(true);
+      setInitialImageState({ ...frame.imageLayer });
     }
     prevImageRef.current = frame.imageLayer;
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- Only trigger when imageLayer changes, not callback refs
   }, [frame.imageLayer, isDraggingAny]);
 
   // Auto-open Pattern tool panel when pattern is added (close others first)
@@ -668,6 +808,39 @@ export const CarouselFrame = ({
     setInitialIconState(null);
   };
 
+  // Text layer editing handlers
+  const handleStartHeadlineEdit = () => {
+    closeAllToolPanels();
+    handleActivateFieldWithClear('headline');
+    setIsHeadlineEditing(true);
+  };
+
+  const handleCancelHeadlineEdit = () => {
+    setIsHeadlineEditing(false);
+    onActivateTextField?.(null);
+  };
+
+  const handleDoneHeadlineEdit = () => {
+    setIsHeadlineEditing(false);
+    onActivateTextField?.(null);
+  };
+
+  const handleStartBodyEdit = () => {
+    closeAllToolPanels();
+    handleActivateFieldWithClear('body');
+    setIsBodyEditing(true);
+  };
+
+  const handleCancelBodyEdit = () => {
+    setIsBodyEditing(false);
+    onActivateTextField?.(null);
+  };
+
+  const handleDoneBodyEdit = () => {
+    setIsBodyEditing(false);
+    onActivateTextField?.(null);
+  };
+
   // Progress editing handlers
   const handleStartProgressEdit = () => {
     // Close other tool panels first
@@ -747,7 +920,19 @@ export const CarouselFrame = ({
     : 'default';
 
   const handleUpdateText = (field, value) => onUpdateText?.(carouselId, frame.id, field, value);
-  const handleActivateField = (field) => handleActivateFieldWithClear(field);
+  
+  // When a text box is clicked, activate the field AND open its tool panel
+  const handleActivateField = (field) => {
+    // Open the corresponding text tool panel (which also activates the field)
+    if (field === 'headline') {
+      handleStartHeadlineEdit();
+    } else if (field === 'body') {
+      handleStartBodyEdit();
+    } else {
+      // For any other field, just activate it without opening a panel
+      handleActivateFieldWithClear(field);
+    }
+  };
 
   const renderLayout = () => {
     const fontSizes = getFontSizes(frameSize);
@@ -906,14 +1091,15 @@ export const CarouselFrame = ({
                   e.stopPropagation();
                   if (isFrameSelected) onRequestAddIcon?.();
                 }}
-                className="w-full h-full rounded-[--radius-sm] flex items-center justify-center cursor-pointer transition-colors hover:bg-[--surface-raised]"
+                className="w-full h-full rounded-[--radius-sm] flex items-center justify-center cursor-pointer"
                 style={{
-                  border: '1px dashed var(--border-emphasis)',
+                  border: '1px dashed var(--accent-layer-subtle)',
                 }}
                 title="Click to add icon"
               >
                 <svg
-                  className="w-3.5 h-3.5 text-[--text-quaternary]"
+                  className="w-3.5 h-3.5"
+                  style={{ color: 'var(--accent-layer-subtle)' }}
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -965,9 +1151,29 @@ export const CarouselFrame = ({
 
         {/* Progress Dots Overlay - Hidden during image editing */}
         {!isImageEditing && (
-          <div className="absolute top-2 right-2 z-10">
+          <div
+            className={`absolute top-2 right-2 z-10 rounded-[--radius-sm] ${
+              isFrameSelected && !frame.progressIndicator?.isHidden
+                ? 'cursor-pointer'
+                : ''
+            }`}
+            style={
+              isFrameSelected && !frame.progressIndicator?.isHidden
+                ? {
+                    outline: '1px dashed var(--accent-layer-subtle)',
+                    outlineOffset: '3px',
+                  }
+                : {}
+            }
+            onClick={(e) => {
+              if (isFrameSelected && !frame.progressIndicator?.isHidden) {
+                e.stopPropagation();
+                handleStartProgressEdit();
+              }
+            }}
+          >
             <ProgressIndicatorOverlay
-              frameId={frame.id}
+              currentFrame={frameIndex + 1}
               totalFrames={totalFrames}
               type={frame.progressIndicator?.type || 'dots'}
               color={frame.progressIndicator?.color || '#ffffff'}
@@ -994,7 +1200,7 @@ export const CarouselFrame = ({
       </div>
 
       {/* Controls Area - fixed height to prevent layout snap */}
-      <div className={`${isRowSelected && !isDraggingAny ? 'min-h-[52px]' : 'h-0'}`}>
+      <div className={`${(isRowSelected || isImageEditing || isFillEditing || isPatternEditing || isProductImageEditing || isIconEditing || isProgressEditing || isHeadlineEditing || isBodyEditing) && !isDraggingAny ? 'min-h-[52px]' : 'h-0'}`}>
         {/* Layer Indicators - outside frame, below card */}
         {/* Only visible when row is selected, hidden during editing modes and drag operations */}
         {isRowSelected &&
@@ -1004,13 +1210,97 @@ export const CarouselFrame = ({
           !isPatternEditing &&
           !isProductImageEditing &&
           !isIconEditing &&
-          !isProgressEditing && (
+          !isProgressEditing &&
+          !isHeadlineEditing &&
+          !isBodyEditing && (
             <div className="mt-1.5 flex flex-col items-start gap-1">
               {/* Layer chips - show when frame is selected, organized into table sections */}
               {isFrameSelected && (
                 <div className="flex flex-col items-stretch w-full max-w-[180px]">
+                  {/* Text Layers Section - appears first */}
+                  <div className="text-[9px] text-[--text-quaternary] uppercase tracking-wider px-1 pb-1">
+                    Text Layers
+                  </div>
+                  <div className="border-t border-[--border-emphasis]/50">
+                    {/* Page Heading Row */}
+                    <div
+                      className={`flex items-center gap-1.5 px-2 py-1.5 border-b border-[--border-emphasis]/50 group cursor-pointer transition-colors hover:bg-[--surface-overlay]/50 ${
+                        formatting?.headline?.isHidden ? 'opacity-60' : ''
+                      }`}
+                      title="Edit page heading"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleStartHeadlineEdit();
+                      }}
+                    >
+                      <svg
+                        className={`w-3 h-3 ${formatting?.headline?.isHidden ? 'text-[--text-quaternary]' : 'text-[--text-tertiary]'}`}
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M4 6h16M4 12h8m-8 6h16"
+                        />
+                      </svg>
+                      <span
+                        className={`text-[10px] transition-colors ${
+                          formatting?.headline?.isHidden
+                            ? 'text-[--text-quaternary] group-hover:text-[--text-secondary]'
+                            : 'text-[--text-tertiary] group-hover:text-white'
+                        }`}
+                      >
+                        Page Heading
+                      </span>
+                      {formatting?.headline?.isHidden && (
+                        <span className="ml-auto text-[8px] text-[--text-quaternary]">hidden</span>
+                      )}
+                    </div>
+
+                    {/* Body Copy Row */}
+                    <div
+                      className={`flex items-center gap-1.5 px-2 py-1.5 border-b border-[--border-emphasis]/50 group cursor-pointer transition-colors hover:bg-[--surface-overlay]/50 ${
+                        formatting?.body?.isHidden ? 'opacity-60' : ''
+                      }`}
+                      title="Edit body copy"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleStartBodyEdit();
+                      }}
+                    >
+                      <svg
+                        className={`w-3 h-3 ${formatting?.body?.isHidden ? 'text-[--text-quaternary]' : 'text-[--text-tertiary]'}`}
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M4 6h16M4 10h16M4 14h16M4 18h12"
+                        />
+                      </svg>
+                      <span
+                        className={`text-[10px] transition-colors ${
+                          formatting?.body?.isHidden
+                            ? 'text-[--text-quaternary] group-hover:text-[--text-secondary]'
+                            : 'text-[--text-tertiary] group-hover:text-white'
+                        }`}
+                      >
+                        Body Copy
+                      </span>
+                      {formatting?.body?.isHidden && (
+                        <span className="ml-auto text-[8px] text-[--text-quaternary]">hidden</span>
+                      )}
+                    </div>
+                  </div>
+
                   {/* Foreground Layers Section */}
-                  <div className="text-[9px] text-[--text-quaternary] uppercase tracking-wider px-1 pb-1">Foreground Layers</div>
+                  <div className="text-[9px] text-[--text-quaternary] uppercase tracking-wider px-1 pb-1 pt-2">Foreground Layers</div>
                   <div className="border-t border-[--border-emphasis]/50">
                     {/* 1. Progress Indicator - visible by default, only hidden when explicitly isHidden: true */}
                     <div
@@ -1054,7 +1344,7 @@ export const CarouselFrame = ({
                             : 'text-[--text-tertiary] group-hover:text-white'
                         }`}
                       >
-                        Progress
+                        Indicator
                       </span>
                       {frame.progressIndicator?.isHidden === true ? (
                         <span className="ml-auto text-[8px] text-[--text-quaternary] flex items-center gap-0.5">
@@ -1109,7 +1399,7 @@ export const CarouselFrame = ({
                         <span
                           className={`text-[10px] transition-colors ${frame.iconLayer ? 'text-[--text-tertiary] group-hover:text-white' : 'text-[--text-quaternary] group-hover:text-[--text-secondary]'}`}
                         >
-                          Icon / Stat
+                          Icon
                         </span>
                         {frame.iconLayer ? (
                           <span
@@ -1244,7 +1534,7 @@ export const CarouselFrame = ({
                                     <span
                                       className={`text-[10px] transition-colors ${frame.imageLayer ? 'text-[--text-tertiary] group-hover:text-white' : 'text-[--text-quaternary] group-hover:text-[--text-secondary]'}`}
                                     >
-                                      Background Photo
+                                      Photograph
                                     </span>
                                     {frame.imageLayer ? (
                                       <span
@@ -1425,616 +1715,65 @@ export const CarouselFrame = ({
 
         {/* Image Edit Controls - appears below frame when editing, hidden during drag */}
         {isImageEditing && !isDraggingAny && frame.imageLayer && (
-          <div
-            className="mt-1.5 flex items-center gap-2 flex-wrap"
-            data-image-edit-controls
-            onClick={(e) => e.stopPropagation()}
-            onMouseDown={(e) => e.stopPropagation()}
-          >
-            {/* Zoom Controls */}
-            <div className="flex items-center gap-1 bg-[--surface-raised]/90 rounded px-2 py-1.5">
-              <span className="text-[--text-quaternary] text-[10px] mr-1 min-w-[40px]">Zoom</span>
-              <button
-                type="button"
-                onClick={() =>
-                  onUpdateImageLayer?.(carouselId, frame.id, { scale: Math.max(0.5, frame.imageLayer.scale - 0.1) })
-                }
-                className="w-5 h-5 flex items-center justify-center text-[--text-tertiary] hover:text-white hover:bg-white/10 rounded transition-colors"
-              >
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
-                </svg>
-              </button>
-              <span className="text-[--text-secondary] text-[10px] font-medium min-w-[32px] text-center">
-                {Math.round(frame.imageLayer.scale * 100)}%
-              </span>
-              <button
-                type="button"
-                onClick={() =>
-                  onUpdateImageLayer?.(carouselId, frame.id, { scale: Math.min(5, frame.imageLayer.scale + 0.1) })
-                }
-                className="w-5 h-5 flex items-center justify-center text-[--text-tertiary] hover:text-white hover:bg-white/10 rounded transition-colors"
-              >
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                </svg>
-              </button>
-              <button
-                type="button"
-                onClick={() => onUpdateImageLayer?.(carouselId, frame.id, { scale: 1 })}
-                className="w-5 h-5 flex items-center justify-center text-[--text-quaternary] hover:text-white hover:bg-white/10 rounded transition-colors"
-                title="Reset zoom to 100%"
-              >
-                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                  />
-                </svg>
-              </button>
-            </div>
-
-            {/* Opacity Control */}
-            <div className="flex items-center gap-1 bg-[--surface-raised]/90 rounded px-2 py-1.5">
-              <span className="text-[--text-quaternary] text-[10px] mr-1 min-w-[40px]">Opacity</span>
-              <button
-                type="button"
-                onClick={() =>
-                  onUpdateImageLayer?.(carouselId, frame.id, { opacity: Math.max(0, frame.imageLayer.opacity - 0.1) })
-                }
-                className="w-5 h-5 flex items-center justify-center text-[--text-tertiary] hover:text-white hover:bg-white/10 rounded transition-colors"
-              >
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
-                </svg>
-              </button>
-              <span className="text-[--text-secondary] text-[10px] font-medium min-w-[32px] text-center">
-                {Math.round(frame.imageLayer.opacity * 100)}%
-              </span>
-              <button
-                type="button"
-                onClick={() =>
-                  onUpdateImageLayer?.(carouselId, frame.id, { opacity: Math.min(1, frame.imageLayer.opacity + 0.1) })
-                }
-                className="w-5 h-5 flex items-center justify-center text-[--text-tertiary] hover:text-white hover:bg-white/10 rounded transition-colors"
-              >
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                </svg>
-              </button>
-              <button
-                type="button"
-                onClick={() => onUpdateImageLayer?.(carouselId, frame.id, { opacity: 1 })}
-                className="w-5 h-5 flex items-center justify-center text-[--text-quaternary] hover:text-white hover:bg-white/10 rounded transition-colors"
-                title="Reset opacity to 100%"
-              >
-                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                  />
-                </svg>
-              </button>
-            </div>
-
-            {/* Cancel Button */}
-            <button
-              type="button"
-              onClick={handleCancelEdit}
-              className="bg-[--surface-overlay]/90 hover:bg-[--surface-elevated] rounded px-2.5 py-1.5 text-[--text-secondary] hover:text-white text-[10px] font-medium transition-colors"
-              title="Cancel and revert changes"
-            >
-              Cancel
-            </button>
-
-            {/* Done Button */}
-            <button
-              type="button"
-              onClick={handleDoneEdit}
-              className="bg-[--surface-elevated]/90 hover:bg-[--surface-overlay] rounded-[--radius-sm] px-2.5 py-1.5 text-white text-[10px] font-medium transition-colors"
-              title="Done editing"
-            >
-              Done
-            </button>
-
-            {/* Remove Button */}
-            <button
-              type="button"
-              onClick={() => {
-                setImageCloseTrigger((prev) => prev + 1);
-                handleImageEditModeChange(false);
-                onRemoveImageFromFrame?.(carouselId, frame.id);
-              }}
-              className="bg-[--surface-raised]/90 hover:bg-red-600 rounded px-2 py-1.5 text-[--text-tertiary] hover:text-white transition-colors"
-              title="Remove image"
-            >
-              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                />
-              </svg>
-            </button>
-          </div>
+          <ImageToolPanel
+            frame={frame}
+            frameWidth={size.width}
+            carouselId={carouselId}
+            onUpdateImageLayer={onUpdateImageLayer}
+            onRemove={() => {
+              setImageCloseTrigger((prev) => prev + 1);
+              handleImageEditModeChange(false);
+              onRemoveImageFromFrame?.(carouselId, frame.id);
+            }}
+            onCancel={handleCancelEdit}
+            onDone={handleDoneEdit}
+          />
         )}
 
         {/* Fill Color Edit Controls - appears below frame when editing fill, hidden during drag */}
         {isFillEditing && !isDraggingAny && (
-          <div
-            className="mt-1.5 flex items-center gap-2 flex-wrap"
-            data-fill-edit-controls
-            onClick={(e) => e.stopPropagation()}
-            onMouseDown={(e) => e.stopPropagation()}
-          >
-            {/* Opacity Control */}
-            <div className="flex items-center gap-1 bg-[--surface-raised]/90 rounded px-2 py-1.5">
-              <span className="text-[--text-quaternary] text-[10px] mr-1 min-w-[40px]">Opacity</span>
-              <button
-                type="button"
-                onClick={() =>
-                  onUpdateFillLayer?.(carouselId, frame.id, {
-                    fillOpacity: Math.max(0, (frame.fillOpacity || 1) - 0.1),
-                  })
-                }
-                className="w-5 h-5 flex items-center justify-center text-[--text-tertiary] hover:text-white hover:bg-white/10 rounded transition-colors"
-              >
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
-                </svg>
-              </button>
-              <span className="text-[--text-secondary] text-[10px] font-medium min-w-[32px] text-center">
-                {Math.round((frame.fillOpacity || 1) * 100)}%
-              </span>
-              <button
-                type="button"
-                onClick={() =>
-                  onUpdateFillLayer?.(carouselId, frame.id, {
-                    fillOpacity: Math.min(1, (frame.fillOpacity || 1) + 0.1),
-                  })
-                }
-                className="w-5 h-5 flex items-center justify-center text-[--text-tertiary] hover:text-white hover:bg-white/10 rounded transition-colors"
-              >
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                </svg>
-              </button>
-              <button
-                type="button"
-                onClick={() => onUpdateFillLayer?.(carouselId, frame.id, { fillOpacity: 1 })}
-                className="w-5 h-5 flex items-center justify-center text-[--text-quaternary] hover:text-white hover:bg-white/10 rounded transition-colors"
-                title="Reset opacity to 100%"
-              >
-                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                  />
-                </svg>
-              </button>
-            </div>
-
-            {/* Rotation Control */}
-            <div className="flex items-center gap-1 bg-[--surface-raised]/90 rounded px-2 py-1.5">
-              <span className="text-[--text-quaternary] text-[10px] mr-1 min-w-[40px]">Rotate</span>
-              <button
-                type="button"
-                onClick={() =>
-                  onUpdateFillLayer?.(carouselId, frame.id, {
-                    fillRotation: ((frame.fillRotation || 0) - 90 + 360) % 360,
-                  })
-                }
-                className="w-5 h-5 flex items-center justify-center text-[--text-tertiary] hover:text-white hover:bg-white/10 rounded transition-colors"
-                title="Rotate -90°"
-              >
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"
-                  />
-                </svg>
-              </button>
-              <span className="text-[--text-secondary] text-[10px] font-medium min-w-[32px] text-center">
-                {frame.fillRotation || 0}°
-              </span>
-              <button
-                type="button"
-                onClick={() =>
-                  onUpdateFillLayer?.(carouselId, frame.id, { fillRotation: ((frame.fillRotation || 0) + 90) % 360 })
-                }
-                className="w-5 h-5 flex items-center justify-center text-[--text-tertiary] hover:text-white hover:bg-white/10 rounded transition-colors"
-                title="Rotate +90°"
-              >
-                <svg
-                  className="w-3.5 h-3.5 transform scale-x-[-1]"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"
-                  />
-                </svg>
-              </button>
-              <button
-                type="button"
-                onClick={() => onUpdateFillLayer?.(carouselId, frame.id, { fillRotation: 0 })}
-                className="w-5 h-5 flex items-center justify-center text-[--text-quaternary] hover:text-white hover:bg-white/10 rounded transition-colors"
-                title="Reset rotation to 0°"
-              >
-                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                  />
-                </svg>
-              </button>
-            </div>
-
-            {/* Cancel Button */}
-            <button
-              type="button"
-              onClick={handleCancelFillEdit}
-              className="bg-[--surface-overlay]/90 hover:bg-[--surface-elevated] rounded px-2.5 py-1.5 text-[--text-secondary] hover:text-white text-[10px] font-medium transition-colors"
-              title="Cancel and revert changes"
-            >
-              Cancel
-            </button>
-
-            {/* Done Button */}
-            <button
-              type="button"
-              onClick={handleDoneFillEdit}
-              className="bg-[--surface-elevated]/90 hover:bg-[--surface-overlay] rounded-[--radius-sm] px-2.5 py-1.5 text-white text-[10px] font-medium transition-colors"
-              title="Done editing"
-            >
-              Done
-            </button>
-
-            {/* Delete Button */}
-            <button
-              type="button"
-              onClick={handleDeleteFill}
-              className="bg-[--surface-raised]/90 hover:bg-red-600 rounded px-2 py-1.5 text-[--text-tertiary] hover:text-white transition-colors"
-              title="Remove fill color"
-            >
-              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                />
-              </svg>
-            </button>
-          </div>
+          <FillToolPanel
+            frame={frame}
+            frameWidth={size.width}
+            carouselId={carouselId}
+            onUpdateFillLayer={onUpdateFillLayer}
+            onDelete={handleDeleteFill}
+            onCancel={handleCancelFillEdit}
+            onDone={handleDoneFillEdit}
+          />
         )}
 
         {/* Pattern Edit Controls - appears below frame when editing pattern, hidden during drag */}
         {isPatternEditing && !isDraggingAny && frame.patternLayer && (
-          <div
-            className="mt-1.5 flex items-center gap-2 flex-wrap"
-            data-pattern-edit-controls
-            onClick={(e) => e.stopPropagation()}
-            onMouseDown={(e) => e.stopPropagation()}
-          >
-            {/* Opacity Control */}
-            <div className="flex items-center gap-1 bg-[--surface-raised]/90 rounded px-2 py-1.5">
-              <span className="text-[--text-quaternary] text-[10px] mr-1 min-w-[40px]">Opacity</span>
-              <button
-                type="button"
-                onClick={() =>
-                  onUpdatePatternLayer?.(carouselId, frame.id, {
-                    opacity: Math.max(0, (frame.patternLayer.opacity || 1) - 0.1),
-                  })
-                }
-                className="w-5 h-5 flex items-center justify-center text-[--text-tertiary] hover:text-white hover:bg-white/10 rounded transition-colors"
-              >
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
-                </svg>
-              </button>
-              <span className="text-[--text-secondary] text-[10px] font-medium min-w-[32px] text-center">
-                {Math.round((frame.patternLayer.opacity || 1) * 100)}%
-              </span>
-              <button
-                type="button"
-                onClick={() =>
-                  onUpdatePatternLayer?.(carouselId, frame.id, {
-                    opacity: Math.min(1, (frame.patternLayer.opacity || 1) + 0.1),
-                  })
-                }
-                className="w-5 h-5 flex items-center justify-center text-[--text-tertiary] hover:text-white hover:bg-white/10 rounded transition-colors"
-              >
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                </svg>
-              </button>
-              <button
-                type="button"
-                onClick={() => onUpdatePatternLayer?.(carouselId, frame.id, { opacity: 1 })}
-                className="w-5 h-5 flex items-center justify-center text-[--text-quaternary] hover:text-white hover:bg-white/10 rounded transition-colors"
-                title="Reset opacity to 100%"
-              >
-                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                  />
-                </svg>
-              </button>
-            </div>
-
-            {/* Rotation Control */}
-            <div className="flex items-center gap-1 bg-[--surface-raised]/90 rounded px-2 py-1.5">
-              <span className="text-[--text-quaternary] text-[10px] mr-1 min-w-[40px]">Rotate</span>
-              <button
-                type="button"
-                onClick={() =>
-                  onUpdatePatternLayer?.(carouselId, frame.id, {
-                    rotation: ((frame.patternLayer.rotation || 0) - 90 + 360) % 360,
-                  })
-                }
-                className="w-5 h-5 flex items-center justify-center text-[--text-tertiary] hover:text-white hover:bg-white/10 rounded transition-colors"
-                title="Rotate -90°"
-              >
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"
-                  />
-                </svg>
-              </button>
-              <span className="text-[--text-secondary] text-[10px] font-medium min-w-[32px] text-center">
-                {frame.patternLayer.rotation || 0}°
-              </span>
-              <button
-                type="button"
-                onClick={() =>
-                  onUpdatePatternLayer?.(carouselId, frame.id, {
-                    rotation: ((frame.patternLayer.rotation || 0) + 90) % 360,
-                  })
-                }
-                className="w-5 h-5 flex items-center justify-center text-[--text-tertiary] hover:text-white hover:bg-white/10 rounded transition-colors"
-                title="Rotate +90°"
-              >
-                <svg
-                  className="w-3.5 h-3.5 transform scale-x-[-1]"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"
-                  />
-                </svg>
-              </button>
-              <button
-                type="button"
-                onClick={() => onUpdatePatternLayer?.(carouselId, frame.id, { rotation: 0 })}
-                className="w-5 h-5 flex items-center justify-center text-[--text-quaternary] hover:text-white hover:bg-white/10 rounded transition-colors"
-                title="Reset rotation to 0°"
-              >
-                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                  />
-                </svg>
-              </button>
-            </div>
-
-            {/* Cancel Button */}
-            <button
-              type="button"
-              onClick={handleCancelPatternEdit}
-              className="bg-[--surface-overlay]/90 hover:bg-[--surface-elevated] rounded px-2.5 py-1.5 text-[--text-secondary] hover:text-white text-[10px] font-medium transition-colors"
-              title="Cancel and revert changes"
-            >
-              Cancel
-            </button>
-
-            {/* Done Button */}
-            <button
-              type="button"
-              onClick={handleDonePatternEdit}
-              className="bg-[--surface-elevated]/90 hover:bg-[--surface-overlay] rounded-[--radius-sm] px-2.5 py-1.5 text-white text-[10px] font-medium transition-colors"
-              title="Done editing"
-            >
-              Done
-            </button>
-
-            {/* Delete Button */}
-            <button
-              type="button"
-              onClick={handleDeletePattern}
-              className="bg-[--surface-raised]/90 hover:bg-red-600 rounded px-2 py-1.5 text-[--text-tertiary] hover:text-white transition-colors"
-              title="Remove pattern"
-            >
-              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                />
-              </svg>
-            </button>
-          </div>
+          <PatternToolPanel
+            frame={frame}
+            frameWidth={size.width}
+            carouselId={carouselId}
+            onUpdatePatternLayer={onUpdatePatternLayer}
+            onDelete={handleDeletePattern}
+            onCancel={handleCancelPatternEdit}
+            onDone={handleDonePatternEdit}
+          />
         )}
 
         {/* Product Image Edit Controls - appears below frame when editing product image, hidden during drag */}
         {isProductImageEditing && !isDraggingAny && frame.productImageLayer && (
-          <div
-            className="mt-1.5 flex items-center gap-2 flex-wrap"
-            data-product-image-edit-controls
-            onClick={(e) => e.stopPropagation()}
-            onMouseDown={(e) => e.stopPropagation()}
-          >
-            {/* Zoom Control */}
-            <div className="flex items-center gap-1 bg-[--surface-raised]/90 rounded px-2 py-1.5">
-              <span className="text-[--text-quaternary] text-[10px] mr-1 min-w-[40px]">Zoom</span>
-              <button
-                type="button"
-                onClick={() =>
-                  onUpdateProductImageLayer?.(carouselId, frame.id, {
-                    scale: Math.max(0.5, (frame.productImageLayer.scale || 1) - 0.1),
-                  })
-                }
-                className="w-5 h-5 flex items-center justify-center text-[--text-tertiary] hover:text-white hover:bg-white/10 rounded transition-colors"
-              >
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
-                </svg>
-              </button>
-              <span className="text-[--text-secondary] text-[10px] font-medium min-w-[32px] text-center">
-                {Math.round((frame.productImageLayer.scale || 1) * 100)}%
-              </span>
-              <button
-                type="button"
-                onClick={() =>
-                  onUpdateProductImageLayer?.(carouselId, frame.id, {
-                    scale: Math.min(2, (frame.productImageLayer.scale || 1) + 0.1),
-                  })
-                }
-                className="w-5 h-5 flex items-center justify-center text-[--text-tertiary] hover:text-white hover:bg-white/10 rounded transition-colors"
-              >
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                </svg>
-              </button>
-              <button
-                type="button"
-                onClick={() => onUpdateProductImageLayer?.(carouselId, frame.id, { scale: 1 })}
-                className="w-5 h-5 flex items-center justify-center text-[--text-quaternary] hover:text-white hover:bg-white/10 rounded transition-colors"
-                title="Reset zoom to 100%"
-              >
-                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                  />
-                </svg>
-              </button>
-            </div>
-
-            {/* Corner Rounding Control */}
-            <div className="flex items-center gap-1 bg-[--surface-raised]/90 rounded px-2 py-1.5">
-              <span className="text-[--text-quaternary] text-[10px] mr-1 min-w-[40px]">Corners</span>
-              <button
-                type="button"
-                onClick={() =>
-                  onUpdateProductImageLayer?.(carouselId, frame.id, {
-                    borderRadius: Math.max(0, (frame.productImageLayer.borderRadius ?? 8) - 4),
-                  })
-                }
-                className="w-5 h-5 flex items-center justify-center text-[--text-tertiary] hover:text-white hover:bg-white/10 rounded transition-colors"
-              >
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
-                </svg>
-              </button>
-              <span className="text-[--text-secondary] text-[10px] font-medium min-w-[32px] text-center">
-                {frame.productImageLayer.borderRadius ?? 8}px
-              </span>
-              <button
-                type="button"
-                onClick={() =>
-                  onUpdateProductImageLayer?.(carouselId, frame.id, {
-                    borderRadius: Math.min(48, (frame.productImageLayer.borderRadius ?? 8) + 4),
-                  })
-                }
-                className="w-5 h-5 flex items-center justify-center text-[--text-tertiary] hover:text-white hover:bg-white/10 rounded transition-colors"
-              >
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                </svg>
-              </button>
-              <button
-                type="button"
-                onClick={() => onUpdateProductImageLayer?.(carouselId, frame.id, { borderRadius: 8 })}
-                className="w-5 h-5 flex items-center justify-center text-[--text-quaternary] hover:text-white hover:bg-white/10 rounded transition-colors"
-                title="Reset corners to 8px"
-              >
-                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                  />
-                </svg>
-              </button>
-            </div>
-
-            {/* Cancel Button */}
-            <button
-              type="button"
-              onClick={handleCancelProductImageEdit}
-              className="bg-[--surface-overlay]/90 hover:bg-[--surface-elevated] rounded px-2.5 py-1.5 text-[--text-secondary] hover:text-white text-[10px] font-medium transition-colors"
-              title="Cancel and revert changes"
-            >
-              Cancel
-            </button>
-
-            {/* Done Button */}
-            <button
-              type="button"
-              onClick={handleDoneProductImageEdit}
-              className="bg-[--surface-elevated]/90 hover:bg-[--surface-overlay] rounded-[--radius-sm] px-2.5 py-1.5 text-white text-[10px] font-medium transition-colors"
-              title="Done editing"
-            >
-              Done
-            </button>
-
-            {/* Delete Button */}
-            <button
-              type="button"
-              onClick={handleDeleteProductImage}
-              className="bg-[--surface-raised]/90 hover:bg-red-600 rounded px-2 py-1.5 text-[--text-tertiary] hover:text-white transition-colors"
-              title="Remove product image"
-            >
-              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                />
-              </svg>
-            </button>
-          </div>
+          <ProductImageToolPanel
+            frame={frame}
+            frameWidth={size.width}
+            carouselId={carouselId}
+            onUpdateProductImageLayer={onUpdateProductImageLayer}
+            onDelete={handleDeleteProductImage}
+            onCancel={handleCancelProductImageEdit}
+            onDone={handleDoneProductImageEdit}
+          />
         )}
 
         {/* Icon Edit Controls - appears below frame when editing icon, hidden during drag */}
         {isIconEditing && !isDraggingAny && frame.iconLayer && (
           <IconToolPanel
             frame={frame}
+            frameWidth={size.width}
             carouselId={carouselId}
             designSystem={designSystem}
             onUpdateIconLayer={onUpdateIconLayer}
@@ -2049,11 +1788,38 @@ export const CarouselFrame = ({
         {isProgressEditing && !isDraggingAny && (
           <ProgressToolPanel
             frame={frame}
+            frameWidth={size.width}
             carouselId={carouselId}
             designSystem={designSystem}
             onUpdateProgressIndicator={onUpdateProgressIndicator}
             onCancel={handleCancelProgressEdit}
             onDone={handleDoneProgressEdit}
+          />
+        )}
+
+        {/* Headline Text Edit Controls - appears below frame when editing headline, hidden during drag */}
+        {isHeadlineEditing && !isDraggingAny && (
+          <TextToolPanel
+            field="headline"
+            frame={frame}
+            frameWidth={size.width}
+            carouselId={carouselId}
+            designSystem={designSystem}
+            onCancel={handleCancelHeadlineEdit}
+            onDone={handleDoneHeadlineEdit}
+          />
+        )}
+
+        {/* Body Text Edit Controls - appears below frame when editing body, hidden during drag */}
+        {isBodyEditing && !isDraggingAny && (
+          <TextToolPanel
+            field="body"
+            frame={frame}
+            frameWidth={size.width}
+            carouselId={carouselId}
+            designSystem={designSystem}
+            onCancel={handleCancelBodyEdit}
+            onDone={handleDoneBodyEdit}
           />
         )}
       </div>

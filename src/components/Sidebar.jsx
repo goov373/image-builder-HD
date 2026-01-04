@@ -1,23 +1,20 @@
 /**
  * Sidebar Component
- * Main navigation sidebar with panel buttons and zoom controls
+ * Main navigation sidebar with panel buttons
  */
-
-// Detect Mac vs Windows/Linux for shortcut display
-const isMac = typeof navigator !== 'undefined' && navigator.platform.toUpperCase().indexOf('MAC') >= 0;
-const cmdKey = isMac ? '⌘' : 'Ctrl';
 
 const Sidebar = ({
   activePanel,
   onPanelChange,
-  zoom,
-  onZoomChange,
   isHomePage,
   onAccountClick,
   isAccountOpen,
   onCloseAccount,
   onShowShortcuts,
 }) => {
+  // Detect Mac vs Windows/Linux for shortcut display
+  const isMac = typeof navigator !== 'undefined' && navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+  const cmdKey = isMac ? '⌘' : 'Ctrl';
   const panels = [
     {
       id: 'design',
@@ -63,7 +60,7 @@ const Sidebar = ({
         ))}
       </div>
 
-      {/* Bottom Section - Zoom Controls or Profile Icon */}
+      {/* Bottom Section - Help and Profile */}
       <div className="mt-auto flex flex-col items-center gap-1.5 pb-2">
         {/* Help/Shortcuts Button */}
         <button
@@ -86,8 +83,8 @@ const Sidebar = ({
           </span>
         </button>
 
-        {isHomePage ? (
-          /* Profile Icon on Homepage */
+        {/* Profile Icon on Homepage */}
+        {isHomePage && (
           <button
             type="button"
             onClick={onAccountClick}
@@ -103,46 +100,6 @@ const Sidebar = ({
               />
             </svg>
           </button>
-        ) : (
-          /* Zoom Controls in Editor */
-          <>
-            <button
-              type="button"
-              onClick={() => onZoomChange(Math.min(250, zoom + 10))}
-              className="w-8 h-8 rounded-[--radius-md] flex items-center justify-center text-[--text-tertiary] hover:text-[--text-primary] hover:bg-[--surface-raised] transition-colors duration-[--duration-fast]"
-              title={`Zoom in (${cmdKey}+)`}
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-              </svg>
-            </button>
-            <span className="text-[10px] font-mono font-medium text-[--text-tertiary] tabular-nums">{zoom}%</span>
-            <button
-              type="button"
-              onClick={() => onZoomChange(Math.max(50, zoom - 10))}
-              className="w-8 h-8 rounded-[--radius-md] flex items-center justify-center text-[--text-tertiary] hover:text-[--text-primary] hover:bg-[--surface-raised] transition-colors duration-[--duration-fast]"
-              title={`Zoom out (${cmdKey}-)`}
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
-              </svg>
-            </button>
-            <button
-              type="button"
-              onClick={() => onZoomChange(100)}
-              className="w-8 h-8 rounded-[--radius-md] flex items-center justify-center text-[--text-tertiary] hover:text-[--text-primary] hover:bg-[--surface-raised] transition-colors duration-[--duration-fast]"
-              title={`Reset zoom (${cmdKey}0)`}
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                />
-              </svg>
-            </button>
-          </>
         )}
       </div>
     </div>
