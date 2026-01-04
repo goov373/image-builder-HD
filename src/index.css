@@ -2,25 +2,95 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ===== THEME CSS VARIABLES ===== */
+/* ===== DESIGN SYSTEM TOKENS ===== */
 :root {
-  /* Dark theme (default) */
-  --color-bg-primary: #18191A;
-  --color-bg-secondary: #1f2022;
-  --color-bg-tertiary: #27282a;
-  --color-bg-elevated: #2d2e30;
-  
-  --color-border: #374151;
-  --color-border-light: #4b5563;
-  
-  --color-text-primary: #ffffff;
-  --color-text-secondary: #9ca3af;
-  --color-text-muted: #6b7280;
-  --color-text-disabled: #4b5563;
-  
-  --color-accent: #6466e9;
-  --color-accent-hover: #818cf8;
-  
+  /* === SURFACES (Luminosity-based elevation - Neutral Gray) === */
+  --surface-canvas: #111111;    /* Pure dark gray - app background */
+  --surface-sunken: #0d0d0d;    /* Darkest - inset areas */
+  --surface-default: #1a1a1a;   /* Panels, sidebars */
+  --surface-raised: #242424;    /* Cards, buttons */
+  --surface-overlay: #2e2e2e;   /* Dropdowns, modals */
+  --surface-elevated: #3a3a3a;  /* Highest elevation */
+
+  /* === BORDERS (White-based for universality on any background) === */
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --border-default: rgba(255, 255, 255, 0.1);
+  --border-muted: rgba(255, 255, 255, 0.12);
+  --border-emphasis: rgba(255, 255, 255, 0.16);
+  --border-strong: rgba(255, 255, 255, 0.24);
+
+  /* === TEXT (High-contrast hierarchy) === */
+  --text-primary: rgba(255, 255, 255, 0.95);
+  --text-secondary: rgba(255, 255, 255, 0.7);
+  --text-tertiary: rgba(255, 255, 255, 0.5);
+  --text-quaternary: rgba(255, 255, 255, 0.35);
+  --text-disabled: rgba(255, 255, 255, 0.25);
+
+  /* === CORNER RADII (Angular, minimal) === */
+  --radius-none: 0px;
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 6px;
+  --radius-xl: 8px;
+
+  /* === SPACING (4px base unit) === */
+  --space-0: 0px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+
+  /* === MOTION === */
+  --duration-instant: 50ms;
+  --duration-fast: 100ms;
+  --duration-normal: 150ms;
+  --duration-slow: 250ms;
+  --ease-default: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* === ACCENTS === */
+  /* Layer editing (orange) - ONLY for editable content layers */
+  --accent-layer: rgb(235, 130, 60);
+  --accent-layer-subtle: rgba(235, 130, 60, 0.35);
+  --accent-layer-muted: rgba(235, 130, 60, 0.15);
+
+  /* Brand accent (purple) - for branding elements only */
+  --accent-brand: #6466e9;
+  --accent-brand-hover: #818cf8;
+
+  /* Semantic colors */
+  --semantic-success: rgb(52, 211, 153);
+  --semantic-warning: rgb(251, 191, 36);
+  --semantic-error: rgb(248, 113, 113);
+  --semantic-info: rgb(96, 165, 250);
+
+  /* === ICON SIZES === */
+  --icon-xs: 12px;
+  --icon-sm: 16px;
+  --icon-md: 20px;
+  --icon-lg: 24px;
+
+  /* === LEGACY MAPPINGS (for backwards compatibility) === */
+  --color-bg-primary: var(--surface-canvas);
+  --color-bg-secondary: var(--surface-default);
+  --color-bg-tertiary: var(--surface-raised);
+  --color-bg-elevated: var(--surface-overlay);
+  --color-border: var(--border-emphasis);
+  --color-border-light: var(--border-strong);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-tertiary);
+  --color-text-disabled: var(--text-disabled);
+  --color-accent: var(--accent-brand);
+  --color-accent-hover: var(--accent-brand-hover);
+
   /* Scrollbar */
   --scrollbar-thumb: rgba(75, 85, 99, 0.5);
   --scrollbar-thumb-hover: rgba(107, 114, 128, 0.7);
@@ -32,18 +102,18 @@
   --color-bg-secondary: #f9fafb;
   --color-bg-tertiary: #f3f4f6;
   --color-bg-elevated: #e5e7eb;
-  
+
   --color-border: #d1d5db;
   --color-border-light: #e5e7eb;
-  
+
   --color-text-primary: #111827;
   --color-text-secondary: #4b5563;
   --color-text-muted: #6b7280;
   --color-text-disabled: #9ca3af;
-  
+
   --color-accent: #6466e9;
   --color-accent-hover: #4f46e5;
-  
+
   /* Scrollbar */
   --scrollbar-thumb: rgba(156, 163, 175, 0.5);
   --scrollbar-thumb-hover: rgba(107, 114, 128, 0.7);
@@ -53,19 +123,23 @@
 body {
   background-color: var(--color-bg-primary);
   color: var(--color-text-primary);
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
 }
 
-html, body, #root {
+html,
+body,
+#root {
   height: 100%;
   overflow: hidden;
 }
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
+    'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
@@ -100,7 +174,7 @@ html {
 }
 
 /* Remove default color input styling */
-input[type="color"] {
+input[type='color'] {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
@@ -109,18 +183,18 @@ input[type="color"] {
   background: transparent;
 }
 
-input[type="color"]::-webkit-color-swatch-wrapper {
+input[type='color']::-webkit-color-swatch-wrapper {
   padding: 0;
   border: none;
   border-radius: 8px;
 }
 
-input[type="color"]::-webkit-color-swatch {
+input[type='color']::-webkit-color-swatch {
   border: none;
   border-radius: 8px;
 }
 
-input[type="color"]::-moz-color-swatch {
+input[type='color']::-moz-color-swatch {
   border: none;
   border-radius: 8px;
 }
@@ -152,4 +226,61 @@ input[type="color"]::-moz-color-swatch {
 * {
   scrollbar-width: thin;
   scrollbar-color: rgba(75, 85, 99, 0.5) transparent;
+}
+
+/* Toast slide-in animation */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Success pulse animation */
+@keyframes successPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(52, 211, 153, 0);
+  }
+  50% {
+    box-shadow: 0 0 0 4px rgba(52, 211, 153, 0.3);
+  }
+}
+
+/* ===== FOCUS STATES ===== */
+/* Global focus-visible styles for keyboard accessibility */
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.5);
+  outline-offset: 2px;
+}
+
+/* Buttons and interactive elements */
+button:focus-visible,
+[role='button']:focus-visible,
+a:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.5);
+  outline-offset: 2px;
+  border-radius: var(--radius-md);
+}
+
+/* Form inputs */
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.5);
+  outline-offset: 0px;
+}
+
+/* Subtle focus ring for less important elements */
+.focus-ring-subtle:focus-visible {
+  outline: 1px solid rgba(255, 255, 255, 0.3);
+  outline-offset: 1px;
 }

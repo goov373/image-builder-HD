@@ -4,9 +4,9 @@
  */
 const ProgressRing = ({
   value = 75,
-  size = "md",
-  color = "#6466e9",
-  trackColor = "rgba(255,255,255,0.1)",
+  size = 'md',
+  color = '#6466e9',
+  trackColor = 'rgba(255,255,255,0.1)',
   showValue = true,
   style = {},
   isSelected = false,
@@ -17,12 +17,12 @@ const ProgressRing = ({
     md: { diameter: 56, strokeWidth: 5, text: 'text-xs' },
     lg: { diameter: 72, strokeWidth: 6, text: 'text-sm' },
   };
-  
+
   const s = sizes[size] || sizes.md;
   const radius = (s.diameter - s.strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
   const offset = circumference - (value / 100) * circumference;
-  
+
   return (
     <div
       onClick={onClick}
@@ -57,18 +57,11 @@ const ProgressRing = ({
           style={{ transition: 'stroke-dashoffset 0.5s ease' }}
         />
       </svg>
-      
+
       {/* Value */}
-      {showValue && (
-        <span 
-          className={`absolute ${s.text} font-bold text-white`}
-        >
-          {value}%
-        </span>
-      )}
+      {showValue && <span className={`absolute ${s.text} font-bold text-white`}>{value}%</span>}
     </div>
   );
 };
 
 export default ProgressRing;
-

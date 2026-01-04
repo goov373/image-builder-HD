@@ -1,11 +1,15 @@
 // Central export for all components
-export { default as AccountPanel } from './AccountPanel';
+
+// Error Boundaries - Critical for app stability
+export { default as ErrorBoundary } from './ErrorBoundary';
+export { default as SectionErrorBoundary } from './SectionErrorBoundary';
+
+// Note: AccountPanel, DesignSystemPanel, ExportPanel are lazy-loaded in CarouselDesignTool
+
 export { default as FormatButton } from './FormatButton';
 export { default as EditableTextField } from './EditableTextField';
 export { LayoutBottomStack, LayoutCenterDrama, LayoutEditorialLeft } from './Layouts';
 export { default as Sidebar } from './Sidebar';
-export { default as DesignSystemPanel } from './DesignSystemPanel';
-export { default as ExportPanel } from './ExportPanel';
 export { default as Homepage } from './Homepage';
 export { default as ProjectHeader } from './ProjectHeader';
 export { default as NewProjectView } from './NewProjectView';
@@ -32,18 +36,12 @@ export { DataChip, StatCard, Tooltip, Sparkline, AvatarGroup, ProgressRing } fro
 // ===== REUSABLE COMPONENT LIBRARIES =====
 
 // UI Primitives - Panels, sections, empty states
-export { 
-  Panel, 
-  PanelHeader, 
-  PanelSection, 
-  PanelTabs, 
-  PanelEmptyState 
-} from './ui/index.js';
+export { Panel, PanelHeader, PanelSection, PanelTabs, PanelEmptyState } from './ui/index.js';
 
 // Toolbar Components - Dropdowns, buttons, toggles
-export { 
-  ToolbarDropdown, 
-  ToolbarDropdownItem, 
+export {
+  ToolbarDropdown,
+  ToolbarDropdownItem,
   ChevronIcon,
   ToolbarButtonGroup,
   ToolbarButton,
@@ -53,9 +51,9 @@ export {
 } from './toolbar/index.js';
 
 // Design Panel Components - Image upload, gradients, patterns
-export { 
-  ImageUploader, 
-  ImageGrid, 
+export {
+  ImageUploader,
+  ImageGrid,
   ImageCard,
   GradientPicker,
   ApplyModeToggle,

@@ -1,0 +1,24 @@
+# Build output
+dist/
+build/
+
+# Dependencies
+node_modules/
+
+# Config files (often have specific formatting needs)
+*.config.js
+*.config.ts
+
+# Generated files
+package-lock.json
+
+# Assets
+public/
+*.svg
+*.png
+*.jpg
+*.ico
+
+# Documentation
+*.md
+

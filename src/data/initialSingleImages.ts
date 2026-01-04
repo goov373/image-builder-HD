@@ -4,13 +4,16 @@ import type { SingleImage, MockupTemplate } from '../types/singleImage';
  * Mockup Template Definitions
  * Pre-configured arrangements for different dashboard presentations
  */
-export const MOCKUP_TEMPLATES: Record<MockupTemplate, {
-  name: string;
-  description: string;
-  defaultTransform: { x: number; y: number; width: number; height: number; rotation: number };
-  cropPreset?: { x: number; y: number; width: number; height: number };
-  perspective?: { rotateX: number; rotateY: number };
-}> = {
+export const MOCKUP_TEMPLATES: Record<
+  MockupTemplate,
+  {
+    name: string;
+    description: string;
+    defaultTransform: { x: number; y: number; width: number; height: number; rotation: number };
+    cropPreset?: { x: number; y: number; width: number; height: number };
+    perspective?: { rotateX: number; rotateY: number };
+  }
+> = {
   'dashboard-full': {
     name: 'Full Dashboard',
     description: 'Complete dashboard view with slight shadow lift',
@@ -112,8 +115,8 @@ export const DECORATOR_PRESETS = {
 export const initialSingleImages: SingleImage[] = [
   {
     id: 1,
-    name: "Dashboard Hero",
-    subtitle: "Landing Page Feature",
+    name: 'Dashboard Hero',
+    subtitle: 'Landing Page Feature',
     canvasSize: 'hero',
     canvasWidth: 1200,
     canvasHeight: 630,
@@ -256,4 +259,3 @@ export function createEmptySingleImage(id: number, name: string): SingleImage {
     updatedAt: new Date().toISOString().split('T')[0],
   };
 }
-

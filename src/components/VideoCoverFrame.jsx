@@ -23,8 +23,9 @@ const VideoCoverFrame = ({
   onUpdateImage,
   onRemoveImage,
 }) => {
-  const [isHovered, setIsHovered] = useState(false);
-  
+  // Hover state for future hover effects
+  const [_isHovered, setIsHovered] = useState(false);
+
   const frame = videoCover.frame;
   const defaultStyle = getVideoCoverStyle(frame.style, designSystem);
   const content = frame.variants[frame.currentVariant];
@@ -32,7 +33,7 @@ const VideoCoverFrame = ({
   const size = frameSizes[videoCover.frameSize] || frameSizes.youtube;
   const formatting = frame.variants[frame.currentVariant]?.formatting || {};
   const layoutVariant = frame.layoutVariant || 0;
-  
+
   // Compute background style - handles both simple string and stretched gradient objects
   const getBackgroundStyle = () => {
     const bgOverride = frame.backgroundOverride;
@@ -51,13 +52,13 @@ const VideoCoverFrame = ({
     return { background: bgOverride };
   };
   const backgroundStyle = getBackgroundStyle();
-  
+
   // Use default style for text colors
   const style = { ...defaultStyle, ...backgroundStyle };
-  
+
   const handleUpdateText = (field, value) => onUpdateText?.(videoCover.id, frame.id, field, value);
   const handleActivateField = (field) => onActivateTextField?.(field);
-  
+
   const renderLayout = () => {
     const fontSizes = getFontSizes(videoCover.frameSize);
     const props = {
@@ -80,50 +81,56 @@ const VideoCoverFrame = ({
       episodeNumber: videoCover.episodeNumber,
       seriesName: videoCover.seriesName,
     };
-    
+
     // Use video-specific layouts first, fall back to core layouts
     switch (layoutIndex) {
-      case 7: return <VideoFaceText {...props} />;
-      case 8: return <VideoBoldStatement {...props} />;
-      case 9: return <VideoEpisodeCard {...props} />;
-      case 10: return <VideoPlayOverlay {...props} />;
-      case 1: return <LayoutCenterDrama {...props} />;
-      case 2: return <LayoutEditorialLeft {...props} />;
-      default: return <LayoutBottomStack {...props} />;
+      case 7:
+        return <VideoFaceText {...props} />;
+      case 8:
+        return <VideoBoldStatement {...props} />;
+      case 9:
+        return <VideoEpisodeCard {...props} />;
+      case 10:
+        return <VideoPlayOverlay {...props} />;
+      case 1:
+        return <LayoutCenterDrama {...props} />;
+      case 2:
+        return <LayoutEditorialLeft {...props} />;
+      default:
+        return <LayoutBottomStack {...props} />;
     }
   };
-  
+
   return (
     <div className="flex flex-col items-center">
       {/* Frame Size Indicator */}
       <div className="mb-3 flex items-center gap-2">
-        <span className="text-xs text-gray-400">{size.name}</span>
+        <span className="text-xs text-tertiary">{size.name}</span>
         <span className="text-[10px] text-gray-600">{size.spec}</span>
       </div>
-      
+
       {/* Main Frame */}
-      <div 
+      <div
         className={`relative overflow-hidden shadow-xl cursor-pointer transition-all rounded-lg ${
           isSelected ? 'ring-2 ring-gray-400' : 'hover:ring-2 hover:ring-gray-500'
         }`}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        style={{ 
-          ...backgroundStyle, 
-          width: size.width, 
-          height: size.height 
+        style={{
+          ...backgroundStyle,
+          width: size.width,
+          height: size.height,
         }}
-        onClick={(e) => { e.stopPropagation(); onSelect?.(); }}
+        onClick={(e) => {
+          e.stopPropagation();
+          onSelect?.();
+        }}
       >
         {/* Pattern Layer - absolute backmost (z-index: -2) */}
         {frame.patternLayer && (
-          <PatternLayer
-            patternLayer={frame.patternLayer}
-            frameWidth={size.width}
-            frameHeight={size.height}
-          />
+          <PatternLayer patternLayer={frame.patternLayer} frameWidth={size.width} frameHeight={size.height} />
         )}
-        
+
         {/* Image Layer - behind text (z-index: 0) */}
         {frame.imageLayer && (
           <ImageLayer
@@ -135,27 +142,20 @@ const VideoCoverFrame = ({
             onRemove={() => onRemoveImage?.(videoCover.id)}
           />
         )}
-        
+
         {/* Layout Content (z-index: 10) */}
-        <div className="absolute inset-0 z-10">
-          {renderLayout()}
-        </div>
-        
+        <div className="absolute inset-0 z-10">{renderLayout()}</div>
+
         {/* Play Button Overlay (if not using PlayOverlay layout) */}
         {videoCover.showPlayButton && layoutIndex !== 10 && (
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <PlayButtonOverlay 
-              isVisible={true}
-              accentColor={style.accent}
-              size="medium"
-              style="filled"
-            />
+            <PlayButtonOverlay isVisible={true} accentColor={style.accent} size="medium" style="filled" />
           </div>
         )}
-        
+
         {/* Episode Number Badge (if not using EpisodeCard layout) */}
         {videoCover.episodeNumber && layoutIndex !== 9 && (
-          <EpisodeNumber 
+          <EpisodeNumber
             number={videoCover.episodeNumber}
             backgroundColor={style.accent}
             position="top-left"
@@ -163,14 +163,11 @@ const VideoCoverFrame = ({
           />
         )}
       </div>
-      
+
       {/* Platform indicator */}
-      <div className="mt-3 text-[10px] text-gray-500">
-        {size.platforms}
-      </div>
+      <div className="mt-3 text-[10px] text-gray-500">{size.platforms}</div>
     </div>
   );
 };
 
 export default VideoCoverFrame;
-

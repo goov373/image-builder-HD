@@ -1,7 +1,7 @@
 /**
  * HelloData Brand Theme Configuration
  * Centralized design tokens for consistent theming across the application
- * 
+ *
  * Usage:
  * - Import specific tokens: import { colors, typography } from '@/config/theme'
  * - Use in Tailwind: Reference these values in tailwind.config.js extend section
@@ -18,7 +18,7 @@ export const colors = {
     purplePale: '#c7d2fe',
     purpleBg: '#EEF2FF',
   },
-  
+
   // Accent colors
   accent: {
     orange: '#F97316',
@@ -27,7 +27,7 @@ export const colors = {
     orangePale: '#fdd8c2',
     gold: '#fbbf24',
   },
-  
+
   // Neutral palette
   neutral: {
     white: '#ffffff',
@@ -38,7 +38,7 @@ export const colors = {
     shadow: '#18191A',
     black: '#000000',
   },
-  
+
   // UI-specific colors (dark theme)
   ui: {
     background: '#18191A',
@@ -53,7 +53,7 @@ export const colors = {
       disabled: '#4B5563',
     },
   },
-  
+
   // Semantic colors
   semantic: {
     success: '#22c55e',
@@ -70,25 +70,25 @@ export const typography = {
     body: '"Inter", sans-serif',
     mono: '"JetBrains Mono", monospace',
   },
-  
+
   fontSize: {
-    xs: '0.625rem',   // 10px
-    sm: '0.75rem',    // 12px
+    xs: '0.625rem', // 10px
+    sm: '0.75rem', // 12px
     base: '0.875rem', // 14px
-    lg: '1rem',       // 16px
-    xl: '1.25rem',    // 20px
-    '2xl': '1.5rem',  // 24px
-    '3xl': '2rem',    // 32px
-    '4xl': '2.5rem',  // 40px
+    lg: '1rem', // 16px
+    xl: '1.25rem', // 20px
+    '2xl': '1.5rem', // 24px
+    '3xl': '2rem', // 32px
+    '4xl': '2.5rem', // 40px
   },
-  
+
   fontWeight: {
     normal: 400,
     medium: 500,
     semibold: 600,
     bold: 700,
   },
-  
+
   lineHeight: {
     tight: 1.2,
     normal: 1.5,
@@ -174,13 +174,13 @@ export const tailwindClasses = {
     ghost: 'bg-transparent hover:bg-gray-800 text-gray-300',
     danger: 'bg-red-600 hover:bg-red-700 text-white',
   },
-  
+
   // Input styling
   input: 'bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white focus:outline-none focus:border-gray-600',
-  
+
   // Card/panel styling
   card: 'bg-gray-800 border border-gray-700 rounded-lg',
-  
+
   // Common transitions
   transition: {
     fast: 'transition-all duration-150 ease-out',
@@ -209,4 +209,3 @@ export const theme = {
 } as const;
 
 export default theme;
-

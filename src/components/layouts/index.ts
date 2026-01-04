@@ -13,13 +13,13 @@ export const LAYOUT_COMPONENTS: Record<string, React.ComponentType<any>> = {
   BottomStack: LayoutBottomStack,
   CenterDrama: LayoutCenterDrama,
   Editorial: LayoutEditorialLeft,
-  
+
   // Eblast layouts
   HeroOverlay: EblastHeroOverlay,
   Split5050: EblastSplit5050,
   CTABanner: EblastCTABanner,
   TextBlock: EblastTextBlock,
-  
+
   // Video cover layouts
   FaceText: VideoFaceText,
   BoldStatement: VideoBoldStatement,
@@ -33,13 +33,13 @@ export const LAYOUT_META: Record<string, { name: string; description: string; ca
   BottomStack: { name: 'Bottom Stack', description: 'Text stacked at bottom', category: 'core' },
   CenterDrama: { name: 'Center Drama', description: 'Centered focal point', category: 'core' },
   Editorial: { name: 'Editorial', description: 'Magazine-style layout', category: 'core' },
-  
+
   // Eblast layouts
   HeroOverlay: { name: 'Hero Overlay', description: 'Large image with text overlay', category: 'eblast' },
   Split5050: { name: 'Split 50/50', description: 'Image and text side by side', category: 'eblast' },
   CTABanner: { name: 'CTA Banner', description: 'Prominent call-to-action', category: 'eblast' },
   TextBlock: { name: 'Text Block', description: 'Simple text section', category: 'eblast' },
-  
+
   // Video cover layouts
   FaceText: { name: 'Face + Text', description: 'Headshot with bold text', category: 'videoCover' },
   BoldStatement: { name: 'Bold Statement', description: 'Large centered text', category: 'videoCover' },
@@ -92,4 +92,3 @@ export function getLayoutDisplayName(layoutKey: string): string {
 export { LayoutBottomStack, LayoutCenterDrama, LayoutEditorialLeft } from '../Layouts';
 export { EblastHeroOverlay, EblastSplit5050, EblastCTABanner, EblastTextBlock } from './EblastLayouts';
 export { VideoFaceText, VideoBoldStatement, VideoEpisodeCard, VideoPlayOverlay } from './VideoCoverLayouts';
-

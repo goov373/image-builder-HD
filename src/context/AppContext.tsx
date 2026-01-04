@@ -1,9 +1,5 @@
 import React, { createContext, useContext, ReactNode } from 'react';
-import type { 
-  DesignSystemContextValue, 
-  SelectionContextValue, 
-  CarouselsContextValue 
-} from '../types';
+import type { DesignSystemContextValue, SelectionContextValue, CarouselsContextValue } from '../types';
 
 // Design System Context
 const DesignSystemContext = createContext<DesignSystemContextValue | null>(null);
@@ -15,9 +11,7 @@ interface ProviderProps {
 
 export function DesignSystemProvider({ value, children }: ProviderProps) {
   return (
-    <DesignSystemContext.Provider value={value as DesignSystemContextValue}>
-      {children}
-    </DesignSystemContext.Provider>
+    <DesignSystemContext.Provider value={value as DesignSystemContextValue}>{children}</DesignSystemContext.Provider>
   );
 }
 
@@ -33,11 +27,7 @@ export function useDesignSystemContext(): DesignSystemContextValue {
 const SelectionContext = createContext<SelectionContextValue | null>(null);
 
 export function SelectionProvider({ value, children }: ProviderProps) {
-  return (
-    <SelectionContext.Provider value={value as SelectionContextValue}>
-      {children}
-    </SelectionContext.Provider>
-  );
+  return <SelectionContext.Provider value={value as SelectionContextValue}>{children}</SelectionContext.Provider>;
 }
 
 export function useSelectionContext(): SelectionContextValue {
@@ -52,11 +42,7 @@ export function useSelectionContext(): SelectionContextValue {
 const CarouselsContext = createContext<CarouselsContextValue | null>(null);
 
 export function CarouselsProvider({ value, children }: ProviderProps) {
-  return (
-    <CarouselsContext.Provider value={value as CarouselsContextValue}>
-      {children}
-    </CarouselsContext.Provider>
-  );
+  return <CarouselsContext.Provider value={value as CarouselsContextValue}>{children}</CarouselsContext.Provider>;
 }
 
 export function useCarouselsContext(): CarouselsContextValue {
@@ -71,11 +57,7 @@ export function useCarouselsContext(): CarouselsContextValue {
 const DropdownsContext = createContext<Record<string, unknown> | null>(null);
 
 export function DropdownsProvider({ value, children }: ProviderProps) {
-  return (
-    <DropdownsContext.Provider value={value as Record<string, unknown>}>
-      {children}
-    </DropdownsContext.Provider>
-  );
+  return <DropdownsContext.Provider value={value as Record<string, unknown>}>{children}</DropdownsContext.Provider>;
 }
 
 export function useDropdownsContext() {
@@ -95,24 +77,14 @@ interface AppProviderProps {
   children: ReactNode;
 }
 
-export function AppProvider({ 
-  designSystem, 
-  selection, 
-  carousels, 
-  dropdowns, 
-  children 
-}: AppProviderProps) {
+export function AppProvider({ designSystem, selection, carousels, dropdowns, children }: AppProviderProps) {
   return (
     <DesignSystemProvider value={designSystem}>
       <SelectionProvider value={selection}>
         <CarouselsProvider value={carousels}>
-          <DropdownsProvider value={dropdowns}>
-            {children}
-          </DropdownsProvider>
+          <DropdownsProvider value={dropdowns}>{children}</DropdownsProvider>
         </CarouselsProvider>
       </SelectionProvider>
     </DesignSystemProvider>
   );
 }
-
-

@@ -5,7 +5,7 @@
 const AvatarGroup = ({
   count = 5,
   maxDisplay = 4,
-  size = "md",
+  size = 'md',
   colors = ['#6466e9', '#F97316', '#818cf8', '#8b5cf6', '#ec4899'],
   style = {},
   isSelected = false,
@@ -16,11 +16,11 @@ const AvatarGroup = ({
     md: { diameter: 32, overlap: -10, text: 'text-[10px]', plus: 20 },
     lg: { diameter: 40, overlap: -12, text: 'text-xs', plus: 24 },
   };
-  
+
   const s = sizes[size] || sizes.md;
   const displayCount = Math.min(count, maxDisplay);
   const remaining = count - displayCount;
-  
+
   return (
     <div
       onClick={onClick}
@@ -48,7 +48,7 @@ const AvatarGroup = ({
           </svg>
         </div>
       ))}
-      
+
       {/* Remaining count badge */}
       {remaining > 0 && (
         <div
@@ -68,4 +68,3 @@ const AvatarGroup = ({
 };
 
 export default AvatarGroup;
-

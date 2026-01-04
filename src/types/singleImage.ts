@@ -7,9 +7,9 @@
 export type CanvasSize = 'hero' | 'square' | 'wide' | 'tall' | 'og' | 'twitter';
 
 // Mockup template types
-export type MockupTemplate = 
-  | 'dashboard-full' 
-  | 'dashboard-cropped-tl' 
+export type MockupTemplate =
+  | 'dashboard-full'
+  | 'dashboard-cropped-tl'
   | 'dashboard-cropped-tr'
   | 'dashboard-cropped-bl'
   | 'dashboard-cropped-br'
@@ -22,14 +22,14 @@ export type MockupTemplate =
   | 'feature-callout';
 
 // Decorator types
-export type DecoratorType = 
-  | 'chip' 
-  | 'tag' 
-  | 'tooltip' 
-  | 'badge' 
+export type DecoratorType =
+  | 'chip'
+  | 'tag'
+  | 'tooltip'
+  | 'badge'
   | 'notification'
-  | 'progress' 
-  | 'sparkline' 
+  | 'progress'
+  | 'sparkline'
   | 'avatar-group'
   | 'rating'
   | 'stat-card'
@@ -54,8 +54,8 @@ export interface Background {
 
 // Mockup styling options
 export interface MockupStyle {
-  cornerRadius: number;        // 0-48px
-  borderWidth: number;         // 0-8px
+  cornerRadius: number; // 0-48px
+  borderWidth: number; // 0-8px
   borderColor: string;
   borderStyle: BorderStyle;
   borderGradient?: { from: string; to: string };
@@ -109,7 +109,7 @@ export interface MockupLayer extends BaseLayer {
   template: MockupTemplate;
   cropRegion?: { x: number; y: number; width: number; height: number };
   style: MockupStyle;
-  imageUrl?: string;           // Uploaded screenshot
+  imageUrl?: string; // Uploaded screenshot
   placeholderType?: 'dashboard' | 'analytics' | 'settings' | 'table' | 'chart';
 }
 
@@ -214,4 +214,3 @@ export const DEFAULT_MOCKUP_STYLE: MockupStyle = {
   glowColor: '#6466e9',
   glowBlur: 24,
 };
-

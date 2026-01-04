@@ -2,8 +2,8 @@
  * Episode Number Badge Component
  * Display episode/part number on video thumbnails
  */
-const EpisodeNumber = ({ 
-  number = "Ep. 01", 
+const EpisodeNumber = ({
+  number = 'Ep. 01',
   backgroundColor = '#f97316',
   textColor = '#ffffff',
   position = 'top-left', // top-left, top-right, bottom-left, bottom-right
@@ -15,20 +15,18 @@ const EpisodeNumber = ({
     'bottom-left': 'bottom-2 left-2',
     'bottom-right': 'bottom-2 right-2',
   };
-  
+
   const sizeClasses = {
     small: 'text-[9px] px-1.5 py-0.5',
     medium: 'text-[11px] px-2 py-1',
     large: 'text-xs px-3 py-1.5',
   };
-  
+
   return (
-    <div 
-      className={`absolute ${positionClasses[position]} z-10`}
-    >
-      <div 
+    <div className={`absolute ${positionClasses[position]} z-10`}>
+      <div
         className={`${sizeClasses[size]} rounded-full font-bold`}
-        style={{ 
+        style={{
           backgroundColor,
           color: textColor,
         }}
@@ -40,5 +38,3 @@ const EpisodeNumber = ({
 };
 
 export default EpisodeNumber;
-
-

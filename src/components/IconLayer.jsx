@@ -5,21 +5,22 @@
 const IconLayer = ({
   iconLayer,
   frameWidth,
-  frameHeight,
-  isRowSelected = false,
+  frameHeight: _frameHeight,
+  isRowSelected: _isRowSelected = false,
   isFrameSelected = false,
   isSelected = false, // When this layer is actively selected (clicked)
   onClick,
 }) => {
   if (!iconLayer) return null;
-  
+
   const { path, scale = 1, color = '#ffffff', borderColor = null, backgroundColor = null } = iconLayer;
-  
+
   // Position: left-aligned, above text area (same as icon placeholder)
   const iconSize = 36 * scale;
   const horizontalPadding = frameWidth * 0.075;
-  
+
   // Determine border style - user-defined border takes precedence over selection indicators
+  // Orange accent is used ONLY for editable content layers (per design spec)
   // When selected (clicked), show solid orange like text fields
   // When frame selected but not this layer, show dashed
   const getBorderStyle = () => {
@@ -27,15 +28,15 @@ const IconLayer = ({
       return `2px solid ${borderColor}`;
     }
     if (isSelected) {
-      return '2px solid rgb(249, 115, 22)'; // Solid orange when selected
+      return '2px solid var(--accent-layer)'; // Solid when layer selected
     }
     if (isFrameSelected) {
-      return '1px dashed rgba(249, 115, 22, 0.4)'; // Dashed when frame selected but not this layer
+      return '1px dashed var(--accent-layer-subtle)'; // Dashed when frame selected
     }
     // No border when only row is selected or nothing is selected
     return 'none';
   };
-  
+
   const handleClick = (e) => {
     // Only open tool panel if frame is already selected
     // This enforces a two-step selection: first select frame, then select layer
@@ -45,9 +46,9 @@ const IconLayer = ({
     }
     // If frame not selected, let click bubble up to select the frame
   };
-  
+
   return (
-    <div 
+    <div
       className="absolute cursor-pointer"
       onClick={handleClick}
       style={{
@@ -64,19 +65,8 @@ const IconLayer = ({
         backgroundColor: backgroundColor || 'transparent',
       }}
     >
-      <svg 
-        className="w-full h-full"
-        fill="none" 
-        stroke={color}
-        viewBox="0 0 24 24"
-        style={{ padding: '4px' }}
-      >
-        <path 
-          strokeLinecap="round" 
-          strokeLinejoin="round" 
-          strokeWidth={2} 
-          d={path} 
-        />
+      <svg className="w-full h-full" fill="none" stroke={color} viewBox="0 0 24 24" style={{ padding: '4px' }}>
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={path} />
       </svg>
     </div>
   );

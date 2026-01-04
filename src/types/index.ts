@@ -1,3 +1,6 @@
+// Re-export shared layer types
+export * from './layers';
+
 // ===== Project Types =====
 export type ProjectType = 'carousel' | 'eblast' | 'videoCover' | 'singleImage';
 
@@ -46,27 +49,27 @@ export interface Variant {
 
 // ===== Pattern Layer Types =====
 export interface PatternLayer {
-  id: string;                     // Unique ID for this pattern layer
-  patternId: string;              // Reference to PatternDefinition.id
-  scale: number;                  // 0.5 to 5
-  rotation: number;               // 0-360 degrees
-  opacity: number;                // 0-1
+  id: string; // Unique ID for this pattern layer
+  patternId: string; // Reference to PatternDefinition.id
+  scale: number; // 0.5 to 5
+  rotation: number; // 0-360 degrees
+  opacity: number; // 0-1
   blendMode: 'normal' | 'multiply' | 'overlay' | 'soft-light' | 'screen';
-  color?: string;                 // Optional tint color
+  color?: string; // Optional tint color
 }
 
 // ===== Image Layer Types =====
 export interface ImageLayer {
-  id: string;                     // Unique ID for this image layer
-  src: string;                    // Image URL (from uploaded assets or external)
-  x: number;                      // Pan X offset as percentage (-1 to 1, 0 = centered)
-  y: number;                      // Pan Y offset as percentage (-1 to 1, 0 = centered)
-  scale: number;                  // Zoom level (1 = fit frame, 2 = 200%)
-  opacity: number;                // 0 to 1
-  rotation: number;               // Degrees (0-360)
-  zIndex: number;                 // Layer order (0 = behind text, 10+ = above text)
-  linkedGroupId?: string;         // For cross-frame image sync
-  fit: 'cover' | 'contain';       // How image fits in frame
+  id: string; // Unique ID for this image layer
+  src: string; // Image URL (from uploaded assets or external)
+  x: number; // Pan X offset as percentage (-1 to 1, 0 = centered)
+  y: number; // Pan Y offset as percentage (-1 to 1, 0 = centered)
+  scale: number; // Zoom level (1 = fit frame, 2 = 200%)
+  opacity: number; // 0 to 1
+  rotation: number; // Degrees (0-360)
+  zIndex: number; // Layer order (0 = behind text, 10+ = above text)
+  linkedGroupId?: string; // For cross-frame image sync
+  fit: 'cover' | 'contain'; // How image fits in frame
 }
 
 export interface Frame {
@@ -78,8 +81,8 @@ export interface Frame {
   style: string;
   hideProgress?: boolean;
   backgroundOverride?: string | { isStretched: boolean; gradient: string; size: string; position: string };
-  patternLayer?: PatternLayer;    // Optional pattern layer (backmost layer)
-  imageLayer?: ImageLayer;        // Optional image layer for frame
+  patternLayer?: PatternLayer; // Optional pattern layer (backmost layer)
+  imageLayer?: ImageLayer; // Optional image layer for frame
 }
 
 export interface Carousel {
@@ -166,7 +169,14 @@ export type CarouselAction =
   | { type: 'SET_LAYOUT'; carouselId: number; frameId: number; layoutIndex: number }
   | { type: 'SHUFFLE_LAYOUT_VARIANT'; carouselId: number; frameId: number }
   | { type: 'UPDATE_TEXT'; carouselId: number; frameId: number; field: 'headline' | 'body'; value: string }
-  | { type: 'UPDATE_FORMATTING'; carouselId: number; frameId: number; field: 'headline' | 'body'; key: keyof TextFormatting; value: unknown }
+  | {
+      type: 'UPDATE_FORMATTING';
+      carouselId: number;
+      frameId: number;
+      field: 'headline' | 'body';
+      key: keyof TextFormatting;
+      value: unknown;
+    }
   | { type: 'ADD_FRAME'; carouselId: number; position: number | null }
   | { type: 'REMOVE_FRAME'; carouselId: number; frameId: number }
   | { type: 'CHANGE_FRAME_SIZE'; carouselId: number; newSize: FrameSizeKey }
@@ -211,7 +221,13 @@ export interface CarouselsContextValue {
   handleSetLayout: (carouselId: number, frameId: number, layoutIndex: number) => void;
   handleShuffleLayoutVariant: (carouselId: number, frameId: number) => void;
   handleUpdateText: (carouselId: number, frameId: number, field: 'headline' | 'body', value: string) => void;
-  handleUpdateFormatting: (carouselId: number, frameId: number, field: 'headline' | 'body', key: keyof TextFormatting, value: unknown) => void;
+  handleUpdateFormatting: (
+    carouselId: number,
+    frameId: number,
+    field: 'headline' | 'body',
+    key: keyof TextFormatting,
+    value: unknown
+  ) => void;
   handleAddFrame: (carouselId: number, position?: number | null) => void;
   handleRemoveFrame: (carouselId: number, frameId: number) => void;
   handleChangeFrameSize: (carouselId: number, newSize: FrameSizeKey) => void;
@@ -238,4 +254,3 @@ export interface FrameStyle {
   accent: string;
   pin?: string;
 }
-

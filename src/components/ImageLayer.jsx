@@ -1,9 +1,9 @@
-import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 
 /**
  * ImageLayer Component
  * Renders an image layer within a frame with pan, zoom, and opacity controls
- * 
+ *
  * Features:
  * - Double-click or click Image tag to enter edit mode
  * - Drag to pan image within frame
@@ -27,18 +27,18 @@ const ImageLayer = ({
   // Cross-frame props (for future seamless image transitions)
   isOverflowFromPrev = false, // True if this is showing overflow from previous frame
   isOverflowFromNext = false, // True if this is showing overflow from next frame
-  overflowImage = null,       // The overflow image data from adjacent frame
+  overflowImage = null, // The overflow image data from adjacent frame
 }) => {
   const [isEditMode, setIsEditMode] = useState(false);
-  
+
   // Notify parent when edit mode changes
   useEffect(() => {
     onEditModeChange?.(isEditMode);
   }, [isEditMode, onEditModeChange]);
-  
+
   // Track previous editTrigger to only respond to actual clicks
   const prevEditTriggerRef = useRef(0);
-  
+
   // Enter edit mode when editTrigger increases (from parent clicking the tag)
   useEffect(() => {
     if (editTrigger > prevEditTriggerRef.current && isFrameSelected) {
@@ -46,10 +46,10 @@ const ImageLayer = ({
     }
     prevEditTriggerRef.current = editTrigger;
   }, [editTrigger, isFrameSelected]);
-  
+
   // Track previous closeTrigger to respond to parent close requests
   const prevCloseTriggerRef = useRef(0);
-  
+
   // Exit edit mode when closeTrigger increases (from parent clicking Done/Cancel)
   useEffect(() => {
     if (closeTrigger > prevCloseTriggerRef.current) {
@@ -57,7 +57,7 @@ const ImageLayer = ({
     }
     prevCloseTriggerRef.current = closeTrigger;
   }, [closeTrigger]);
-  
+
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [initialPos, setInitialPos] = useState({ x: 0, y: 0 });
@@ -65,7 +65,7 @@ const ImageLayer = ({
   const imageRef = useRef(null);
 
   const { src, x, y, scale, opacity, rotation, fit } = imageLayer;
-  
+
   // Calculate overflow amount (how much of image shows on adjacent frame)
   const getOverflowOffset = () => {
     if (isOverflowFromPrev && overflowImage) {
@@ -91,11 +91,11 @@ const ImageLayer = ({
     const effectiveX = useOverflowOffset ? getOverflowOffset() : x;
     const translateX = effectiveX * frameWidth * 0.5;
     const translateY = y * frameHeight * 0.5;
-    
-    const effectiveOpacity = (isOverflowFromPrev || isOverflowFromNext) ? (overflowImage?.opacity || opacity) : opacity;
-    const effectiveScale = (isOverflowFromPrev || isOverflowFromNext) ? (overflowImage?.scale || scale) : scale;
-    const effectiveRotation = (isOverflowFromPrev || isOverflowFromNext) ? (overflowImage?.rotation || rotation) : rotation;
-    
+
+    const effectiveOpacity = isOverflowFromPrev || isOverflowFromNext ? overflowImage?.opacity || opacity : opacity;
+    const effectiveScale = isOverflowFromPrev || isOverflowFromNext ? overflowImage?.scale || scale : scale;
+    const effectiveRotation = isOverflowFromPrev || isOverflowFromNext ? overflowImage?.rotation || rotation : rotation;
+
     return {
       transform: `translate(${translateX}px, ${translateY}px) scale(${effectiveScale}) rotate(${effectiveRotation}deg)`,
       opacity: effectiveOpacity,
@@ -122,18 +122,21 @@ const ImageLayer = ({
   };
 
   // Handle mouse move for dragging
-  const handleMouseMove = useCallback((e) => {
-    if (!isDragging) return;
-    
-    const deltaX = e.clientX - dragStart.x;
-    const deltaY = e.clientY - dragStart.y;
-    
-    // Convert pixel delta to percentage (relative to frame size)
-    const newX = Math.max(-1, Math.min(1, initialPos.x + (deltaX / (frameWidth * 0.5))));
-    const newY = Math.max(-1, Math.min(1, initialPos.y + (deltaY / (frameHeight * 0.5))));
-    
-    onUpdate({ x: newX, y: newY });
-  }, [isDragging, dragStart, initialPos, frameWidth, frameHeight, onUpdate]);
+  const handleMouseMove = useCallback(
+    (e) => {
+      if (!isDragging) return;
+
+      const deltaX = e.clientX - dragStart.x;
+      const deltaY = e.clientY - dragStart.y;
+
+      // Convert pixel delta to percentage (relative to frame size)
+      const newX = Math.max(-1, Math.min(1, initialPos.x + deltaX / (frameWidth * 0.5)));
+      const newY = Math.max(-1, Math.min(1, initialPos.y + deltaY / (frameHeight * 0.5)));
+
+      onUpdate({ x: newX, y: newY });
+    },
+    [isDragging, dragStart, initialPos, frameWidth, frameHeight, onUpdate]
+  );
 
   // Handle mouse up to stop dragging
   const handleMouseUp = useCallback(() => {
@@ -242,11 +245,11 @@ const ImageLayer = ({
       {/* Image - Main or Overflow */}
       <img
         ref={imageRef}
-        src={(isOverflowFromPrev || isOverflowFromNext) ? overflowImage?.src : src}
+        src={isOverflowFromPrev || isOverflowFromNext ? overflowImage?.src : src}
         alt=""
         className={`absolute w-full h-full select-none ${
           isEditMode ? 'cursor-move' : 'cursor-pointer pointer-events-auto'
-        } ${(isOverflowFromPrev || isOverflowFromNext) ? 'pointer-events-none' : ''}`}
+        } ${isOverflowFromPrev || isOverflowFromNext ? 'pointer-events-none' : ''}`}
         style={getTransformStyle(isOverflowFromPrev || isOverflowFromNext)}
         onDoubleClick={handleDoubleClick}
         onMouseDown={handleMouseDown}
@@ -260,7 +263,7 @@ const ImageLayer = ({
 
       {/* Hover indicator when not in edit mode */}
       {!isEditMode && isFrameSelected && (
-        <div 
+        <div
           className="absolute inset-0 bg-black/0 hover:bg-black/20 transition-colors pointer-events-auto cursor-pointer flex items-center justify-center opacity-0 hover:opacity-100"
           onDoubleClick={handleDoubleClick}
         >
@@ -274,4 +277,3 @@ const ImageLayer = ({
 };
 
 export default ImageLayer;
-

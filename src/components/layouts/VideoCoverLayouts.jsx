@@ -8,7 +8,7 @@ export const VideoFaceText = ({
   headline,
   body,
   text,
-  accent,
+  accent: _accent,
   headingFont,
   bodyFont,
   variant = 0,
@@ -22,22 +22,29 @@ export const VideoFaceText = ({
   // Variant: 0 = face left, 1 = face right, 2 = face top
   const isVertical = variant === 2;
   const isFaceLeft = variant === 0;
-  
+
   return (
     <div className={`absolute inset-0 flex ${isVertical ? 'flex-col' : 'flex-row'}`}>
       {/* Face placeholder area */}
-      <div 
+      <div
         className={`${isVertical ? 'h-2/5' : 'w-2/5'} bg-gray-700/30 flex items-center justify-center ${isFaceLeft || isVertical ? 'order-1' : 'order-2'}`}
       >
         <div className="w-16 h-16 rounded-full bg-gray-600/50 flex items-center justify-center">
           <svg className="w-8 h-8 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={1.5}
+              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+            />
           </svg>
         </div>
       </div>
-      
+
       {/* Text content area */}
-      <div className={`${isVertical ? 'h-3/5' : 'w-3/5'} flex flex-col justify-center p-4 ${isFaceLeft || isVertical ? 'order-2' : 'order-1'}`}>
+      <div
+        className={`${isVertical ? 'h-3/5' : 'w-3/5'} flex flex-col justify-center p-4 ${isFaceLeft || isVertical ? 'order-2' : 'order-1'}`}
+      >
         <EditableTextField
           value={headline}
           field="headline"
@@ -82,7 +89,7 @@ export const VideoBoldStatement = ({
   headline,
   body,
   text,
-  accent,
+  accent: _accent,
   headingFont,
   bodyFont,
   variant = 0,
@@ -94,12 +101,8 @@ export const VideoBoldStatement = ({
   fontSizes,
 }) => {
   // Variant positions: 0 = center, 1 = bottom, 2 = top
-  const positions = [
-    'items-center justify-center',
-    'items-center justify-end pb-6',
-    'items-center justify-start pt-6',
-  ];
-  
+  const positions = ['items-center justify-center', 'items-center justify-end pb-6', 'items-center justify-start pt-6'];
+
   return (
     <div className={`absolute inset-0 flex flex-col ${positions[variant]} p-6 text-center`}>
       <EditableTextField
@@ -160,18 +163,14 @@ export const VideoEpisodeCard = ({
   seriesName,
 }) => {
   // Variant: 0 = badge top-left, 1 = badge top-right, 2 = badge bottom
-  const badgePositions = [
-    'top-3 left-3',
-    'top-3 right-3',
-    'bottom-3 left-3',
-  ];
-  
+  const badgePositions = ['top-3 left-3', 'top-3 right-3', 'bottom-3 left-3'];
+
   return (
     <div className="absolute inset-0">
       {/* Episode Badge */}
       {episodeNumber && (
         <div className={`absolute ${badgePositions[variant]} z-10`}>
-          <div 
+          <div
             className="px-3 py-1 rounded-full text-xs font-bold"
             style={{ backgroundColor: accent, color: '#ffffff' }}
           >
@@ -179,7 +178,7 @@ export const VideoEpisodeCard = ({
           </div>
         </div>
       )}
-      
+
       {/* Main Content */}
       <div className="absolute inset-0 flex flex-col justify-end p-4">
         {seriesName && (
@@ -228,11 +227,11 @@ export const VideoEpisodeCard = ({
  */
 export const VideoPlayOverlay = ({
   headline,
-  body,
+  body: _body,
   text,
   accent,
   headingFont,
-  bodyFont,
+  bodyFont: _bodyFont,
   variant = 0,
   isFrameSelected,
   onUpdateText,
@@ -243,18 +242,14 @@ export const VideoPlayOverlay = ({
   showPlayButton = true,
 }) => {
   // Variant: 0 = text bottom, 1 = text top, 2 = text hidden
-  const textPositions = [
-    'justify-end pb-4',
-    'justify-start pt-4',
-    'justify-center',
-  ];
-  
+  const textPositions = ['justify-end pb-4', 'justify-start pt-4', 'justify-center'];
+
   return (
     <div className="absolute inset-0">
       {/* Play Button - always centered */}
       {showPlayButton && (
         <div className="absolute inset-0 flex items-center justify-center z-10">
-          <div 
+          <div
             className="w-16 h-16 rounded-full flex items-center justify-center"
             style={{ backgroundColor: 'rgba(255,255,255,0.9)' }}
           >
@@ -264,7 +259,7 @@ export const VideoPlayOverlay = ({
           </div>
         </div>
       )}
-      
+
       {/* Text Content */}
       {variant !== 2 && (
         <div className={`absolute inset-0 flex flex-col ${textPositions[variant]} px-4 text-center`}>
@@ -297,4 +292,3 @@ export default {
   VideoEpisodeCard,
   VideoPlayOverlay,
 };
-

@@ -5,9 +5,12 @@ import { useState } from 'react';
  */
 const SliderControl = ({ label, value, min, max, step = 1, unit = 'px', onChange }) => (
   <div className="mb-3">
-    <div className="flex justify-between text-[10px] text-gray-400 mb-1">
+    <div className="flex justify-between text-[10px] text-tertiary mb-1">
       <span>{label}</span>
-      <span>{value}{unit}</span>
+      <span>
+        {value}
+        {unit}
+      </span>
     </div>
     <input
       type="range"
@@ -16,7 +19,7 @@ const SliderControl = ({ label, value, min, max, step = 1, unit = 'px', onChange
       step={step}
       value={value}
       onChange={(e) => onChange(Number(e.target.value))}
-      className="w-full h-1.5 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-gray-400"
+      className="w-full h-1.5 bg-surface-overlay rounded-lg appearance-none cursor-pointer accent-gray-400"
     />
   </div>
 );
@@ -26,7 +29,7 @@ const SliderControl = ({ label, value, min, max, step = 1, unit = 'px', onChange
  */
 const ColorInput = ({ label, value, onChange }) => (
   <div className="flex items-center justify-between mb-2">
-    <span className="text-[10px] text-gray-400">{label}</span>
+    <span className="text-[10px] text-tertiary">{label}</span>
     <div className="flex items-center gap-2">
       <input
         type="color"
@@ -39,7 +42,7 @@ const ColorInput = ({ label, value, onChange }) => (
         value={value || ''}
         onChange={(e) => onChange(e.target.value)}
         placeholder="#000000"
-        className="w-24 px-2 py-1 bg-gray-800 border border-gray-700 rounded text-[10px] text-white"
+        className="w-24 px-2 py-1 bg-surface-raised border border-default rounded text-[10px] text-white"
       />
     </div>
   </div>
@@ -50,13 +53,13 @@ const ColorInput = ({ label, value, onChange }) => (
  */
 const ToggleControl = ({ label, value, onChange }) => (
   <div className="flex items-center justify-between mb-2">
-    <span className="text-[10px] text-gray-400">{label}</span>
+    <span className="text-[10px] text-tertiary">{label}</span>
     <button
       type="button"
       onClick={() => onChange(!value)}
-      className={`w-10 h-5 rounded-full transition-colors ${value ? 'bg-gray-500' : 'bg-gray-700'}`}
+      className={`w-10 h-5 rounded-full transition-colors ${value ? 'bg-gray-500' : 'bg-surface-overlay'}`}
     >
-      <div 
+      <div
         className={`w-4 h-4 rounded-full bg-white shadow transition-transform ${value ? 'translate-x-5' : 'translate-x-0.5'}`}
       />
     </button>
@@ -73,10 +76,10 @@ const SectionHeader = ({ title, isOpen, onToggle }) => (
     className="w-full flex items-center justify-between py-2 text-xs font-medium text-gray-300 hover:text-white transition-colors"
   >
     {title}
-    <svg 
-      className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} 
-      fill="none" 
-      stroke="currentColor" 
+    <svg
+      className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+      fill="none"
+      stroke="currentColor"
       viewBox="0 0 24 24"
     >
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -95,24 +98,20 @@ const StyleEditor = ({ style, onChange, accentColor }) => {
     shadow: true,
     glow: false,
   });
-  
+
   const toggleSection = (section) => {
-    setOpenSections(prev => ({ ...prev, [section]: !prev[section] }));
+    setOpenSections((prev) => ({ ...prev, [section]: !prev[section] }));
   };
-  
+
   const updateStyle = (key, value) => {
     onChange({ ...style, [key]: value });
   };
-  
+
   return (
     <div className="text-sm">
       {/* Corner Radius */}
       <div className="border-b border-gray-800 pb-3 mb-3">
-        <SectionHeader 
-          title="Corner Radius" 
-          isOpen={openSections.corners} 
-          onToggle={() => toggleSection('corners')} 
-        />
+        <SectionHeader title="Corner Radius" isOpen={openSections.corners} onToggle={() => toggleSection('corners')} />
         {openSections.corners && (
           <SliderControl
             label="Radius"
@@ -123,28 +122,24 @@ const StyleEditor = ({ style, onChange, accentColor }) => {
           />
         )}
       </div>
-      
+
       {/* Border */}
       <div className="border-b border-gray-800 pb-3 mb-3">
-        <SectionHeader 
-          title="Border" 
-          isOpen={openSections.border} 
-          onToggle={() => toggleSection('border')} 
-        />
+        <SectionHeader title="Border" isOpen={openSections.border} onToggle={() => toggleSection('border')} />
         {openSections.border && (
           <>
             <div className="mb-3">
-              <div className="text-[10px] text-gray-400 mb-1.5">Style</div>
+              <div className="text-[10px] text-tertiary mb-1.5">Style</div>
               <div className="flex gap-1">
-                {['none', 'solid', 'dashed', 'dotted'].map(type => (
+                {['none', 'solid', 'dashed', 'dotted'].map((type) => (
                   <button
                     key={type}
                     type="button"
                     onClick={() => updateStyle('borderStyle', type)}
                     className={`px-2 py-1 rounded text-[10px] capitalize ${
-                      style.borderStyle === type 
-                        ? 'bg-gray-600 text-white' 
-                        : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                      style.borderStyle === type
+                        ? 'bg-gray-600 text-white'
+                        : 'bg-surface-raised text-tertiary hover:bg-surface-overlay'
                     }`}
                   >
                     {type}
@@ -152,7 +147,7 @@ const StyleEditor = ({ style, onChange, accentColor }) => {
                 ))}
               </div>
             </div>
-            
+
             {style.borderStyle !== 'none' && (
               <>
                 <SliderControl
@@ -162,24 +157,16 @@ const StyleEditor = ({ style, onChange, accentColor }) => {
                   max={8}
                   onChange={(v) => updateStyle('borderWidth', v)}
                 />
-                <ColorInput
-                  label="Color"
-                  value={style.borderColor}
-                  onChange={(v) => updateStyle('borderColor', v)}
-                />
+                <ColorInput label="Color" value={style.borderColor} onChange={(v) => updateStyle('borderColor', v)} />
               </>
             )}
           </>
         )}
       </div>
-      
+
       {/* Shadow */}
       <div className="border-b border-gray-800 pb-3 mb-3">
-        <SectionHeader 
-          title="Shadow" 
-          isOpen={openSections.shadow} 
-          onToggle={() => toggleSection('shadow')} 
-        />
+        <SectionHeader title="Shadow" isOpen={openSections.shadow} onToggle={() => toggleSection('shadow')} />
         {openSections.shadow && (
           <>
             <ToggleControl
@@ -187,7 +174,7 @@ const StyleEditor = ({ style, onChange, accentColor }) => {
               value={style.shadowEnabled}
               onChange={(v) => updateStyle('shadowEnabled', v)}
             />
-            
+
             {style.shadowEnabled && (
               <>
                 <SliderControl
@@ -218,32 +205,20 @@ const StyleEditor = ({ style, onChange, accentColor }) => {
                   max={50}
                   onChange={(v) => updateStyle('shadowSpread', v)}
                 />
-                <ColorInput
-                  label="Color"
-                  value={style.shadowColor}
-                  onChange={(v) => updateStyle('shadowColor', v)}
-                />
+                <ColorInput label="Color" value={style.shadowColor} onChange={(v) => updateStyle('shadowColor', v)} />
               </>
             )}
           </>
         )}
       </div>
-      
+
       {/* Glow */}
       <div className="pb-3">
-        <SectionHeader 
-          title="Glow Effect" 
-          isOpen={openSections.glow} 
-          onToggle={() => toggleSection('glow')} 
-        />
+        <SectionHeader title="Glow Effect" isOpen={openSections.glow} onToggle={() => toggleSection('glow')} />
         {openSections.glow && (
           <>
-            <ToggleControl
-              label="Enable"
-              value={style.glowEnabled}
-              onChange={(v) => updateStyle('glowEnabled', v)}
-            />
-            
+            <ToggleControl label="Enable" value={style.glowEnabled} onChange={(v) => updateStyle('glowEnabled', v)} />
+
             {style.glowEnabled && (
               <>
                 <SliderControl
@@ -268,4 +243,3 @@ const StyleEditor = ({ style, onChange, accentColor }) => {
 };
 
 export default StyleEditor;
-

@@ -4,6 +4,7 @@
  */
 
 import { supabase, isSupabaseConfigured } from './supabase';
+import { logger } from '../utils';
 
 const BUCKET_NAME = 'assets';
 const IMAGES_FOLDER = 'images';
@@ -19,7 +20,7 @@ const DOCS_FOLDER = 'docs';
  */
 export const uploadImage = async (file, fileName, userId = 'default') => {
   if (!isSupabaseConfigured()) {
-    console.warn('Supabase not configured - using local storage only');
+    logger.warn('Supabase not configured - using local storage only');
     return { url: null, path: null, error: new Error('Supabase not configured') };
   }
 
@@ -30,23 +31,19 @@ export const uploadImage = async (file, fileName, userId = 'default') => {
     const filePath = `${userId}/${IMAGES_FOLDER}/${uniqueName}`;
 
     // Upload to Supabase Storage
-    const { data, error } = await supabase.storage
-      .from(BUCKET_NAME)
-      .upload(filePath, file, {
-        cacheControl: '3600',
-        upsert: false,
-        contentType: file.type || 'image/webp',
-      });
+    const { data, error } = await supabase.storage.from(BUCKET_NAME).upload(filePath, file, {
+      cacheControl: '3600',
+      upsert: false,
+      contentType: file.type || 'image/webp',
+    });
 
     if (error) {
-      console.error('Upload error:', error);
+      logger.error('Upload error:', error);
       return { url: null, path: null, error };
     }
 
     // Get the public URL
-    const { data: urlData } = supabase.storage
-      .from(BUCKET_NAME)
-      .getPublicUrl(data.path);
+    const { data: urlData } = supabase.storage.from(BUCKET_NAME).getPublicUrl(data.path);
 
     return {
       url: urlData.publicUrl,
@@ -54,7 +51,7 @@ export const uploadImage = async (file, fileName, userId = 'default') => {
       error: null,
     };
   } catch (error) {
-    console.error('Upload failed:', error);
+    logger.error('Upload failed:', error);
     return { url: null, path: null, error };
   }
 };
@@ -70,26 +67,22 @@ export const listImages = async (userId = 'default') => {
   }
 
   try {
-    const { data, error } = await supabase.storage
-      .from(BUCKET_NAME)
-      .list(`${userId}/${IMAGES_FOLDER}`, {
-        limit: 100,
-        sortBy: { column: 'created_at', order: 'desc' },
-      });
+    const { data, error } = await supabase.storage.from(BUCKET_NAME).list(`${userId}/${IMAGES_FOLDER}`, {
+      limit: 100,
+      sortBy: { column: 'created_at', order: 'desc' },
+    });
 
     if (error) {
-      console.error('List error:', error);
+      logger.error('List error:', error);
       return { files: [], error };
     }
 
     // Filter out folders and get public URLs
     const files = (data || [])
-      .filter(file => file.name && !file.name.endsWith('/'))
-      .map(file => {
+      .filter((file) => file.name && !file.name.endsWith('/'))
+      .map((file) => {
         const path = `${userId}/${IMAGES_FOLDER}/${file.name}`;
-        const { data: urlData } = supabase.storage
-          .from(BUCKET_NAME)
-          .getPublicUrl(path);
+        const { data: urlData } = supabase.storage.from(BUCKET_NAME).getPublicUrl(path);
 
         return {
           id: file.id || file.name,
@@ -103,7 +96,7 @@ export const listImages = async (userId = 'default') => {
 
     return { files, error: null };
   } catch (error) {
-    console.error('List failed:', error);
+    logger.error('List failed:', error);
     return { files: [], error };
   }
 };
@@ -119,18 +112,16 @@ export const deleteImage = async (path) => {
   }
 
   try {
-    const { error } = await supabase.storage
-      .from(BUCKET_NAME)
-      .remove([path]);
+    const { error } = await supabase.storage.from(BUCKET_NAME).remove([path]);
 
     if (error) {
-      console.error('Delete error:', error);
+      logger.error('Delete error:', error);
       return { success: false, error };
     }
 
     return { success: true, error: null };
   } catch (error) {
-    console.error('Delete failed:', error);
+    logger.error('Delete failed:', error);
     return { success: false, error };
   }
 };
@@ -144,25 +135,25 @@ export const deleteImage = async (path) => {
  */
 export const uploadImages = async (files, userId = 'default', onProgress = null) => {
   const results = [];
-  
+
   for (let i = 0; i < files.length; i++) {
     const { file, fileName } = files[i];
-    
+
     if (onProgress) {
       onProgress(i, files.length);
     }
-    
+
     const result = await uploadImage(file, fileName, userId);
     results.push({
       ...result,
       originalName: fileName,
     });
   }
-  
+
   if (onProgress) {
     onProgress(files.length, files.length);
   }
-  
+
   return results;
 };
 
@@ -179,7 +170,7 @@ export const uploadImages = async (files, userId = 'default', onProgress = null)
  */
 export const uploadProductImage = async (file, fileName, userId = 'default') => {
   if (!isSupabaseConfigured()) {
-    console.warn('Supabase not configured - using local storage only');
+    logger.warn('Supabase not configured - using local storage only');
     return { url: null, path: null, error: new Error('Supabase not configured') };
   }
 
@@ -188,22 +179,18 @@ export const uploadProductImage = async (file, fileName, userId = 'default') => 
     const uniqueName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
     const filePath = `${userId}/${PRODUCT_IMAGERY_FOLDER}/${uniqueName}`;
 
-    const { data, error } = await supabase.storage
-      .from(BUCKET_NAME)
-      .upload(filePath, file, {
-        cacheControl: '3600',
-        upsert: false,
-        contentType: file.type || 'image/png',
-      });
+    const { data, error } = await supabase.storage.from(BUCKET_NAME).upload(filePath, file, {
+      cacheControl: '3600',
+      upsert: false,
+      contentType: file.type || 'image/png',
+    });
 
     if (error) {
-      console.error('Product image upload error:', error);
+      logger.error('Product image upload error:', error);
       return { url: null, path: null, error };
     }
 
-    const { data: urlData } = supabase.storage
-      .from(BUCKET_NAME)
-      .getPublicUrl(data.path);
+    const { data: urlData } = supabase.storage.from(BUCKET_NAME).getPublicUrl(data.path);
 
     return {
       url: urlData.publicUrl,
@@ -211,7 +198,7 @@ export const uploadProductImage = async (file, fileName, userId = 'default') => 
       error: null,
     };
   } catch (error) {
-    console.error('Product image upload failed:', error);
+    logger.error('Product image upload failed:', error);
     return { url: null, path: null, error };
   }
 };
@@ -227,25 +214,21 @@ export const listProductImages = async (userId = 'default') => {
   }
 
   try {
-    const { data, error } = await supabase.storage
-      .from(BUCKET_NAME)
-      .list(`${userId}/${PRODUCT_IMAGERY_FOLDER}`, {
-        limit: 100,
-        sortBy: { column: 'created_at', order: 'desc' },
-      });
+    const { data, error } = await supabase.storage.from(BUCKET_NAME).list(`${userId}/${PRODUCT_IMAGERY_FOLDER}`, {
+      limit: 100,
+      sortBy: { column: 'created_at', order: 'desc' },
+    });
 
     if (error) {
-      console.error('List product images error:', error);
+      logger.error('List product images error:', error);
       return { files: [], error };
     }
 
     const files = (data || [])
-      .filter(file => file.name && !file.name.endsWith('/'))
-      .map(file => {
+      .filter((file) => file.name && !file.name.endsWith('/'))
+      .map((file) => {
         const path = `${userId}/${PRODUCT_IMAGERY_FOLDER}/${file.name}`;
-        const { data: urlData } = supabase.storage
-          .from(BUCKET_NAME)
-          .getPublicUrl(path);
+        const { data: urlData } = supabase.storage.from(BUCKET_NAME).getPublicUrl(path);
 
         return {
           id: file.id || file.name,
@@ -259,7 +242,7 @@ export const listProductImages = async (userId = 'default') => {
 
     return { files, error: null };
   } catch (error) {
-    console.error('List product images failed:', error);
+    logger.error('List product images failed:', error);
     return { files: [], error };
   }
 };
@@ -275,18 +258,16 @@ export const deleteProductImage = async (path) => {
   }
 
   try {
-    const { error } = await supabase.storage
-      .from(BUCKET_NAME)
-      .remove([path]);
+    const { error } = await supabase.storage.from(BUCKET_NAME).remove([path]);
 
     if (error) {
-      console.error('Delete product image error:', error);
+      logger.error('Delete product image error:', error);
       return { success: false, error };
     }
 
     return { success: true, error: null };
   } catch (error) {
-    console.error('Delete product image failed:', error);
+    logger.error('Delete product image failed:', error);
     return { success: false, error };
   }
 };
@@ -304,7 +285,7 @@ export const deleteProductImage = async (path) => {
  */
 export const uploadDoc = async (file, fileName, userId = 'default') => {
   if (!isSupabaseConfigured()) {
-    console.warn('Supabase not configured - using local storage only');
+    logger.warn('Supabase not configured - using local storage only');
     return { url: null, path: null, error: new Error('Supabase not configured') };
   }
 
@@ -323,22 +304,18 @@ export const uploadDoc = async (file, fileName, userId = 'default') => {
     };
     const contentType = contentTypes[fileExt.toLowerCase()] || 'application/octet-stream';
 
-    const { data, error } = await supabase.storage
-      .from(BUCKET_NAME)
-      .upload(filePath, file, {
-        cacheControl: '3600',
-        upsert: false,
-        contentType,
-      });
+    const { data, error } = await supabase.storage.from(BUCKET_NAME).upload(filePath, file, {
+      cacheControl: '3600',
+      upsert: false,
+      contentType,
+    });
 
     if (error) {
-      console.error('Doc upload error:', error);
+      logger.error('Doc upload error:', error);
       return { url: null, path: null, error };
     }
 
-    const { data: urlData } = supabase.storage
-      .from(BUCKET_NAME)
-      .getPublicUrl(data.path);
+    const { data: urlData } = supabase.storage.from(BUCKET_NAME).getPublicUrl(data.path);
 
     return {
       url: urlData.publicUrl,
@@ -347,7 +324,7 @@ export const uploadDoc = async (file, fileName, userId = 'default') => {
       error: null,
     };
   } catch (error) {
-    console.error('Doc upload failed:', error);
+    logger.error('Doc upload failed:', error);
     return { url: null, path: null, error };
   }
 };
@@ -363,25 +340,21 @@ export const listDocs = async (userId = 'default') => {
   }
 
   try {
-    const { data, error } = await supabase.storage
-      .from(BUCKET_NAME)
-      .list(`${userId}/${DOCS_FOLDER}`, {
-        limit: 100,
-        sortBy: { column: 'created_at', order: 'desc' },
-      });
+    const { data, error } = await supabase.storage.from(BUCKET_NAME).list(`${userId}/${DOCS_FOLDER}`, {
+      limit: 100,
+      sortBy: { column: 'created_at', order: 'desc' },
+    });
 
     if (error) {
-      console.error('List docs error:', error);
+      logger.error('List docs error:', error);
       return { files: [], error };
     }
 
     const files = (data || [])
-      .filter(file => file.name && !file.name.endsWith('/'))
-      .map(file => {
+      .filter((file) => file.name && !file.name.endsWith('/'))
+      .map((file) => {
         const path = `${userId}/${DOCS_FOLDER}/${file.name}`;
-        const { data: urlData } = supabase.storage
-          .from(BUCKET_NAME)
-          .getPublicUrl(path);
+        const { data: urlData } = supabase.storage.from(BUCKET_NAME).getPublicUrl(path);
 
         return {
           id: file.id || file.name,
@@ -395,7 +368,7 @@ export const listDocs = async (userId = 'default') => {
 
     return { files, error: null };
   } catch (error) {
-    console.error('List docs failed:', error);
+    logger.error('List docs failed:', error);
     return { files: [], error };
   }
 };
@@ -411,18 +384,16 @@ export const deleteDoc = async (path) => {
   }
 
   try {
-    const { error } = await supabase.storage
-      .from(BUCKET_NAME)
-      .remove([path]);
+    const { error } = await supabase.storage.from(BUCKET_NAME).remove([path]);
 
     if (error) {
-      console.error('Delete doc error:', error);
+      logger.error('Delete doc error:', error);
       return { success: false, error };
     }
 
     return { success: true, error: null };
   } catch (error) {
-    console.error('Delete doc failed:', error);
+    logger.error('Delete doc failed:', error);
     return { success: false, error };
   }
 };
@@ -444,4 +415,3 @@ export default {
   // Constants
   BUCKET_NAME,
 };
-

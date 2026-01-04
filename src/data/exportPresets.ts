@@ -101,15 +101,14 @@ export const platformColors: Record<string, string> = {
  * Get preset by ID
  */
 export function getPresetById(id: string): ExportPreset | undefined {
-  return exportPresets.find(p => p.id === id);
+  return exportPresets.find((p) => p.id === id);
 }
 
 /**
  * Get presets by platform
  */
 export function getPresetsByPlatform(platform: string): ExportPreset[] {
-  return exportPresets.filter(p => p.platform === platform);
+  return exportPresets.filter((p) => p.platform === platform);
 }
 
 export default exportPresets;
-

@@ -4,28 +4,28 @@ import { useState } from 'react';
  * CTA Button Component
  * Editable call-to-action button for email sections
  */
-const CTAButton = ({ 
-  text = "Learn More →", 
-  url = "#",
+const CTAButton = ({
+  text = 'Learn More →',
+  url: _url = '#',
   backgroundColor,
-  textColor = "#ffffff",
+  textColor = '#ffffff',
   isEditable = false,
   isSelected = false,
   onChange,
-  onUrlChange,
-  size = "medium", // small, medium, large
-  variant = "filled", // filled, outline, ghost
-  borderRadius = "rounded-lg",
+  onUrlChange: _onUrlChange,
+  size = 'medium', // small, medium, large
+  variant = 'filled', // filled, outline, ghost
+  borderRadius = 'rounded-lg',
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editText, setEditText] = useState(text);
-  
+
   const sizeClasses = {
-    small: "px-3 py-1.5 text-xs",
-    medium: "px-4 py-2 text-sm",
-    large: "px-6 py-3 text-base",
+    small: 'px-3 py-1.5 text-xs',
+    medium: 'px-4 py-2 text-sm',
+    large: 'px-6 py-3 text-base',
   };
-  
+
   const getVariantStyles = () => {
     switch (variant) {
       case 'outline':
@@ -46,21 +46,21 @@ const CTAButton = ({
         };
     }
   };
-  
+
   const handleClick = (e) => {
     if (isEditable) {
       e.stopPropagation();
       setIsEditing(true);
     }
   };
-  
+
   const handleBlur = () => {
     setIsEditing(false);
     if (editText !== text) {
       onChange?.(editText);
     }
   };
-  
+
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
       e.preventDefault();
@@ -71,7 +71,7 @@ const CTAButton = ({
       setIsEditing(false);
     }
   };
-  
+
   if (isEditing) {
     return (
       <input
@@ -87,7 +87,7 @@ const CTAButton = ({
       />
     );
   }
-  
+
   return (
     <div
       onClick={handleClick}
@@ -110,4 +110,3 @@ const CTAButton = ({
 };
 
 export default CTAButton;
-

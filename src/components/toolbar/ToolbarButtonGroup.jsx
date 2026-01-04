@@ -2,13 +2,9 @@
  * ToolbarButtonGroup Component
  * Groups related toolbar buttons with consistent styling
  */
-const ToolbarButtonGroup = ({
-  children,
-  disabled = false,
-  className = '',
-}) => (
-  <div 
-    className={`flex items-center gap-1.5 px-2 py-1.5 bg-gray-800/60 rounded-xl transition-opacity duration-200 ${
+const ToolbarButtonGroup = ({ children, disabled = false, className = '' }) => (
+  <div
+    className={`flex items-center gap-1.5 px-2 py-1.5 bg-[--surface-raised] border border-[--border-subtle] rounded-[--radius-md] transition-opacity duration-[--duration-fast] ${
       disabled ? 'opacity-40 pointer-events-none' : 'opacity-100'
     } ${className}`}
   >
@@ -41,10 +37,10 @@ export const ToolbarButton = ({
       onClick={onClick}
       disabled={disabled}
       title={title}
-      className={`rounded-lg font-medium transition-all duration-200 border ${
-        isActive 
-          ? 'bg-gray-700 border-gray-500 text-white' 
-          : 'bg-gray-800/50 border-gray-700 text-gray-400 hover:bg-gray-700 hover:border-gray-600 hover:text-gray-300'
+      className={`rounded-[--radius-md] font-medium transition-all duration-[--duration-fast] border ${
+        isActive
+          ? 'bg-[--surface-overlay] border-[--border-strong] text-[--text-primary]'
+          : 'bg-[--surface-default] border-[--border-default] text-[--text-tertiary] hover:bg-[--surface-raised] hover:border-[--border-emphasis] hover:text-[--text-secondary]'
       } ${disabled ? 'opacity-50 cursor-not-allowed' : ''} ${sizeClasses[size]} ${className}`}
     >
       {children}
@@ -56,23 +52,16 @@ export const ToolbarButton = ({
  * ToolbarIconButton Component
  * Icon-only toolbar button
  */
-export const ToolbarIconButton = ({
-  onClick,
-  isActive = false,
-  disabled = false,
-  title,
-  icon,
-  className = '',
-}) => (
+export const ToolbarIconButton = ({ onClick, isActive = false, disabled = false, title, icon, className = '' }) => (
   <button
     type="button"
     onClick={onClick}
     disabled={disabled}
     title={title}
-    className={`p-2 rounded-lg border transition-all duration-200 ${
+    className={`p-2 rounded-[--radius-md] border transition-all duration-[--duration-fast] ${
       isActive
-        ? 'bg-gray-700 border-gray-500 text-white'
-        : 'border-transparent hover:bg-gray-700 hover:border-gray-600 text-gray-500 hover:text-gray-300'
+        ? 'bg-[--surface-overlay] border-[--border-strong] text-[--text-primary]'
+        : 'border-transparent hover:bg-[--surface-raised] hover:border-[--border-emphasis] text-[--text-quaternary] hover:text-[--text-secondary]'
     } ${disabled ? 'opacity-50 cursor-not-allowed' : ''} ${className}`}
   >
     {icon}
@@ -83,25 +72,20 @@ export const ToolbarIconButton = ({
  * ToolbarColorSwatch Component
  * Color preview button for color pickers
  */
-export const ToolbarColorSwatch = ({
-  color,
-  onClick,
-  isOpen = false,
-  title = 'Color',
-}) => (
+export const ToolbarColorSwatch = ({ color, onClick, isOpen = false, title = 'Color' }) => (
   <button
     type="button"
     onClick={onClick}
     title={title}
-    className={`flex items-center gap-1 p-2 rounded-lg transition-all duration-200 border ${
-      isOpen 
-        ? 'bg-gray-700 border-gray-500' 
-        : 'bg-gray-800/50 border-gray-700 hover:bg-gray-700 hover:border-gray-600'
+    className={`flex items-center gap-1 p-2 rounded-[--radius-md] transition-all duration-[--duration-fast] border ${
+      isOpen
+        ? 'bg-[--surface-overlay] border-[--border-strong]'
+        : 'bg-[--surface-default] border-[--border-default] hover:bg-[--surface-raised] hover:border-[--border-emphasis]'
     }`}
   >
-    <div 
-      className="w-5 h-5 rounded border border-gray-500" 
-      style={{ backgroundColor: color }} 
+    <div
+      className="w-5 h-5 rounded-[--radius-sm] border border-[--border-emphasis]"
+      style={{ backgroundColor: color }}
     />
   </button>
 );
@@ -110,12 +94,7 @@ export const ToolbarColorSwatch = ({
  * ToolbarToggleGroup Component
  * Group of mutually exclusive toggle buttons
  */
-export const ToolbarToggleGroup = ({
-  options,
-  value,
-  onChange,
-  size = 'small',
-}) => (
+export const ToolbarToggleGroup = ({ options, value, onChange, size = 'small' }) => (
   <div className="flex gap-1.5">
     {options.map((option) => (
       <ToolbarButton
@@ -132,4 +111,3 @@ export const ToolbarToggleGroup = ({
 );
 
 export default ToolbarButtonGroup;
-
