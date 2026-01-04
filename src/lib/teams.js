@@ -1,5 +1,6 @@
 import { supabase, isSupabaseConfigured } from './supabase';
 import { logger } from '../utils';
+import { sendTeamInviteEmail, isEmailConfigured } from './email';
 
 /**
  * Team Management API
@@ -265,7 +266,25 @@ export async function sendInvite(email, role = 'editor') {
 
     if (error) throw error;
 
-    // TODO: Send actual invite email via Supabase Edge Function or email service
+    // Send invite email if email service is configured
+    if (isEmailConfigured()) {
+      const { data: userData } = await supabase.auth.getUser();
+      const inviterName = userData?.user?.user_metadata?.name || userData?.user?.email || 'A team member';
+      
+      const emailResult = await sendTeamInviteEmail({
+        to: email,
+        inviterName,
+        role,
+        inviteId: data.id,
+      });
+      
+      if (!emailResult.success) {
+        logger.warn('Invite created but email failed to send:', emailResult.error);
+        // Don't fail the invite - it was created successfully
+      }
+    } else {
+      logger.info('Email service not configured. Invite created without sending email.');
+    }
 
     return { invite: data, error: null };
   } catch (error) {
@@ -296,6 +315,19 @@ export async function resendInvite(inviteId) {
       .single();
 
     if (error) throw error;
+
+    // Resend invite email if email service is configured
+    if (isEmailConfigured()) {
+      const { data: userData } = await supabase.auth.getUser();
+      const inviterName = userData?.user?.user_metadata?.name || userData?.user?.email || 'A team member';
+      
+      await sendTeamInviteEmail({
+        to: data.email,
+        inviterName,
+        role: data.role,
+        inviteId: data.id,
+      });
+    }
 
     return { invite: data, error: null };
   } catch (error) {

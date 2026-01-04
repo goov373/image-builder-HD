@@ -33,10 +33,9 @@ export interface UndoableConfig<A, T> {
   clearHistoryType?: string;
 }
 
-/** Base action type with type property */
+/** Base action type with type property - minimal constraint for generic actions */
 export interface Action {
   type: string;
-  [key: string]: unknown;
 }
 
 // ===== Action Types =====
@@ -64,7 +63,7 @@ const defaultConfig: Required<UndoableConfig<Action, unknown>> = {
  * @param config - Configuration options
  * @returns The wrapped reducer with undo/redo support
  */
-export function undoable<T, A extends Action>(
+export function undoable<T, A extends { type: string }>(
   reducer: (state: T, action: A) => T,
   config: UndoableConfig<A, T> = {}
 ): (state: UndoableState<T> | undefined, action: A) => UndoableState<T> {

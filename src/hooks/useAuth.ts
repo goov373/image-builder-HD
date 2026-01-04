@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import { logger } from '../utils';
-import type { User, AuthError, Session } from '@supabase/supabase-js';
+import type { User, AuthError, Session, AuthChangeEvent } from '@supabase/supabase-js';
 
 /**
  * Auth Error with message
@@ -92,7 +92,7 @@ export default function useAuth(): UseAuthReturn {
         const {
           data: { session },
           error: sessionError,
-        } = await supabase.auth.getSession();
+        } = await supabase!.auth.getSession();
         if (sessionError) throw sessionError;
         setUser(session?.user ?? null);
       } catch (err) {
@@ -109,7 +109,7 @@ export default function useAuth(): UseAuthReturn {
     // Listen for auth changes
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    } = supabase!.auth.onAuthStateChange((_event: AuthChangeEvent, session: Session | null) => {
       setUser(session?.user ?? null);
       setLoading(false);
     });
@@ -128,7 +128,7 @@ export default function useAuth(): UseAuthReturn {
     setError(null);
 
     try {
-      const { data, error: signInError } = await supabase.auth.signInWithPassword({
+      const { data, error: signInError } = await supabase!.auth.signInWithPassword({
         email,
         password,
       });
@@ -151,7 +151,7 @@ export default function useAuth(): UseAuthReturn {
 
     setLoading(true);
     try {
-      const { error: signOutError } = await supabase.auth.signOut();
+      const { error: signOutError } = await supabase!.auth.signOut();
       if (signOutError) throw signOutError;
       setUser(null);
     } catch (err) {
